@@ -405,7 +405,14 @@ metExploreD3.GraphNetwork = {
 		
 		// Initiate the D3 force drawing algorithm
 		var force = d3.layout.force().friction(0.90).gravity(0.06)
-				.charge(-150).linkDistance(linkStyle.getSize()).size([ w, h ]);
+				.charge(-150)
+				.linkDistance(function(link){
+					if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+						return linkStyle.getSize()/2;
+					else
+						return linkStyle.getSize();
+				})
+				.size([ w, h ]);
 		
 		
 		var session = _metExploreViz.getSessionById(panel);
@@ -1781,6 +1788,16 @@ metExploreD3.GraphNetwork = {
 			metExploreD3.GraphNetwork.addLinkInDrawing(reaction.getId()+"-"+newID,reaction,newNode,"out",reaction.getReactionReversibility(),panel);
 			
 		});
+
+		var linkStyle = metExploreD3.getLinkStyle();  
+		force.linkDistance(function(link){
+			if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+				return linkStyle.getSize()/2;
+			else
+				return linkStyle.getSize();
+		});
+
+		metExploreD3.GraphNetwork.tick(panel);
 	}, 	
 	
 
