@@ -10,6 +10,7 @@ var NetworkVizSession = function(){
     this.duplicatedNodes = [];
     this.d3Data = new NetworkData();
     this.force = undefined;
+    this.forceCentroids = undefined;
     this.groups = [];
     this.id = "";
     this.linked = false;
@@ -234,6 +235,15 @@ NetworkVizSession.prototype = {
     setForce:function(force)
     {
         this.force = force;
+    },
+
+    getForceCentroids:function()
+    {
+        return this.forceCentroids;
+    },
+    setForceCentroids:function(force)
+    {
+        this.forceCentroids = force;
     },
 
     getNodesMap : function(){

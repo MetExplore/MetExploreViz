@@ -460,7 +460,8 @@ metExploreD3.GraphPanel = {
 		metExploreD3.hideInitialMask();
 		if(!_metExploreViz.isLaunched() || metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
 			metExploreD3.GraphPanel.refreshJSON(json);
-			if(func!=undefined) func();
+			
+			if(typeof func==='function') func();
 		}
 		else
 		{

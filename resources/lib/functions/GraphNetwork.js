@@ -1017,14 +1017,30 @@ metExploreD3.GraphNetwork = {
 						}
 						else
 						{
-							if(componentDisplayed=="Pathways"){
+
+							if(componentDisplayed=="Pathways" && node.getPathways().length<2){
 						    	var group = session.getGroupByKey(node.getPathways()[0]);
 						    	// here you want to set center to the appropriate [x,y] coords
 						    	if(group!=null)
 						    	{
-						    		var center = group.center;   
-							    	node.x += (center.x - node.x) * k;
-							    	node.y += (center.y - node.y) * k;	
+						    		// var center = group.center;  
+						    		// d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.centroid")
+			    					// 	.filter(function(centroid){
+			    					// 		console.log(node.getPathways()[0]);
+			    					// 		console.log(centroid.id);
+			    					// 		return centroid.id == node.getPathways()[0];
+			    					// 	})
+			    					// 	.each(function(centroid){
+			    					// 		var center = {x:centroid.x, y:centroid.y};
+			    					// 	});
+			    					var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
+						    		var theCentroid = forceCentroids.nodes()
+						    			.find(function(centroid){
+						    				return centroid.id == node.getPathways()[0];
+						    			}
+						    		);	
+							    	node.x += (theCentroid.x - node.x) * k;
+							    	node.y += (theCentroid.y - node.y) * k;	
 							    }							
 								
 							}
@@ -1049,6 +1065,115 @@ metExploreD3.GraphNetwork = {
 		}
         
 		session.setForce(force);
+	},
+
+	initCentroids : function(){
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1}).style("fill", 'red');
+
+		var panel = "viz";
+		var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+		var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
+		var linkStyle = metExploreD3.getLinkStyle();
+		var generalStyle = metExploreD3.getGeneralStyle();				
+		
+    	var networkData = _metExploreViz.getSessionById(panel).getD3Data();
+		var force2 = d3.layout.force().friction(0.90).gravity(0.08).charge(-4000).theta(0.2)
+    			.linkDistance(600)
+				.size([ w, h ]);
+
+		_metExploreViz.getSessionById(panel).setForceCentroids(force2);
+
+		var pathways = [];
+		networkData.getPathways().forEach(function(pathway){
+			pathways.push({"id":pathway,x:2,y:2});
+		});
+
+
+
+		var links = [];
+
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
+			.each(function(node){
+				node.getPathways().forEach(function(pathway){
+					node.getPathways().forEach(function(pathway2){
+						if(pathway!=pathway2){
+							var sourceIndex = pathways.findIndex(function(path){
+								return path.id==pathway;
+							});
+							var targetIndex = pathways.findIndex(function(path){
+								return path.id==pathway2;
+							});
+
+							var theLink = links.find(function(link){
+								return link.source==sourceIndex && link.target==targetIndex;
+							});
+							
+							if(theLink==undefined)
+								links.push({"source":sourceIndex, "target":targetIndex});
+							
+						}
+					});				
+				});
+
+			});
+
+		console.log(links);
+		// var lien = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("linkCentroid")
+		//       .data(links)
+		//     	.enter().append("line")
+		//       .attr("class", "linkCentroid")
+		//       .style("stroke", "red")
+		//       .style("stroke-width", 1);
+
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.centroid")
+			.data(pathways).enter()
+			.append("svg:g").attr("class", "centroid")
+			.style("fill", "white")
+			.append("rect")
+			.attr("id",function(pathway){ return pathway.id})
+			.attr("width", 6)
+			.attr("height", 6)
+			.attr("rx", 3)
+			.attr("ry", 3)
+			.attr("transform", "translate(-" + 6/2 + ",-"
+									+ 6/2
+									+ ")")
+			.style("stroke", "blue")
+			.style("stroke-width", 6);
+
+		
+		force2
+			.nodes(pathways)
+			.links(links)
+			.on("tick", function(e){
+				d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+					.selectAll("g.centroid")
+					.attr("cx", function(d) {
+						return d.x;
+					})
+					.attr("cy", function(d) {
+						return d.y;
+					})
+					.attr("transform", function(d) {
+						//  scale("+ +")
+						var scale = 1;
+						if(d3.select(this)!=null){
+							var transformString = d3.select(this).attr("transform");
+							if(d3.select(this).attr("transform")!=null){
+								var indexOfScale = transformString.indexOf("scale(");
+								if(indexOfScale!=-1)
+									scale = parseInt(transformString.substring(indexOfScale+6, transformString.length-1));
+							}
+						}
+						return "translate(" + d.x + "," + d.y + ") scale("+scale+")";
+					});
+
+				// lien.attr("x1", function(d) { return d.source.x; })
+			 //        .attr("y1", function(d) { return d.source.y; })
+			 //        .attr("x2", function(d) { return d.target.x; })
+			 //        .attr("y2", function(d) { return d.target.y; });
+			})
+			.start();
 	},
 
 	/*******************************************
