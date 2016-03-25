@@ -215,6 +215,7 @@ metExploreD3.GraphNetwork = {
 	play:function(d) {
 		var sessions = _metExploreViz.getSessionsSet();
 		var panel = this.parentNode.parentNode.id;
+		
 		var session = _metExploreViz.getSessionById(panel);
 		if(session!=undefined)  
 		{
@@ -779,8 +780,51 @@ metExploreD3.GraphNetwork = {
 			})
 			.attr("width", "50")
 			.attr("height", "50")
-			.attr("transform", "translate(10,10) scale(.5)");
+			.attr("transform", "translate(10,10) scale(.5)");	
 
+		d3
+			.select("#"+panel)
+			.select("#D3viz")
+			.append("svg:g")
+			.attr("class","whiteBlack").attr("id","whiteBlack")
+			.attr('x', (w-100))
+			.attr('y', 100)
+			.on("click", function(){
+				if(d3.select("#"+panel).style("-webkit-filter").search('grayscale') == -1
+					&& d3.select("#"+panel).style("filter").search('grayscale') == -1)
+					d3.select("#"+panel).style("filter", "grayscale(100%)").style("-webkit-filter", "grayscale(100%)");
+				else
+					d3.select("#"+panel).style("filter", "").style("-webkit-filter", "");
+			})
+			.style("cursor", "hand")
+			.append("image")
+			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/blackWhite.png")
+			.attr("width", "50")
+			.attr("height", "50")
+			.attr("transform", "translate("+(w-100)+",100) scale(0.5)");
+
+		d3
+			.select("#"+panel)
+			.select("#D3viz")
+			.append("svg:g")
+			.attr("class","invertColor").attr("id","invertColor")
+			.attr('x', (w-100))
+			.attr('y', 150)
+			.on("click", function(){
+				if(d3.select("#"+panel).style("-webkit-filter").search('invert') == -1
+					&& d3.select("#"+panel).style("filter").search('invert') == -1)
+					d3.select("#"+panel).style("filter", "invert(100%)").style("-webkit-filter", "invert(100%)");
+				else
+					d3.select("#"+panel).style("filter", "").style("-webkit-filter", "");
+			})
+			.style("cursor", "hand")
+			.append("image")
+			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/invertColor.svg")
+			.attr("width", "50")
+			.attr("height", "50")
+			.attr("transform", "translate("+(w-100)+",150) scale(0.5)");
+
+		
 
 		d3
 			.select("#"+panel)
@@ -992,10 +1036,10 @@ metExploreD3.GraphNetwork = {
 				var useClusters = metExploreD3.getGeneralStyle().useClusters();
 				var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
 				if(useClusters && componentDisplayed!=false){
-					var k = e.alpha * .8;
+					var k = e.alpha * .1;
 					networkData.getNodes().forEach(function(node) {
-						if(node.getBiologicalType()=='metabolite'){
-							if(componentDisplayed=="Compartments"){
+						if(componentDisplayed=="Compartments"){
+							if(node.getBiologicalType()=='metabolite'){
 						    	// here you want to set center to the appropriate [x,y] coords
 						    	var group = session.getGroupByKey(node.getCompartment());
 
@@ -1016,8 +1060,7 @@ metExploreD3.GraphNetwork = {
 							}
 						}
 						else
-						{
-
+						{	
 							if(componentDisplayed=="Pathways" && node.getPathways().length<2){
 						    	var group = session.getGroupByKey(node.getPathways()[0]);
 						    	// here you want to set center to the appropriate [x,y] coords
@@ -1117,7 +1160,6 @@ metExploreD3.GraphNetwork = {
 
 			});
 
-		console.log(links);
 		// var lien = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("linkCentroid")
 		//       .data(links)
 		//     	.enter().append("line")
@@ -1125,54 +1167,54 @@ metExploreD3.GraphNetwork = {
 		//       .style("stroke", "red")
 		//       .style("stroke-width", 1);
 
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.centroid")
-			.data(pathways).enter()
-			.append("svg:g").attr("class", "centroid")
-			.style("fill", "white")
-			.append("rect")
-			.attr("id",function(pathway){ return pathway.id})
-			.attr("width", 6)
-			.attr("height", 6)
-			.attr("rx", 3)
-			.attr("ry", 3)
-			.attr("transform", "translate(-" + 6/2 + ",-"
-									+ 6/2
-									+ ")")
-			.style("stroke", "blue")
-			.style("stroke-width", 6);
+		// d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.centroid")
+		// 	.data(pathways).enter()
+		// 	.append("svg:g").attr("class", "centroid")
+		// 	.style("fill", "white")
+		// 	.append("rect")
+		// 	.attr("id",function(pathway){ return pathway.id})
+		// 	.attr("width", 6)
+		// 	.attr("height", 6)
+		// 	.attr("rx", 3)
+		// 	.attr("ry", 3)
+		// 	.attr("transform", "translate(-" + 6/2 + ",-"
+		// 							+ 6/2
+		// 							+ ")")
+		// 	.style("stroke", "blue")
+		// 	.style("stroke-width", 6);
 
 		
 		force2
 			.nodes(pathways)
 			.links(links)
-			.on("tick", function(e){
-				d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-					.selectAll("g.centroid")
-					.attr("cx", function(d) {
-						return d.x;
-					})
-					.attr("cy", function(d) {
-						return d.y;
-					})
-					.attr("transform", function(d) {
-						//  scale("+ +")
-						var scale = 1;
-						if(d3.select(this)!=null){
-							var transformString = d3.select(this).attr("transform");
-							if(d3.select(this).attr("transform")!=null){
-								var indexOfScale = transformString.indexOf("scale(");
-								if(indexOfScale!=-1)
-									scale = parseInt(transformString.substring(indexOfScale+6, transformString.length-1));
-							}
-						}
-						return "translate(" + d.x + "," + d.y + ") scale("+scale+")";
-					});
+			// .on("tick", function(e){
+			// 	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+			// 		.selectAll("g.centroid")
+			// 		.attr("cx", function(d) {
+			// 			return d.x;
+			// 		})
+			// 		.attr("cy", function(d) {
+			// 			return d.y;
+			// 		})
+			// 		.attr("transform", function(d) {
+			// 			//  scale("+ +")
+			// 			var scale = 1;
+			// 			if(d3.select(this)!=null){
+			// 				var transformString = d3.select(this).attr("transform");
+			// 				if(d3.select(this).attr("transform")!=null){
+			// 					var indexOfScale = transformString.indexOf("scale(");
+			// 					if(indexOfScale!=-1)
+			// 						scale = parseInt(transformString.substring(indexOfScale+6, transformString.length-1));
+			// 				}
+			// 			}
+			// 			return "translate(" + d.x + "," + d.y + ") scale("+scale+")";
+			// 		});
 
-				// lien.attr("x1", function(d) { return d.source.x; })
-			 //        .attr("y1", function(d) { return d.source.y; })
-			 //        .attr("x2", function(d) { return d.target.x; })
-			 //        .attr("y2", function(d) { return d.target.y; });
-			})
+			// 	// lien.attr("x1", function(d) { return d.source.x; })
+			//  //        .attr("y1", function(d) { return d.source.y; })
+			//  //        .attr("x2", function(d) { return d.target.x; })
+			//  //        .attr("y2", function(d) { return d.target.y; });
+			// })
 			.start();
 	},
 
@@ -3643,6 +3685,49 @@ metExploreD3.GraphNetwork = {
 			.select("#"+panel)
 			.select("#D3viz")
 			.append("svg:g")
+			.attr("class","whiteBlack").attr("id","whiteBlack")
+			.attr('x', (w-100))
+			.attr('y', 100)
+			.on("click", function(){
+				if(d3.select("#"+panel).style("-webkit-filter").search('grayscale') == -1
+					&& d3.select("#"+panel).style("filter").search('grayscale') == -1)
+					d3.select("#"+panel).style("filter", "grayscale(100%)").style("-webkit-filter", "grayscale(100%)");
+				else
+					d3.select("#"+panel).style("filter", "").style("-webkit-filter", "");
+			})
+			.style("cursor", "hand")
+			.append("image")
+			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/blackWhite.png")
+			.attr("width", "50")
+			.attr("height", "50")
+			.attr("transform", "translate("+(w-100)+",100) scale(0.5)");
+
+		d3
+			.select("#"+panel)
+			.select("#D3viz")
+			.append("svg:g")
+			.attr("class","invertColor").attr("id","invertColor")
+			.attr('x', (w-100))
+			.attr('y', 150)
+			.on("click", function(){
+				if(d3.select("#"+panel).style("-webkit-filter").search('invert') == -1
+					&& d3.select("#"+panel).style("filter").search('invert') == -1)
+					d3.select("#"+panel).style("filter", "invert(100%)").style("-webkit-filter", "invert(100%)");
+				else
+					d3.select("#"+panel).style("filter", "").style("-webkit-filter", "");
+			})
+			.style("cursor", "hand")
+			.append("image")
+			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/invertColor.svg")
+			.attr("width", "50")
+			.attr("height", "50")
+			.attr("transform", "translate("+(w-100)+",150) scale(0.5)");
+
+		
+		d3
+			.select("#"+panel)
+			.select("#D3viz")
+			.append("svg:g")
 			.attr("class","buttonZoomIn").attr("id","buttonZoomIn")
 			.attr('x', (w-60))
 			.attr('y', 10)
@@ -3797,18 +3882,18 @@ metExploreD3.GraphNetwork = {
 		// Define play and stop button ->play function
 		if(panel!="viz"){
 			d3
-			.select("#"+panel)
-			.select("#D3viz")
-			.append("svg:g")
-			.attr("class","buttonLink").attr("id","buttonLink")
-        	.attr("isLink", "false")
-			.on("click", metExploreD3.GraphNetwork.setLink)
-			.style("cursor", "hand")
-			.append("image")
-			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/unlink.svg")
-			.attr("width", "50")
-			.attr("height", "50")
-			.attr("transform", "translate(10,50) scale(.5)");
+				.select("#"+panel)
+				.select("#D3viz")
+				.append("svg:g")
+				.attr("class","buttonLink").attr("id","buttonLink")
+	        	.attr("isLink", "false")
+				.on("click", metExploreD3.GraphNetwork.setLink)
+				.style("cursor", "hand")
+				.append("image")
+				.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/unlink.svg")
+				.attr("width", "50")
+				.attr("height", "50")
+				.attr("transform", "translate(10,50) scale(.5)");
 
 		}
 		else

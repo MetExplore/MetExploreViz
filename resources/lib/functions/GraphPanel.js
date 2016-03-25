@@ -293,7 +293,6 @@ metExploreD3.GraphPanel = {
 	resizePanels : function(panel){
 		var sessionsStore = _metExploreViz.getSessionsSet();
 		var session = _metExploreViz.getSessionById(panel);
-
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
 		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0][0]!=null
@@ -305,7 +304,6 @@ metExploreD3.GraphPanel = {
 				.select("#D3viz")
 				.select("#buttonZoomIn")
 				.attr('x');
-
 			var deltaX = w-60-x;					
 			
 			d3
@@ -313,13 +311,11 @@ metExploreD3.GraphPanel = {
 				.select("#D3viz")
 				.select("#buttonZoomIn")
 				.attr("transform", "translate("+deltaX+",0) scale(1)");
-
 			x = d3
 				.select("#"+panel)
 				.select("#D3viz")
 				.select("#buttonZoomOut")
 				.attr('x');
-
 			deltaX = w-110-x;					
 			
 			d3
@@ -327,13 +323,11 @@ metExploreD3.GraphPanel = {
 				.select("#D3viz")
 				.select("#buttonZoomOut")
 				.attr("transform", "translate("+deltaX+",0) scale(1)");
-
 			x = d3
 				.select("#"+panel)
 				.select("#D3viz")
 				.select("#buttonHand")
 				.attr('x');
-
 			deltaX = w-160-x;					
 			
 		    d3
@@ -341,8 +335,33 @@ metExploreD3.GraphPanel = {
 				.select("#D3viz")
 				.select("#buttonHand")
 				.attr("transform", "translate("+deltaX+",0) scale(1)");
-		}
 
+			x = d3
+				.select("#"+panel)
+				.select("#D3viz")
+				.select("#whiteBlack")
+				.attr('x');
+			deltaX = w-100-x;					
+			
+		    d3
+				.select("#"+panel)
+				.select("#D3viz")
+				.select("#whiteBlack")
+				.attr("transform", "translate("+deltaX+",0) scale(1)");
+
+			x = d3
+				.select("#"+panel)
+				.select("#D3viz")
+				.select("#invertColor")
+				.attr('x');
+			deltaX = w-100-x;					
+			
+		    d3
+				.select("#"+panel)
+				.select("#D3viz")
+				.select("#invertColor")
+				.attr("transform", "translate("+deltaX+",0) scale(1)");
+		}
 		if(session!=undefined)  
 		{
 			if(session.isLinked()){
@@ -350,11 +369,9 @@ metExploreD3.GraphPanel = {
 				var sessionMain = _metExploreViz.getSessionById("viz");
 				var force = sessionMain.getForce();
 				if(force!=undefined){
-
 					var h = $("#viz").height();
 					var w = $("#viz").width();
 					force.size([ w, h ]);
-
 	                var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
 	                if(anim=="true")  
 	                    force.resume();
@@ -362,14 +379,11 @@ metExploreD3.GraphPanel = {
 			}
 			else
 			{
-
 				var force = session.getForce();
 				if(force!=undefined){
-
 					var h = $("#"+panel).height();
 					var w = $("#"+panel).width();
 					force.size([ w, h ]);
-
 	                var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
 	                if(anim=="true")  
 	                    force.resume();
@@ -396,7 +410,6 @@ metExploreD3.GraphPanel = {
 					metExploreD3.GraphNetwork.animationButtonOn(panel);
 					var force = session.getForce();
 					force.resume();
-
 				}
 			} 
 		}
@@ -437,8 +450,6 @@ metExploreD3.GraphPanel = {
 							metExploreD3.GraphPanel.loadDataJSON(json);
 						else
 							metExploreD3.GraphPanel.initDataJSON(json); // Init of metabolite network
-
-
 
 						// 62771 ms for recon before refactoring
 						// 41465 ms now

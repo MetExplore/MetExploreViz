@@ -208,6 +208,14 @@ metExploreD3.GraphUtils = {
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "none");
 
+		var whiteBlack = d3.selectAll("#whiteBlack");
+		if(whiteBlack!=null)  
+		  whiteBlack.style("display", "none");
+
+		var invertColor = d3.selectAll("#invertColor");
+		if(invertColor!=null)  
+		  invertColor.style("display", "none");
+
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  
 		  buttonZoomOut.style("display", "none");
@@ -273,7 +281,6 @@ metExploreD3.GraphUtils = {
 		var emptySvg = window.document.createElementNS(prefix.svg, 'svg');
 		window.document.body.appendChild(emptySvg);
 		var emptySvgDeclarationComputed = getComputedStyle(emptySvg);
-
 		var myMask = metExploreD3.createLoadMask("Export initialization...", 'viz');
 		if(myMask!= undefined){
 
@@ -425,6 +432,15 @@ metExploreD3.GraphUtils = {
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "inline");
 
+
+		var invertColor = d3.selectAll("#invertColor");
+		if(invertColor!=null)  
+		  invertColor.style("display", "inline");
+
+		var whiteBlack = d3.selectAll("#whiteBlack");
+		if(whiteBlack!=null)  
+		  whiteBlack.style("display", "inline");
+
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  
 		  buttonZoomOut.style("display", "inline");
@@ -434,7 +450,7 @@ metExploreD3.GraphUtils = {
 		//   tooltip.style("display", "inline");
 
 		d3.selectAll("#in, #out")
-			        .classed("absolute", !d3.selectAll("#in").classed("absolute"));
+			.classed("absolute", !d3.selectAll("#in").classed("absolute"));
 	},
 
 	/*******************************************
@@ -449,12 +465,12 @@ metExploreD3.GraphUtils = {
 			
 			if(svg.id=="D3viz")
 			{
-				function clone(selector) {
+				function clonef(selector) {
 					var node = d3.select(selector).node();
 					return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling))[0][0];
 				};
-				var clone = clone(svg);
 
+				var clone = clonef(svg);
 				clone.setAttribute("version", "1.1");
 
 				// removing attributes so they aren't doubled up
@@ -485,6 +501,14 @@ metExploreD3.GraphUtils = {
 				var buttonAnim = clone.getElementById("buttonAnim");
 				if(buttonAnim!=null) 
 					buttonAnim.parentNode.removeChild(buttonAnim);
+
+				var invertColor = clone.getElementById("invertColor");
+				if(invertColor!=null) 
+					invertColor.parentNode.removeChild(invertColor);
+
+				var whiteBlack = clone.getElementById("whiteBlack");
+				if(whiteBlack!=null) 
+					whiteBlack.parentNode.removeChild(whiteBlack);
 
 				// var tooltip = clone.getElementById("tooltip");
 				// tooltip.parentNode.removeChild(tooltip);
@@ -532,7 +556,7 @@ metExploreD3.GraphUtils = {
 						}
 					}
 					);
-				
+								
 				d3.select(clone).select(".logoViz")
 					.each(function(){
 						var url = this.firstChild.getAttribute("href");
@@ -571,9 +595,9 @@ metExploreD3.GraphUtils = {
 
 				var rectSvg = svg.parentNode.getBoundingClientRect();
 				
-				/*
+				
 				// Version to catch all nodes in the picture
-				d3.select(clone).select("#graphComponent").attr("transform",  "translate(0, 0) scale(1)");
+				// d3.select(clone).select("#graphComponent").attr("transform",  "translate(0, 0) scale(1)");
 
 				var rectGraphComponent = d3.select(clone).select("#graphComponent")[0][0].getBoundingClientRect();
 				
@@ -611,13 +635,12 @@ metExploreD3.GraphUtils = {
 
 				d3.select(clone).select("#metexplore").text('MetExploreViz').attr('x',  clone.getAttribute("width") - 92).attr(
 					'y', clone.getAttribute("height") - 10);
-				*/
+				
 
 				var rectGraphComponent = d3.select(clone).select("#graphComponent")[0][0].getBoundingClientRect();
 				
 				var translateX = rectSvg.left+100 - rectGraphComponent.left;
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
-
 				d3.select(clone).select("#graphComponent").attr("transform",  d3.select(svg).select("#graphComponent").attr("transform"));
 				
 				d3.select(clone).selectAll("path")
@@ -635,15 +658,30 @@ metExploreD3.GraphUtils = {
 				clone.setAttribute("height", canvasHeight);
 
 				
-				
 				var source = (new XMLSerializer()).serializeToString(clone);
 				var doctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
+				
+				// console.log(source);
+				// var h = clone.getAttribute("height")+1000;
+				// var w = clone.getAttribute("width")+1000;
+
+				// svgInfo.push({
+				// 	top: rectSvg.top,
+				// 	left: rectSvg.left,
+				// 	width: w,
+				// 	height: h,
+				// 	classe: clone.getAttribute("class"),
+				// 	id: clone.getAttribute("id"),
+				// 	parent: svg.parentNode.id,
+				// 	childElementCount: clone.childElementCount,
+				// 	source: [doctype + source]
+				// });
 
 				svgInfo.push({
 					top: rectSvg.top,
 					left: rectSvg.left,
-					width: clone.getAttribute("width"),
-					height: clone.getAttribute("height"),
+					width: parseInt(clone.getAttribute("width"))*2,
+					height: parseInt(clone.getAttribute("width"))*2,
 					classe: clone.getAttribute("class"),
 					id: clone.getAttribute("id"),
 					parent: svg.parentNode.id,
@@ -700,7 +738,7 @@ metExploreD3.GraphUtils = {
 
 	binaryblob : function(canvas, type){
 
-		var byteString = atob(canvas.toDataURL("image/"+type).replace(/^data:image\/(png|jpeg);base64,/, ""));
+		var byteString = window.atob(canvas.toDataURL("image/"+type).replace(/^data:image\/(png|jpeg);base64,/, ""));
 		var ab = new ArrayBuffer(byteString.length);
 		var ia = new Uint8Array(ab);
 		for (var i = 0; i < byteString.length; i++) {
@@ -722,11 +760,10 @@ metExploreD3.GraphUtils = {
      * @param {} filename: default filename of the downloaded file
      */
     saveAsBinary: function(source, filename, type) {
-		var imgsrc = 'data:image/svg+xml;base64,'+ btoa(unescape(encodeURIComponent(source.source)));
+		var imgsrc = 'data:image/svg+xml;base64,'+ window.btoa(decodeURIComponent(encodeURIComponent(source.source)));
 
-	
 		var canvas = document.createElement('canvas');
-		canvas.id     = "canvas";
+		canvas.id = "canvas";
 		canvas.height = source.height*4;
 		canvas.width = source.width*4;
 		canvas.style.zIndex = 8;
@@ -829,7 +866,8 @@ metExploreD3.GraphUtils = {
 		        }
 		        else
 		        {	
-		            computedStyleStr+=key+":"+value+";";
+		        	if(key!="marker-start" || key!="marker-end")
+		            	computedStyleStr+=key+":"+value+";";
 		        }
 	        
 	        }
@@ -851,8 +889,8 @@ metExploreD3.GraphUtils = {
 
 		        if(child.className!=undefined)
 		      	{
-		      		if(child.tagName=="image")
-			        {
+		      		// if(child.tagName=="image")
+			       //  {
 			   //      	if (window.XDomainRequest) {
 						// 	xdr = new XDomainRequest(); 
 						// } else if (window.XMLHttpRequest) {
@@ -885,12 +923,14 @@ metExploreD3.GraphUtils = {
 						// 	alert("Votre navigateur ne gère pas l'AJAX cross-domain !");
 						// }
 
-			        }
+			        // }
 			        if(child.tagName!="image")
 			        {
 			        
 			            while (child) {
 				            if(child.getAttribute("href")!="resources/icons/pause.svg" 
+				                && child.getAttribute("href")!="resources/icons/whiteBlack.png" 
+				                && child.getAttribute("href")!="resources/icons/invertColor.svg" 
 				                && child.getAttribute("href")!="resources/icons/link.svg" 
 				                && child.getAttribute("href")!="resources/icons/unlink.svg")
 				            {
@@ -961,6 +1001,14 @@ metExploreD3.GraphUtils = {
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "none");
 
+		var invertColor = d3.selectAll("#invertColor");
+		if(invertColor!=null)  
+		  invertColor.style("display", "none");
+
+		var whiteBlack = d3.selectAll("#whiteBlack");
+		if(whiteBlack!=null)  
+		  whiteBlack.style("display", "none");
+
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  
 		  buttonZoomOut.style("display", "none");
@@ -978,7 +1026,7 @@ metExploreD3.GraphUtils = {
 	initializeMain : function() {
 
 		var prefix = {
-		xmlns: "http://www.w3.org/2000/xmlns/",
+		xmlns: "http://www.w3.org/TR/xml-names/",
 		xlink: "http://www.w3.org/1999/xlink",
 		svg: "http://www.w3.org/2000/svg"
 		};
