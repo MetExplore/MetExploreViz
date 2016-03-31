@@ -484,7 +484,7 @@ metExploreD3.GraphPanel = {
 					if(btn=="ok")
 					{	
 						metExploreD3.GraphPanel.refreshJSON(json);
-						if(func!=undefined) func();
+						if(func!=undefined && typeof func==='function') func();
 					}
 	           },
 	           icon: Ext.Msg.QUESTION

@@ -661,27 +661,11 @@ metExploreD3.GraphUtils = {
 				var source = (new XMLSerializer()).serializeToString(clone);
 				var doctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 				
-				// console.log(source);
-				// var h = clone.getAttribute("height")+1000;
-				// var w = clone.getAttribute("width")+1000;
-
-				// svgInfo.push({
-				// 	top: rectSvg.top,
-				// 	left: rectSvg.left,
-				// 	width: w,
-				// 	height: h,
-				// 	classe: clone.getAttribute("class"),
-				// 	id: clone.getAttribute("id"),
-				// 	parent: svg.parentNode.id,
-				// 	childElementCount: clone.childElementCount,
-				// 	source: [doctype + source]
-				// });
-
 				svgInfo.push({
 					top: rectSvg.top,
 					left: rectSvg.left,
 					width: parseInt(clone.getAttribute("width"))*2,
-					height: parseInt(clone.getAttribute("width"))*2,
+					height: parseInt(clone.getAttribute("height"))*2,
 					classe: clone.getAttribute("class"),
 					id: clone.getAttribute("id"),
 					parent: svg.parentNode.id,

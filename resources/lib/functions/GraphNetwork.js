@@ -340,6 +340,7 @@ metExploreD3.GraphNetwork = {
 				metExploreD3.GraphNetwork.graphAlignment(panel);
 			}
 		}
+		metExploreD3.GraphNetwork.initCentroids();
 	},
 	
 	/*******************************************
@@ -797,6 +798,7 @@ metExploreD3.GraphNetwork = {
 					d3.select("#"+panel).style("filter", "").style("-webkit-filter", "");
 			})
 			.style("cursor", "hand")
+			.style("visibility", "hidden")
 			.append("image")
 			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/blackWhite.png")
 			.attr("width", "50")
@@ -818,6 +820,7 @@ metExploreD3.GraphNetwork = {
 					d3.select("#"+panel).style("filter", "").style("-webkit-filter", "");
 			})
 			.style("cursor", "hand")
+			.style("visibility", "hidden")
 			.append("image")
 			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/invertColor.svg")
 			.attr("width", "50")
@@ -1111,7 +1114,7 @@ metExploreD3.GraphNetwork = {
 	},
 
 	initCentroids : function(){
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1}).style("fill", 'red');
+		//d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1}).style("fill", 'red');
 
 		var panel = "viz";
 		var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
@@ -2053,6 +2056,7 @@ metExploreD3.GraphNetwork = {
 				}
 			}, 0);
 		}
+		metExploreD3.GraphNetwork.initCentroids();
 	},
 	
 	/*******************************************
@@ -2095,6 +2099,7 @@ metExploreD3.GraphNetwork = {
 
 			}, 0);
 		}
+		metExploreD3.GraphNetwork.initCentroids();
 	},
 
 	/*******************************************
@@ -2185,6 +2190,7 @@ metExploreD3.GraphNetwork = {
 				}
 			}, 0);
 		}
+		metExploreD3.GraphNetwork.initCentroids();
 	},
 
 	/*******************************************
@@ -2282,6 +2288,7 @@ metExploreD3.GraphNetwork = {
 				}
 			}, 0);
 		}
+		metExploreD3.GraphNetwork.initCentroids();
 	},
 
 	/*******************************************
@@ -2332,6 +2339,7 @@ metExploreD3.GraphNetwork = {
 					force.start();
 			}	
 		}
+		metExploreD3.GraphNetwork.initCentroids();
 	},
 
 	/*******************************************
@@ -2402,7 +2410,8 @@ metExploreD3.GraphNetwork = {
 					}	
 				}
        		 }, 100);
-       	}			
+       	}		
+       	metExploreD3.GraphNetwork.initCentroids();	
 	},
 
 	/*******************************************
@@ -2526,6 +2535,7 @@ metExploreD3.GraphNetwork = {
 			}
 	    	metExploreD3.hideMask(myMask);
 	    }
+	    metExploreD3.GraphNetwork.initCentroids();
 	},
 
 	/*******************************************
@@ -2688,9 +2698,9 @@ metExploreD3.GraphNetwork = {
 					
 					// Remove the node from group to draw convex hulls  
 					session.groups.forEach(function(group){
-						if(group.key==node.getCompartment()){
+						if(group.key==theNode.getCompartment()){
 							
-							var index = group.values.indexOf(node);
+							var index = group.values.indexOf(theNode);
 							if(index!=-1)
 								group.values.splice(index, 1);
 							
@@ -2704,6 +2714,23 @@ metExploreD3.GraphNetwork = {
 								}
 							}
 						}
+						theNode.getPathways().forEach(function(pathway){
+							if(group.key==pathway){
+								var index = group.values.indexOf(theNode);
+								if(index!=-1)
+									group.values.splice(index, 1);
+								
+								if(group.values.length==0){
+								 	index = session.groups.indexOf(group);
+									if(index!=-1){
+										session.groups.splice(index, 1);
+										d3.select("#"+panel).select("#D3viz")
+											.select("path#"+group.key)
+											.remove();
+									}
+								}
+							}
+						}) 
 					});
 
 					var index = force.nodes().indexOf(
@@ -2738,6 +2765,7 @@ metExploreD3.GraphNetwork = {
 			});
 
         	metExploreD3.GraphNetwork.removeIsolatedNode("viz");	
+        	metExploreD3.GraphNetwork.initCentroids();
 	},
 
 	/*******************************************
@@ -3696,6 +3724,7 @@ metExploreD3.GraphNetwork = {
 					d3.select("#"+panel).style("filter", "").style("-webkit-filter", "");
 			})
 			.style("cursor", "hand")
+			.style("visibility", "hidden")
 			.append("image")
 			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/blackWhite.png")
 			.attr("width", "50")
@@ -3717,6 +3746,7 @@ metExploreD3.GraphNetwork = {
 					d3.select("#"+panel).style("filter", "").style("-webkit-filter", "");
 			})
 			.style("cursor", "hand")
+			.style("visibility", "hidden")
 			.append("image")
 			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/invertColor.svg")
 			.attr("width", "50")
