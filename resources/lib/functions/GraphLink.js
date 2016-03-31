@@ -14,6 +14,817 @@ metExploreD3.GraphLink = {
 		metExploreD3.GraphLink.panelParent = parent;
 	},
 
+	funcPath1 : function(link, panel){
+		var source, target, path;
+
+		function pathForReversibleReactions(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			
+			var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
+			var ySource = source.y + dY*(1-(d-largeurNoeudS)/d);
+
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			var xWBaseArrowT = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT = yBaseArrowT - dX*(3/d);
+
+			var xBaseArrowS = source.x + dX*(1-(d-largeurNoeudS-heightArrow)/d);
+			var yBaseArrowS = source.y + dY*(1-(d-largeurNoeudS-heightArrow)/d);
+
+			var xWBaseArrowS = xBaseArrowS - dY*(3/d);
+			var yWBaseArrowS = yBaseArrowS + dX*(3/d);
+			return "M"+xSource+","+ySource+"L"+xTarget+","+yTarget+"L"+xWBaseArrowT+","+yWBaseArrowT+"L"+xBaseArrowT+","+yBaseArrowT+"L"+xSource+","+ySource+"L"+xWBaseArrowS+","+yWBaseArrowS+"L"+xBaseArrowS+","+yBaseArrowS+"Z";
+		}
+
+		function path(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrow = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrow = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			var xWBaseArrow = xBaseArrow + dY*(3/d);
+			var yWBaseArrow = yBaseArrow - dX*(3/d);
+			return "M"+source.x+","+source.y+"L"+xTarget+","+yTarget+"L"+xWBaseArrow+","+yWBaseArrow+"L"+xBaseArrow+","+yBaseArrow+"Z";
+		}
+
+		
+
+		if(link.getSource().x==undefined){
+			var networkData=_metExploreViz.getSessionById(panel).getD3Data();
+			var nodes = networkData.getNodes();
+
+			source = nodes[link.getSource()];
+			target = nodes[link.getTarget()];
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+		else
+		{
+			source = link.getSource();
+			target = link.getTarget();
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+				
+		return path;
+	}, 
+
+	funcPath2 : function(link, panel){
+		var source, target, path;
+
+		function pathForReversibleReactions(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			
+			var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
+			var ySource = source.y + dY*(1-(d-largeurNoeudS)/d);
+
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+			var xBaseArrowS = source.x + dX*(1-(d-largeurNoeudS-heightArrow)/d);
+			var yBaseArrowS = source.y + dY*(1-(d-largeurNoeudS-heightArrow)/d);
+
+			var xWBaseArrowS1 = xBaseArrowS - dY*(3/d);
+			var yWBaseArrowS1 = yBaseArrowS + dX*(3/d);
+			var xWBaseArrowS2 = xBaseArrowS + dY*(3/d);
+			var yWBaseArrowS2 = yBaseArrowS - dX*(3/d);
+
+			return "M"+xSource+","+ySource+
+					"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+					"L"+xBaseArrowS+","+yBaseArrowS+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"L"+xBaseArrowS+","+yBaseArrowS+
+					"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+					"L"+xSource+","+ySource+
+					"Z";
+		}
+
+		function path(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+			
+			return "M"+source.x+","+source.y+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"Z";
+		}
+
+		
+
+		if(link.getSource().x==undefined){
+			var networkData=_metExploreViz.getSessionById(panel).getD3Data();
+			var nodes = networkData.getNodes();
+
+			source = nodes[link.getSource()];
+			target = nodes[link.getTarget()];
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+		else
+		{
+			source = link.getSource();
+			target = link.getTarget();
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+				
+		return path;
+	},
+
+	funcPath3 : function(link, panel){
+		var source, target, path;
+
+		function pathForReversibleReactions(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			var xBaseArrowRev = source.x + dX*((d-largeurNoeudT-heightArrow-heightArrow)/d);
+			var yBaseArrowRev = source.y + dY*((d-largeurNoeudT-heightArrow-heightArrow)/d);
+
+			var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+			return "M"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowRev+","+yBaseArrowRev+
+					"Z"+
+					"M"+source.x+","+source.y+
+					"L"+xBaseArrowRev+","+yBaseArrowRev+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowRev+","+yBaseArrowRev+
+					"Z";
+		}
+
+		function path(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+			
+			return "M"+source.x+","+source.y+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"Z";
+		}
+
+		
+
+		if(link.getSource().x==undefined){
+			var networkData=_metExploreViz.getSessionById(panel).getD3Data();
+			var nodes = networkData.getNodes();
+
+			source = nodes[link.getSource()];
+			target = nodes[link.getTarget()];
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+		else
+		{
+			source = link.getSource();
+			target = link.getTarget();
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+				
+		return path;
+	},
+
+	funcPath4 : function(link, panel){
+		var source, target, path;
+
+		function pathForReversibleReactions(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+
+				var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
+				var ySource = source.y + dY*(1-(d-largeurNoeudS)/d);
+
+				var heightArrow = 5;
+
+				var xBaseArrowS = source.x + dX*(1-(d-largeurNoeudS-heightArrow)/d);
+				var yBaseArrowS = source.y + dY*(1-(d-largeurNoeudS-heightArrow)/d);
+
+				var xBaseArrowRev = source.x + dX*(1-(d-largeurNoeudS-heightArrow-heightArrow)/d);
+				var yBaseArrowRev = source.y + dY*(1-(d-largeurNoeudS-heightArrow-heightArrow)/d);
+
+				var xWBaseArrowS1 = xBaseArrowS - dY*(3/d);
+				var yWBaseArrowS1 = yBaseArrowS + dX*(3/d);
+				var xWBaseArrowS2 = xBaseArrowS + dY*(3/d);
+				var yWBaseArrowS2 = yBaseArrowS - dX*(3/d);
+
+
+				path = "M"+xWBaseArrowS1+","+yWBaseArrowS1+
+						"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+						"L"+xSource+","+ySource+
+						"Z"+
+						"M"+xBaseArrowRev+","+yBaseArrowRev+
+						"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+						"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+						"L"+xSource+","+ySource+
+						"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+						"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+						"L"+xBaseArrowRev+","+yBaseArrowRev+
+						"L"+target.x+","+target.y+
+						"Z";
+			}
+			else
+			{
+				var largeurNoeudS = (metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2;
+				var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
+				var ySource = source.y + dY*(1-(d-largeurNoeudS)/d);
+
+				var heightArrow = 5;
+				
+				
+
+				var xTarget = source.x + dX*((d-largeurNoeudS)/d);
+				var yTarget = source.y + dY*((d-largeurNoeudS)/d);
+
+				var heightArrow = 5;
+				var xBaseArrowT = source.x + dX*((d-largeurNoeudS-heightArrow)/d);
+				var yBaseArrowT = source.y + dY*((d-largeurNoeudS-heightArrow)/d);
+
+				var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+				var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+				var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+				var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+				var xBaseArrowRev =  source.x + dX*((d-largeurNoeudS-heightArrow-heightArrow)/d);
+				var yBaseArrowRev =  source.y + dY*((d-largeurNoeudS-heightArrow-heightArrow)/d);
+
+
+				path = "M"+xWBaseArrowT1+","+yWBaseArrowT1+
+						"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+						"L"+xBaseArrowRev+","+yBaseArrowRev+
+						"Z"+
+						"M"+source.x+","+source.y+
+						"L"+xBaseArrowRev+","+yBaseArrowRev+
+						"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+						"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+						"L"+xTarget+","+yTarget+
+						"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+						"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+						"L"+xBaseArrowRev+","+yBaseArrowRev+
+						"Z";
+			}
+			return path;
+
+		}
+
+		function path(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				
+				var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
+				var ySource = source.y + dY*(1-(d-largeurNoeudS)/d);
+
+				var heightArrow = 5;
+
+				var xPointeS = source.x + dX*(1-(d-largeurNoeudS-heightArrow)/d);
+				var yPointeS = source.y + dY*(1-(d-largeurNoeudS-heightArrow)/d);
+
+				var xWBaseArrowS1 = xSource - dY*(3/d);
+				var yWBaseArrowS1 = ySource + dX*(3/d);
+				var xWBaseArrowS2 = xSource + dY*(3/d);
+				var yWBaseArrowS2 = ySource - dX*(3/d);
+
+				return "M"+target.x+","+target.y+
+						"L"+xPointeS+","+yPointeS+
+						"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+						"L"+xSource+","+ySource+
+						"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+						"L"+xPointeS+","+yPointeS+
+						"Z";
+			}
+			else
+			{
+				var largeurNoeudS = (metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2;
+				var xTarget = source.x + dX*((d-largeurNoeudS)/d);
+				var yTarget = source.y + dY*((d-largeurNoeudS)/d);
+
+				var heightArrow = 5;
+				var xBaseArrowT = source.x + dX*((d-largeurNoeudS-heightArrow)/d);
+				var yBaseArrowT = source.y + dY*((d-largeurNoeudS-heightArrow)/d);
+
+				var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+				var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+				var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+				var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+				
+				return "M"+source.x+","+source.y+
+						"L"+xBaseArrowT+","+yBaseArrowT+
+						"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+						"L"+xTarget+","+yTarget+
+						"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+						"L"+xBaseArrowT+","+yBaseArrowT+
+						"Z";
+			}
+			
+			return path;
+		}
+
+		
+
+		if(link.getSource().x==undefined){
+			var networkData=_metExploreViz.getSessionById(panel).getD3Data();
+			var nodes = networkData.getNodes();
+
+			source = nodes[link.getSource()];
+			target = nodes[link.getTarget()];
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+		else
+		{
+			source = link.getSource();
+			target = link.getTarget();
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+				
+		return path;
+	}, 
+
+	funcPath5 : function(link, panel){
+		var source, target, path;
+
+		function pathForReversibleReactions(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			
+			var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+
+			var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
+			var ySource = source.y + dY*(1-(d-largeurNoeudS)/d);
+
+			var heightArrow = 5;
+
+			var xBaseArrowS = source.x + dX*(1-(d-largeurNoeudS-heightArrow)/d);
+			var yBaseArrowS = source.y + dY*(1-(d-largeurNoeudS-heightArrow)/d);
+
+			var xBaseArrowRevS = source.x + dX*(1-(d-largeurNoeudS-heightArrow-heightArrow)/d);
+			var yBaseArrowRevS = source.y + dY*(1-(d-largeurNoeudS-heightArrow-heightArrow)/d);
+
+			var xWBaseArrowS1 = xBaseArrowS - dY*(3/d);
+			var yWBaseArrowS1 = yBaseArrowS + dX*(3/d);
+			var xWBaseArrowS2 = xBaseArrowS + dY*(3/d);
+			var yWBaseArrowS2 = yBaseArrowS - dX*(3/d);
+
+
+			var xTarget = source.x + dX*((d-largeurNoeudS)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudS)/d);
+
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudS-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudS-heightArrow)/d);
+
+			var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+			var xBaseArrowRevT =  source.x + dX*((d-largeurNoeudS-heightArrow-heightArrow)/d);
+			var yBaseArrowRevT =  source.y + dY*((d-largeurNoeudS-heightArrow-heightArrow)/d);
+
+
+			return "M"+xSource+","+ySource+
+					"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+					"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+					"M"+xBaseArrowRevT+","+yBaseArrowRevT+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"M"+xBaseArrowRevS+","+yBaseArrowRevS+
+					"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+					"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+					"L"+xSource+","+ySource+
+					"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+					"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+					"L"+xBaseArrowRevS+","+yBaseArrowRevS+
+					"L"+xBaseArrowRevT+","+yBaseArrowRevT+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowRevT+","+yBaseArrowRevT+
+					"Z";
+		}
+
+		function path(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
+			var ySource = source.y + dY*(1-(d-largeurNoeudS)/d);
+
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+
+			var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+			
+			var xPointeS = source.x + dX*(1-(d-largeurNoeudS-heightArrow)/d);
+			var yPointeS = source.y + dY*(1-(d-largeurNoeudS-heightArrow)/d);
+
+			var xWBaseArrowS1 = xSource - dY*(3/d);
+			var yWBaseArrowS1 = ySource + dX*(3/d);
+			var xWBaseArrowS2 = xSource + dY*(3/d);
+			var yWBaseArrowS2 = ySource - dX*(3/d);
+
+			return "M"+xPointeS+","+yPointeS+
+					"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+					"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+					"L"+xPointeS+","+yPointeS+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"Z";
+		}
+
+		
+
+		if(link.getSource().x==undefined){
+			var networkData=_metExploreViz.getSessionById(panel).getD3Data();
+			var nodes = networkData.getNodes();
+
+			source = nodes[link.getSource()];
+			target = nodes[link.getTarget()];
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+		else
+		{
+			source = link.getSource();
+			target = link.getTarget();
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+				
+		return path;
+	},
+
+	funcPath6 : function(link, panel){
+		var source, target, path;
+
+		function pathForReversibleReactions(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			
+			var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
+			var ySource = source.y + dY*(1-(d-largeurNoeudS)/d);
+
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+			var xBaseArrowS = source.x + dX*(1-(d-largeurNoeudS-heightArrow)/d);
+			var yBaseArrowS = source.y + dY*(1-(d-largeurNoeudS-heightArrow)/d);
+
+			var xWBaseArrowS1 = xBaseArrowS - dY*(3/d);
+			var yWBaseArrowS1 = yBaseArrowS + dX*(3/d);
+			var xWBaseArrowS2 = xBaseArrowS + dY*(3/d);
+			var yWBaseArrowS2 = yBaseArrowS - dX*(3/d);
+
+			return "M"+xSource+","+ySource+
+					"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+					"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+					"M"+xSource+","+ySource+
+					"L"+xWBaseArrowS1+","+yWBaseArrowS1+
+					"L"+xBaseArrowS+","+yBaseArrowS+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"L"+xBaseArrowS+","+yBaseArrowS+
+					"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+					"L"+xSource+","+ySource+
+					"Z";
+		}
+
+		function path(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			
+			if(source.getBiologicalType()=="metabolite"){
+				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+			}
+			else
+			{
+				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+			}
+			
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			var heightArrow = 5;
+			var xBaseArrowT = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrowT = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+			var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+
+			
+			return "M"+source.x+","+source.y+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowT+","+yBaseArrowT+
+					"Z";
+		}
+
+		
+
+		if(link.getSource().x==undefined){
+			var networkData=_metExploreViz.getSessionById(panel).getD3Data();
+			var nodes = networkData.getNodes();
+
+			source = nodes[link.getSource()];
+			target = nodes[link.getTarget()];
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+		else
+		{
+			source = link.getSource();
+			target = link.getTarget();
+			if(source.getReactionReversibility()||target.getReactionReversibility())
+				path = pathForReversibleReactions(source, target);
+			else
+				path = path(source, target);
+		}
+				
+		return path;
+	},
+
+
 	/*******************************************
 	* Init the visualization of links
 	* @param {} parent : The panel where the action is launched
@@ -32,61 +843,37 @@ metExploreD3.GraphLink = {
 		// var refX = linkStyle.getMarkerHeight / 2;
 
 	  // Adding arrow on links
-		d3.select("#"+parent).select("#D3viz").select("#graphComponent").append("svg:defs").selectAll("marker")
-			.data(["in", "out"])
-			.enter().append("svg:marker")
-			.attr("id", String)
-			.attr("viewBox", "0 0 "+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight())
-			.attr("refY", refY)
-			.attr("markerWidth", linkStyle.getMarkerWidth())
-			.attr("markerHeight", linkStyle.getMarkerHeight())
-			.attr("orient", "auto")
-			.append("svg:path")
-			.attr("class", String)
-			.attr("d", "M0,0L"+linkStyle.getMarkerWidth()+","+linkStyle.getMarkerHeight()/2+"L0,"+linkStyle.getMarkerWidth()+"Z")
-			.style("visibility", "hidden");
-
+		// d3.select("#"+parent).select("#D3viz").select("#graphComponent").append("svg:defs").selectAll("marker")
+		// 	.data(["in", "out"])
+		// 	.enter().append("svg:marker")
+		// 	.attr("id", String)
+		// 	.attr("viewBox", "0 0 "+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight())
+		// 	.attr("refY", refY)
+		// 	.attr("markerWidth", linkStyle.getMarkerWidth())
+		// 	.attr("markerHeight", linkStyle.getMarkerHeight())
+		// 	.attr("orient", "auto")
+		// 	.append("svg:path")
+		// 	.attr("class", String)
+		// 	.attr("d", "M0,0L"+linkStyle.getMarkerWidth()+","+linkStyle.getMarkerHeight()/2+"L0,"+linkStyle.getMarkerWidth()+"Z")
+		// 	.style("visibility", "hidden");
 			// .attr("d", "M"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+" L"+linkStyle.getMarkerWidth()/2+" "+(3*linkStyle.getMarkerHeight()/4)+" A"+linkStyle.getMarkerHeight()+" "+linkStyle.getMarkerHeight()+" 0 0 0 "+linkStyle.getMarkerWidth()/2+" "+(1*linkStyle.getMarkerHeight()/4)+" L"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+"Z")
 		// Append link on panel
-		metExploreD3.GraphLink.link=d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("line")
+		metExploreD3.GraphLink.link=d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path")
 			.data(networkData.getLinks())
 			.enter()
-			.append("line")
-			.attr("class", "link")//it comes from resources/css/networkViz.css
-			.attr("marker-end", function (d) {
+			.append("svg:path")
+			.attr("class", String)
+			.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, parent);})
+			.attr("class", "line")
+			.attr("fill-rule", "evenodd")
+			.attr("fill", function (d) {
 				if (d.interaction=="out")
-				{
-				   d3.select("#"+parent).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
-					.attr("refX", (metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2  + (linkStyle.getMarkerWidth() ))
-					.style("fill", linkStyle.getMarkerOutColor())
-						.style("stroke",linkStyle.getMarkerStrokeColor())
-						.style("stroke-width",linkStyle.getMarkerStrokeWidth());
-
-				   return "url(#" + d.interaction + ")";
-				}
+				 	return linkStyle.getMarkerOutColor();
 				else
-				{
-				  return "none";             
-				}
-				
-				})
-			 .attr("marker-start", function (d) {
-				if (d.interaction=="out")
-				{
-				   return "none";
-				}
-				else
-				{
-				  d3.select("#"+parent).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
-					.attr("refX",-((metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2 ))
-					.style("fill", linkStyle.getMarkerInColor())
-					.style("stroke",linkStyle.getMarkerStrokeColor())
-						.style("stroke-width",linkStyle.getMarkerStrokeWidth());
-
-				  return "url(#" + d.interaction + ")";              
-				}  
-			  })
-			 .style("stroke",linkStyle.getStrokeColor());
+					return linkStyle.getMarkerInColor(); 
+			})
+			.style("stroke",linkStyle.getStrokeColor())
+			.style("stroke-width",0.5);
 			 
 	},
 
@@ -375,31 +1162,11 @@ metExploreD3.GraphLink = {
 	* @param {} scale = Ext.getStore('S_Scale').getStoreByGraphName(panel);
 	*/
 	tick : function(panel, scale) {
-	  // If you want to use selection on compartments path
-	  // d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("graphComponent").selectAll("path")
-	  	metExploreD3.GraphLink.displayConvexhulls(panel);
-	  	if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" && scale.getZoomScale()<0.7 && d3.select("#"+panel).select("#D3viz").select("#graphComponent").select("defs").selectAll("marker").selectAll("path").style('visibility')=="visible"){
-			d3.select("#"+panel).select("#D3viz").select("#graphComponent").select("defs").selectAll("marker").selectAll("path").style('visibility',"hidden");
-		}
-		
-		var session = _metExploreViz.getSessionById(panel);
-    
-		if((session.getForce().alpha()==0
-				&& d3.select("#"+panel).select("#D3viz").select("#graphComponent").select("defs").selectAll("marker").selectAll("path").style('visibility')=="hidden") 
-			|| (scale.getZoomScale()>0.7 
-				&& d3.select("#"+panel).select("#D3viz").select("#graphComponent").select("defs").selectAll("marker").selectAll("path").style('visibility')=="hidden"))
-		{
-		 
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent").select("defs")
-				.selectAll("marker").selectAll("path").style('visibility',"visible");
-		}
-
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-			.selectAll("line")
-			.attr("x1", function(d) { return d.source.x; })
-			.attr("y1", function(d) { return d.source.y; })
-			.attr("x2", function(d) { return d.target.x; })
-			.attr("y2", function(d) { return d.target.y; });
+		  // If you want to use selection on compartments path
+		  // d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("graphComponent").selectAll("path")
+	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+			.selectAll(".line")
+			.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, panel);});
 	},
 
 	displayConvexhulls : function(panel){
