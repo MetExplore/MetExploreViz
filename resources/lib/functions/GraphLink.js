@@ -858,13 +858,13 @@ metExploreD3.GraphLink = {
 		// 	.style("visibility", "hidden");
 			// .attr("d", "M"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+" L"+linkStyle.getMarkerWidth()/2+" "+(3*linkStyle.getMarkerHeight()/4)+" A"+linkStyle.getMarkerHeight()+" "+linkStyle.getMarkerHeight()+" 0 0 0 "+linkStyle.getMarkerWidth()/2+" "+(1*linkStyle.getMarkerHeight()/4)+" L"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+"Z")
 		// Append link on panel
-		metExploreD3.GraphLink.link=d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path")
+		metExploreD3.GraphLink.link=d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
 			.data(networkData.getLinks())
 			.enter()
 			.append("svg:path")
 			.attr("class", String)
 			.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, parent);})
-			.attr("class", "line")
+			.attr("class", "link")
 			.attr("fill-rule", "evenodd")
 			.attr("fill", function (d) {
 				if (d.interaction=="out")
@@ -878,10 +878,10 @@ metExploreD3.GraphLink = {
 	},
 
 	reloadLinks : function(panel, networkData, linkStyle, metaboliteStyle){
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("line")
+		d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
 			.data(networkData.getLinks())
 			.enter()
-			.insert("line",":first-child")
+			.insert("path",":first-child")
 			.attr("class", "link")//it comes from resources/css/networkViz.css
 			.attr("marker-end", function (d) {
 				if (d.interaction=="out")
@@ -953,7 +953,7 @@ metExploreD3.GraphLink = {
 				var reacTgt = {};
 
 				d3.select("#viz").select("#D3viz").select("#graphComponent")
-					.selectAll("line")
+					.selectAll("path.link")
 					.filter(function(link){
 						return link.getInteraction()!="hiddenForce";
 					})
@@ -1105,12 +1105,12 @@ metExploreD3.GraphLink = {
 	  var linkStyle = metExploreD3.getLinkStyle();
 	  var force = session.getForce();
 
-	  link=d3.select("#"+panel).select("#graphComponent").selectAll("line")
+	  link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
 			.data(force.links(), function(d) { 
 			  	return d.source.id + "-" + d.target.id;
 			})
 			.enter()
-			.insert("line",":first-child")
+			.insert("path",":first-child")
 			.attr("class", "link")//it comes from resources/css/networkViz.css
 			.style("stroke",linkStyle.getStrokeColor())
 			.style("opacity",0);
@@ -1132,7 +1132,7 @@ metExploreD3.GraphLink = {
 		var linksToRemove = [];
 		var force = session.getForce();
 
-		var link=d3.select("#"+panel).select("#graphComponent").selectAll("line")
+		var link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
 			.filter(function(link){
 				return link.getInteraction()=="hiddenForce";
 			})
@@ -1165,7 +1165,7 @@ metExploreD3.GraphLink = {
 		  // If you want to use selection on compartments path
 		  // d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("graphComponent").selectAll("path")
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-			.selectAll(".line")
+			.selectAll("path.link")
 			.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, panel);});
 	},
 
@@ -1191,87 +1191,87 @@ metExploreD3.GraphLink = {
 	  	}
 	},
 
-	/*******************************************
-	* Init the visualization of links
-	* @param {} parent : The panel where the action is launched
-	* @param {} session : Store which contains global characteristics of session
-	* @param {} linkStyle : Store which contains links style
-	* @param {} metaboliteStyle : Store which contains metabolites style
-	*/
-	loadLink : function(parent, session, linkStyle, metaboliteStyle) {
+	// /*******************************************
+	// * Init the visualization of links
+	// * @param {} parent : The panel where the action is launched
+	// * @param {} session : Store which contains global characteristics of session
+	// * @param {} linkStyle : Store which contains links style
+	// * @param {} metaboliteStyle : Store which contains metabolites style
+	// */
+	// loadLink : function(parent, session, linkStyle, metaboliteStyle) {
 		
-		metExploreD3.GraphLink.panelParent = "#"+parent; 
-		var networkData=session.getD3Data();
+	// 	metExploreD3.GraphLink.panelParent = "#"+parent; 
+	// 	var networkData=session.getD3Data();
 
-		var size=20;
-		// The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-		var refY = linkStyle.getMarkerWidth() / 2;
-		// The x-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-		// var refX = linkStyle.getMarkerHeight / 2;
+	// 	var size=20;
+	// 	// The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
+	// 	var refY = linkStyle.getMarkerWidth() / 2;
+	// 	// The x-axis coordinate of the reference point which is to be aligned exactly at the marker position.
+	// 	// var refX = linkStyle.getMarkerHeight / 2;
 
-	  // Adding arrow on links
-		d3.select("#"+parent).select("#D3viz").select("#graphComponent").append("svg:defs").selectAll("marker")
-			.data(["in", "out"])
-			.enter().append("svg:marker")
-			.attr("id", String)
-			.attr("viewBox", "0 0 "+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight())
-			.attr("refY", refY)
-			.attr("markerWidth", linkStyle.getMarkerWidth())
-			.attr("markerHeight", linkStyle.getMarkerHeight())
-			.attr("orient", "auto")
-			.append("svg:path")
-			.attr("class", String)
-			.attr("d", "M0,0L"+linkStyle.getMarkerWidth()+","+linkStyle.getMarkerHeight()/2+"L0,"+linkStyle.getMarkerWidth()+"Z")
-			.style("visibility", "hidden");
+	//   // Adding arrow on links
+	// 	d3.select("#"+parent).select("#D3viz").select("#graphComponent").append("svg:defs").selectAll("marker")
+	// 		.data(["in", "out"])
+	// 		.enter().append("svg:marker")
+	// 		.attr("id", String)
+	// 		.attr("viewBox", "0 0 "+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight())
+	// 		.attr("refY", refY)
+	// 		.attr("markerWidth", linkStyle.getMarkerWidth())
+	// 		.attr("markerHeight", linkStyle.getMarkerHeight())
+	// 		.attr("orient", "auto")
+	// 		.append("svg:path")
+	// 		.attr("class", String)
+	// 		.attr("d", "M0,0L"+linkStyle.getMarkerWidth()+","+linkStyle.getMarkerHeight()/2+"L0,"+linkStyle.getMarkerWidth()+"Z")
+	// 		.style("visibility", "hidden");
 
-			// .attr("d", "M"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+" L"+linkStyle.getMarkerWidth()/2+" "+(3*linkStyle.getMarkerHeight()/4)+" A"+linkStyle.getMarkerHeight()+" "+linkStyle.getMarkerHeight()+" 0 0 0 "+linkStyle.getMarkerWidth()/2+" "+(1*linkStyle.getMarkerHeight()/4)+" L"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+"Z")
+	// 		// .attr("d", "M"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+" L"+linkStyle.getMarkerWidth()/2+" "+(3*linkStyle.getMarkerHeight()/4)+" A"+linkStyle.getMarkerHeight()+" "+linkStyle.getMarkerHeight()+" 0 0 0 "+linkStyle.getMarkerWidth()/2+" "+(1*linkStyle.getMarkerHeight()/4)+" L"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+"Z")
 		
 	   
-		// Append link on panel
-		metExploreD3.GraphLink.link=d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("line")
-			.data(networkData.getLinks())
-			.enter()
-			.append("line")
-			.attr("class", "link")//it comes from resources/css/networkViz.css
-			.attr("marker-end", function (d) {
-				if (d.interaction=="out")
-				{
-				   d3.select("#"+parent).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
-					.attr("refX", (metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2  + (linkStyle.getMarkerWidth() ))
-					.style("fill", linkStyle.getMarkerOutColor())
-						.style("stroke",linkStyle.getMarkerStrokeColor())
-						.style("stroke-width",linkStyle.getMarkerStrokeWidth());
+	// 	// Append link on panel
+	// 	metExploreD3.GraphLink.link=d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
+	// 		.data(networkData.getLinks())
+	// 		.enter()
+	// 		.append("path")
+	// 		.attr("class", "link")//it comes from resources/css/networkViz.css
+	// 		.attr("marker-end", function (d) {
+	// 			if (d.interaction=="out")
+	// 			{
+	// 			   d3.select("#"+parent).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
+	// 				.attr("refX", (metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2  + (linkStyle.getMarkerWidth() ))
+	// 				.style("fill", linkStyle.getMarkerOutColor())
+	// 					.style("stroke",linkStyle.getMarkerStrokeColor())
+	// 					.style("stroke-width",linkStyle.getMarkerStrokeWidth());
 
-				   return "url(#" + d.interaction + ")";
-				}
-				else
-				{
-				  return "none";             
-				}
+	// 			   return "url(#" + d.interaction + ")";
+	// 			}
+	// 			else
+	// 			{
+	// 			  return "none";             
+	// 			}
 				
-				})
-			.attr("marker-start", function (d) {
-				if (d.interaction=="out")
-				{
-				   return "none";
-				}
-				else
-				{
-				  d3.select("#"+parent).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
-					.attr("refX",-((metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2 ))
-					.style("fill", linkStyle.getMarkerInColor())
-					.style("stroke",linkStyle.getMarkerStrokeColor())
-						.style("stroke-width",linkStyle.getMarkerStrokeWidth());
+	// 			})
+	// 		.attr("marker-start", function (d) {
+	// 			if (d.interaction=="out")
+	// 			{
+	// 			   return "none";
+	// 			}
+	// 			else
+	// 			{
+	// 			  d3.select("#"+parent).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
+	// 				.attr("refX",-((metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2 ))
+	// 				.style("fill", linkStyle.getMarkerInColor())
+	// 				.style("stroke",linkStyle.getMarkerStrokeColor())
+	// 					.style("stroke-width",linkStyle.getMarkerStrokeWidth());
 
-				  return "url(#" + d.interaction + ")";              
-				}  
-				})
-			.style("stroke",linkStyle.getStrokeColor());
+	// 			  return "url(#" + d.interaction + ")";              
+	// 			}  
+	// 			})
+	// 		.style("stroke",linkStyle.getStrokeColor());
 
-		metExploreD3.GraphLink.link
-			.filter(function(link){
-				return link.getInteraction()=="hiddenForce";
-			})
-			.style("opacity",0);
-	}
+	// 	metExploreD3.GraphLink.link
+	// 		.filter(function(link){
+	// 			return link.getInteraction()=="hiddenForce";
+	// 		})
+	// 		.style("opacity",0);
+	// }
 }

@@ -502,7 +502,7 @@ metExploreD3.GraphNetwork = {
 
 		force.on("start", function(){
 			if (networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())
-				d3.selectAll("line.link").remove();
+				d3.selectAll("path.link").remove();
 		});
 
 		force.on("end", function(){
@@ -1165,7 +1165,7 @@ metExploreD3.GraphNetwork = {
 
 		// var lien = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("linkCentroid")
 		//       .data(links)
-		//     	.enter().append("line")
+		//     	.enter().append("path")
 		//       .attr("class", "linkCentroid")
 		//       .style("stroke", "red")
 		//       .style("stroke-width", 1);
@@ -1445,10 +1445,10 @@ metExploreD3.GraphNetwork = {
 		var linkStyle = metExploreD3.getLinkStyle();
 		var force = session.getForce();
 
-		link=d3.select("#"+panel).select("#graphComponent").selectAll("line")
+		link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
           .data(force.links(), function(d) { return d.source.id + "-" + d.target.id;})
           .enter()
-          .insert("line",":first-child")
+          .insert("path",":first-child")
           .attr("class", "link")//it comes from resources/css/networkViz.css
           .attr("marker-end", function (d) {
               if (d.interaction=="out")
@@ -1601,24 +1601,24 @@ metExploreD3.GraphNetwork = {
 					
 					if(d.getBiologicalType()=="reaction"){
 						d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-							.selectAll("line")
+							.selectAll("path.link")
 							.filter(function(link){return d.getId()==link.getSource().getId();})
 							.style("stroke", "green"); 	
 						 
 						d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-							.selectAll("line")
+							.selectAll("path.link")
 							.filter(function(link){return d.getId()==link.getTarget().getId();})
 							.style("stroke", "red"); 	
 					}
 					else
 					{
 						d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-							.selectAll("line")
+							.selectAll("path.link")
 							.filter(function(link){return d.getId()==link.getSource().getId();})
 							.style("stroke", "red"); 	
 						 
 						d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-							.selectAll("line")
+							.selectAll("path.link")
 							.filter(function(link){return d.getId()==link.getTarget().getId();})
 							.style("stroke", "green"); 
 					}
@@ -1669,7 +1669,7 @@ metExploreD3.GraphNetwork = {
 		    	// d3.select("#"+parent).select("#D3viz").select('#tooltip')
 		    	// 	.classed("hide", true); 
 	    		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-					.selectAll("line")
+					.selectAll("path.link")
 					.filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
 					.style("stroke",linkStyle.getStrokeColor());
 
@@ -1920,7 +1920,7 @@ metExploreD3.GraphNetwork = {
 
 		//Create the list of nodes to duplicate.
 		//Two tables are created, one when side compounds are substrates and one when they are products
-         vis.selectAll("line.link")
+         vis.selectAll("path.link")
          	.filter(function(link){
 				return link.getInteraction()!="hiddenForce";
 			})
@@ -2570,7 +2570,7 @@ metExploreD3.GraphNetwork = {
 			}) 
 		});
 		
-		vis.selectAll("line.link")
+		vis.selectAll("path.link")
 			.filter(function(d) {
 				var source = d.source;
 				var target = d.target;
@@ -2673,7 +2673,7 @@ metExploreD3.GraphNetwork = {
 
 		nodes.filter(function(node){
 			var haveALink=false;
-			vis.selectAll("line.link")
+			vis.selectAll("path.link")
 				.each(function(link){
 					var src = link.source;
 					var tgt = link.target;

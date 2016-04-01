@@ -448,9 +448,6 @@ metExploreD3.GraphUtils = {
 		// var tooltip = d3.selectAll("#tooltip");
 		// if(tooltip!=null)  
 		//   tooltip.style("display", "inline");
-
-		d3.selectAll("#in, #out")
-			.classed("absolute", !d3.selectAll("#in").classed("absolute"));
 	},
 
 	/*******************************************

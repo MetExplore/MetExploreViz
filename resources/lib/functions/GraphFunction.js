@@ -235,7 +235,7 @@ metExploreD3.GraphFunction = {
 				graph.addNode(node.getId());
 			});
 
-		vis.selectAll("line.link")
+		vis.selectAll("path.link")
 			.each(function(link){
 				var source = link.source;
 				var target = link.target;
@@ -541,7 +541,7 @@ metExploreD3.GraphFunction = {
 								.duration(4000).style("opacity", 0.25);// .style("stroke-width","2");
 
 						vis
-								.selectAll("line.link")
+								.selectAll("path.link")
 								.filter(
 										function(d) {
 											var source = d.source.getId();
@@ -568,7 +568,7 @@ metExploreD3.GraphFunction = {
 								.style("opacity", 1);// .style("stroke-width","2");
 
 						vis
-								.selectAll("line.link")
+								.selectAll("path.link")
 								.filter(
 										function(d) {
 											var source = d.source.getId();
@@ -929,7 +929,7 @@ metExploreD3.GraphFunction = {
 		// (graph.nodes[id].inSubNet||graph.nodes[backID].inSubNet)})
 		// .selectAll("rect")
 		// .transition().duration(4000).style("stroke","red").style("stroke-width","2");
-		// vis.selectAll("line.link")
+		// vis.selectAll("path.link")
 		// .filter(function(d){
 		// var source=d.source.getId();
 		// var target=d.target.getId();
