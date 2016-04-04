@@ -165,6 +165,96 @@ var metExploreD3 = {
     getCompartmentInBiosourceLength : function(){
         return _metExploreViz.getSessionById("viz").getD3Data().getCompartmentsLength();
     },
+    getCompartmentsGroup : function(){
+        var compartmentGroup = [];
+
+        var sqrt = Math.ceil(Math.sqrt(metExploreD3.getCompartmentInBiosourceLength()));
+        
+        var h = parseInt(metExploreD3.GraphPanel.getHeight("viz"));
+        var w = parseInt(metExploreD3.GraphPanel.getWidth("viz"));
+
+        var hDiv = h/sqrt;
+        var wDiv = w/sqrt;
+
+        var hBegin = hDiv/2;
+        var wBegin = wDiv/2;
+
+        var alt = -1;
+
+        metExploreD3.getCompartmentInBiosourceSet()
+            .forEach(function(compartment){
+                var mod = metExploreD3.getCompartmentInBiosourceSet().indexOf(compartment)%sqrt; 
+                if(mod==0)
+                    alt++;
+
+                var xCenter = wBegin+(mod * wDiv);
+                var yCenter = hBegin+(alt * hDiv);
+                var object = {key:compartment, center:{x:xCenter, y:yCenter}};
+                compartmentGroup.push(object);
+            }
+        );
+
+        function addNodeInGroup(node, compartment){
+            if(compartment!=undefined){
+               
+                if(compartment.values==undefined)
+                        compartment.values=[];
+
+                if(compartment.values.indexOf(node)==-1)
+                    compartment.values.push(node);
+            }
+        }
+        _metExploreViz.getSessionById("viz").getD3Data().getLinks()
+            .forEach(function(d){
+                var source = d.source;
+                var target = d.target;
+                if(source.getBiologicalType()=="metabolite"){
+
+                   
+                    addNodeInGroup(
+                        source, 
+                        compartmentGroup
+                            .find(function(compart)
+                            {
+                                return compart.key.identifier==source.getCompartment();
+                            }
+                        )
+                    );
+                    addNodeInGroup(
+                        target, 
+                        compartmentGroup
+                            .find(function(compart)
+                            {
+                                return compart.key.identifier==source.getCompartment();
+                            }
+                        )
+                    );
+                }
+                else
+                {
+                    addNodeInGroup(
+                        source, 
+                        compartmentGroup
+                            .find(function(compart)
+                            {
+                                return compart.key.identifier==target.getCompartment();
+                            }
+                        )
+                    );
+                    addNodeInGroup(
+                        target, 
+                        compartmentGroup
+                            .find(function(compart)
+                            {
+                                return compart.key.identifier==target.getCompartment();
+                            }
+                        )
+                    );
+                }
+            });
+        
+        return compartmentGroup;
+    },
 
     // CompartmentInBioSource
     getPathwaysSet : function(){

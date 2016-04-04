@@ -30,11 +30,21 @@ NetworkVizSession.prototype = {
     },
     */
     getGroupByKey:function(key){
+        var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
         var group = null;
-        this.groups.forEach(function(agroup){
-            if (agroup.key==key)         
-                group = agroup ; 
-        });
+        if(componentDisplayed=="Compartments"){
+            this.groups.forEach(function(agroup){
+                if (agroup.key.identifier==key)         
+                    group = agroup ; 
+            });
+        }
+        else
+        {
+            this.groups.forEach(function(agroup){
+                if (agroup.key==key)         
+                    group = agroup ; 
+            });
+        }
         return group; 
     },
     getActiveMapping:function()

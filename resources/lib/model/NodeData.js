@@ -2,9 +2,8 @@
  * NodeData class
  * For now, only contains the id
  */
-var NodeData = function(name, compartment, dbIdentifier, ec, id, reactionReversibility, isSideCompound, biologicalType, isSelected, labelVisible, svg, svgWidth, svgHeight, mappings, isDuplicated, identifier, pathW) {
+var NodeData = function(name, compart, dbIdentifier, ec, id, reactionReversibility, isSideCompound, biologicalType, isSelected, labelVisible, svg, svgWidth, svgHeight, mappings, isDuplicated, identifier, pathW) {
         this.name=name;
-        this.compartment = compartment;
         this.dbIdentifier = dbIdentifier ;
         this.ec = ec;
         this.id = id;  
@@ -20,10 +19,13 @@ var NodeData = function(name, compartment, dbIdentifier, ec, id, reactionReversi
         this.svg = svg;
         this.svgWidth = svgWidth;
         this.svgHeight = svgHeight;
+
         if(pathW==undefined)
             this.pathways =[];
         else
             this.pathways = pathW;
+
+        this.compartment = compart;
         
         if(mappings==undefined)
             mappings=[];

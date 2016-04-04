@@ -789,7 +789,7 @@ metExploreD3.GraphNode = {
 				var content = 
 					"Name: " + d.getName() 
 					+"<br/>Biological type: " + d.getBiologicalType() +
-					((d.getCompartment()!=undefined) ? "<br/>Compartment: " + d.getCompartment() : "" )+
+					((d.getCompartment()!=undefined) ? "<br/>Compartment: " + d.getCompartment(): "" )+
 					((d.getDbIdentifier()!=undefined) ? "<br/>Database identifier: " + d.getDbIdentifier() : "" )+
 					((d.getEC()!=undefined) ? "<br/>EC number: " + d.getEC() : "" )+
 					((d.getReactionReversibility()!=undefined) ? "<br/>Reaction reversibility: " + d.getReactionReversibility() : "" )+
@@ -1993,37 +1993,12 @@ metExploreD3.GraphNode = {
 	loadPath : function(parent, component) {
 		var session = _metExploreViz.getSessionById(parent);
 		
+		console.log(component);
 		if(component=="Compartments"){
 			var metabolites = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(d) { return d.getBiologicalType() == 'metabolite'; });
 		
-			session.groups = d3.nest().key(function(d) { return d.getCompartment(); }).entries(metabolites.data());
-			
-			var sqrt = Math.ceil(Math.sqrt(session.groups.length));
-			
-	        var h = parseInt(metExploreD3.GraphPanel.getHeight("viz"));
-	        var w = parseInt(metExploreD3.GraphPanel.getWidth("viz"));
-
-	        var hDiv = h/sqrt;
-	        var wDiv = w/sqrt;
-
-	        var hBegin = hDiv/2;
-	        var wBegin = wDiv/2;
-
-	        var alt = -1;
-
-	        metExploreD3.GraphNetwork.initCentroids();
-
-	        session.groups
-	            .forEach(function(group){
-	                var mod = session.groups.indexOf(group)%sqrt; 
-	                if(mod==0)
-	                    alt++;
-
-	                var xCenter = wBegin+(mod * wDiv);
-	                var yCenter = hBegin+(alt * hDiv);
-	                group.center = {x:xCenter, y:yCenter};
-	            }
-	        );
+			session.groups = metExploreD3.getCompartmentsGroup();
+			metExploreD3.GraphNetwork.initCentroids();
 		}
 		else
 		{
@@ -2066,6 +2041,7 @@ metExploreD3.GraphNode = {
 		};
 
 		metExploreD3.GraphNode.groupFill = function(d, i) { 
+
 			// Sort compartiments store
 			// metExploreD3.sortCompartmentInBiosource();
 	 		var color;
@@ -2073,7 +2049,7 @@ metExploreD3.GraphNode = {
 	 		if(component=="Compartments"){
 				// Change reactions stroke color by compartment
 		 		for(var j=0 ; j<metExploreD3.getCompartmentInBiosourceLength() ; j++){
-		 			if(d.key==metExploreD3.getCompartmentInBiosourceSet()[j].getIdentifier() )
+		 			if(d.key==metExploreD3.getCompartmentInBiosourceSet()[j]) 
 		 				color = metExploreD3.getCompartmentInBiosourceSet()[j].getColor();
 		 		}
 		        return color;
@@ -2108,7 +2084,7 @@ metExploreD3.GraphNode = {
 		// 	.enter().insert("path", "g.node")
 
 		d3.select("#"+parent).select("#D3viz").selectAll("path")
-		    .filter(function(d){return d!="in" && d!="out"})
+		    .filter(function(d){return $(this).attr('class')!="link"})
 		    .data(session.groups)
 		    .attr("d", function(d){ return pathTab; })
 		    .enter().insert("path", ":first-child")

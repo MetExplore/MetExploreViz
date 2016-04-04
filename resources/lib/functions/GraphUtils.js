@@ -602,11 +602,10 @@ metExploreD3.GraphUtils = {
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
 
 				d3.select(clone).select("#graphComponent").attr("transform",  "translate(" + translateX + "," + translateY + ") scale(1)");
-				d3.select(clone).selectAll("path")
-					.each(function(d){
-						if(d3.select(this).attr("class")!="in" && d3.select(this).attr("class")!="out")
-							d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
-					});
+				// d3.select(clone).selectAll("path")
+				// 	.each(function(d){
+				// 			d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
+				// 	});
 
 				rectGraphComponent = d3.select(clone).select("#graphComponent")[0][0].getBoundingClientRect();
 
@@ -617,11 +616,10 @@ metExploreD3.GraphUtils = {
 				else
 				{
 					d3.select(clone).select("#graphComponent").attr("transform",  "translate(0," + translateY + ") scale(1)");
-					d3.select(clone).selectAll("path")
-						.each(function(d){
-							if(d3.select(this).attr("class")!="in" && d3.select(this).attr("class")!="out")
-								d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
-						});
+					// d3.select(clone).selectAll("path")
+					// 	.each(function(d){
+					// 			d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
+					// 	});
 				}
 				clone.setAttribute("width",  canvasWidth);
 
@@ -640,11 +638,10 @@ metExploreD3.GraphUtils = {
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
 				d3.select(clone).select("#graphComponent").attr("transform",  d3.select(svg).select("#graphComponent").attr("transform"));
 				
-				d3.select(clone).selectAll("path")
-					.each(function(d){
-						if(d3.select(this).attr("class")!="in" && d3.select(this).attr("class")!="out")
-							d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
-					});
+				// d3.select(clone).selectAll("path")
+				// 	.each(function(d){
+				// 		d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
+				// 	});
 
 				rectGraphComponent = d3.select(clone).select("#graphComponent")[0][0].getBoundingClientRect();
 

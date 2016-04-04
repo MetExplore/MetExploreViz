@@ -1042,25 +1042,19 @@ metExploreD3.GraphNetwork = {
 					var k = e.alpha * .1;
 					networkData.getNodes().forEach(function(node) {
 						if(componentDisplayed=="Compartments"){
-							if(node.getBiologicalType()=='metabolite'){
-						    	// here you want to set center to the appropriate [x,y] coords
-						    	var group = session.getGroupByKey(node.getCompartment());
+							var group = session.getGroupByKey(node.getCompartment());
 
-						    	if(group!=null)
-						    	{
-						    		var center = group.center;   
-							    	node.x += (center.x - node.x) * k;
-							    	node.y += (center.y - node.y) * k;	
-							    }
-							  //   metExploreViz.getGlobals().getSessionById('viz').getForce().linkDistance(
-									// function(link){
-									// 	if(link.source.getPathways().lenght>1)
-									// 		return 100;
-									// 	return 20;
-									// }
-								// )
-
-							}
+							if(group!=null)
+					    	{
+					    		var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
+								var theCentroid = forceCentroids.nodes()
+					    			.find(function(centroid){
+					    				return centroid.id == node.getCompartment();
+					    			}
+					    		);	
+						    	node.x += (theCentroid.x - node.x) * k;
+						    	node.y += (theCentroid.y - node.y) * k;	
+						    }		
 						}
 						else
 						{	
@@ -1121,47 +1115,100 @@ metExploreD3.GraphNetwork = {
 		var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 		var linkStyle = metExploreD3.getLinkStyle();
 		var generalStyle = metExploreD3.getGeneralStyle();				
-		
-    	var networkData = _metExploreViz.getSessionById(panel).getD3Data();
+		var session = _metExploreViz.getSessionById(panel);
+    	var networkData = session.getD3Data();
 		var force2 = d3.layout.force().friction(0.90).gravity(0.08).charge(-4000).theta(0.2)
     			.linkDistance(600)
 				.size([ w, h ]);
 
-		_metExploreViz.getSessionById(panel).setForceCentroids(force2);
+		session.setForceCentroids(force2);
 
-		var pathways = [];
-		networkData.getPathways().forEach(function(pathway){
-			pathways.push({"id":pathway,x:2,y:2});
-		});
+		var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
+		
+		var components = [];
 
-
-
-		var links = [];
-
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
-			.each(function(node){
-				node.getPathways().forEach(function(pathway){
-					node.getPathways().forEach(function(pathway2){
-						if(pathway!=pathway2){
-							var sourceIndex = pathways.findIndex(function(path){
-								return path.id==pathway;
-							});
-							var targetIndex = pathways.findIndex(function(path){
-								return path.id==pathway2;
-							});
-
-							var theLink = links.find(function(link){
-								return link.source==sourceIndex && link.target==targetIndex;
-							});
-							
-							if(theLink==undefined)
-								links.push({"source":sourceIndex, "target":targetIndex});
-							
-						}
-					});				
-				});
-
+		if(componentDisplayed=="Compartments"){
+			networkData.getCompartments().forEach(function(compartment){
+				components.push({"id":compartment.identifier,x:2,y:2});
 			});
+
+			var links = [];
+
+			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+				.filter(function(node){
+					return node.getBiologicalType()=="reaction";
+				})
+				.filter(function(node){
+					var nbComp = 0;
+					for (var key in session.groups) {
+					  	if (session.groups.hasOwnProperty(key)) {
+					  	  	
+							var index = session.groups[key].values.indexOf(node);
+							if(index!=-1)
+								nbComp++;
+					  	}
+					}	
+					return nbComp.length>1
+				})
+				.each(function(node){
+					node.getCompartment().forEach(function(compartment){
+						node.getCompartment().forEach(function(compartment2){
+							if(compartment!=compartment2){
+								var sourceIndex = components.findIndex(function(path){
+									return path.id==compartment;
+								});
+								var targetIndex = components.findIndex(function(path){
+									return path.id==compartment2;
+								});
+
+								var theLink = links.find(function(link){
+									return link.source==sourceIndex && link.target==targetIndex;
+								});
+								
+								if(theLink==undefined)
+									links.push({"source":sourceIndex, "target":targetIndex});
+								
+							}
+						});				
+					});
+
+				});
+		}
+		else
+		{
+			networkData.getPathways().forEach(function(pathway){
+				components.push({"id":pathway,x:2,y:2});
+			});
+
+			var links = [];
+
+			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
+				.each(function(node){
+					node.getPathways().forEach(function(pathway){
+						node.getPathways().forEach(function(pathway2){
+							if(pathway!=pathway2){
+								var sourceIndex = components.findIndex(function(path){
+									return path.id==pathway;
+								});
+								var targetIndex = components.findIndex(function(path){
+									return path.id==pathway2;
+								});
+
+								var theLink = links.find(function(link){
+									return link.source==sourceIndex && link.target==targetIndex;
+								});
+								
+								if(theLink==undefined)
+									links.push({"source":sourceIndex, "target":targetIndex});
+								
+							}
+						});				
+					});
+
+				});
+		}
+				
+		
 
 		// var lien = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("linkCentroid")
 		//       .data(links)
@@ -1188,7 +1235,7 @@ metExploreD3.GraphNetwork = {
 
 		
 		force2
-			.nodes(pathways)
+			.nodes(components)
 			.links(links)
 			// .on("tick", function(e){
 			// 	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
