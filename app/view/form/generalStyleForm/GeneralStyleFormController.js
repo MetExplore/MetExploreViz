@@ -56,7 +56,7 @@ Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleFormController'
 						}	
 						else
 						{
-							d3.selectAll("line.link").remove();
+							d3.selectAll("path.link").remove();
 						}
 						metExploreD3.GraphLink.tick("viz",metExploreD3.getScaleById("viz"));
 					}	

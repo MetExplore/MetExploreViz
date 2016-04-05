@@ -27,13 +27,15 @@ metExploreD3.GraphLink = {
 			var diffY = dY/Math.abs(dY);
 			
 			if(source.getBiologicalType()=="metabolite"){
-				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
-				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var rTW = (Math.abs(d)*reactionStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*reactionStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			else
 			{
-				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
-				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var rTW = (Math.abs(d)*metaboliteStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*metaboliteStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			
 			var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
@@ -96,19 +98,33 @@ metExploreD3.GraphLink = {
 
 			source = nodes[link.getSource()];
 			target = nodes[link.getTarget()];
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 		else
 		{
 			source = link.getSource();
 			target = link.getTarget();
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 				
 		return path;
@@ -127,13 +143,15 @@ metExploreD3.GraphLink = {
 			var diffY = dY/Math.abs(dY);
 			
 			if(source.getBiologicalType()=="metabolite"){
-				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
-				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var rTW = (Math.abs(d)*reactionStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*reactionStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			else
 			{
-				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
-				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var rTW = (Math.abs(d)*metaboliteStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*metaboliteStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			
 			var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
@@ -222,19 +240,33 @@ metExploreD3.GraphLink = {
 
 			source = nodes[link.getSource()];
 			target = nodes[link.getTarget()];
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 		else
 		{
 			source = link.getSource();
 			target = link.getTarget();
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 				
 		return path;
@@ -253,14 +285,17 @@ metExploreD3.GraphLink = {
 			var diffY = dY/Math.abs(dY);
 			
 			if(source.getBiologicalType()=="metabolite"){
-				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
-				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var rTW = (Math.abs(d)*reactionStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*reactionStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			else
 			{
-				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
-				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var rTW = (Math.abs(d)*metaboliteStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*metaboliteStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
+			var heightArrow = 5;
 			
 			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
 			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
@@ -277,11 +312,7 @@ metExploreD3.GraphLink = {
 			var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
 			var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
 
-			return "M"+xWBaseArrowT1+","+yWBaseArrowT1+
-					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
-					"L"+xBaseArrowRev+","+yBaseArrowRev+
-					"Z"+
-					"M"+source.x+","+source.y+
+			return "M"+source.x+","+source.y+
 					"L"+xBaseArrowRev+","+yBaseArrowRev+
 					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
 					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
@@ -302,13 +333,15 @@ metExploreD3.GraphLink = {
 			var diffY = dY/Math.abs(dY);
 			
 			if(source.getBiologicalType()=="metabolite"){
-				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
-				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var rTW = (Math.abs(d)*reactionStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*reactionStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			else
 			{
-				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
-				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var rTW = (Math.abs(d)*metaboliteStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*metaboliteStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			
 			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
@@ -341,19 +374,33 @@ metExploreD3.GraphLink = {
 
 			source = nodes[link.getSource()];
 			target = nodes[link.getTarget()];
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 		else
 		{
 			source = link.getSource();
 			target = link.getTarget();
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 				
 		return path;
@@ -392,10 +439,11 @@ metExploreD3.GraphLink = {
 				var yWBaseArrowS2 = yBaseArrowS - dX*(3/d);
 
 
-				path = "M"+xWBaseArrowS1+","+yWBaseArrowS1+
-						"L"+xWBaseArrowS2+","+yWBaseArrowS2+
-						"L"+xSource+","+ySource+
-						"Z"+
+				path = 
+				// "M"+xWBaseArrowS1+","+yWBaseArrowS1+
+				// 		"L"+xWBaseArrowS2+","+yWBaseArrowS2+
+				// 		"L"+xSource+","+ySource+
+				// 		"Z"+
 						"M"+xBaseArrowRev+","+yBaseArrowRev+
 						"L"+xWBaseArrowS1+","+yWBaseArrowS1+
 						"L"+xWBaseArrowS2+","+yWBaseArrowS2+
@@ -432,10 +480,11 @@ metExploreD3.GraphLink = {
 				var yBaseArrowRev =  source.y + dY*((d-largeurNoeudS-heightArrow-heightArrow)/d);
 
 
-				path = "M"+xWBaseArrowT1+","+yWBaseArrowT1+
-						"L"+xWBaseArrowT2+","+yWBaseArrowT2+
-						"L"+xBaseArrowRev+","+yBaseArrowRev+
-						"Z"+
+				path = 
+				// "M"+xWBaseArrowT1+","+yWBaseArrowT1+
+				// 		"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+				// 		"L"+xBaseArrowRev+","+yBaseArrowRev+
+				// 		"Z"+
 						"M"+source.x+","+source.y+
 						"L"+xBaseArrowRev+","+yBaseArrowRev+
 						"L"+xWBaseArrowT1+","+yWBaseArrowT1+
@@ -564,13 +613,15 @@ metExploreD3.GraphLink = {
 			var diffY = dY/Math.abs(dY);
 			
 			if(source.getBiologicalType()=="metabolite"){
-				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
-				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var rTW = (Math.abs(d)*reactionStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*reactionStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			else
 			{
-				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
-				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var rTW = (Math.abs(d)*metaboliteStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*metaboliteStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			
 			var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
@@ -692,19 +743,33 @@ metExploreD3.GraphLink = {
 
 			source = nodes[link.getSource()];
 			target = nodes[link.getTarget()];
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 		else
 		{
 			source = link.getSource();
 			target = link.getTarget();
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 				
 		return path;
@@ -723,13 +788,15 @@ metExploreD3.GraphLink = {
 			var diffY = dY/Math.abs(dY);
 			
 			if(source.getBiologicalType()=="metabolite"){
-				var largeurNoeudT = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
-				var largeurNoeudS = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
+				var rTW = (Math.abs(d)*reactionStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*reactionStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			else
 			{
-				var largeurNoeudT = (metaboliteStyle.getHeight()+metaboliteStyle.getWidth())/2/2;
-				var largeurNoeudS = (reactionStyle.getWidth()+reactionStyle.getHeight())/2/2;
+				var rTW = (Math.abs(d)*metaboliteStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*metaboliteStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
 			}
 			
 			var xSource = source.x + dX*(1-(d-largeurNoeudS)/d);
@@ -821,19 +888,33 @@ metExploreD3.GraphLink = {
 
 			source = nodes[link.getSource()];
 			target = nodes[link.getTarget()];
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 		else
 		{
 			source = link.getSource();
 			target = link.getTarget();
-			if(source.getReactionReversibility()||target.getReactionReversibility())
-				path = pathForReversibleReactions(source, target);
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = path(source, target);
+			}
 			else
-				path = path(source, target);
+			{
+				path = "M0,0L0,0Z";
+			}
 		}
 				
 		return path;
@@ -878,7 +959,7 @@ metExploreD3.GraphLink = {
 			.enter()
 			.append("svg:path")
 			.attr("class", String)
-			.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, parent);})
+			.attr("d", function(link){return metExploreD3.GraphLink.funcPath3(link, parent);})
 			.attr("class", "link")
 			.attr("fill-rule", "evenodd")
 			.attr("fill", function (d) {
@@ -897,43 +978,19 @@ metExploreD3.GraphLink = {
 			.data(networkData.getLinks())
 			.enter()
 			.insert("path",":first-child")
-			.attr("class", "link")//it comes from resources/css/networkViz.css
-			.attr("marker-end", function (d) {
+			.attr("class", String)
+			.attr("d", function(link){return metExploreD3.GraphLink.funcPath3(link, parent);})
+			.attr("class", "link")
+			.attr("fill-rule", "evenodd")
+			.attr("fill", function (d) {
 				if (d.interaction=="out")
-				{
-				   d3.select("#"+panel).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
-					.attr("refX", (metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2  + (linkStyle.getMarkerWidth() ))
-					.style("fill", linkStyle.getMarkerOutColor())
-						.style("stroke",linkStyle.getMarkerStrokeColor())
-						.style("stroke-width",linkStyle.getMarkerStrokeWidth());
-
-				   return "url(#" + d.interaction + ")";
-				}
+				 	return linkStyle.getMarkerOutColor();
 				else
-				{
-				  return "none";             
-				}
-				
-				})
-			.attr("marker-start", function (d) {
-				if (d.interaction=="out")
-				{
-				   return "none";
-				}
-				else
-				{
-				  d3.select("#"+panel).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
-					.attr("refX",-((metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2 ))
-					.style("fill", linkStyle.getMarkerInColor())
-					.style("stroke",linkStyle.getMarkerStrokeColor())
-						.style("stroke-width",linkStyle.getMarkerStrokeWidth());
-
-				  return "url(#" + d.interaction + ")";              
-				}  
-				})
+					return linkStyle.getMarkerInColor(); 
+			})
 			.style("stroke",linkStyle.getStrokeColor())
-			.filter(function(d){return d.interaction!="in" && d.interaction!="out"})
-			.style("opacity",0);
+			.style("stroke-width",0.5);
+			 
 
 	},
 
@@ -1184,7 +1241,7 @@ metExploreD3.GraphLink = {
 		    .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform")); 
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("path.link")
-			.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, panel);});
+			.attr("d", function(link){return metExploreD3.GraphLink.funcPath3(link, panel);});
 	},
 
 	displayConvexhulls : function(panel){

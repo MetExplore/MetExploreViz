@@ -962,6 +962,7 @@ metExploreD3.GraphNetwork = {
 		iDiv.classList.add("hide");
 		document.getElementById("viz").appendChild(iDiv);  
 
+
 		
 		// var tooltip = d3.select("#"+panel).select("#D3viz")
 		// 	.append('svg:g')
@@ -1042,14 +1043,30 @@ metExploreD3.GraphNetwork = {
 					var k = e.alpha * .1;
 					networkData.getNodes().forEach(function(node) {
 						if(componentDisplayed=="Compartments"){
-							var group = session.getGroupByKey(node.getCompartment());
-
+							var group = null;
+							if(node.getBiologicalType()=="metabolite"){
+								group = node.getCompartment();
+								
+							}
+							else
+							{
+								var nbComp = [];
+								for (var key in session.groups) {
+								  	if (session.groups.hasOwnProperty(key)) {
+										var index = session.groups[key].values.indexOf(node);
+										if(index!=-1)
+											nbComp.push(session.groups[key].key);
+								  	}
+								}	
+								if(nbComp.length<2)
+									group = nbComp[0];
+							}
 							if(group!=null)
 					    	{
 					    		var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
 								var theCentroid = forceCentroids.nodes()
 					    			.find(function(centroid){
-					    				return centroid.id == node.getCompartment();
+					    				return centroid.id == group;
 					    			}
 					    		);	
 						    	node.x += (theCentroid.x - node.x) * k;
@@ -1104,6 +1121,11 @@ metExploreD3.GraphNetwork = {
 			metExploreD3.GraphNetwork.tick(panel);
 		}
         
+        var isDisplay = generalStyle.isDisplayedConvexhulls();
+        
+
+		if(isDisplay && panel=="viz") metExploreD3.GraphLink.displayConvexhulls(panel);
+
 		session.setForce(force);
 	},
 
@@ -1492,45 +1514,24 @@ metExploreD3.GraphNetwork = {
 		var linkStyle = metExploreD3.getLinkStyle();
 		var force = session.getForce();
 
+			
+
 		link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
-          .data(force.links(), function(d) { return d.source.id + "-" + d.target.id;})
-          .enter()
-          .insert("path",":first-child")
-          .attr("class", "link")//it comes from resources/css/networkViz.css
-          .attr("marker-end", function (d) {
-              if (d.interaction=="out")
-              {
-                 d3.select("#" + d.interaction)
-                 	.attr("refX", (metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2  + (linkStyle.getMarkerWidth() ))
-                 	.style("fill", linkStyle.getMarkerOutColor())
-          			.style("stroke",linkStyle.getMarkerStrokeColor())
-          			.style("stroke-width",linkStyle.getMarkerStrokeWidth());
-
-                 return "url(#" + d.interaction + ")";
-              }
-              else
-              {
-                return "none";             
-              }
-              
-              })
-           .attr("marker-start", function (d) {
-              if (d.interaction=="out")
-              {
-                 return "none";
-              }
-              else
-              {
-                d3.select("#" + d.interaction)
-                	.attr("refX",-((metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2 ))
-                	.style("fill", linkStyle.getMarkerInColor())
-	                .style("stroke",linkStyle.getMarkerStrokeColor())
-          			.style("stroke-width",linkStyle.getMarkerStrokeWidth());
-
-                return "url(#" + d.interaction + ")";              
-              }  
-            })
-           .style("stroke",linkStyle.getStrokeColor())
+			.data(force.links(), function(d) { return d.source.id + "-" + d.target.id;})
+			.enter()
+			.insert("path",":first-child")
+        	.attr("class", String)
+			.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, parent);})
+			.attr("class", "link")
+			.attr("fill-rule", "evenodd")
+			.attr("fill", function (d) {
+				if (d.interaction=="out")
+				 	return linkStyle.getMarkerOutColor();
+				else
+					return linkStyle.getMarkerInColor(); 
+			})
+			.style("stroke",linkStyle.getStrokeColor())
+			.style("stroke-width",0.5)
            .style("opacity",0.5)
            .attr("x1", source.x)
            .attr("y1", source.y)

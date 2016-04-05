@@ -151,8 +151,8 @@ var metExploreD3 = {
         return new NetworkData(panel);
     },
     
-    newGeneralStyle : function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull){
-        return new GeneralStyle(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull);
+    newGeneralStyle : function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust){
+        return new GeneralStyle(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust);
     },
 
     // CompartmentInBioSource
@@ -189,7 +189,7 @@ var metExploreD3 = {
 
                 var xCenter = wBegin+(mod * wDiv);
                 var yCenter = hBegin+(alt * hDiv);
-                var object = {key:compartment, center:{x:xCenter, y:yCenter}};
+                var object = {key:compartment.getIdentifier(), center:{x:xCenter, y:yCenter}};
                 compartmentGroup.push(object);
             }
         );
@@ -216,7 +216,7 @@ var metExploreD3 = {
                         compartmentGroup
                             .find(function(compart)
                             {
-                                return compart.key.identifier==source.getCompartment();
+                                return compart.key==source.getCompartment();
                             }
                         )
                     );
@@ -225,7 +225,7 @@ var metExploreD3 = {
                         compartmentGroup
                             .find(function(compart)
                             {
-                                return compart.key.identifier==source.getCompartment();
+                                return compart.key==source.getCompartment();
                             }
                         )
                     );
@@ -237,7 +237,7 @@ var metExploreD3 = {
                         compartmentGroup
                             .find(function(compart)
                             {
-                                return compart.key.identifier==target.getCompartment();
+                                return compart.key==target.getCompartment();
                             }
                         )
                     );
@@ -246,13 +246,12 @@ var metExploreD3 = {
                         compartmentGroup
                             .find(function(compart)
                             {
-                                return compart.key.identifier==target.getCompartment();
+                                return compart.key==target.getCompartment();
                             }
                         )
                     );
                 }
             });
-        
         return compartmentGroup;
     },
 
@@ -355,13 +354,6 @@ var metExploreD3 = {
                 }
             });
         
-        /*var finalPathwayGroup=pathwayGroup.filter(function(pathway){
-            var haveMetabolite = false;
-            var haveReaction = false;
-
-            while(haveReaction && haveMetabolite)
-            return pathwayGroup;
-        });*/
         return pathwayGroup;
     },
     sortPathways : function(){
@@ -418,8 +410,9 @@ var metExploreD3 = {
     }, 
     setGeneralStyle : function(store){
         _metExploreViz.generalStyle = store;
+        console.log("setGeneralStyle");
         metExploreD3.fireEvent("generalStyleForm", "setGeneralStyle");
-        metExploreD3.fireEvent("vizDrawingMenuID", "setGeneralStyle");
+        metExploreD3.fireEvent("vizIdConvexHullMenu", "setGeneralStyle");
         metExploreD3.fireEvent("buttonImportToNetworkFromWebsite", "setGeneralStyle");
     },
 
@@ -736,7 +729,7 @@ var metExploreViz = function(panel, webSite){
     this.linkStyle = new LinkStyle(25, 2, 5, 5, 'red', 'green', 'black', '0.7', 'black');
     this.reactionStyle = new ReactionStyle(10, 20, 3, 3, 'ec', 8, 'black', 1);
     this.metaboliteStyle = new MetaboliteStyle(10, 10, 5, 5, 6, 1,'name', '#b2ae92');
-    this.generalStyle = new GeneralStyle("Website", "yellow", "blue", 500, false, false, false);
+    this.generalStyle = new GeneralStyle("Website", "yellow", "blue", 500, false, false, false, false);
     this.initialData = undefined;
     
     this.comparedPanels = [];

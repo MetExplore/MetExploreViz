@@ -1993,7 +1993,6 @@ metExploreD3.GraphNode = {
 	loadPath : function(parent, component) {
 		var session = _metExploreViz.getSessionById(parent);
 		
-		console.log(component);
 		if(component=="Compartments"){
 			var metabolites = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(d) { return d.getBiologicalType() == 'metabolite'; });
 		
@@ -2049,7 +2048,7 @@ metExploreD3.GraphNode = {
 	 		if(component=="Compartments"){
 				// Change reactions stroke color by compartment
 		 		for(var j=0 ; j<metExploreD3.getCompartmentInBiosourceLength() ; j++){
-		 			if(d.key==metExploreD3.getCompartmentInBiosourceSet()[j]) 
+		 			if(d.key==metExploreD3.getCompartmentInBiosourceSet()[j].getName()) 
 		 				color = metExploreD3.getCompartmentInBiosourceSet()[j].getColor();
 		 		}
 		        return color;

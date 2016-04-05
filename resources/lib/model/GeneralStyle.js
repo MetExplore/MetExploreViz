@@ -6,7 +6,7 @@
  /**
  * General style
  */
-var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull){
+var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust){
     this.websiteName = siteName;
     this.colorMinMappingContinuous = minContinuous;
     this.colorMaxMappingContinuous = maxContinuous;
@@ -17,7 +17,7 @@ var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLab
     this.eventForNodeInfo = false;
     this.loadButtonHidden=false;
     this.windowsAlertDisable=false;
-    this.clustered=false;
+    this.clustered=clust;
 };
 
 GeneralStyle.prototype = {

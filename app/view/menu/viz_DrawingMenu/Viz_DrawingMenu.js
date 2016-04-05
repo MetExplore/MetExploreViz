@@ -38,7 +38,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
              {
                 text: 'Highlight component', 
                 scale: 'large',
-                menu:{xtype: 'vizConvexHullMenu'},
+                menu:{id:'vizIdConvexHullMenu',xtype: 'vizConvexHullMenu'},
                 id:'vizConvexHullMenuID',
                 reference:'vizConvexHullMenuID',
                 padding:'0 0 0 0',
