@@ -970,10 +970,15 @@ metExploreD3.GraphNetwork = {
 		// menu.classList.add("hide");
 		document.getElementById("viz").appendChild(menu);  
 
+
+
+
+
+
 		// Options div
 		var optionsColor = document.createElement('div');
 		optionsColor.className = 'optionsViz';
-		optionsColor.id = 'optionsViz';
+		optionsColor.id = 'optionsColor';
 		// menu.classList.add("hide");
 		document.getElementById("viz-body").appendChild(optionsColor);  
 
@@ -1003,15 +1008,12 @@ metExploreD3.GraphNetwork = {
 					.on('click', function(){
 						var filter = checkboxInvert.style.filter;
 
-						console.log(filter);
-						console.log(d3.select("#"+panel).select("#D3viz").style("-webkit-filter"));
 						if(filter=='none'||'""')
 							filter = d3.select("#"+panel).select("#D3viz").style("-webkit-filter");
 						filter = filter.replace("none", "");
 						
 						if(checkboxInvert.value == 'None')
 						{
-							console.log(1,filter);
 							checkboxInvert.value = "checked";
 							d3.select("#"+panel).select("#D3viz")
 								.style("filter", filter+" invert(1)")
@@ -1020,7 +1022,6 @@ metExploreD3.GraphNetwork = {
 						}
 						else
 						{
-							console.log(2,filter);
 							checkboxInvert.value = "None";
 							d3.select("#"+panel).select("#D3viz")
 								.style("filter", filter.replace("invert(1)", "")).style("-webkit-filter", filter.replace("invert(1)", ""));
@@ -1058,14 +1059,11 @@ metExploreD3.GraphNetwork = {
 				d3.select(checkboxBlackWhite)
 					.on('click', function(){
 						var filter = checkboxBlackWhite.style.filter;
-						console.log(filter);
-						console.log(d3.select("#"+panel).select("#D3viz").style("-webkit-filter"));
 						if(filter=='none'||'""')
 							filter = d3.select("#"+panel).select("#D3viz").style("-webkit-filter");
 						filter = filter.replace("none", "");
 						if(checkboxBlackWhite.value == 'None')
 						{
-							console.log(3,filter);
 							checkboxBlackWhite.value = "checked";
 							d3.select("#"+panel).select("#D3viz")
 								.style("filter", filter+" grayscale(1)")
@@ -1073,7 +1071,6 @@ metExploreD3.GraphNetwork = {
 						}
 						else
 						{
-							console.log(4,filter);
 							checkboxBlackWhite.value = "None";
 							d3.select("#"+panel).select("#D3viz")
 								.style("filter", filter.replace("grayscale(1)", "")).style("-webkit-filter", filter.replace("grayscale(1)", ""));
@@ -1093,14 +1090,13 @@ metExploreD3.GraphNetwork = {
 				textblackWhite.id = 'textLegendBlackWhite';
 				textblackWhite.className = 'textLegend';
 				blackWhiteDiv.appendChild(textblackWhite); 
-				textblackWhite.innerHTML = "blackWhite";
+				textblackWhite.innerHTML = "Display in black and white";
 
 			blackWhiteDiv.appendChild(textblackWhite); 
 
 		optionsColor.appendChild(blackWhiteDiv);
 
 		optionsColor.classList.add("hide");
-
 
 		d3.select(color)
 			.append("img")
@@ -1113,6 +1109,22 @@ metExploreD3.GraphNetwork = {
 					color.classList.add("active");
 					optionsColor.classList.remove("hide");
 
+					d3.selectAll(".optionsViz")
+						.filter(function(){
+							return this.id!=optionsColor.id;
+						})
+						.each(function(){
+							this.classList.add("hide");
+						});
+
+					d3.selectAll(".menuBarViz span")
+						.filter(function(){
+							return this.id!=color.id;
+						})
+						.each(function(){
+							this.classList.remove("active");
+						});
+
 				}
 				else
 				{
@@ -1124,18 +1136,161 @@ metExploreD3.GraphNetwork = {
 		menu.appendChild(color);
 
 
+		
+
+
+
+		// Options div
+		var optionsCaption = document.createElement('div');
+		optionsCaption.className = 'optionsViz';
+		optionsCaption.id = 'optionsCaption';
+		// menu.classList.add("hide");
+		document.getElementById("viz-body").appendChild(optionsCaption);  
+
 		var legende = document.createElement('span');
 		legende.className = 'legendeViz';
 		legende.id = 'legendeViz';
-		
-		// menu.classList.add("hide");
+
+		optionsCaption.classList.add("hide");
+
+			var pathwDiv = document.createElement('div');
+			pathwDiv.className = "option";
+
+				var pathw = document.createElement('div');
+				pathw.className = 'roundedOne';
+				
+				var checkboxPathw = document.createElement('input');
+				checkboxPathw.type = 'checkbox';
+				checkboxPathw.value = 'None';
+				checkboxPathw.id = 'roundedOnepathw';
+				checkboxPathw.name = 'checkboxPathw';
+				d3.select(checkboxPathw)
+					.on('click', function(){
+						
+						if(checkboxPathw.value == 'None')
+						{
+							if(document.getElementById("roundedOneCompart").value=="checked")
+								document.getElementById("roundedOneCompart").click();
+
+							checkboxPathw.value = "checked";
+							metExploreD3.GraphCaption.colorPathwayLegend(140);
+
+						}
+						else
+						{
+							checkboxPathw.value = "None";
+							d3.select("#viz").select("#D3viz")
+								.select('#captionPathway')
+								.remove();
+						}
+					});
+
+				var labelpathw = document.createElement('label');
+				d3.select(labelpathw)
+					.attr('for', 'roundedOnepathw');
+
+				pathw.appendChild(checkboxPathw); 
+				pathw.appendChild(labelpathw); 
+			pathwDiv.appendChild(pathw);
+
+				var textinvercolor = document.createElement('div');
+				textinvercolor.id = 'textLegendPathw';
+				textinvercolor.className = 'textLegend';
+			pathwDiv.appendChild(textinvercolor); 
+				textinvercolor.innerHTML = "Display pathways caption";
+
+		optionsCaption.appendChild(pathwDiv);
+
+
+			var compartDiv = document.createElement('div');
+			compartDiv.className = "option";
+
+				var compart = document.createElement('div');
+				compart.className = 'roundedOne';
+				
+				var checkboxCompart = document.createElement('input');
+				checkboxCompart.type = 'checkbox';
+				checkboxCompart.value = 'None';
+				checkboxCompart.id = 'roundedOneCompart';
+				checkboxCompart.name = 'checkboxCompart';
+				d3.select(checkboxCompart)
+					.on('click', function(){
+						if(checkboxCompart.value == 'None')
+						{
+							if(document.getElementById("roundedOnepathw").value=="checked")
+								document.getElementById("roundedOnepathw").click();
+
+							checkboxCompart.value = "checked";
+							d3.select("#viz").select("#D3viz")
+								.select('#captionComparment')
+								.classed('hide', false);
+						}
+						else
+						{
+							checkboxCompart.value = "None";
+
+							d3.select("#viz").select("#D3viz")
+								.select('#captionComparment')
+								.classed('hide', true);
+						}
+					});
+
+				var labelcompart = document.createElement('label');
+				d3.select(labelcompart)
+					.attr('for', 'roundedOneCompart');
+
+				compart.appendChild(checkboxCompart); 
+				compart.appendChild(labelcompart); 
+
+			compartDiv.appendChild(compart);
+
+				var textcompart = document.createElement('div');
+				textcompart.id = 'textLegendCompart';
+				textcompart.className = 'textLegend';
+			compartDiv.appendChild(textcompart); 
+				textcompart.innerHTML = "Display compartments caption";
+
+
+		optionsCaption.appendChild(compartDiv);
+
+		optionsCaption.classList.add("hide");
+
+
 		d3.select(legende)
 			.append("img")
 			.attr("src", document.location.href.split("index.html")[0] + "resources/icons/list.png")
 			.attr("width", "40")
-			.attr("height", "40");
-		menu.appendChild(legende);
+			.attr("height", "40")
+			.on('click', function(){
+				if(legende.className.indexOf("active")==-1)
+				{
+					legende.classList.add("active");
+					optionsCaption.classList.remove("hide");
 
+					d3.selectAll(".optionsViz")
+						.filter(function(){
+							return this.id!=optionsCaption.id;
+						})
+						.each(function(){
+							this.classList.add("hide");
+						});
+
+					d3.selectAll(".menuBarViz span")
+						.filter(function(){
+							return this.id!=legende.id;
+						})
+						.each(function(){
+							this.classList.remove("active");
+						});
+
+				}
+				else
+				{
+			   		legende.classList.remove("active");
+			   		optionsCaption.classList.add("hide");
+				}
+			});
+		menu.appendChild(legende);
 
 		var filter = document.createElement('span');
 		filter.className = 'filterViz';

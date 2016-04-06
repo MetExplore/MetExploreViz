@@ -103,9 +103,7 @@ metExploreD3.GraphCaption = {
 			.attr("height", "50")
 			.attr('x', $("#viz").width() - 110)
 			.attr('y', $("#viz").height() - 75);
-
-
-
+			
 		d3.select("#viz").select("#D3viz")
 	    	.append("svg:rect")
 			.attr('class', 'reactionCaption')
@@ -126,9 +124,6 @@ metExploreD3.GraphCaption = {
 			.attr('x', 20)
 			.attr('y', 15)
 			.attr("transform", "translate(30,50)");
-
-
-
 
 		d3.select("#viz").select("#D3viz")
 			.append("svg:rect")
@@ -168,12 +163,15 @@ metExploreD3.GraphCaption = {
 
 		d3.select("#viz").select("#D3viz")
 			.append("svg:text")
-			.text('Metabolites in:')
+			.text('Metabolites')
 			.attr('x', 20)
 			.attr('y',15)
 			.attr("transform","translate(30,105)");  
 	    	    
 	    metExploreD3.GraphCaption.colorMetaboliteLegend(140);
+	    d3.select("#viz").select("#D3viz")
+			.select('#captionComparment')
+			.classed('hide', true);
 	},
 
 	/*****************************************************
@@ -182,6 +180,13 @@ metExploreD3.GraphCaption = {
 	*/
 	colorMetaboliteLegend : function(top){
 
+		var caption =  d3.select("#viz").select("#D3viz")
+	    	.append("svg:g")
+			.attr('id', 'captionComparment')
+			.attr("x1", 0)
+			.attr("y1", 0)
+			.attr("x2", 15)
+			.attr("y2", 0);
     	// Load user's preferences
 		var reactionStyle = metExploreD3.getReactionStyle();
 		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
@@ -200,6 +205,15 @@ metExploreD3.GraphCaption = {
         frequency = Math.PI*2*0.95/phase;
         var position = top;
 
+		position+=20;
+        caption.append("svg:text")
+			.text("Compartments :")
+			.attr('x', 0)
+			.attr('y', 0)
+			.attr("transform","translate(15,"+position+")");
+
+		position+=20;
+
         for (var i = 0; i < phase; i++)
         {
 
@@ -210,7 +224,7 @@ metExploreD3.GraphCaption = {
 			var compartment = metExploreD3.getCompartmentInBiosourceSet()[i];
 			compartment.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));
 
-			d3.select("#viz").select("#D3viz").append("svg:line")
+			caption.append("svg:line")
 				.attr('class', 'metabolite')
 				.attr("x1", 0)
 				.attr("y1", 0)
@@ -222,9 +236,84 @@ metExploreD3.GraphCaption = {
 
 			position+=10;
 
-			d3.select("#viz").select("#D3viz")
-				.append("svg:text")
+			caption.append("svg:text")
 				.text(compartment.getName())
+				.attr('x', 20)
+				.attr('y', -6)
+				.attr("transform","translate(30,"+position+")");
+
+			position+=10;				
+        }
+    },
+	/*****************************************************
+	* Draw caption of metabolic compartiments
+    * @param {} top : top of the metabolite caption
+	*/
+	colorPathwayLegend : function(top){
+
+		var caption =  d3.select("#viz").select("#D3viz")
+	    	.append("svg:g")
+			.attr('id', 'captionPathway')
+			.attr("x1", 0)
+			.attr("y1", 0)
+			.attr("x2", 15)
+			.attr("y2", 0);
+    	// Load user's preferences
+		var reactionStyle = metExploreD3.getReactionStyle();
+		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
+		var xRea = 20/maxDimRea;
+		
+		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+		var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
+		var xMet = 20/maxDimMet;
+		var session = _metExploreViz.getSessionById('viz');
+		session.groups.sort(function(a,b){
+			if(a.key < b.key) return -1;
+		    if(a.key > b.key) return 1;
+		    return 0;
+		});
+
+
+		var phase = session.groups.length;
+        if (phase == undefined) phase = 0;
+        center = 128;
+        width = 127;
+        frequency = Math.PI*2*0.95/phase;
+        var position = top;
+
+		position+=20;
+        caption.append("svg:text")
+			.text("Pathways :")
+			.attr('x', 0)
+			.attr('y', 0)
+			.attr("transform","translate(15,"+position+")");
+
+		position+=20;
+
+        for (var i = 0; i < phase; i++)
+        {
+
+			red   = Math.sin(frequency*i+2+phase) * width + center;
+			green = Math.sin(frequency*i+0+phase) * width + center;
+			blue  = Math.sin(frequency*i+4+phase) * width + center;
+	 
+			var group = session.groups[i];
+			group.color=metExploreD3.GraphUtils.RGB2Color(red,green,blue);
+
+			caption.append("svg:line")
+				.attr('class', 'metabolite')
+				.attr("x1", 0)
+				.attr("y1", 0)
+				.attr("x2", 15)
+				.attr("y2", 0)
+				.style("stroke", group.color)
+				.style("stroke-width", 2)
+				.attr("transform","translate(15,"+position+")");
+
+			position+=10;
+
+			caption.append("svg:text")
+				.text(group.key)
 				.attr('x', 20)
 				.attr('y', -6)
 				.attr("transform","translate(30,"+position+")");

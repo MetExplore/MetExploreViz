@@ -2068,6 +2068,7 @@ metExploreD3.GraphNode = {
 				var blue  = Math.sin(frequency*i+4+phase) * width + center;
 		 
 				var color = metExploreD3.GraphUtils.RGB2Color(red,green,blue);
+				d.color = color;
 				return color;
 				/*var color = d3.scale.linear()
 				    .domain([0, metExploreD3.getPathwaysLength()/2, metExploreD3.getPathwaysLength()-1])
@@ -2093,6 +2094,7 @@ metExploreD3.GraphNode = {
 				.style("stroke", metExploreD3.GraphNode.groupFill)
 				.style("stroke-width", 40)
 				.style("stroke-linejoin", "round")
-				.style("opacity", .15);	
+				.style("opacity", .15)
+				
 	}
 }
