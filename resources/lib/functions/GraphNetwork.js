@@ -963,6 +963,193 @@ metExploreD3.GraphNetwork = {
 		document.getElementById("viz").appendChild(iDiv);  
 
 
+		// Menu Bar
+		var menu = document.createElement('div');
+		menu.className = 'menuBarViz';
+		menu.id = 'menuBarViz';
+		// menu.classList.add("hide");
+		document.getElementById("viz").appendChild(menu);  
+
+		// Options div
+		var optionsColor = document.createElement('div');
+		optionsColor.className = 'optionsViz';
+		optionsColor.id = 'optionsViz';
+		// menu.classList.add("hide");
+		document.getElementById("viz-body").appendChild(optionsColor);  
+
+
+		var color = document.createElement('span');
+		color.className = 'colorViz';
+		color.id = 'colorViz';
+
+		optionsColor.classList.add("hide");
+		// var invercolor = document.createElement('input');
+		// invercolor.type = 'checkbox';
+		// invercolor.className = 'inverColorViz';
+		// invercolor.id = 'invertColorViz';
+		// options.appendChild(invercolor); 
+			var invercolorDiv = document.createElement('div');
+			invercolorDiv.className = "option";
+
+				var invercolor = document.createElement('div');
+				invercolor.className = 'roundedOne';
+				
+				var checkboxInvert = document.createElement('input');
+				checkboxInvert.type = 'checkbox';
+				checkboxInvert.value = 'None';
+				checkboxInvert.id = 'roundedOne';
+				checkboxInvert.name = 'checkboxInvert';
+				d3.select(checkboxInvert)
+					.on('click', function(){
+						var filter = checkboxInvert.style.filter;
+
+						console.log(filter);
+						console.log(d3.select("#"+panel).select("#D3viz").style("-webkit-filter"));
+						if(filter=='none'||'""')
+							filter = d3.select("#"+panel).select("#D3viz").style("-webkit-filter");
+						filter = filter.replace("none", "");
+						
+						if(checkboxInvert.value == 'None')
+						{
+							console.log(1,filter);
+							checkboxInvert.value = "checked";
+							d3.select("#"+panel).select("#D3viz")
+								.style("filter", filter+" invert(1)")
+								.style("-webkit-filter", filter+" invert(1)");
+							
+						}
+						else
+						{
+							console.log(2,filter);
+							checkboxInvert.value = "None";
+							d3.select("#"+panel).select("#D3viz")
+								.style("filter", filter.replace("invert(1)", "")).style("-webkit-filter", filter.replace("invert(1)", ""));
+						}
+					});
+
+				var labelinvercolor = document.createElement('label');
+				d3.select(labelinvercolor)
+					.attr('for', 'roundedOne');
+
+				invercolor.appendChild(checkboxInvert); 
+				invercolor.appendChild(labelinvercolor); 
+			invercolorDiv.appendChild(invercolor);
+
+				var textinvercolor = document.createElement('div');
+				textinvercolor.id = 'textLegendInvert';
+				textinvercolor.className = 'textLegend';
+			invercolorDiv.appendChild(textinvercolor); 
+				textinvercolor.innerHTML = "Invert the color";
+
+		optionsColor.appendChild(invercolorDiv);
+
+
+			var blackWhiteDiv = document.createElement('div');
+			blackWhiteDiv.className = "option";
+
+				var blackWhite = document.createElement('div');
+				blackWhite.className = 'roundedOne';
+				
+				var checkboxBlackWhite = document.createElement('input');
+				checkboxBlackWhite.type = 'checkbox';
+				checkboxBlackWhite.value = 'None';
+				checkboxBlackWhite.id = 'roundedOne2';
+				checkboxBlackWhite.name = 'checkboxBlackWhite';
+				d3.select(checkboxBlackWhite)
+					.on('click', function(){
+						var filter = checkboxBlackWhite.style.filter;
+						console.log(filter);
+						console.log(d3.select("#"+panel).select("#D3viz").style("-webkit-filter"));
+						if(filter=='none'||'""')
+							filter = d3.select("#"+panel).select("#D3viz").style("-webkit-filter");
+						filter = filter.replace("none", "");
+						if(checkboxBlackWhite.value == 'None')
+						{
+							console.log(3,filter);
+							checkboxBlackWhite.value = "checked";
+							d3.select("#"+panel).select("#D3viz")
+								.style("filter", filter+" grayscale(1)")
+								.style("-webkit-filter", filter+" grayscale(1)");
+						}
+						else
+						{
+							console.log(4,filter);
+							checkboxBlackWhite.value = "None";
+							d3.select("#"+panel).select("#D3viz")
+								.style("filter", filter.replace("grayscale(1)", "")).style("-webkit-filter", filter.replace("grayscale(1)", ""));
+						}
+					});
+
+				var labelblackWhite = document.createElement('label');
+				d3.select(labelblackWhite)
+					.attr('for', 'roundedOne2');
+
+				blackWhite.appendChild(checkboxBlackWhite); 
+				blackWhite.appendChild(labelblackWhite); 
+
+			blackWhiteDiv.appendChild(blackWhite);
+
+				var textblackWhite = document.createElement('div');
+				textblackWhite.id = 'textLegendBlackWhite';
+				textblackWhite.className = 'textLegend';
+				blackWhiteDiv.appendChild(textblackWhite); 
+				textblackWhite.innerHTML = "blackWhite";
+
+			blackWhiteDiv.appendChild(textblackWhite); 
+
+		optionsColor.appendChild(blackWhiteDiv);
+
+		optionsColor.classList.add("hide");
+
+
+		d3.select(color)
+			.append("img")
+			.attr("src", document.location.href.split("index.html")[0] + "resources/icons/color.png")
+			.attr("width", "40")
+			.attr("height", "40")
+			.on('click', function(){
+				if(color.className.indexOf("active")==-1)
+				{
+					color.classList.add("active");
+					optionsColor.classList.remove("hide");
+
+				}
+				else
+				{
+			   		color.classList.remove("active");
+			   		optionsColor.classList.add("hide");
+				}
+			});
+
+		menu.appendChild(color);
+
+
+		var legende = document.createElement('span');
+		legende.className = 'legendeViz';
+		legende.id = 'legendeViz';
+		
+		// menu.classList.add("hide");
+		d3.select(legende)
+			.append("img")
+			.attr("src", document.location.href.split("index.html")[0] + "resources/icons/list.png")
+			.attr("width", "40")
+			.attr("height", "40");
+		menu.appendChild(legende);
+
+
+		var filter = document.createElement('span');
+		filter.className = 'filterViz';
+		filter.id = 'filterViz';
+
+		// menu.classList.add("hide");
+		d3.select(filter)
+			.append("img")
+			.attr("src", document.location.href.split("index.html")[0] + "resources/icons/filter.png")
+			.attr("width", "40")
+			.attr("height", "40");			
+		menu.appendChild(filter);
+
+
 		
 		// var tooltip = d3.select("#"+panel).select("#D3viz")
 		// 	.append('svg:g')
