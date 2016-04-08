@@ -16,18 +16,23 @@ metExploreD3.GraphNetwork = {
     */ 
 	delayedInitialisation : function(panel) {
 
-    	var vis = d3.select("#"+panel);
-		vis 
-			.append("svg")
-			.attr("width", "100%")
-			.attr("height", "100%")
-			.attr("class", "D3viz")
-			.attr("id", "D3viz")
-			.style("background-color", "#fff");
-			
+    	var that = {};
+
+	    that.render = function() {
+	    	var vis = d3.select('#'+panel);
+			vis 
+				.append("svg")
+				.attr("width", "100%")
+				.attr("height", "100%")
+				.attr("class", "D3viz")
+				.attr("id", "D3viz")
+				.style("background-color", "#fff");
+		};
+		that.render();
 		metExploreD3.GraphLink.delayedInitialisation(panel);
 
 		metExploreD3.GraphNode.delayedInitialisation(panel);	
+		return that;
 	},
 
 	/*******************************************
