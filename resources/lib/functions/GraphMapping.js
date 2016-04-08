@@ -727,7 +727,9 @@ metExploreD3.GraphMapping = {
 			          	var minValue = undefined;
 			          	var mappingName = mapping.getName();
 			          	var stringJSON="{\"mapping\":[";	
-					
+						var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+						var reactionStyle = metExploreD3.getReactionStyle();
+																				
 						vis.selectAll("g.node")
 							.filter(function(d){
 								if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
@@ -777,7 +779,12 @@ metExploreD3.GraphMapping = {
 			        	if(colorMax==undefined)
 			        		colorMax=generalStyle.getColorMaxMappingContinuous();
 			          	var vis = d3.select("#viz").select("#D3viz");
-			          	          	
+
+
+	          	       var scaleNode = d3.scale.linear()
+						    .domain([parseFloat(minValue), parseFloat(maxValue)])
+						    .range([1, 3]);
+
 						var colorStore = session.getColorMappingsSet();
 				      	session.resetColorMapping();
 				      	
@@ -813,11 +820,11 @@ metExploreD3.GraphMapping = {
 											if(map!=null){
 												if(!isNaN(map.getMapValue()))
 				            					{
-							                      	var reactionStyle = metExploreD3.getReactionStyle();
-													_MyThisGraphNode.addText(d, 'viz', reactionStyle);
+							                     	_MyThisGraphNode.addText(d, 'viz', reactionStyle);
 													
 													d3.select(this)
 														.transition().duration(2000)
+														.attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleNode(parseFloat(map.getMapValue()))+")")
 														.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
 														.style("fill", colorScale(parseFloat(map.getMapValue())));
 
@@ -846,6 +853,7 @@ metExploreD3.GraphMapping = {
 
 														d3.select(this)
 															.transition().duration(2000)
+															.attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleNode(parseFloat(map.getMapValue()))+")")
 															.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
 															.style("fill", colorScale(parseFloat(map.getMapValue())));
 														session.addSelectedNode(d.getId());
@@ -1094,6 +1102,9 @@ metExploreD3.GraphMapping = {
 				}
 			)
 			.transition().duration(4000)
+			.attr("transform", function(d){
+				return "translate("+d.x+", "+d.y+") scale(1)";
+			})
 			.style("fill", "white");
 
 
@@ -1118,6 +1129,9 @@ metExploreD3.GraphMapping = {
 
 		vis.selectAll("g.node")
 			.transition().duration(4000)
+			.attr("transform", function(d){
+				return "translate("+d.x+", "+d.y+") scale(1)";
+			})
 			.style("fill", "white")
 			.each(function(node){
 				if(node.getBiologicalType()=="reaction"){

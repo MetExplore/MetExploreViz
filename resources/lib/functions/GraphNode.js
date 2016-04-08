@@ -729,11 +729,13 @@ metExploreD3.GraphNode = {
 			.filter(function(d){ return !d.isDuplicated(); })
 			.on("mouseenter", function(d) { 
 					
-
+				var transform = d3.select(this).attr("transform");
+				var scale=transform.substring(transform.indexOf("scale"),transform.length);
+				var scaleVal=scale.substring(6, scale.indexOf(')'));		
+				
 				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-					
-				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale(2)");
-
+				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
+				
 				var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
 
 				if(d.getBiologicalType()=="reaction"){
@@ -813,8 +815,14 @@ metExploreD3.GraphNode = {
 				// d3.select("#"+parent).select("#D3viz").select('#tooltip')
 		    })
 	        .on("mouseleave", function(d) { 
-				d3.select(this)
-					.attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
+
+	        	var transform = d3.select(this).attr("transform");
+				var scale=transform.substring(transform.indexOf("scale"),transform.length);
+				var scaleVal=scale.substring(6, scale.indexOf(')'));		
+				
+				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
+
 				if(!d.isSelected())
 					d.fixed = false;
 				var linkStyle = metExploreD3.getLinkStyle();  
@@ -851,8 +859,12 @@ metExploreD3.GraphNode = {
 			.filter(function(d){ return d.isDuplicated(); })
 			.on("mouseenter", function(d) {
 					
-					var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-					d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale(2)");
+				var transform = d3.select(this).attr("transform");
+				var scale=transform.substring(transform.indexOf("scale"),transform.length);
+				var scaleVal=scale.substring(6, scale.indexOf(')'));		
+				
+				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
 			})
 			.on("mouseover", function(d) { 
 		        var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
@@ -925,9 +937,14 @@ metExploreD3.GraphNode = {
 		    // 		.classed("hide", true); 
 	     //    })
 	        .on("mouseleave", function(d) {  
-		        	
-				d3.select(this)
-					.attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
+		        
+	        	var transform = d3.select(this).attr("transform");
+				var scale=transform.substring(transform.indexOf("scale"),transform.length);
+				var scaleVal=scale.substring(6, scale.indexOf(')'));		
+				
+				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
+
 				if(!d.isSelected())
 					d.fixed = false;
 				var linkStyle = metExploreD3.getLinkStyle();  
@@ -1517,11 +1534,10 @@ metExploreD3.GraphNode = {
 				)
 				.on("mouseenter", function(d) { 
 
-		        	// console.log(d);
-					var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-					d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale(2)");
-						// var session = _metExploreViz.getSessionById("viz");
-						// session.getScaleById("viz").setZoomScale(2);
+		        	var transform = d3.select(this).attr("transform");
+					var scale=transform.substring(transform.indexOf("scale"),transform.length);
+					var scaleVal=scale.substring(6, scale.indexOf(')'));		
+				
 					var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
 
 					if(d.getBiologicalType()=="reaction"){
@@ -1634,9 +1650,13 @@ metExploreD3.GraphNode = {
 
 			    })
 		        .on("mouseleave", function(d) { 
-		        	d3.select(this)
-						.attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
+		        	var transform = d3.select(this).attr("transform");
+					var scale=transform.substring(transform.indexOf("scale"),transform.length);
+					var scaleVal=scale.substring(6, scale.indexOf(')'));		
 					
+					var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+					d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
+		        	
 					if(!d.isSelected())
 						d.fixed = false;
 					var linkStyle = metExploreD3.getLinkStyle();  
