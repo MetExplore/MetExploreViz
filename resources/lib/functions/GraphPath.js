@@ -99,7 +99,7 @@ metExploreD3.GraphPath = {
 	  // If you want to use selection on compartments path
 	  // d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("graphComponent").selectAll("path")
 	  d3.select("#"+panel).select("#D3viz").selectAll("path")
-		  .filter(function(d){return d!="in" && d!="out"})
+		  .filter(function(d){return d!="linkCaptionRev"})
 		  .attr("d", metExploreD3.GraphPath.groupPath)
 		  .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform")); 
 	},
@@ -169,7 +169,7 @@ metExploreD3.GraphPath = {
 		// 	.enter().insert("path", "g.node")
 
 		d3.select("#"+parent).select("#D3viz").selectAll("path")
-		    .filter(function(d){return d!="in" && d!="out"})
+		    .filter(function(d){return d!="linkCaptionRev"})
 		    .data(session.groups)
 		    .attr("d", function(d){ return pathTab; })
 		    .enter().insert("path", ":first-child")

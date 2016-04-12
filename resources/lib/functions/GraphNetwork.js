@@ -16,18 +16,23 @@ metExploreD3.GraphNetwork = {
     */ 
 	delayedInitialisation : function(panel) {
 
-    	var vis = d3.select("#"+panel);
-		vis 
-			.append("svg")
-			.attr("width", "100%")
-			.attr("height", "100%")
-			.attr("class", "D3viz")
-			.attr("id", "D3viz")
-			.style("background-color", "#fff");
-			
+    	var that = {};
+
+	    that.render = function() {
+	    	var vis = d3.select('#'+panel);
+			vis 
+				.append("svg")
+				.attr("width", "100%")
+				.attr("height", "100%")
+				.attr("class", "D3viz")
+				.attr("id", "D3viz")
+				.style("background-color", "#fff");
+		};
+		that.render();
 		metExploreD3.GraphLink.delayedInitialisation(panel);
 
 		metExploreD3.GraphNode.delayedInitialisation(panel);	
+		return that;
 	},
 
 	/*******************************************
@@ -2522,7 +2527,6 @@ metExploreD3.GraphNetwork = {
 				}
 
             	metExploreD3.hideMask(myMask);
-            	metExploreD3.GraphNetwork.removeIsolatedNode(panel);
        		 }, 100);
        	}			
 	},
@@ -2598,59 +2602,41 @@ metExploreD3.GraphNetwork = {
 		var networkData = session.getD3Data();
 		var linksToRemove = [];
 		var vis = d3.select("#"+panel).select("#D3viz");
-
-		// Remove the node from group to draw convex hulls  
-		session.groups.forEach(function(group){
-			if(group.key==theNode.getCompartment()){
-				var index = group.values.indexOf(theNode);
-				
-				if(index!=-1)
-					group.values.splice(index, 1);
-			}
-
-			theNode.getPathways().forEach(function(pathway){
-				if(group.key==pathway){
-					var index = group.values.indexOf(theNode);
-					
-					if(index!=-1)
-						group.values.splice(index, 1);
-				}
-			}) 
-		});
 		
 		vis.selectAll("path.link")
 			.filter(function(d) {
 				var source = d.source;
 				var target = d.target;
+				if(source==theNode || target==theNode) linksToRemove.push(d);
 				return (source==theNode || target==theNode);
 			})
 			.remove();
 
-			var nodes = vis.selectAll("g.node");
+		var nodes = vis.selectAll("g.node");
 
-			nodes
-				.filter(function(d) {
-					return theNode==d;
-				})
-				.transition().duration(1000).style("opacity", 0)
-				.remove();
-
-		var selectedNodes = session.getSelectedNodes();
-		var index = selectedNodes.indexOf(theNode.getId());
-		if(index!=-1)
-			selectedNodes.splice(index, 1);
+		nodes
+			.filter(function(d) {
+				return theNode==d;
+			})
+			.transition().duration(1000)
+			.style("opacity", 0)
+			.remove();
 		
 		setTimeout(
 			function() {
 				
-				for (i = 0; i < networkData.getLinks().length; i++) {
-					var d = networkData.getLink(i);
-					var source = d.source;
-					var target = d.target;
+				var selectedNodes = session.getSelectedNodes();
+				var index = selectedNodes.indexOf(theNode.getId());
+				if(index!=-1)
+					selectedNodes.splice(index, 1);
+				// for (i = 0; i < networkData.getLinks().length; i++) {
+				// 	var d = networkData.getLink(i);
+				// 	var source = d.source;
+				// 	var target = d.target;
 
-					if(source==theNode || target==theNode)
-						linksToRemove.push(d);
-				}
+				// 	if(source==theNode || target==theNode)
+				// 		linksToRemove.push(d);
+				// }
 					
 				// Remove the node from group to draw convex hulls  
 				session.groups.forEach(function(group){
@@ -2702,10 +2688,101 @@ metExploreD3.GraphNetwork = {
 						force.links().splice(index, 1);
 				}
 			}
-		, 10);
-		metExploreD3.GraphNetwork.tick('viz');	
+		, 10);	
 	},
 	
+		/*******************************************
+    * Remove node which is Isolated
+    * @param {} panel : The panel
+    */
+ //    removeIsolatedNode : function(panel) {
+	// 	var session = _metExploreViz.getSessionById(panel);
+	// 	var force = session.getForce();
+	// 	var networkData = session.getD3Data();
+	// 	var nodesToRemove = [];
+	// 	var vis = d3.select("#"+panel).select("#D3viz");
+
+	// 	var nodes = vis.selectAll("g.node");
+		
+	// 	nodes.filter(function(node){
+	// 		var haveALink=false;
+	// 		vis.selectAll("path.link")
+	// 			.each(function(link){
+	// 				var src = link.source;
+	// 				var tgt = link.target;
+	// 				if(src.getId()==node.getId() || tgt.getId()==node.getId()){
+	// 					haveALink=true;
+	// 				}
+	// 			});
+	// 		if(!haveALink)
+	// 			nodesToRemove.push(node);
+
+
+	// 		return !haveALink;
+	// 	})
+	// 		.transition().duration(1000).style("opacity", 0)
+	// 	.remove();
+		
+	// 	setTimeout(
+	// 		function() {
+				
+	// 			for (i = 0; i < nodesToRemove.length; i++) {
+	// 				var node = nodesToRemove[i];
+					
+	// 				// Remove the node from group to draw convex hulls  
+	// 				session.groups.forEach(function(group){
+	// 					if(group.key==node.getCompartment()){
+							
+	// 						var index = group.values.indexOf(node);
+	// 						if(index!=-1)
+	// 							group.values.splice(index, 1);
+							
+	// 						if(group.values.length==0){
+	// 						 	index = session.groups.indexOf(group);
+	// 							if(index!=-1){
+	// 								session.groups.splice(index, 1);
+	// 								d3.select("#"+panel).select("#D3viz")
+	// 									.select("path#"+group.key)
+	// 									.remove();
+	// 							}
+	// 						}
+	// 					}
+	// 					node.getPathways().forEach(function(pathway){
+	// 						if(group.key==pathway){
+	// 							var index = group.values.indexOf(node);
+	// 							if(index!=-1)
+	// 								group.values.splice(index, 1);
+								
+	// 							if(group.values.length==0){
+	// 							 	index = session.groups.indexOf(group);
+	// 								if(index!=-1){
+	// 									session.groups.splice(index, 1);
+	// 									d3.select("#"+panel).select("#D3viz")
+	// 										.select("path#"+group.key)
+	// 										.remove();
+	// 								}
+	// 							}
+	// 						}
+	// 					}) 
+	// 				});
+
+	// 				var index = force.nodes().indexOf(
+	// 						node);
+	// 				if(index!=-1)
+	// 					force.nodes().splice(index, 1);
+	// 			}
+
+	// 			for (i = 0; i < nodesToRemove.length; i++) {
+	// 				var node = nodesToRemove[i];
+	// 				var index = force.nodes().indexOf(
+	// 						node);
+					
+	// 				if(index!=-1)
+	// 					force.nodes().splice(index, 1);
+	// 			}				
+	// 		}
+	// 	, 10);
+	// },
 		/*******************************************
     * Remove node which is Isolated
     * @param {} panel : The panel
@@ -2717,27 +2794,32 @@ metExploreD3.GraphNetwork = {
 		var nodesToRemove = [];
 		var vis = d3.select("#"+panel).select("#D3viz");
 
-		var nodes = vis.selectAll("g.node");
+		var arrayId = [];
+		var nodes = networkData.getNodes().map(function(node){
+			return node.getId();
+		});
 
-		nodes.filter(function(node){
-			var haveALink=false;
-			vis.selectAll("path.link")
-				.each(function(link){
-					var src = link.source;
-					var tgt = link.target;
-					if(src.getId()==node.getId() || tgt.getId()==node.getId()){
-						haveALink=true;
-					}
-				});
-			if(!haveALink)
-				nodesToRemove.push(node);
+		var haveALink=false;
+		vis.selectAll("path.link")
+			.each(function(link){
+				var src = link.source;
+				var tgt = link.target;
+				var indexSrc = nodes.indexOf(src.getId());
+				if(indexSrc!=-1){
+					nodes.splice(indexSrc,1);
+				}
 
-
-			return !haveALink;
+				var indexTgt = nodes.indexOf(tgt.getId());
+				if(indexTgt!=-1){
+					nodes.splice(indexTgt,1);
+				}
+			});
+		vis.selectAll("g.node").filter(function(node){
+			return nodes.indexOf(node.getId())!=-1;
 		})
 			.transition().duration(1000).style("opacity", 0)
 		.remove();
-		
+
 		setTimeout(
 			function() {
 				
@@ -2746,9 +2828,9 @@ metExploreD3.GraphNetwork = {
 					
 					// Remove the node from group to draw convex hulls  
 					session.groups.forEach(function(group){
-						if(group.key==theNode.getCompartment()){
+						if(group.key==node.getCompartment()){
 							
-							var index = group.values.indexOf(theNode);
+							var index = group.values.indexOf(node);
 							if(index!=-1)
 								group.values.splice(index, 1);
 							
@@ -2762,9 +2844,9 @@ metExploreD3.GraphNetwork = {
 								}
 							}
 						}
-						theNode.getPathways().forEach(function(pathway){
+						node.getPathways().forEach(function(pathway){
 							if(group.key==pathway){
-								var index = group.values.indexOf(theNode);
+								var index = group.values.indexOf(node);
 								if(index!=-1)
 									group.values.splice(index, 1);
 								

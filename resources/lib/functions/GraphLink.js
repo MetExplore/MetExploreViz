@@ -374,12 +374,19 @@ metExploreD3.GraphLink = {
 
 			source = nodes[link.getSource()];
 			target = nodes[link.getTarget()];
-			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			if(source!=undefined && target!=undefined)
 			{
-				if(source.getReactionReversibility()||target.getReactionReversibility())
-					path = pathForReversibleReactions(source, target);
+				if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+				{
+					if(source.getReactionReversibility()||target.getReactionReversibility())
+						path = pathForReversibleReactions(source, target);
+					else
+						path = path(source, target);
+				}
 				else
-					path = path(source, target);
+				{
+					path = "M0,0L0,0Z";
+				}
 			}
 			else
 			{
@@ -390,12 +397,19 @@ metExploreD3.GraphLink = {
 		{
 			source = link.getSource();
 			target = link.getTarget();
-			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			if(source!=undefined && target!=undefined)
 			{
-				if(source.getReactionReversibility()||target.getReactionReversibility())
-					path = pathForReversibleReactions(source, target);
+				if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+				{
+					if(source.getReactionReversibility()||target.getReactionReversibility())
+						path = pathForReversibleReactions(source, target);
+					else
+						path = path(source, target);
+				}
 				else
-					path = path(source, target);
+				{
+					path = "M0,0L0,0Z";
+				}
 			}
 			else
 			{
@@ -969,7 +983,8 @@ metExploreD3.GraphLink = {
 					return linkStyle.getMarkerInColor(); 
 			})
 			.style("stroke",linkStyle.getStrokeColor())
-			.style("stroke-width",0.5);
+			.style("stroke-width",0.5)
+			.style("stroke-linejoin", "bevel");
 			 
 	},
 
@@ -989,7 +1004,8 @@ metExploreD3.GraphLink = {
 					return linkStyle.getMarkerInColor(); 
 			})
 			.style("stroke",linkStyle.getStrokeColor())
-			.style("stroke-width",0.5);
+			.style("stroke-width",0.5)
+			.style("stroke-linejoin", "bevel");
 			 
 
 	},
@@ -1236,12 +1252,13 @@ metExploreD3.GraphLink = {
 	tick : function(panel, scale) {
 		  // If you want to use selection on compartments path
 		d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path")
-			.filter(function(d){return $(this).attr('class')!="link"})
+			.filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="link";})
 		    .attr("d", metExploreD3.GraphNode.groupPath)
 		    .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform")); 
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("path.link")
-			.attr("d", function(link){return metExploreD3.GraphLink.funcPath3(link, panel);});
+			.attr("d", function(link){return metExploreD3.GraphLink.funcPath3(link, panel);})
+			.style("stroke-linejoin", "bevel");
 	},
 
 	displayConvexhulls : function(panel){
@@ -1250,7 +1267,7 @@ metExploreD3.GraphLink = {
 		var generalStyle = _metExploreViz.getGeneralStyle();
 
 		var convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path")
-		  .filter(function(d){return $(this).attr('class')!="link";});
+		  .filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="link";});
 
 
 		var isDisplay = generalStyle.isDisplayedConvexhulls();
@@ -1265,7 +1282,7 @@ metExploreD3.GraphLink = {
 				metExploreD3.GraphNode.loadPath(panel, isDisplay);  
 				
 	  		convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path")
-				.filter(function(d){return $(this).attr('class')!="link";});
+				.filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="link";});
 
 		  	convexHullPath
 			  .attr("d", metExploreD3.GraphNode.groupPath)

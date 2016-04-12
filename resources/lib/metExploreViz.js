@@ -11,6 +11,33 @@ var metExploreD3 = {
     GraphPath:"",
     GraphNode:"",
 
+    testWSMappingGraphToken : function(token, inchis, pathways, func) {
+       
+        var data={
+                token: token,
+                Content: inchis,
+                pathways: pathways
+        };
+       
+        Ext.Ajax.request({
+            // Bien préciser qu'il faut envoyer les données en POST:
+            method:'POST',
+            
+            url: 'http://metexplore.toulouse.inra.fr:8080/metExploreWebService/mapping/launchtokenmapping/inchi/1363/filteredbypathways/',
+            
+            // le json a envoyer en post:
+            jsonData:data,
+            success: function(response, opts) {
+                
+                var rep=Ext.decode(response.responseText);
+                func(rep);
+            },
+            failure:function(response, opts){
+                console.log(response)
+            }
+        });
+    },
+
     /*****************************************************
     * Update the network to fit the cart content
     */
