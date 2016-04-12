@@ -6,7 +6,7 @@
  /**
  * General style
  */
-var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust){
+var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust, dispCaption){
     this.websiteName = siteName;
     this.colorMinMappingContinuous = minContinuous;
     this.colorMaxMappingContinuous = maxContinuous;
@@ -14,6 +14,7 @@ var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLab
     this.displayLabelsForOpt = dispLabel;
     this.displayLinksForOpt = dispLink;
     this.displayConvexhulls = dispConvexhull;
+    this.displayCaption = dispCaption;
     this.eventForNodeInfo = false;
     this.loadButtonHidden=false;
     this.windowsAlertDisable=false;
@@ -71,6 +72,9 @@ GeneralStyle.prototype = {
 
     isDisplayedConvexhulls:function(){return this.displayConvexhulls;},
     setDisplayConvexhulls:function(dispConvexhull){this.displayConvexhulls = dispConvexhull;},
+ 
+    isDisplayedCaption:function(){return this.displayCaption;},
+    setDisplayCaption:function(dispCaption){this.displayCaption = dispCaption;},
  
     useClusters:function(){return this.clustered;},
     setUseClusters:function(bool){this.clustered = bool;}

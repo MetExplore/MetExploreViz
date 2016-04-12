@@ -1,6 +1,6 @@
-Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuController', {
+Ext.define('metExploreViz.view.menu.viz_ColorMenu.Viz_ColorMenuController', {
 	extend: 'Ext.app.ViewController',
-	alias: 'controller.menu-vizConvexHullMenu-vizConvexHullMenu',
+	alias: 'controller.menu-vizColorMenu-vizColorMenu',
 
 /**
  * Aplies event linsteners to the view
@@ -12,7 +12,10 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		
 		view.on({
 			setGeneralStyle : function(){
+				console.log("vizColorMenusetGeneralStyle", view.lookupReference('highlightCompartments'));
 				var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+				console.log(s_GeneralStyle.isDisplayedConvexhulls());
+				console.log(s_GeneralStyle.useClusters());
 				if(s_GeneralStyle.isDisplayedConvexhulls()=="Compartments"){
 					view.lookupReference('highlightCompartments').setChecked(true);  
 					metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
@@ -62,33 +65,41 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 			scope:me
 		});
 
-		view.lookupReference('highlightCompartments').on({
-			click : me.checkHandler,
+		view.lookupReference('invertColors').on({
+			click : me.invertColors,
 			scope : me
 		});
 
-        view.lookupReference('highlightPathways').on({
-			click : me.checkHandler,
+        view.lookupReference('blackWhite').on({
+			click : me.blackWhite,
 			scope : me
 		});
 	},
-	checkHandler: function (item, checked){
+	invertColors: function (item, checked){
         var me 		= this;
+
         if(item.checked){
-        	me.highlightComponents(item.text);
-        	item.parentMenu.items.items
-                .filter(function(anItem){
-                    return anItem!=item;
-                })  
-                .forEach(function(anItem){
-                    anItem.setChecked(false);
-                }
-            );       
+			d3.select("#viz").select("#D3viz")
+				.classed("invertColorViz", true); 
         }
         else
         {
-        	me.hideComponents();
+			d3.select("#viz").select("#D3viz")
+				.classed("invertColorViz", false); 
+		}
+    },
+	blackWhite: function (item, checked){
+        var me 		= this;
+
+		if(item.checked){
+			d3.select("#viz").select("#D3viz")
+				.classed("blackWhiteViz", true); 
         }
+        else
+        {
+			d3.select("#viz").select("#D3viz")
+				.classed("blackWhiteViz", false); 
+		}
     },
     highlightComponents : function(component){
 

@@ -31,6 +31,24 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  iconCls:'duplicate-sideCompounds'
              },
              {
+                text: 'Color', 
+                scale: 'large',
+                menu:{id:'vizIdColorMenu',xtype: 'vizColorMenu'},
+                id:'vizColorMenuID',
+                reference:'vizColorMenuID',
+                padding:'0 0 0 0',
+                iconCls:'color'
+             },
+             {
+                text: 'Caption', 
+                scale: 'large',
+                menu:{id:'vizIdCaptionMenu',xtype: 'vizCaptionMenu'},
+                id:'vizCaptionMenuID',
+                reference:'vizCaptionMenuID',
+                padding:'0 0 0 0',
+                iconCls:'list'
+             },
+             {
                  text: 'Draw closer substrates/products',
                  reference:'clustMetabolites',
                  iconCls:'metabolitesLinkedByType'

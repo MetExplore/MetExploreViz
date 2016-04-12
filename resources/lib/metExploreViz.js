@@ -151,8 +151,8 @@ var metExploreD3 = {
         return new NetworkData(panel);
     },
     
-    newGeneralStyle : function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust){
-        return new GeneralStyle(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust);
+    newGeneralStyle : function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust, dispCaption){
+        return new GeneralStyle(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust, dispCaption);
     },
 
     // CompartmentInBioSource
@@ -729,7 +729,7 @@ var metExploreViz = function(panel, webSite){
     this.linkStyle = new LinkStyle(25, 2, 5, 5, 'red', 'green', 'black', '0.7', 'black');
     this.reactionStyle = new ReactionStyle(10, 20, 3, 3, 'ec', 8, 'black', 1);
     this.metaboliteStyle = new MetaboliteStyle(10, 10, 5, 5, 6, 1,'name', '#b2ae92');
-    this.generalStyle = new GeneralStyle("Website", "yellow", "blue", 500, false, false, false, false);
+    this.generalStyle = new GeneralStyle("Website", "yellow", "blue", 500, false, false, false, false, false);
     this.initialData = undefined;
     
     this.comparedPanels = [];

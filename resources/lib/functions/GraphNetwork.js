@@ -955,356 +955,26 @@ metExploreD3.GraphNetwork = {
 		
 		metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
 		metExploreD3.GraphNode.refreshNode(panel);
-        var iDiv = document.createElement('div');
-		iDiv.id = 'tooltip2';
+
+
+  //       var iDiv = document.createElement('div');
+		// iDiv.id = 'tooltip2';
 		
-		iDiv.className = 'tooltip2';
-		iDiv.classList.add("hide");
-		document.getElementById("viz").appendChild(iDiv);  
-
-
-		// Menu Bar
-		var menu = document.createElement('div');
-		menu.className = 'menuBarViz';
-		menu.id = 'menuBarViz';
-		// menu.classList.add("hide");
-		document.getElementById("viz").appendChild(menu);  
-
-
-
-
-
+		// iDiv.className = 'tooltip2';
+		// iDiv.classList.add("hide");
+		// document.getElementById("viz").appendChild(iDiv);  
 
 		// Options div
-		var optionsColor = document.createElement('div');
-		optionsColor.className = 'optionsViz';
-		optionsColor.id = 'optionsColor';
+		var optionsInfo = document.createElement('div');
+		optionsInfo.className = 'tooltip2';
+
+		optionsInfo.id = 'tooltip2';
 		// menu.classList.add("hide");
-		document.getElementById("viz-body").appendChild(optionsColor);  
+		document.getElementById("viz-body").appendChild(optionsInfo);  
 
+		optionsInfo.classList.add("hide");
 
-		var color = document.createElement('span');
-		color.className = 'colorViz';
-		color.id = 'colorViz';
-
-		optionsColor.classList.add("hide");
-		// var invercolor = document.createElement('input');
-		// invercolor.type = 'checkbox';
-		// invercolor.className = 'inverColorViz';
-		// invercolor.id = 'invertColorViz';
-		// options.appendChild(invercolor); 
-			var invercolorDiv = document.createElement('div');
-			invercolorDiv.className = "option";
-
-				var invercolor = document.createElement('div');
-				invercolor.className = 'roundedOne';
-				
-				var checkboxInvert = document.createElement('input');
-				checkboxInvert.type = 'checkbox';
-				checkboxInvert.value = 'None';
-				checkboxInvert.id = 'roundedOne';
-				checkboxInvert.name = 'checkboxInvert';
-				d3.select(checkboxInvert)
-					.on('click', function(){
-						var filter = checkboxInvert.style.filter;
-
-						if(filter=='none'||'""')
-							filter = d3.select("#"+panel).select("#D3viz").style("-webkit-filter");
-						filter = filter.replace("none", "");
-						
-						if(checkboxInvert.value == 'None')
-						{
-							checkboxInvert.value = "checked";
-							d3.select("#"+panel).select("#D3viz")
-								.style("filter", filter+" invert(1)")
-								.style("-webkit-filter", filter+" invert(1)");
-							
-						}
-						else
-						{
-							checkboxInvert.value = "None";
-							d3.select("#"+panel).select("#D3viz")
-								.style("filter", filter.replace("invert(1)", "")).style("-webkit-filter", filter.replace("invert(1)", ""));
-						}
-					});
-
-				var labelinvercolor = document.createElement('label');
-				d3.select(labelinvercolor)
-					.attr('for', 'roundedOne');
-
-				invercolor.appendChild(checkboxInvert); 
-				invercolor.appendChild(labelinvercolor); 
-			invercolorDiv.appendChild(invercolor);
-
-				var textinvercolor = document.createElement('div');
-				textinvercolor.id = 'textLegendInvert';
-				textinvercolor.className = 'textLegend';
-			invercolorDiv.appendChild(textinvercolor); 
-				textinvercolor.innerHTML = "Invert the color";
-
-		optionsColor.appendChild(invercolorDiv);
-
-
-			var blackWhiteDiv = document.createElement('div');
-			blackWhiteDiv.className = "option";
-
-				var blackWhite = document.createElement('div');
-				blackWhite.className = 'roundedOne';
-				
-				var checkboxBlackWhite = document.createElement('input');
-				checkboxBlackWhite.type = 'checkbox';
-				checkboxBlackWhite.value = 'None';
-				checkboxBlackWhite.id = 'roundedOne2';
-				checkboxBlackWhite.name = 'checkboxBlackWhite';
-				d3.select(checkboxBlackWhite)
-					.on('click', function(){
-						var filter = checkboxBlackWhite.style.filter;
-						if(filter=='none'||'""')
-							filter = d3.select("#"+panel).select("#D3viz").style("-webkit-filter");
-						filter = filter.replace("none", "");
-						if(checkboxBlackWhite.value == 'None')
-						{
-							checkboxBlackWhite.value = "checked";
-							d3.select("#"+panel).select("#D3viz")
-								.style("filter", filter+" grayscale(1)")
-								.style("-webkit-filter", filter+" grayscale(1)");
-						}
-						else
-						{
-							checkboxBlackWhite.value = "None";
-							d3.select("#"+panel).select("#D3viz")
-								.style("filter", filter.replace("grayscale(1)", "")).style("-webkit-filter", filter.replace("grayscale(1)", ""));
-						}
-					});
-
-				var labelblackWhite = document.createElement('label');
-				d3.select(labelblackWhite)
-					.attr('for', 'roundedOne2');
-
-				blackWhite.appendChild(checkboxBlackWhite); 
-				blackWhite.appendChild(labelblackWhite); 
-
-			blackWhiteDiv.appendChild(blackWhite);
-
-				var textblackWhite = document.createElement('div');
-				textblackWhite.id = 'textLegendBlackWhite';
-				textblackWhite.className = 'textLegend';
-				blackWhiteDiv.appendChild(textblackWhite); 
-				textblackWhite.innerHTML = "Display in black and white";
-
-			blackWhiteDiv.appendChild(textblackWhite); 
-
-		optionsColor.appendChild(blackWhiteDiv);
-
-		optionsColor.classList.add("hide");
-
-		d3.select(color)
-			.append("img")
-			.attr("src", document.location.href.split("index.html")[0] + "resources/icons/color.png")
-			.attr("width", "40")
-			.attr("height", "40")
-			.on('click', function(){
-				if(color.className.indexOf("active")==-1)
-				{
-					color.classList.add("active");
-					optionsColor.classList.remove("hide");
-
-					d3.selectAll(".optionsViz")
-						.filter(function(){
-							return this.id!=optionsColor.id;
-						})
-						.each(function(){
-							this.classList.add("hide");
-						});
-
-					d3.selectAll(".menuBarViz span")
-						.filter(function(){
-							return this.id!=color.id;
-						})
-						.each(function(){
-							this.classList.remove("active");
-						});
-
-				}
-				else
-				{
-			   		color.classList.remove("active");
-			   		optionsColor.classList.add("hide");
-				}
-			});
-
-		menu.appendChild(color);
-
-
-		
-
-
-
-		// Options div
-		var optionsCaption = document.createElement('div');
-		optionsCaption.className = 'optionsViz';
-		optionsCaption.id = 'optionsCaption';
-		// menu.classList.add("hide");
-		document.getElementById("viz-body").appendChild(optionsCaption);  
-
-		var legende = document.createElement('span');
-		legende.className = 'legendeViz';
-		legende.id = 'legendeViz';
-
-		optionsCaption.classList.add("hide");
-
-			var pathwDiv = document.createElement('div');
-			pathwDiv.className = "option";
-
-				var pathw = document.createElement('div');
-				pathw.className = 'roundedOne';
-				
-				var checkboxPathw = document.createElement('input');
-				checkboxPathw.type = 'checkbox';
-				checkboxPathw.value = 'None';
-				checkboxPathw.id = 'roundedOnepathw';
-				checkboxPathw.name = 'checkboxPathw';
-				d3.select(checkboxPathw)
-					.on('click', function(){
-						
-						if(checkboxPathw.value == 'None')
-						{
-							if(document.getElementById("roundedOneCompart").value=="checked")
-								document.getElementById("roundedOneCompart").click();
-
-							checkboxPathw.value = "checked";
-							metExploreD3.GraphCaption.colorPathwayLegend(140);
-
-						}
-						else
-						{
-							checkboxPathw.value = "None";
-							d3.select("#viz").select("#D3viz")
-								.select('#captionPathway')
-								.remove();
-						}
-					});
-
-				var labelpathw = document.createElement('label');
-				d3.select(labelpathw)
-					.attr('for', 'roundedOnepathw');
-
-				pathw.appendChild(checkboxPathw); 
-				pathw.appendChild(labelpathw); 
-			pathwDiv.appendChild(pathw);
-
-				var textinvercolor = document.createElement('div');
-				textinvercolor.id = 'textLegendPathw';
-				textinvercolor.className = 'textLegend';
-			pathwDiv.appendChild(textinvercolor); 
-				textinvercolor.innerHTML = "Display pathways caption";
-
-		optionsCaption.appendChild(pathwDiv);
-
-
-			var compartDiv = document.createElement('div');
-			compartDiv.className = "option";
-
-				var compart = document.createElement('div');
-				compart.className = 'roundedOne';
-				
-				var checkboxCompart = document.createElement('input');
-				checkboxCompart.type = 'checkbox';
-				checkboxCompart.value = 'None';
-				checkboxCompart.id = 'roundedOneCompart';
-				checkboxCompart.name = 'checkboxCompart';
-				d3.select(checkboxCompart)
-					.on('click', function(){
-						if(checkboxCompart.value == 'None')
-						{
-							if(document.getElementById("roundedOnepathw").value=="checked")
-								document.getElementById("roundedOnepathw").click();
-
-							checkboxCompart.value = "checked";
-							d3.select("#viz").select("#D3viz")
-								.select('#captionComparment')
-								.classed('hide', false);
-						}
-						else
-						{
-							checkboxCompart.value = "None";
-
-							d3.select("#viz").select("#D3viz")
-								.select('#captionComparment')
-								.classed('hide', true);
-						}
-					});
-
-				var labelcompart = document.createElement('label');
-				d3.select(labelcompart)
-					.attr('for', 'roundedOneCompart');
-
-				compart.appendChild(checkboxCompart); 
-				compart.appendChild(labelcompart); 
-
-			compartDiv.appendChild(compart);
-
-				var textcompart = document.createElement('div');
-				textcompart.id = 'textLegendCompart';
-				textcompart.className = 'textLegend';
-			compartDiv.appendChild(textcompart); 
-				textcompart.innerHTML = "Display compartments caption";
-
-
-		optionsCaption.appendChild(compartDiv);
-
-		optionsCaption.classList.add("hide");
-
-
-		d3.select(legende)
-			.append("img")
-			.attr("src", document.location.href.split("index.html")[0] + "resources/icons/list.png")
-			.attr("width", "40")
-			.attr("height", "40")
-			.on('click', function(){
-				if(legende.className.indexOf("active")==-1)
-				{
-					legende.classList.add("active");
-					optionsCaption.classList.remove("hide");
-
-					d3.selectAll(".optionsViz")
-						.filter(function(){
-							return this.id!=optionsCaption.id;
-						})
-						.each(function(){
-							this.classList.add("hide");
-						});
-
-					d3.selectAll(".menuBarViz span")
-						.filter(function(){
-							return this.id!=legende.id;
-						})
-						.each(function(){
-							this.classList.remove("active");
-						});
-
-				}
-				else
-				{
-			   		legende.classList.remove("active");
-			   		optionsCaption.classList.add("hide");
-				}
-			});
-		menu.appendChild(legende);
-
-		var filter = document.createElement('span');
-		filter.className = 'filterViz';
-		filter.id = 'filterViz';
-
-		// menu.classList.add("hide");
-		d3.select(filter)
-			.append("img")
-			.attr("src", document.location.href.split("index.html")[0] + "resources/icons/filter.png")
-			.attr("width", "40")
-			.attr("height", "40");			
-		menu.appendChild(filter);
-
-
+		// optionsCaption.appendChild(pathwDiv);
 		
 		// var tooltip = d3.select("#"+panel).select("#D3viz")
 		// 	.append('svg:g')
@@ -2018,14 +1688,14 @@ metExploreD3.GraphNetwork = {
 					
 
 					var content = 
-						"Name: " + d.getName() 
-						+"<br/>Biological type: " + d.getBiologicalType() +
-						((d.getCompartment()!=undefined) ? "<br/>Compartment: " + d.getCompartment() : "" )+
-						((d.getDbIdentifier()!=undefined) ? "<br/>Database identifier: " + d.getDbIdentifier() : "" )+
-						((d.getEC()!=undefined) ? "<br/>EC number: " + d.getEC() : "" )+
-						((d.getReactionReversibility()!=undefined) ? "<br/>Reaction reversibility: " + d.getReactionReversibility() : "" )+
-						((d.getIsSideCompound()!=undefined) ? "<br/>SideCompound: " + d.getIsSideCompound() : "" )+
-						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/>Mapping:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+						"<b>Name:</b> " + d.getName() 
+						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
+						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment() : "" )+
+						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
+						((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
+						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
+						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
+						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
         			d.getMappingDatas().forEach(function(map){
         				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";

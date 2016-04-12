@@ -789,14 +789,14 @@ metExploreD3.GraphNode = {
 				
 
 				var content = 
-					"Name: " + d.getName() 
-					+"<br/>Biological type: " + d.getBiologicalType() +
-					((d.getCompartment()!=undefined) ? "<br/>Compartment: " + d.getCompartment(): "" )+
-					((d.getDbIdentifier()!=undefined) ? "<br/>Database identifier: " + d.getDbIdentifier() : "" )+
-					((d.getEC()!=undefined) ? "<br/>EC number: " + d.getEC() : "" )+
-					((d.getReactionReversibility()!=undefined) ? "<br/>Reaction reversibility: " + d.getReactionReversibility() : "" )+
-					((d.getIsSideCompound()!=undefined) ? "<br/>SideCompound: " + d.getIsSideCompound() : "" )+
-					((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/>Mapping:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+					"<b>Name:</b> " + d.getName() 
+					+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
+					((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
+					((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
+					((d.getEC()!=undefined) ? "<br/><b>EC number: " + d.getEC() : "" )+
+					((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
+					((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
+					((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
     			d.getMappingDatas().forEach(function(map){
     				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
@@ -906,14 +906,14 @@ metExploreD3.GraphNode = {
 				
 
 				var content = 
-					"Name: " + d.getName() 
-					+"<br/>Biological type: " + d.getBiologicalType() +
-					((d.getCompartment()!=undefined) ? "<br/>Compartment: " + d.getCompartment() : "" )+
-					((d.getDbIdentifier()!=undefined) ? "<br/>Database identifier: " + d.getDbIdentifier() : "" )+
-					((d.getEC()!=undefined) ? "<br/>EC number: " + d.getEC() : "" )+
-					((d.getReactionReversibility()!=undefined) ? "<br/>Reaction reversibility: " + d.getReactionReversibility() : "" )+
-					((d.getIsSideCompound()!=undefined) ? "<br/>SideCompound: " + d.getIsSideCompound() : "" )+
-					((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/>Mapping:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+					"<b>Name:</b> " + d.getName() 
+					+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
+					((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment() : "" )+
+					((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
+					((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
+					((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
+					((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
+					((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
     			d.getMappingDatas().forEach(function(map){
     				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
@@ -1593,14 +1593,14 @@ metExploreD3.GraphNode = {
 					
 
 					var content = 
-						"Name: " + d.getName() 
-						+"<br/>Biological type: " + d.getBiologicalType() +
-						((d.getCompartment()!=undefined) ? "<br/>Compartment: " + d.getCompartment() : "" )+
-						((d.getDbIdentifier()!=undefined) ? "<br/>Database identifier: " + d.getDbIdentifier() : "" )+
+						"<b>Name:</b> " + d.getName() 
+						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
+						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment() : "" )+
+						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
 						((d.getEC()!=undefined) ? "<br/>EC number: " + d.getEC() : "" )+
-						((d.getReactionReversibility()!=undefined) ? "<br/>Reaction reversibility: " + d.getReactionReversibility() : "" )+
-						((d.getIsSideCompound()!=undefined) ? "<br/>SideCompound: " + d.getIsSideCompound() : "" )+
-						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/>Mapping:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
+						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
+						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
         			d.getMappingDatas().forEach(function(map){
         				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";

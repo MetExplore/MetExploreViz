@@ -380,6 +380,12 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.list {
+    background-image: url(../icons/list.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .exportPng {
     background-image: url(../icons/exportPng.png);
     background-size: 100% 100%;
@@ -460,7 +466,13 @@ p {
 
 
 .cytoscapeWebStart {
-	background-image: url(../icons/CytoscapeLogo.png);
+  background-image: url(../icons/CytoscapeLogo.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+} 
+.color {
+	background-image: url(../icons/color.png);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;

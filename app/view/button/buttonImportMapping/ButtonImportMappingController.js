@@ -16,6 +16,7 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 
 		view.lookupReference('importMappingHidden').on({
 			change:function(){
+				console.log(view.lookupReference('importMappingHidden').fileInputEl.dom);
 				metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importMappingHidden').fileInputEl.dom, me.loadData);
 			},
 			scope:me
