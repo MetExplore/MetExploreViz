@@ -712,18 +712,18 @@ metExploreD3.GraphNode = {
 			.data(networkData.getNodes()).enter()
 				.append("svg:g").attr("class", "node")
 				.call(node_drag)
-				.style("fill", "white")
+				.style("fill", "white");
 				// Here it's the position by default for the beginning of force algorithm
 				// .on("click", selection)
-				.style(
-					"stroke-dasharray", function(d) {
-						if (d.getReactionReversibility()) {
-							return "2,2";
-						} else {
-							return "";
-						}
-					}
-				);
+				// .style(
+				// 	"stroke-dasharray", function(d) {
+				// 		if (d.getReactionReversibility()) {
+				// 			return "2,2";
+				// 		} else {
+				// 			return "";
+				// 		}
+				// 	}
+				// );
 
 		metExploreD3.GraphNode.node
 			.filter(function(d){ return !d.isDuplicated(); })
@@ -1523,15 +1523,15 @@ metExploreD3.GraphNode = {
 				})
 				// Here it's the position by default for the beginning of force algorithm
 				// .on("click", selection)
-				.style(
-					"stroke-dasharray", function(d) {
-						if (d.getReactionReversibility()) {
-							return "2,2";
-						} else {
-							return "";
-						}
-					}
-				)
+				// .style(
+				// 	"stroke-dasharray", function(d) {
+				// 		if (d.getReactionReversibility()) {
+				// 			return "2,2";
+				// 		} else {
+				// 			return "";
+				// 		}
+				// 	}
+				// )
 				.on("mouseenter", function(d) { 
 
 		        	var transform = d3.select(this).attr("transform");
@@ -2104,7 +2104,7 @@ metExploreD3.GraphNode = {
 		// 	.enter().insert("path", "g.node")
 
 		d3.select("#"+parent).select("#D3viz").selectAll("path")
-		    .filter(function(d){return $(this).attr('class')!="link"})
+		    .filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="link"})
 		    .data(session.groups)
 		    .attr("d", function(d){ return pathTab; })
 		    .enter().insert("path", ":first-child")

@@ -25,22 +25,9 @@ metExploreD3.GraphCaption = {
 			.attr("rx", reactionStyle.getRX()*xRea)
 			.attr("ry", reactionStyle.getRY()*xRea)
 			.attr("fill", "white")
-			.attr("transform", "translate(15,40)")
+			.attr("transform", "translate(15,95)")
 			.style("stroke",reactionStyle.getStrokeColor())
 			.style("stroke-width", 2);
-
-		d3.select("#viz").select("#D3viz")
-			.select('.reactionCaptionRev')
-			.attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
-			.attr('y', 15 + 15/2 - reactionStyle.getHeight()*xRea/2)
-			.attr("width", reactionStyle.getWidth()*xRea)
-			.attr("height", reactionStyle.getHeight()*xRea)
-			.attr("rx", reactionStyle.getRX()*xRea)
-			.attr("ry", reactionStyle.getRY()*xRea)
-			.style("stroke-dasharray", "2,2")
-			.attr("fill", "white")
-			.attr("transform", "translate(15,60)")
-			.style("stroke",reactionStyle.getStrokeColor());
 	},
 
 	/*****************************************************
@@ -64,7 +51,7 @@ metExploreD3.GraphCaption = {
 			.attr("fill", "white")
 			.style("stroke", "black")
 			.style("stroke-width", 2)
-			.attr("transform","translate(15,95)");
+			.attr("transform","translate(15,130)");
 
 	},
 	/*****************************************************
@@ -85,6 +72,119 @@ metExploreD3.GraphCaption = {
 		// corner
 		// Issue to be solved: when the window size change we
 		// loose the MetExplore text.
+		var sx = 15/2 - reactionStyle.getWidth()*xRea/2;
+		var sy = 15;
+
+		var tx = 20 + 15/2 - reactionStyle.getWidth()*xRea/2;
+		var ty = 15;
+		
+
+		var linkStyle = metExploreD3.getLinkStyle();
+		var d = Math.sqrt(Math.pow(tx - sx,2) + Math.pow(ty - sy,2));
+		var dX = (tx-sx);
+		var dY = (ty-sy);
+		var diffX = dX/Math.abs(dX);
+		var diffY = dY/Math.abs(dY);
+		
+		var rTW = (Math.abs(d)*10/2)/Math.abs(dX);
+		var rTH = (Math.abs(d)*10/2)/Math.abs(dY);
+		var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
+		var heightArrow = 5;
+		
+		var xTarget = sx + dX*((d-largeurNoeudT)/d);
+		var yTarget = sy + dY*((d-largeurNoeudT)/d);
+
+		var heightArrow = 5;
+		var xBaseArrowT = sx + dX*((d-largeurNoeudT-heightArrow)/d);
+		var yBaseArrowT = sy + dY*((d-largeurNoeudT-heightArrow)/d);
+
+		var xBaseArrowRev = sx + dX*((d-largeurNoeudT-heightArrow-heightArrow)/d);
+		var yBaseArrowRev = sy + dY*((d-largeurNoeudT-heightArrow-heightArrow)/d);
+
+		var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+		var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+		var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+		var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+		var dLink = "M"+sx+","+sy+
+					"L"+xBaseArrowRev+","+yBaseArrowRev+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xTarget+","+yTarget+
+					"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+					"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+					"L"+xBaseArrowRev+","+yBaseArrowRev+
+					"Z";
+
+		d3.select("#viz").select("#D3viz")
+			.append("svg:path")
+			.attr("class", String)
+			.attr("d",dLink)
+			.attr("class", 'linkCaptionRev')
+			.attr("fill-rule", "evenodd")
+			.attr("fill", 'white')
+			.style("stroke",linkStyle.getStrokeColor())
+			.style("stroke-width",1.5)
+			.style("stroke-linejoin", "bevel")
+			.attr("transform","translate(15,65)");
+
+		d3.select("#viz").select("#D3viz")
+			.append("svg:text")
+			.text('Reversible link')
+			.attr('x', 20)
+			.attr('y', 15)
+			.attr("transform", "translate(30,70)");
+
+		linkStyle = metExploreD3.getLinkStyle();
+		var d = Math.sqrt(Math.pow(tx - sx,2) + Math.pow(ty - sy,2));
+		var dX = (tx-sx);
+		var dY = (ty-sy);
+		var diffX = dX/Math.abs(dX);
+		var diffY = dY/Math.abs(dY);
+		
+		var rTW = (Math.abs(d)*10/2)/Math.abs(dX);
+		var rTH = (Math.abs(d)*10/2)/Math.abs(dY);
+		var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
+		
+		var xTarget = sx + dX*((d-largeurNoeudT)/d);
+		var yTarget = sy + dY*((d-largeurNoeudT)/d);
+
+		var heightArrow = 5;
+		var xBaseArrowT = sx + dX*((d-largeurNoeudT-heightArrow)/d);
+		var yBaseArrowT = sy + dY*((d-largeurNoeudT-heightArrow)/d);
+
+		var xWBaseArrowT1 = xBaseArrowT + dY*(3/d);
+		var yWBaseArrowT1 = yBaseArrowT - dX*(3/d);
+		var xWBaseArrowT2 = xBaseArrowT - dY*(3/d);
+		var yWBaseArrowT2 = yBaseArrowT + dX*(3/d);
+		
+		dLink ="M"+sx+","+sy+
+				"L"+xBaseArrowT+","+yBaseArrowT+
+				"L"+xWBaseArrowT1+","+yWBaseArrowT1+
+				"L"+xTarget+","+yTarget+
+				"L"+xWBaseArrowT2+","+yWBaseArrowT2+
+				"L"+xBaseArrowT+","+yBaseArrowT+
+				"Z"
+
+		d3.select("#viz").select("#D3viz")
+			.append("svg:path")
+			.attr("class", String)
+			.attr("d",dLink)
+			.attr("class", 'linkCaptionRev')
+			.attr("fill-rule", "evenodd")
+			.attr("fill", 'white')
+			.style("stroke",linkStyle.getStrokeColor())
+			.style("stroke-width",1.5)
+			.style("stroke-linejoin", "bevel")
+			.attr("transform","translate(15,40)");
+
+		d3.select("#viz").select("#D3viz")
+			.append("svg:text")
+			.text('Link')
+			.attr('x', 20)
+			.attr('y', 15)
+			.attr("transform", "translate(30,45)");
+
+
 		d3.select("#viz").select("#D3viz")
 			.append("svg:text")
 			.attr('id', 'metexplore')
@@ -92,8 +192,7 @@ metExploreD3.GraphCaption = {
 			.attr('x', $("#viz").width() - 130)
 			.attr('y', $("#viz").height() - 10);
 
-		d3
-			.select("#viz")
+		d3.select("#viz")
 			.select("#D3viz")
 			.append("svg:g")
 			.attr("class","logoViz").attr("id","logoViz")
@@ -108,44 +207,22 @@ metExploreD3.GraphCaption = {
 	    	.append("svg:rect")
 			.attr('class', 'reactionCaption')
 			.attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
-			.attr('y', 15 + 15/2 - reactionStyle.getHeight()*xRea/2)
+			.attr('y', 15)
 			.attr("width", reactionStyle.getWidth()*xRea)
 			.attr("height", reactionStyle.getHeight()*xRea)
 			.attr("rx", reactionStyle.getRX()*xRea)
 			.attr("ry", reactionStyle.getRY()*xRea)
 			.attr("fill", "white")
-			.attr("transform", "translate(15,40)")
+			.attr("transform", "translate(15,95)")
 			.style("stroke",reactionStyle.getStrokeColor())
 			.style("stroke-width", 2);
 
 		d3.select("#viz").select("#D3viz")
 			.append("svg:text")
-			.text('Irreversible reaction')
+			.text('Reaction')
 			.attr('x', 20)
 			.attr('y', 15)
-			.attr("transform", "translate(30,50)");
-
-		d3.select("#viz").select("#D3viz")
-			.append("svg:rect")
-			.attr('class', 'reactionCaptionRev')
-			.attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
-			.attr('y', 15 + 15/2 - reactionStyle.getHeight()*xRea/2)
-			.attr("width", reactionStyle.getWidth()*xRea)
-			.attr("height", reactionStyle.getHeight()*xRea)
-			.attr("rx", reactionStyle.getRX()*xRea)
-			.attr("ry", reactionStyle.getRY()*xRea)
-			.style("stroke-dasharray", "2,2")
-			.attr("fill", "white")
-			.attr("transform", "translate(15,60)")
-			.style("stroke",reactionStyle.getStrokeColor());
-
-		d3.select("#viz").select("#D3viz")
-			.append("svg:text")
-			.text('Reversible reaction')
-			.attr('x', 20)
-			.attr('y', 15)
-			.attr("transform", "translate(30,70)");
-	
+			.attr("transform", "translate(30,105)");
 
 		d3.select("#viz").select("#D3viz")
 			.append("svg:rect")
@@ -159,19 +236,20 @@ metExploreD3.GraphCaption = {
 			.attr("fill", "white")
 			.style("stroke", "black")
 			.style("stroke-width", 2)
-			.attr("transform","translate(15,95)");
+			.attr("transform","translate(15,130)");
 
 		d3.select("#viz").select("#D3viz")
 			.append("svg:text")
 			.text('Metabolites')
 			.attr('x', 20)
 			.attr('y',15)
-			.attr("transform","translate(30,105)");  
+			.attr("transform","translate(30,140)");  
 	    	    
-	    metExploreD3.GraphCaption.colorMetaboliteLegend(140);
+	    metExploreD3.GraphCaption.colorMetaboliteLegend(175);
 	    d3.select("#viz").select("#D3viz")
 			.select('#captionComparment')
 			.classed('hide', true);
+
 	},
 
 	/*****************************************************
