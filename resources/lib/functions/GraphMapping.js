@@ -1229,28 +1229,44 @@ metExploreD3.GraphMapping = {
     * Update the network to fit the cart content
     */
     loadDataTSV : function(url) {
-        d3.tsv(url, function(data) {
-            
-            var urlSplit = url.split('/');
-            var title = url.split('/')[urlSplit.length-1];
+    	var session = _metExploreViz.getSessionById('viz');
+		var force = session.getForce();
+		force.stop(); 
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		if(myMask!= undefined){
 
-            var targetName = Object.keys(data[0])[0];
+			metExploreD3.showMask(myMask);
+	        d3.tsv(url, function(data) {
+	            
+	            var urlSplit = url.split('/');
+	            var title = url.split('/')[urlSplit.length-1];
 
-            var indexOfTarget = Object.keys(data[0]).indexOf(targetName);
-            var arrayAttr = Object.keys(data[0]);
-            if (indexOfTarget > -1) {
-                arrayAttr.splice(indexOfTarget, 1);
-            }
+	            var targetName = Object.keys(data[0])[0];
 
-            var array = [];
-            var mapping = new Mapping(title, arrayAttr, targetName, array);
-            _metExploreViz.addMapping(mapping);  
-            
-            metExploreD3.GraphMapping.mapNodeDataFile(mapping, data);
+	            var indexOfTarget = Object.keys(data[0]).indexOf(targetName);
+	            var arrayAttr = Object.keys(data[0]);
+	            if (indexOfTarget > -1) {
+	                arrayAttr.splice(indexOfTarget, 1);
+	            }
 
-            metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
-                
-        });
+	            var array = [];
+	            var mapping = new Mapping(title, arrayAttr, targetName, array);
+	            _metExploreViz.addMapping(mapping);  
+	            
+	            metExploreD3.GraphMapping.mapNodeDataFile(mapping, data);
+
+	            metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+
+	            var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+				if (anim=='true') {
+					var force = session.getForce();
+					
+					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+						force.resume();
+					}
+				}   
+	        });
+		}
     },
     
 	generateMapping: function(mapping, nodeMappingByCondition){
