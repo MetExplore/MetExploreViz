@@ -1,9 +1,13 @@
 describe('Test D3.js with jasmine ', function() {
     var c;
-    
+
     beforeEach(function() {
-        c = metExploreD3.GraphNetwork.delayedInitialisation();
-        c.render();
+        if(typeof myJsonString != 'string')
+            myJsonString=JSON.stringify(myJsonString);
+          
+        MetExploreViz.onloadMetExploreViz(function(){
+            metExploreViz.GraphPanel.refreshPanel(myJsonString);
+        });
     });
 
     afterEach(function() {
@@ -27,6 +31,4 @@ describe('Test D3.js with jasmine ', function() {
     function getSvg() {
         return d3.select('svg');
     }
-
-          
 });
