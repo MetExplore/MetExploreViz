@@ -1228,7 +1228,7 @@ metExploreD3.GraphMapping = {
 	/*****************************************************
     * Update the network to fit the cart content
     */
-    loadDataTSV : function(url) {
+    loadDataTSV : function(url, func) {
     	var session = _metExploreViz.getSessionById('viz');
 		var force = session.getForce();
 		force.stop(); 
@@ -1256,7 +1256,7 @@ metExploreD3.GraphMapping = {
 	            metExploreD3.GraphMapping.mapNodeDataFile(mapping, data);
 
 	            metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
-
+	            if (func!=undefined) {func()};
 	            var anim=metExploreD3.GraphNetwork.isAnimated("viz");
 				if (anim=='true') {
 					var force = session.getForce();
