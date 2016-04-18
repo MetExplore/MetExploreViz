@@ -71,13 +71,14 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 	           		component.setHidden(false);
 				component.expand();
 				var comboMapping = Ext.getCmp('selectMappingVisu');
+				comboMapping.setValue(mappingJSON.getName());
+				// console.log(comboMapping.getView());
 				var store = comboMapping.getStore();
 	            //take an array to store the object that we will get from the ajax response
 				var records = [];
 
 				// comboMapping.bindStore(store);
-				            	
-				
+				     
 				records.push(new Ext.data.Record({
                     name: mappingJSON.getName()
                 }));
@@ -87,7 +88,7 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 	                    name: mappingName.getData().name
 	                }));
 				});
-
+				_metExploreViz.getSessionById('viz').setActiveMapping(mappingJSON.getName());
 				store.loadData(records, false);
                 
                 if(store.getCount()==1)

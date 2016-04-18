@@ -2028,7 +2028,7 @@ metExploreD3.GraphNetwork = {
     * Duplicate side compounds
     * @param {} panel : The panel where the SC must be duplicated
     */
-    duplicateSideCompounds : function(panel){
+    duplicateSideCompounds : function(panel, func){
 		
 		if(panel==undefined) panel="viz";
 
@@ -2065,7 +2065,9 @@ metExploreD3.GraphNetwork = {
 			
 				var sessions = _metExploreViz.getSessionsSet();
 				var aSession = _metExploreViz.getSessionById(panel);
-				
+					
+				if (func!=undefined) {func()};
+
 				if(panel!='viz' && aSession.isLinked()){
 					metExploreD3.fireEvent('graphPanel', 'afterDuplicate');
 				}
@@ -2107,7 +2109,7 @@ metExploreD3.GraphNetwork = {
 							}, 100);
 					};
 				}
-			}, 0);
+			}, 1);
 		}
 		metExploreD3.GraphNetwork.initCentroids();
 	},

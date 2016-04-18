@@ -383,7 +383,7 @@ metExploreD3.GraphMapping = {
 							}
 						}	
 
-			   		}, 1000
+			   		}, 1
 			   	);
 			}
 
