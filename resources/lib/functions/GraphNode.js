@@ -1961,7 +1961,7 @@ metExploreD3.GraphNode = {
 	* @param {} sideCompounds : An array of id
 	* @return {} bool : true if at less one is find
 	*/
-	loadSideCompounds : function(sideCompounds) {
+	loadSideCompounds : function(sideCompounds, func) {
 	    var array = [];
 	  	sideCompounds.forEach(function(sideCompound){
 	    	var node = _metExploreViz.getSessionById("viz").getD3Data().getNodeByDbIdentifier(sideCompound);
@@ -1976,6 +1976,7 @@ metExploreD3.GraphNode = {
 				array.push(node);
 			}	
 	    });
+	    if (func!=undefined) {func()};
 	    return array.length > 0;
 	},
 
