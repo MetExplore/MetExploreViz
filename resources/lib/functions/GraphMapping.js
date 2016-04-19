@@ -611,7 +611,7 @@ metExploreD3.GraphMapping = {
 									force.resume();
 							}
 						}
-			   		}, 1000
+			   		}, 1
 			   	);
 			}
 		});
@@ -1256,6 +1256,7 @@ metExploreD3.GraphMapping = {
 	            metExploreD3.GraphMapping.mapNodeDataFile(mapping, data);
 
 	            metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+	            metExploreD3.hideMask(myMask);
 	            if (func!=undefined) {func()};
 	            var anim=metExploreD3.GraphNetwork.isAnimated("viz");
 				if (anim=='true') {
