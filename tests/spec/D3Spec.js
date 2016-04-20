@@ -13,11 +13,9 @@ describe('Test svg after refresh network', function() {
         d3.selectAll('svg').remove();
     });
 
-    describe('the svg' ,function() {
-        it('should be created', function() {
-            console.log(getSvg());
-            expect(getSvg()).not.toBeNull();
-        });
+    it('should be created', function() {
+        console.log(getSvg());
+        expect(getSvg()).not.toBeNull();
     });
 
     function getSvg() {

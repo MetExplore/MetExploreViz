@@ -8,17 +8,40 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link href="resources/icons/favicon.ico" type="image/x-icon" rel="shortcut icon">
         <!-- <link rel="shortcut icon" type="image/png" href="lib/jasmine-2.4.1/jasmine_favicon.png"> -->
-        <link rel="stylesheet" href="jasmine-2.4.1/jasmine.css">
+       
 
         <script src="resources/lib/d3.js/d3.min.js"></script>
-        <script src="jasmine-2.4.1/jasmine.js"></script>
-        <script src="jasmine-2.4.1/jasmine-html.js"></script>
-        <script src="jasmine-2.4.1/boot.js"></script>
+
+       <link rel="stylesheet" href="tests/lib/jasmine-2.4.1/jasmine.css">
+        <script src="tests/lib/jasmine-2.4.1/jasmine.js"></script>
+        <script src="tests/lib/jasmine-2.4.1/jasmine-html.js"></script>
+        <script src="tests/lib/jasmine-2.4.1/boot.js"></script>
+
+        <script type="text/javascript" src="tests/lib/jasmine-reporters/jasmine.phantomjs-reporter.js"></script>
+        
         <script type="text/javascript" src="metexplorevizTests.js" charset="utf-8">  </script>
         
+        <script src="tests/spec/MapNetwork.js"></script>
+    <!-- 
+    <script src="specMetExploreViz/D3Spec.js"></script>
+    <script src="specMetExploreViz/RefreshNetwork.js"></script>
+    <script src="specMetExploreViz/SideCompoundsNetwork.js"></script>
+     -->
+
+
+        </head>
+        <body>
+
     </head>
 
     <body>
+        <!-- phantomjs C:\wamp\www\MetExplore\lib\javascript\metExploreViz\tests\lib\phantomjs_jasminexml_runner.js http://localhost/MetExplore/lib/javascript/metExploreViz/SpecRunner.html C:\wamp\www\MetExplore\lib\javascript\metExploreViz\tests\result -->
+        <script type="text/javascript">
+            var vara =new jasmine.PhantomJSReporter();
+            jasmine.getEnv().addReporter(vara);
+          // // jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+          // jasmine.getEnv().execute();
+        </script>
         
         <!-- Proposer un fichier json et un fichier mapping -->
 <!-- 
@@ -32,11 +55,5 @@
 
  
 
-    <!-- 
-    <script src="specMetExploreViz/D3Spec.js"></script>
-    <script src="specMetExploreViz/RefreshNetwork.js"></script>
-    <script src="specMetExploreViz/SideCompoundsNetwork.js"></script>
-     -->
-    <script src="specMetExploreViz/MapNetwork.js"></script>
 
 </html>
