@@ -14,7 +14,7 @@ metExploreD3.GraphLink = {
 		metExploreD3.GraphLink.panelParent = parent;
 	},
 
-	funcPathForFlux : function(link, panel, linkId){
+	funcPathForFlux2 : function(link, panel, linkId){
 		var source, target, path;
 
 		function pathForReversibleReactions(source, target){
@@ -56,16 +56,129 @@ metExploreD3.GraphLink = {
 			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
 			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
 
+			// 5 -- 15 
 			var heightArrow = 5;
 			var xBaseArrow = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
 			var yBaseArrow = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
 
+			// 3 -- 9
 			var xWBaseArrow = xBaseArrow + dY*(3/d);
 			var yWBaseArrow = yBaseArrow - dX*(3/d);
-			return "M"+source.x+","+source.y+"L"+xTarget+","+yTarget+"L"+xWBaseArrow+","+yWBaseArrow+"L"+xBaseArrow+","+yBaseArrow+"Z";
+
+			var xIntermBaseArrow = xBaseArrow + dY*(2/d);
+			var yIntermBaseArrow = yBaseArrow - dX*(2/d);
+
+			return "M"+source.x+","+source.y+"L"+xTarget+","+yTarget+"L"+xWBaseArrow+","+yWBaseArrow+"L"+xIntermBaseArrow+","+yIntermBaseArrow+"L"+source.x+","+source.y+"Z";
 		}
 
 		
+
+		if(link.getSource().x==undefined){
+			var networkData=_metExploreViz.getSessionById(panel).getD3Data();
+			var nodes = networkData.getNodes();
+
+			source = nodes[link.getSource()];
+			target = nodes[link.getTarget()];
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = pathSimple(source, target);
+			}
+			else
+			{
+				path = "M0,0L0,0Z";
+			}
+		}
+		else
+		{
+			source = link.getSource();
+			target = link.getTarget();
+			if(source.x!=undefined && source.y!=undefined && target.x!=undefined && target.y!=undefined)
+			{
+				if(source.getReactionReversibility()||target.getReactionReversibility())
+					path = pathForReversibleReactions(source, target);
+				else
+					path = pathSimple(source, target);
+			}
+			else
+			{
+				path = "M0,0L0,0Z";
+			}
+		}
+				
+		return path;
+	},
+
+	//arrayValue already scale
+	funcPathForFlux : function(link, panel, linkId, value){
+		var source, target, path;
+
+		function pathForReversibleReactions(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			if(linkId=='linkRev'){
+				value = value/2;
+				path = pathSimple(source, target);
+			}
+			else
+				path = pathSimple(target, source);
+			return path;
+		}
+
+		function pathSimple(source, target){
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var d = Math.sqrt(Math.pow(target.x - source.x,2) + Math.pow(target.y - source.y,2));
+			var dX = (target.x-source.x);
+			var dY = (target.y-source.y);
+			var diffX = dX/Math.abs(dX);
+			var diffY = dY/Math.abs(dY);
+			if(source.getBiologicalType()=="metabolite"){
+				var rTW = (Math.abs(d)*reactionStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*reactionStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
+			}
+			else
+			{
+				var rTW = (Math.abs(d)*metaboliteStyle.getWidth()/2)/Math.abs(dX);
+				var rTH = (Math.abs(d)*metaboliteStyle.getHeight()/2)/Math.abs(dY);
+				var largeurNoeudT = (rTW<rTH) ? rT=rTW : rt=rTH;
+			}
+
+			var xTarget = source.x + dX*((d-largeurNoeudT)/d);
+			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
+
+			// 5 -- 15 
+			var heightArrow = 5*value;
+			var xBaseArrow = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
+			var yBaseArrow = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
+
+			// 2 -- 6
+			widthArrow = 2*value;
+			var xWBaseArrow = xBaseArrow + dY*(widthArrow/d);
+			var yWBaseArrow = yBaseArrow - dX*(widthArrow/d);
+
+			var xIntermBaseArrow = xBaseArrow + dY*((2*widthArrow/3)/d);
+			var yIntermBaseArrow = yBaseArrow - dX*((2*widthArrow/3)/d);
+
+			// 1.5 -- 4.5
+			var heightFeet = 1.5*value;
+			var xBaseFeet = source.x + dX*(heightFeet/d);
+			var yBaseFeet = source.y + dY*(heightFeet/d);
+
+			var widthFeet = 2*value;
+			var xWBaseFeet = xBaseFeet + dY*((2*widthFeet/3)/d);
+			var yWBaseFeet = yBaseFeet - dX*((2*widthFeet/3)/d);
+
+			return "M"+source.x+","+source.y+"L"+xTarget+","+yTarget+"L"+xWBaseArrow+","+yWBaseArrow+"L"+xIntermBaseArrow+","+yIntermBaseArrow+"L"+xWBaseFeet+","+yWBaseFeet+"L"+source.x+","+source.y+"Z";
+		}
 
 		if(link.getSource().x==undefined){
 			var networkData=_metExploreViz.getSessionById(panel).getD3Data();
@@ -1118,7 +1231,7 @@ metExploreD3.GraphLink = {
 					d3.select(this)
 						.append("svg:path")
 						.attr("class", String)
-						.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id);})
+						.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id, 3);})
 						.attr("class", "link")
 						.attr("fill-rule", "evenodd")
 						.attr("fill", function (d) {
@@ -1134,7 +1247,7 @@ metExploreD3.GraphLink = {
 						.append("svg:path")
 						.attr("class", String)
 						.attr("id", "linkRev")
-						.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id);})
+						.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id, 3);})
 						.attr("class", "link")
 						.attr("fill-rule", "evenodd")
 						.attr("fill", function (d) {
@@ -1152,7 +1265,7 @@ metExploreD3.GraphLink = {
 					d3.select(this)
 						.append("svg:path")
 						.attr("class", String)
-						.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id);})
+						.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id, 3);})
 						.attr("class", "link")
 						.attr("fill-rule", "evenodd")
 						.attr("fill", function (d) {
@@ -1198,7 +1311,7 @@ metExploreD3.GraphLink = {
 			.enter()
 			.insert("path",":first-child")
 			.attr("class", String)
-			.attr("d", function(link){console.log(this); return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id);})
+			.attr("d", function(link){console.log(this); return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id, 3);})
 			.attr("class", "link")
 			.attr("fill-rule", "evenodd")
 			.attr("fill", function (d) {
@@ -1447,6 +1560,27 @@ metExploreD3.GraphLink = {
 		, 100);
 	},
 	
+// 	function getRandomArbitrary(min, max) {
+//   	return Math.random() * (max - min) + min;
+// }
+
+// d3.select("#viz").select("#D3viz").selectAll("path.link")
+// 	.each(function(link){
+// 		link.value = getRandomArbitrary(0, 4);
+// 		console.log(link.value);
+// 	}); 
+
+// var scale = d3.scale.linear()
+// 			.domain([1, 4])
+//     		.range(["#D1E9F5","#072C61"]);
+
+// d3.select("#viz").select("#D3viz").select("#graphComponent")
+// 	.selectAll("path.link")
+// 	.attr("d", function(link){ return metExploreD3.GraphLink.funcPathForFlux(link, "viz", this.id, link.value); })
+// 	.attr("stroke", function(link){ return scale(link.value); })
+// 	.attr("stroke-width", 0.1)
+// 	.attr("fill", function(link){ return scale(link.value); });
+	
 	/*******************************************
 	* Tick function of links
 	* @param {} panel : The panel where the action is launched
@@ -1460,7 +1594,23 @@ metExploreD3.GraphLink = {
 		    .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform")); 
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("path.link")
-			.attr("d", function(link){ return metExploreD3.GraphLink.funcPathForFlux(link, panel, this.id);});
+			.filter(function(link){
+				return link.value == undefined;
+			})
+			.attr("d", function(link){  return metExploreD3.GraphLink.funcPathForFlux(link, panel, this.id, 1);});
+
+		var scale = d3.scale.linear()
+			.domain([0, 4])
+    		.range(["#e8edf2","#0A549D"]);
+
+		d3.select("#viz").select("#D3viz").select("#graphComponent")
+			.selectAll("path.link")
+			.filter(function(link){
+				return link.value != undefined;
+			})
+			.attr("d", function(link){ return metExploreD3.GraphLink.funcPathForFlux(link, "viz", this.id, link.value); })
+			.style("stroke-width", 0.3)
+			.attr("fill", function(link){ return scale(link.value); });
 	},
 
 	displayConvexhulls : function(panel){
