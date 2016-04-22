@@ -1227,7 +1227,7 @@ metExploreD3.GraphLink = {
 			.append("svg:g");
 
 		divs.each(function(link){
-				if(link.isReversible()){
+				if(networkData.getNodes()[link.getSource()].getReactionReversibility()||networkData.getNodes()[link.getTarget()].getReactionReversibility()){
 					d3.select(this)
 						.append("svg:path")
 						.attr("class", String)
@@ -1603,14 +1603,23 @@ metExploreD3.GraphLink = {
 			.domain([0, 4])
     		.range(["#e8edf2","#0A549D"]);
 
+    	var opacity = d3.scale.linear()
+			.domain([0, 4])
+    		.range([0.2, 1]);
+
 		d3.select("#viz").select("#D3viz").select("#graphComponent")
 			.selectAll("path.link")
 			.filter(function(link){
 				return link.value != undefined;
 			})
-			.attr("d", function(link){ return metExploreD3.GraphLink.funcPathForFlux(link, "viz", this.id, link.value); })
+			.attr("d", function(link){  return metExploreD3.GraphLink.funcPathForFlux(link, "viz", this.id, link.value); })
+			.style("opacity", function(link){ return opacity(link.value); })
 			.style("stroke-width", 0.3)
-			.attr("fill", function(link){ return scale(link.value); });
+			.style("fill", function(link){
+				var val = link.value;
+				if(this.id=="linkRev")
+					val = link.value/2;
+				return scale(val); });
 	},
 
 	displayConvexhulls : function(panel){

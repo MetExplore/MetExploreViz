@@ -1311,6 +1311,23 @@ metExploreD3.GraphNode = {
 				return "translate(" + d.x + "," + d.y + ") scale("+scale+")";
 			});
 
+		var scale = d3.scale.linear()
+			.domain([0, 4])
+    		.range(["#e8edf2","#0A549D"]);
+
+    	var opacity = d3.scale.linear()
+			.domain([0, 4])
+    		.range([0.2, 1]);
+    	
+		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+			.selectAll("g.node")
+			.filter(function(node){
+				return node.value != undefined;
+			})
+			//.attr("transform", function(node){return "translate("+node.x+", "+node.y+") scale("+ node.value/2 +")";})
+			.style("fill", function(node){ return scale(node.value); })
+			.style("opacity", function(node){ return opacity(node.value); });
+
 		if(panel=="viz"){
 			var sessionsStore = _metExploreViz.getSessionsSet();
 			var session = _metExploreViz.getSessionById(panel);
