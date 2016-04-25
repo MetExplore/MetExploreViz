@@ -1,5 +1,5 @@
 (function() {
-	var debug = 0;
+  var debug = 0;
 
     if (! jasmine) {
         throw new Exception("jasmine library does not exist in global namespace!");
@@ -26,7 +26,7 @@
 
     function escapeInvalidXmlChars(str) {
         return str.replace(/\&/g, "&amp;")
-            .replace(/</g, "&lt;")
+            .replace(/\</g, "&lt;")
             .replace(/\>/g, "&gt;")
             .replace(/\"/g, "&quot;")
             .replace(/\'/g, "&apos;");
@@ -49,18 +49,18 @@
     };  
 
     PhantomJSReporter.prototype = {
-   		jasmineStarted: function(suiteInfo) {
-   			if (debug) {
-   				this.log('Running suite with ' + suiteInfo.totalSpecsDefined);
-   			}
+      jasmineStarted: function(suiteInfo) {
+        if (debug) {
+          this.log('Running suite with ' + suiteInfo.totalSpecsDefined);
+        }
 
-   			this._suites = [];
-   		},
+        this._suites = [];
+      },
 
-   		suiteStarted: function(suite) {
-   			if (debug) {
-   				this.log("Suite started: '" + suite.description + "' whose full description is: " + suite.fullName);
-   			}
+      suiteStarted: function(suite) {
+        if (debug) {
+          this.log("Suite started: '" + suite.description + "' whose full description is: " + suite.fullName);
+        }
 
             suite.startTime = new Date();
             suite.specs = [];
@@ -69,22 +69,22 @@
             this._suites.push(suite);
         },
 
-   		specStarted: function(spec) {
-   			if (debug) {
-   				this.log("Spec started: '" + spec.description + "' whose full description is: " + spec.fullName);
-   			}
+      specStarted: function(spec) {
+        if (debug) {
+          this.log("Spec started: '" + spec.description + "' whose full description is: " + spec.fullName);
+        }
 
-   			spec.startTime = new Date();
-   		},
+        spec.startTime = new Date();
+      },
 
-   		specDone: function(spec) {
-   			if (debug) {
-   				this.log("Spec: '" + spec.description + "' was " + spec.status);
-   			}
+      specDone: function(spec) {
+        if (debug) {
+          this.log("Spec: '" + spec.description + "' was " + spec.status);
+        }
 
-   			spec.didFail = spec.status == 'passed';
-   			spec.duration = elapsed(spec.startTime, new Date());
-   			spec.output = '<testcase classname="' + this.getFullName(this._currentSuite) +
+        spec.didFail = spec.status == 'passed';
+        spec.duration = elapsed(spec.startTime, new Date());
+        spec.output = '<testcase classname="' + this.getFullName(this._currentSuite) +
             '" name="' + escapeInvalidXmlChars(spec.description) + '" time="' + spec.duration + '">';
 
             var failure = '';
@@ -94,25 +94,24 @@
                 failure += ((i + 1) + ": " + escapeInvalidXmlChars(spec.message) + " ");
             }
             if (failure) {
-            	spec.output += "<failure>" + trim(failure) + "</failure>";
+              spec.output += "<failure>" + trim(failure) + "</failure>";
             }
             spec.output += "</testcase>";
 
-   			this._currentSuite.specs.push(spec);
+        this._currentSuite.specs.push(spec);
 
-   			if (debug) {
-   				console.log(spec);
-   			}
-   		},
+        if (debug) {
+          console.log(spec);
+        }
+      },
 
-   		suiteDone: function(suite) {
+      suiteDone: function(suite) {
+        if (debug) {
+          this.log("Suite: '" + suite.description + "' was " + suite.status);
+        }
 
-   			if (debug) {
-   				this.log("Suite: '" + suite.description + "' was " + suite.status);
-   			}
-
-   			suite.startTime = suite.startTime || new Date();
-   			suite.duration = elapsed(suite.startTime, new Date());
+        suite.startTime = suite.startTime || new Date();
+        suite.duration = elapsed(suite.startTime, new Date());
 
             var specs = this._currentSuite.specs;
             var specOutput = "";
@@ -129,37 +128,37 @@
             suite.output += specOutput;
             suite.output += "\n</testsuite>";
 
-   			this._currentSuite = null;
+        this._currentSuite = null;
 
-   			if (debug) {
-   				console.log(suite);
-   			}
-   		},
+        if (debug) {
+          console.log(suite);
+        }
+      },
 
         jasmineDone: function() {
-        	if (debug) {
-        		this.log('Finished suite');
-        	}
+          if (debug) {
+            this.log('Finished suite');
+          }
 
             var suites = this._suites,
             passed = true;
 
-	        for (var i = 0; i < suites.length; i++) {
-	            var suite = suites[i],
-	                filename = 'TEST-' + this.getFullName(suite, true) + '.xml',
-	                output = '<?xml version="1.0" encoding="UTF-8" ?>';
+          for (var i = 0; i < suites.length; i++) {
+              var suite = suites[i],
+                  filename = 'TEST-' + this.getFullName(suite, true) + '.xml',
+                  output = '<?xml version="1.0" encoding="UTF-8" ?>';
 
-	            passed = passed & suite.failedExpectations.length == 0;
+              passed = passed & suite.failedExpectations.length == 0;
 
                 output += suite.output;
                 this.createSuiteResultContainer(filename, output);
-	        }
-	        this.createTestFinishedContainer(passed);
+          }
+          this.createTestFinishedContainer(passed);
 
             this._suites = null;
 
             if (debug) {
-            	console.log(this);
+              console.log(this);
             }
         },
 
