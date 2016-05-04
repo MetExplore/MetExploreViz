@@ -156,6 +156,7 @@ metExploreD3.GraphNetwork = {
 		var vizRect = document.getElementById(panel).getBoundingClientRect();
 		var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
 			
+		console.log(d3.select("#"+panel).select("#D3viz"))
 		var zoomListener = scale.getZoom();
 		var width = parseInt(d3.select("#"+panel).select("#D3viz")
 			.style("width"));
@@ -451,6 +452,10 @@ metExploreD3.GraphNetwork = {
 				.y( yScale )
 				.scaleExtent([ 0.01, 20 ])
 				.on("zoom", function(e){
+						
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+
 					var session = _metExploreViz.getSessionById(panel);
 	        		
 	        		if(d3.event.sourceEvent !=null)
@@ -481,6 +486,10 @@ metExploreD3.GraphNetwork = {
 					.y( yScale )
 					.scaleExtent([ 0.01, 30 ])
 					.on("zoom", function(e){
+
+						
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 						var session = _metExploreViz.getSessionById(this.parentNode.id);
 						
@@ -1514,29 +1523,306 @@ metExploreD3.GraphNetwork = {
 		var linkStyle = metExploreD3.getLinkStyle();
 		var force = session.getForce();
 
-			
+		var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
 
-		link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
+		var map = {};
+
+		if(flux){
+			d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+				.filter(function(link){
+					if(source.getBiologicalType()=="metabolite"){
+						return(link.getSource().getId()==source.getIdentifier() || link.getSource().getId()==target.getId())
+							&&
+							(link.getTarget().getId()==source.getIdentifier() || link.getTarget().getId()==target.getId());
+					}
+					else
+					{
+						return(link.getSource().getId()==source.getId() || link.getSource().getId()==target.getIdentifier())
+							&&
+							(link.getTarget().getId()==source.getId() || link.getTarget().getId()==target.getIdentifier());
+					}
+				})
+				.each(function(link){
+					var idReaction;
+					if(source.getBiologicalType()=="reaction"){
+						idReaction = source.getId();
+					}
+					else
+					{
+						idReaction = target.getId();
+					}
+
+					var idLinkDOM;
+					if (this.id=='linkRev') 
+						idLinkDOM = "linkRev";
+					else 
+						idLinkDOM = "link"; 
+
+					if(map[idReaction]==undefined) map[idReaction]={};
+
+					map[idReaction][idLinkDOM]=
+					{
+						fill:d3.select(this).style("fill"), 
+						strokeDasharray:d3.select(this).style("stroke-dasharray")
+					};
+				});			
+
+			var divs=d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
 			.data(force.links(), function(d) { return d.source.id + "-" + d.target.id;})
 			.enter()
-			.insert("path",":first-child")
-        	.attr("class", String)
-			.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, parent);})
-			.attr("class", "link")
-			.attr("fill-rule", "evenodd")
-			.attr("fill", function (d) {
-				if (d.interaction=="out")
-				 	return linkStyle.getMarkerOutColor();
-				else
-					return linkStyle.getMarkerInColor(); 
-			})
-			.style("stroke",linkStyle.getStrokeColor())
-			.style("stroke-width",0.5)
-           .style("opacity",0.5)
-           .attr("x1", source.x)
-           .attr("y1", source.y)
-           .attr("x2", target.x)
-           .attr("y2", target.y);
+			.insert("svg:g",":first-child");
+
+			divs.each(function(link){
+				
+				d3.select(this)
+					.filter(function(link){
+						var idReaction;
+						if(source.getBiologicalType()=="reaction"){
+							idReaction = source.getId();
+						}
+						else
+						{
+							idReaction = target.getId();
+						}
+
+						console.log(map[idReaction]);
+						return map[idReaction].link!=undefined;
+					})
+					.append("svg:path")
+					.attr("class", String)
+					.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, panel, this.id);})
+					.attr("class", "link")
+					.attr("fill-rule", "evenodd")
+					.style("stroke",linkStyle.getStrokeColor())
+					.style("stroke-width",0.5)
+					.style('opacity', 0.1)
+					.style('stroke-dasharray', function(link){
+						var idReaction;
+						if(source.getBiologicalType()=="reaction"){
+							idReaction = source.getId();
+						}
+						else
+						{
+							idReaction = target.getId();
+						}
+
+						return map[idReaction].link.strokeDasharray;
+					})
+					.style('fill', function(link){
+						var idReaction;
+						if(source.getBiologicalType()=="reaction"){
+							idReaction = source.getId();
+						}
+						else
+						{
+							idReaction = target.getId();
+						}
+
+						return map[idReaction].link.fill;
+					})
+					.on("mouseover", function(d)
+					 {		
+						var reaction, metabolite, source, target;
+						if(d.getSource().getBiologicalType()=="reaction"){
+							reaction=d.getSource();
+							metabolite=d.getTarget();
+						}
+						else
+						{
+							reaction=d.getTarget();
+							metabolite=d.getSource();
+						}
+						
+						source = d.getSource();
+						target = d.getTarget();
+						
+						var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
+						var mapping = _metExploreViz.getMappingByName(mappingName);
+						var conditions = mapping.getConditions();	
+						var mapNode = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
+						if(mapNode != null){
+							var flux = mapNode.getMapValue();
+							if(flux<0){
+								target = d.getSource();
+								source = d.getTarget();
+							}
+						}
+						
+						var content = 
+							"Name: " + d.id 
+							+"<br/>Source: " + source.getName() 
+							+"<br/>Target: " + target.getName() +
+							((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
+						
+						content+='<br/>';
+						if(source==reaction){
+							content+=source.getDbIdentifier() + ' ---> ';
+							if(target.getSvg()!=undefined  && target.getSvg()!="undefined" && target.getSvg()!=""){
+								content+='<img src="resources/images/structure_metabolite/'+target.getSvg()+'"/>';
+							}
+							else
+							{
+								content+=target.getDbIdentifier();
+							}
+						}
+						else
+						{
+							if(source.getSvg()!=undefined  && source.getSvg()!="undefined" && source.getSvg()!=""){
+								content+='<img src="resources/images/structure_metabolite/'+source.getSvg()+'"/>';
+							}
+							else
+							{
+								content+=source.getDbIdentifier();
+							}
+							content+=' ---> ' + target.getDbIdentifier();
+						}
+
+						document.getElementById("tooltip2").innerHTML = content;
+						document.getElementById("tooltip2").classList.remove("hide");
+					 })
+					.on("mouseout", function(d)
+					 {
+						 document.getElementById("tooltip2").classList.add("hide");
+					 });
+			
+
+			
+				d3.select(this)
+					.filter(function(link){
+						var idReaction;
+						if(source.getBiologicalType()=="reaction"){
+							idReaction = source.getId();
+						}
+						else
+						{
+							idReaction = target.getId();
+						}
+						return map[idReaction].linkRev!=undefined;
+					})
+					.append("svg:path")
+					.attr("class", String)
+					.attr("id", "linkRev")
+					.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, panel, this.id);})
+					.attr("class", "link")
+					.attr("fill-rule", "evenodd")
+					.style("stroke",linkStyle.getStrokeColor())
+					.style("stroke-width",0.5)
+					.style('opacity', 0.1)
+					.style('stroke-dasharray', function(link){
+						var idReaction;
+						if(source.getBiologicalType()=="reaction"){
+							idReaction = source.getId();
+						}
+						else
+						{
+							idReaction = target.getId();
+						}
+						return map[idReaction].linkRev.strokeDasharray;
+					})
+					.style('fill', function(link){
+						var idReaction;
+						if(source.getBiologicalType()=="reaction"){
+							idReaction = source.getId();
+						}
+						else
+						{
+							idReaction = target.getId();
+						}
+						return map[idReaction].linkRev.fill;
+					})
+					.on("mouseover", function(d)
+					 {		
+						var reaction, metabolite, source, target;
+						if(d.getSource().getBiologicalType()=="reaction"){
+							reaction=d.getSource();
+							metabolite=d.getTarget();
+						}
+						else
+						{
+							reaction=d.getTarget();
+							metabolite=d.getSource();
+						}
+						
+						source = d.getSource();
+						target = d.getTarget();
+
+						var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
+						var mapping = _metExploreViz.getMappingByName(mappingName);
+						var conditions = mapping.getConditions();	
+						var mapNode = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
+						if(mapNode != null){
+							var flux = mapNode.getMapValue();
+							if(flux<0){
+								target = d.getSource();
+								source = d.getTarget();
+							}
+						}
+							
+
+						var content = 
+							"Name: " + d.id 
+							+"<br/>Source: " + source.getName() 
+							+"<br/>Target: " + target.getName() +
+							((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
+						
+						content+='<br/>';
+						if(source==reaction){
+							content+=source.getDbIdentifier() + ' ---> ';
+							if(target.getSvg()!=undefined  && target.getSvg()!="undefined" && target.getSvg()!=""){
+								content+='<img src="resources/images/structure_metabolite/'+target.getSvg()+'"/>';
+							}
+							else
+							{
+								content+=target.getDbIdentifier();
+							}
+						}
+						else
+						{
+							if(source.getSvg()!=undefined  && source.getSvg()!="undefined" && source.getSvg()!=""){
+								content+='<img src="resources/images/structure_metabolite/'+source.getSvg()+'"/>';
+							}
+							else
+							{
+								content+=source.getDbIdentifier();
+							}
+							content+=' ---> ' + target.getDbIdentifier();
+						}
+
+						document.getElementById("tooltip2").innerHTML = content;
+						document.getElementById("tooltip2").classList.remove("hide");
+					 })
+					.on("mouseout", function(d)
+					 {
+						document.getElementById("tooltip2").classList.add("hide");
+					 });	
+			
+			});
+		}
+		else
+		{
+			link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
+				.data(force.links(), function(d) { return d.source.id + "-" + d.target.id;})
+				.enter()
+				.insert("path",":first-child")
+	        	.attr("class", String)
+				.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, panel);})
+				.attr("class", "link")
+				.attr("fill-rule", "evenodd")
+				.attr("fill", function (d) {
+					if (d.interaction=="out")
+					 	return linkStyle.getMarkerOutColor();
+					else
+						return linkStyle.getMarkerInColor(); 
+				})
+				.style("stroke",linkStyle.getStrokeColor())
+				.style("stroke-width",0.5)
+	           .style("opacity",0.5)
+	           .attr("x1", source.x)
+	           .attr("y1", source.y)
+	           .attr("x2", target.x)
+	           .attr("y2", target.y);
+		}
+        
 	},
 
 	/*******************************************
@@ -2445,6 +2731,118 @@ metExploreD3.GraphNetwork = {
 						metExploreD3.GraphNetwork.removeANode(node, panel);
 					});
 
+/*		var session = _metExploreViz.getSessionById(panel);
+
+var force = session.getForce();
+var networkData = session.getD3Data();
+var linksToRemove = [];
+var vis = d3.select("#"+panel).select("#D3viz");
+
+// Remove the node from group to draw convex hulls  
+session.groups.forEach(function(group){
+	if(group.key==theNode.getCompartment()){
+		var index = group.values.indexOf(theNode);
+		
+		if(index!=-1)
+			group.values.splice(index, 1);
+	}
+
+	theNode.getPathways().forEach(function(pathway){
+		if(group.key==pathway){
+			var index = group.values.indexOf(theNode);
+			
+			if(index!=-1)
+				group.values.splice(index, 1);
+		}
+	}) 
+});
+
+vis.selectAll("path.link")
+	.filter(function(d) {
+		var source = d.source;
+		var target = d.target;
+		return (source==theNode || target==theNode);
+	})
+	.remove();
+
+	var nodes = vis.selectAll("g.node");
+
+	nodes
+		.filter(function(d) {
+			return theNode==d;
+		})
+		.transition().duration(1000).style("opacity", 0)
+		.remove();
+
+var selectedNodes = session.getSelectedNodes();
+var index = selectedNodes.indexOf(theNode.getId());
+if(index!=-1)
+	selectedNodes.splice(index, 1);
+
+setTimeout(
+	function() {
+		
+		for (i = 0; i < networkData.getLinks().length; i++) {
+			var d = networkData.getLink(i);
+			var source = d.source;
+			var target = d.target;
+
+			if(source==theNode || target==theNode)
+				linksToRemove.push(d);
+		}
+			
+		// Remove the node from group to draw convex hulls  
+		session.groups.forEach(function(group){
+			if(group.key==theNode.getCompartment()){
+				
+				var index = group.values.indexOf(theNode);
+				if(index!=-1)
+					group.values.splice(index, 1);
+				
+				if(group.values.length==0){
+				 	index = session.groups.indexOf(group);
+					if(index!=-1){
+						session.groups.splice(index, 1);
+						d3.select("#"+panel).select("#D3viz")
+							.select("path#"+group.key)
+							.remove();
+					}
+				}
+			}
+			theNode.getPathways().forEach(function(pathway){
+				if(group.key==pathway){
+					var index = group.values.indexOf(theNode);
+					if(index!=-1)
+						group.values.splice(index, 1);
+					
+					if(group.values.length==0){
+					 	index = session.groups.indexOf(group);
+						if(index!=-1){
+							session.groups.splice(index, 1);
+							d3.select("#"+panel).select("#D3viz")
+								.select("path#"+group.key)
+								.remove();
+						}
+					}
+				}
+			}) 
+		});
+
+		var index = force.nodes().indexOf(theNode);
+		if(index!=-1)
+			force.nodes().splice(index, 1);
+	
+
+		for (i = 0; i < linksToRemove.length; i++) {
+			var link = linksToRemove[i];
+			var index = force.links().indexOf(link);
+
+			if(index!=-1)
+				force.links().splice(index, 1);
+		}
+	}
+, 1);*/
+
             	metExploreD3.hideMask(myMask);
 
             	metExploreD3.GraphNetwork.removeIsolatedNode(panel);
@@ -2457,7 +2855,7 @@ metExploreD3.GraphNetwork = {
 							force.start();
 					}	
 				}
-       		 }, 100);
+       		 }, 1);
        	}		
        	metExploreD3.GraphNetwork.initCentroids();	
 	},
@@ -2702,8 +3100,8 @@ metExploreD3.GraphNetwork = {
 						force.links().splice(index, 1);
 				}
 			}
-		, 10);
-		metExploreD3.GraphNetwork.tick('viz');	
+		, 1);
+		// metExploreD3.GraphNetwork.tick('viz');	
 	},
 	
 		/*******************************************
@@ -2911,6 +3309,10 @@ metExploreD3.GraphNetwork = {
 				.y( yScale )
 				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
+						
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+
 					var session = _metExploreViz.getSessionById(panel);
 	        		
 	        		if(d3.event.sourceEvent !=null)
@@ -2957,6 +3359,10 @@ metExploreD3.GraphNetwork = {
 					.y( yScale )
 					.scaleExtent([ 0.01, 30 ])
 					.on("zoom", function(e){
+						
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+
 						var session = _metExploreViz.getSessionById(this.parentNode.id);
 		        		
 		        		if(d3.event.sourceEvent !=null)
@@ -3444,6 +3850,10 @@ metExploreD3.GraphNetwork = {
 				.y( yScale )
 				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
+						
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+
 					var session = metExploreD3.getSessionById(panel);
 	        		
 	        		if(d3.event.sourceEvent !=null)
@@ -3480,6 +3890,11 @@ metExploreD3.GraphNetwork = {
 					.y( yScale )
 					.scaleExtent([ 0.01, 30 ])
 					.on("zoom", function(e){
+						
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+
+									
 						var session = metExploreD3.getSessionById(this.parentNode.id);
 		        		
 		        		if(d3.event.sourceEvent !=null)

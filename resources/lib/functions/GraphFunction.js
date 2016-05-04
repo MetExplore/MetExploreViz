@@ -48,7 +48,7 @@ metExploreD3.GraphFunction = {
 
     	var color = d3.scale.category20();
 		var color = d3.scale.linear()
-			.domain([0, maxDistance])
+			.domain([0, 4])
 			.range(["blue", "yellow"]);
 
 
@@ -58,7 +58,69 @@ metExploreD3.GraphFunction = {
 		if(func!=undefined){
 			func();
 		}
+    },
+
+    test3 : function(){
 		
+		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
+		
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+			.on("click", function(node){
+				
+				var array = []; 
+				
+			        console.log(_metExploreViz.getSessionById('viz').getSelectedNodes());
+				_metExploreViz.getSessionById('viz').getSelectedNodes().forEach(function(anodeid){
+					var theNode = networkData.getNodeById(anodeid);
+					var graph = metExploreD3.GraphFunction.bfs(theNode);
+					array.push(graph);
+				});
+				
+				var finalGraph = array[0];
+				for (var key in finalGraph.nodes) {	
+
+				    var arrayVal = 
+					    array
+					    	.filter(function(graph){
+					    		return graph.nodes[key].distance !="INFINITY";
+					    	})
+						    .map(function(graph){
+					        	return graph.nodes[key].distance; 
+					        });
+
+			        finalGraph.nodes[key].distance = Math.min.apply(Math, arrayVal) ;   			    
+			       	if(finalGraph.nodes[key].distance=="Infinity") finalGraph.nodes[key].distance=10000;
+			       	
+				};
+				metExploreD3.GraphFunction.colorDistanceOnNode(finalGraph, setCharge);
+		});
+		function setCharge(){
+			var color = d3.scale.linear()
+				.domain([0, 1, 2, 3])
+				.range([-600, -500, -400, -30]);
+
+			metExploreD3.getGlobals().getSessionById('viz').getForce().charge(function(node){
+				var value = node.distance;
+				if(node.distance>3) 
+					value = 3;
+				var val = color(value);
+				return val;
+			});	
+		};
+    },
+    testFlux : function(){
+		
+		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
+		
+			var color = d3.scale.linear()
+				.domain([0, 0.1, 0.2, 0.5, 1])
+				.range([-30, -50, -60,-500 -600]);
+
+			metExploreD3.getGlobals().getSessionById('viz').getForce().charge(function(node){
+				var value = d3.select('g#node'+node.getId()+'.node').attr('opacity');
+				var val = color(value);
+				return val;
+			});	
 		
     },
     test : function(){

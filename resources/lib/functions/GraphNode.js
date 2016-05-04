@@ -711,6 +711,7 @@ metExploreD3.GraphNode = {
 		metExploreD3.GraphNode.node = d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.data(networkData.getNodes()).enter()
 				.append("svg:g").attr("class", "node")
+				.attr("id", function(node){ return "node"+node.getId(); })
 				.call(node_drag)
 				.style("fill", "white")
 				// Here it's the position by default for the beginning of force algorithm
@@ -1311,23 +1312,6 @@ metExploreD3.GraphNode = {
 				return "translate(" + d.x + "," + d.y + ") scale("+scale+")";
 			});
 
-		var scale = d3.scale.linear()
-			.domain([0, 4])
-    		.range(["#e8edf2","#0A549D"]);
-
-    	var opacity = d3.scale.linear()
-			.domain([0, 4])
-    		.range([0.2, 1]);
-    	
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-			.selectAll("g.node")
-			.filter(function(node){
-				return node.value != undefined;
-			})
-			//.attr("transform", function(node){return "translate("+node.x+", "+node.y+") scale("+ node.value/2 +")";})
-			.style("fill", function(node){ return scale(node.value); })
-			.style("opacity", function(node){ return opacity(node.value); });
-
 		if(panel=="viz"){
 			var sessionsStore = _metExploreViz.getSessionsSet();
 			var session = _metExploreViz.getSessionById(panel);
@@ -1513,6 +1497,7 @@ metExploreD3.GraphNode = {
 		metExploreD3.GraphNode.node = d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.data(networkData.getNodes()).enter()
 				.append("svg:g").attr("class", "node")
+				.attr("id", function(node){ return "node"+node.getId(); })
 				.call(node_drag)
 				.style("fill", function(d) { // Here we choose the color of the node if it's selected or not
 					if (d.isSelected() == false) {
