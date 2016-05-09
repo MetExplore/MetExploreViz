@@ -54,6 +54,23 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			scope:me
 		});
 
+		view.lookupReference('selectConditionType').on({
+			change : function(that, newType, old){
+				if(old != null){
+					if(newType=="Flux"){
+						view.lookupReference('chooseFluxType').setHidden(false);
+						view.lookupReference('chooseFluxType').setDisabled(false);
+					}
+					else
+					{
+						view.lookupReference('chooseFluxType').setHidden(true);
+						view.lookupReference('chooseFluxType').setDisabled(true);
+					}
+				}	
+			},
+			scope:me
+		});
+
 		view.lookupReference('addCondition').on({
 			click : function() 
 			{	
@@ -238,7 +255,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			if(newMapping!=undefined)
 				this.removeGraphMapping(oldMapping);
 
-			if(session.getMappingDataType()=="Continuous"){
+			if(session.getMappingDataType()=="Continuous", session.getMappingDataType()=="Flux"){
 				var colorStore = session.getColorMappingsSet();        
 		        var newColor = session.getColorMappingsSetLength()==0;
 		        
@@ -247,7 +264,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		        }
 		    }
 		    
-
 			var container = Ext.getCmp('panel'+session.isMapped());
 			
 			if(container!=undefined){				
@@ -262,7 +278,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				if(Ext.getCmp("selectConditionForm").down("#undefined")!=null)
 					Ext.getCmp("selectConditionForm").down("#undefined").close();
 			}
-			
+			session.setMappingDataType(null);
+
 			session.setMapped('false');
 		}
 	},
@@ -286,25 +303,32 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	* Initialisation of mapping
 	*/
 	map : function(){
+		var me 		= this,
+		viewModel   = me.getViewModel(),
+		view      	= me.getView();
 		var selectCondition = Ext.getCmp('selectCondition');
 		var selectMapping = Ext.getCmp('selectMappingVisu');
 		var selectedCondition = selectCondition.getValue();
 		var selectedMapping = selectMapping.getValue();
 		var dataType = Ext.getCmp("selectConditionType").getValue();
-		
-		this.graphMapping(dataType, selectedCondition, selectedMapping);
+		if(view.lookupReference('chooseFluxType').items.get("unique").getValue())
+			var fluxType = 'Unique';
+		else
+			var fluxType = 'Compare';
+
+		this.graphMapping(dataType, selectedCondition, selectedMapping, fluxType);
 	},
 
 	// Do Mapping in function of data type
-	graphMapping : function(dataType, conditionName, mappingName) {
+	graphMapping : function(dataType, conditionName, mappingName, fluxType) {
 
 		var session = _metExploreViz.getSessionById('viz');
 		session.setActiveMapping(mappingName);
 		if(dataType=="Continuous")
 			metExploreD3.GraphMapping.graphMappingContinuousData(mappingName, conditionName);
 
-		// if(dataType=="Binary")
-		// 	metExploreD3.GraphMapping.graphMappingBinary(mappingName, conditionName);
+		if(dataType=="Flux")
+		 	metExploreD3.GraphMapping.graphMappingFlux(mappingName, conditionName, fluxType);
 			
 		if(dataType=="Discrete")
 			metExploreD3.GraphMapping.graphMappingDiscreteData(mappingName, conditionName);
@@ -318,6 +342,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	* @param {} type : data type of mapping values
 	*/
 	addMappingCaptionForm : function(type) {
+		var me 		= this,
+		viewModel   = me.getViewModel(),
+		view      	= me.getView();
+		
 		// We add form corresponding to the mapping data type
 		var selectConditionForm = Ext.getCmp('selectConditionForm');
 	    var selectCondition = Ext.getCmp('selectCondition');
@@ -491,18 +519,37 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 						        }
 							});
 							
-							if(parseFloat(networkVizSession.getColorMappingsSet()[0].getName())<parseFloat(networkVizSession.getColorMappingsSet()[1].getName())){
-								maxValue = parseFloat(networkVizSession.getColorMappingsSet()[1].getName());
-								minValue = parseFloat(networkVizSession.getColorMappingsSet()[0].getName());
+							if(networkVizSession.getColorMappingsSet()[1]!=undefined){
+								if(parseFloat(networkVizSession.getColorMappingsSet()[0].getName())<parseFloat(networkVizSession.getColorMappingsSet()[1].getName())){
+									maxValue = parseFloat(networkVizSession.getColorMappingsSet()[1].getName());
+								}
+								else
+								{
+									maxValue = parseFloat(networkVizSession.getColorMappingsSet()[0].getName());
+									minValue = parseFloat(networkVizSession.getColorMappingsSet()[1].getName());
+								}
 							}
 							else
 							{
-								maxValue = parseFloat(networkVizSession.getColorMappingsSet()[0].getName());
-								minValue = parseFloat(networkVizSession.getColorMappingsSet()[1].getName());
+								color = parseFloat(networkVizSession.getColorMappingsSet()[0].getName());
 							}
 							
-							
-							metExploreD3.GraphMapping.graphMappingContinuousData(mapp, selectedCondition, networkVizSession.getColorMappingById(minValue).getValue(), networkVizSession.getColorMappingById(maxValue).getValue());
+							if(type=="continuous"){
+								metExploreD3.GraphMapping.graphMappingContinuousData(mapp, selectedCondition, networkVizSession.getColorMappingById(minValue).getValue(), networkVizSession.getColorMappingById(maxValue).getValue());
+							}
+							else
+							{
+								if(view.lookupReference('chooseFluxType').items.get("unique").getValue())
+								{
+									var fluxType = 'Unique';
+									metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(color).getValue());
+								}	
+								else
+								{
+									var fluxType = 'Compare';
+									metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(maxValue).getValue(), networkVizSession.getColorMappingById(minValue).getValue());
+								}
+							}
 						}
 				    }
 				});

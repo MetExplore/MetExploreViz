@@ -28,9 +28,9 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 				me.removeMapping(mapping);
 			},
 			change : function(that, newMapping, old){
-				if(view.getStore().getCount()>0){
+				// if(view.getStore().getCount()>0){
 					var component = Ext.getCmp("selectConditionForm");
-
+					
 			        if(component!= undefined){
 			        	_metExploreViz.getSessionById('viz').setActiveMapping(newMapping);
 			            component.fireEvent("closeMapping", newMapping);
@@ -46,7 +46,7 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 							}
 						}
 			        }
-				}	
+				// }	
 			},
 			collapse : function(field, eOpts){
 				var mappings = _metExploreViz.getMappingsSet();
@@ -72,7 +72,7 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 				component.expand();
 				var comboMapping = Ext.getCmp('selectMappingVisu');
 				comboMapping.setValue(mappingJSON.getName());
-				// console.log(comboMapping.getView());
+				
 				var store = comboMapping.getStore();
 	            //take an array to store the object that we will get from the ajax response
 				var records = [];

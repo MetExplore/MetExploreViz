@@ -711,6 +711,7 @@ metExploreD3.GraphNode = {
 		metExploreD3.GraphNode.node = d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.data(networkData.getNodes()).enter()
 				.append("svg:g").attr("class", "node")
+				.attr("id", function(node){ return "node"+node.getId(); })
 				.call(node_drag)
 				.style("fill", "white");
 				// Here it's the position by default for the beginning of force algorithm
@@ -732,7 +733,10 @@ metExploreD3.GraphNode = {
 				var transform = d3.select(this).attr("transform");
 				var scale=transform.substring(transform.indexOf("scale"),transform.length);
 				var scaleVal=scale.substring(6, scale.indexOf(')'));		
-				
+
+				if(isNaN(scaleVal))
+					scaleVal=1;
+
 				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
 				
@@ -742,33 +746,33 @@ metExploreD3.GraphNode = {
 						
 					links.filter(function(link){return d.getId()==link.getSource().getId();})
 						.style("stroke", "green")
-						.each(function(link){
-							var last = links[0][links.size()-1];
-							this.parentNode.insertBefore(this, last);
-						}); 	
+						// .each(function(link){
+						// 	var last = links[0][links.size()-1];
+						// 	this.parentNode.insertBefore(this, last);
+						// }); 	
 					 
 					 links.filter(function(link){return d.getId()==link.getTarget().getId();})
 						.style("stroke", "red")
-						.each(function(link){
-							var last = links[0][links.size()-1];
-							this.parentNode.insertBefore(this, last);
-						});  	
+						// .each(function(link){
+						// 	var last = links[0][links.size()-1];
+						// 	this.parentNode.insertBefore(this, last);
+						// });  	
 				}
 				else
 				{
 					links.filter(function(link){return d.getId()==link.getSource().getId();})
 						.style("stroke", "red")
-						.each(function(link){
-							var last = links[0][links.size()-1];
-							this.parentNode.insertBefore(this, last);
-						}); 	
+						// .each(function(link){
+						// 	var last = links[0][links.size()-1];
+						// 	this.parentNode.insertBefore(this, last);
+						// }); 	
 					 
 					links.filter(function(link){return d.getId()==link.getTarget().getId();})
 						.style("stroke", "green")
-						.each(function(link){
-							var last = links[0][links.size()-1];
-							this.parentNode.insertBefore(this, last);
-						}); 
+						// .each(function(link){
+						// 	var last = links[0][links.size()-1];
+						// 	this.parentNode.insertBefore(this, last);
+						// }); 
 				} 
 			})
 			.on("mouseover", function(d) { 
@@ -818,8 +822,10 @@ metExploreD3.GraphNode = {
 
 	        	var transform = d3.select(this).attr("transform");
 				var scale=transform.substring(transform.indexOf("scale"),transform.length);
-				var scaleVal=scale.substring(6, scale.indexOf(')'));		
-				
+				var scaleVal=scale.substring(6, scale.indexOf(')'));
+				if(isNaN(scaleVal))
+						scaleVal=1;
+							
 				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
 
@@ -863,6 +869,9 @@ metExploreD3.GraphNode = {
 				var scale=transform.substring(transform.indexOf("scale"),transform.length);
 				var scaleVal=scale.substring(6, scale.indexOf(')'));		
 				
+				if(isNaN(scaleVal))
+					scaleVal=1;
+			
 				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
 			})
@@ -941,7 +950,9 @@ metExploreD3.GraphNode = {
 	        	var transform = d3.select(this).attr("transform");
 				var scale=transform.substring(transform.indexOf("scale"),transform.length);
 				var scaleVal=scale.substring(6, scale.indexOf(')'));		
-				
+				if(isNaN(scaleVal))
+						scaleVal=1;
+					
 				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
 
@@ -1513,6 +1524,7 @@ metExploreD3.GraphNode = {
 		metExploreD3.GraphNode.node = d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.data(networkData.getNodes()).enter()
 				.append("svg:g").attr("class", "node")
+				.attr("id", function(node){ return "node"+node.getId(); })
 				.call(node_drag)
 				.style("fill", function(d) { // Here we choose the color of the node if it's selected or not
 					if (d.isSelected() == false) {
@@ -1537,40 +1549,45 @@ metExploreD3.GraphNode = {
 		        	var transform = d3.select(this).attr("transform");
 					var scale=transform.substring(transform.indexOf("scale"),transform.length);
 					var scaleVal=scale.substring(6, scale.indexOf(')'));		
-				
+					if(isNaN(scaleVal))
+						scaleVal=1;
+					
+					var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+					d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
+					
 					var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
 
 					if(d.getBiologicalType()=="reaction"){
 							
 						links.filter(function(link){return d.getId()==link.getSource().getId();})
 							.style("stroke", "green")
-							.each(function(link){
-								var last = links[0][links.size()-1];
-								this.parentNode.insertBefore(this, last);
-							}); 	
+							// .each(function(link){
+							// 	var last = links[0][links.size()-1];
+							// 	this.parentNode.insertBefore(this, last);
+							// }); 	
 						 
 						 links.filter(function(link){return d.getId()==link.getTarget().getId();})
 							.style("stroke", "red")
-							.each(function(link){
-								var last = links[0][links.size()-1];
-								this.parentNode.insertBefore(this, last);
-							});  	
+							// .each(function(link){
+							// 	var last = links[0][links.size()-1];
+							// 	this.parentNode.insertBefore(this, last);
+							// });  	
 					}
 					else
 					{
 						links.filter(function(link){return d.getId()==link.getSource().getId();})
 							.style("stroke", "red")
-							.each(function(link){
-								var last = links[0][links.size()-1];
-								this.parentNode.insertBefore(this, last);
-							}); 	
+							// .each(function(link){
+							// 	var last = links[0][links.size()-1];
+							// 	this.parentNode.insertBefore(this, last);
+							// }); 	
 						 
 						links.filter(function(link){return d.getId()==link.getTarget().getId();})
 							.style("stroke", "green")
-							.each(function(link){
-								var last = links[0][links.size()-1];
-								this.parentNode.insertBefore(this, last);
-							}); 
+							// .each(function(link){
+							// 	var last = links[0][links.size()-1];
+							// 	this.parentNode.insertBefore(this, last);
+							// }); 
 					} 
 
 				})
@@ -1654,6 +1671,9 @@ metExploreD3.GraphNode = {
 					var scale=transform.substring(transform.indexOf("scale"),transform.length);
 					var scaleVal=scale.substring(6, scale.indexOf(')'));		
 					
+					if(isNaN(scaleVal))
+						scaleVal=1;
+			
 					var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 					d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
 		        	

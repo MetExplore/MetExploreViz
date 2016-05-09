@@ -56,6 +56,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
         items:[{
             id:'selectConditionType',
             xtype:'selectConditionType',
+            reference:'selectConditionType',
             disabled:true
         },{
             xtype:'button',
@@ -70,6 +71,28 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
             padding:'0 0 0 0'
         }]
     },{
+            xtype      : 'fieldcontainer',
+            fieldLabel : 'Fluxes mapped',
+            reference:'chooseFluxType',
+            margin:'5 5 5 5',
+            defaultType: 'radiofield',
+            disabled:true,
+            hidden:true,
+            items: [
+                {
+                    boxLabel  : 'Only one flux',
+                    name      : 'display',
+                    inputValue: 'Unique',
+                    checked   : true,
+                    id        : 'unique'
+                }, {
+                    boxLabel  : 'Two fluxes',
+                    name      : 'display',
+                    inputValue: 'Compare',
+                    id        : 'compare'
+                }
+            ]
+        },{
             xtype: 'menuseparator'
     }
     ]  

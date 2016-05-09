@@ -437,7 +437,6 @@ var metExploreD3 = {
     }, 
     setGeneralStyle : function(store){
         _metExploreViz.generalStyle = store;
-        console.log("setGeneralStyle");
         metExploreD3.fireEvent("generalStyleForm", "setGeneralStyle");
         metExploreD3.fireEvent("vizIdConvexHullMenu", "setGeneralStyle");
         metExploreD3.fireEvent("buttonImportToNetworkFromWebsite", "setGeneralStyle");

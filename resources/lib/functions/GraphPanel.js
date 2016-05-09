@@ -678,7 +678,6 @@ metExploreD3.GraphPanel = {
 
 		if(jsonParsed.generalStyle)
 		{
-			console.log(jsonParsed.generalStyle.clustered);
 			var style = new GeneralStyle(jsonParsed.generalStyle.websiteName, jsonParsed.generalStyle.colorMinMappingContinuous, jsonParsed.generalStyle.colorMaxMappingContinuous, jsonParsed.generalStyle.maxReactionThreshold, jsonParsed.generalStyle.displayLabelsForOpt, jsonParsed.generalStyle.displayLinksForOpt, jsonParsed.generalStyle.displayConvexhulls, jsonParsed.generalStyle.clustered);
 			metExploreD3.setGeneralStyle(style);
 		}
