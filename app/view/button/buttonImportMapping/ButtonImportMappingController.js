@@ -50,7 +50,7 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 	    for (var i = lines.length - 1; i >= 0; i--) {
 	    	lines[i] = lines[i].split('\t');
 	    };
-
+	    metExploreD3.GraphMapping.mapNodeData(mapping, lines);
 	    metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
 	}
 });
