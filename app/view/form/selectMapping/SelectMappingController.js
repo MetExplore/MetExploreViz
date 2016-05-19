@@ -62,8 +62,7 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 	},
 
 	initMapping:function(mappingJSON){
-		
-		 if(_metExploreViz.getMappingsLength()!=0 ){
+		if(_metExploreViz.getMappingsLength()!=0 ){
 	    	
 	    	var component = Ext.getCmp('comparisonSidePanel');
 	        if(component!= undefined){

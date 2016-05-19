@@ -117,7 +117,7 @@ metExploreD3.GraphLink = {
 		var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
 		var mapping = _metExploreViz.getMappingByName(_metExploreViz.getSessionById('viz').getActiveMapping());
 		var conditions = mapping.getConditions();	
-		var map1, map2
+		var map1, map2;
 		var minValue= undefined;
 		var maxValue = undefined;
 
@@ -143,36 +143,44 @@ metExploreD3.GraphLink = {
 			var diffX = dX/Math.abs(dX);
 			var diffY = dY/Math.abs(dY);
 			if(linkId=='linkRev'){
-				if(map2!=null){
-					if(!isNaN(map2.getMapValue()))
-					{
-						var value = scaleValue(map2.getMapValue());
-						if(value==-1 || value==1)
-							value=0;
-
-						if(value<0)
-							path = pathSimple(target, source, value);
-						else
-							path = pathSimpleOtherSide(source, target, value);	
-					}
+				if(map2==null)
+					var value = 0	
+				else
+				{
+					if(isNaN(map2.getMapValue()))
+						var value = 0	
+					else
+						var value = scaleValue(map2.getMapValue());		
 				}
+				
+				if(value==-1 || value==1)
+					value=0;
+
+				if(value<0)
+					path = pathSimple(target, source, value);
+				else
+					path = pathSimpleOtherSide(source, target, value);	
 				
 			}
 			else
 			{
-				if(map1!=null){
-					if(!isNaN(map1.getMapValue()))
-					{
-						var value = scaleValue(map1.getMapValue());
-						if(value==-1 || value==1)
-							value=0;
-						
-						if(value<0)
-							path = pathSimpleOtherSide(target, source, value);	
-						else
-							path = pathSimple(source, target, value);
-					}
+				if(map1==null)
+					var value = 0;		
+				else
+				{
+					if(isNaN(map1.getMapValue()))
+						var value = 0;		
+					else
+						var value = scaleValue(map1.getMapValue());		
 				}
+
+				if(value==-1 || value==1)
+					value=0;
+				
+				if(value<0)
+					path = pathSimpleOtherSide(target, source, value);	
+				else
+					path = pathSimple(source, target, value);
 			}
 
 			return path;
