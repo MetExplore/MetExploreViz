@@ -32,7 +32,12 @@ metExploreD3.GraphPanel = {
 			d3.select("#metexplore").text('');
 			d3.select("#"+panel).select("#D3viz").attr('width', $("#"+panel).width()); //max width
 	        d3.select("#"+panel).select("#D3viz").attr('height', $("#"+panel).height()); //max height
-		
+			
+			d3.select("#"+panel)
+				.select("#D3viz")
+				.select("#foreignObject")	
+				.attr("transform", "translate("+($("#"+panel).width()-300)+",100) scale(1)")
+
 			// Redefine Zoom and brush
 			var scaleZ = scale.getZoomScale();
 			var xScale =
@@ -295,6 +300,12 @@ metExploreD3.GraphPanel = {
 		var session = _metExploreViz.getSessionById(panel);
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
+
+		d3.select("#"+panel)
+			.select("#D3viz")
+			.select("foreignObject")
+			.attr("x", w-300);
+		
 		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0][0]!=null
 			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut")[0][0]!=null
 			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand")[0][0]!=null)
@@ -311,6 +322,7 @@ metExploreD3.GraphPanel = {
 				.select("#D3viz")
 				.select("#buttonZoomIn")
 				.attr("transform", "translate("+deltaX+",0) scale(1)");
+				
 			x = d3
 				.select("#"+panel)
 				.select("#D3viz")
@@ -511,7 +523,6 @@ metExploreD3.GraphPanel = {
 		}
 
 		networkVizSession.reset();
-		networkVizSession.setAnimated(false);
 
 		var jsonParsed = Ext.decode(json);
 
@@ -529,6 +540,13 @@ metExploreD3.GraphPanel = {
 				_metExploreViz.addMapping(mapping);
 			});
 		}		
+
+		if(jsonParsed.generalStyle)
+		{
+			var oldGeneralStyle = metExploreD3.getGeneralStyle();                   
+			var style = new GeneralStyle(oldGeneralStyle.getWebsiteName(), jsonParsed.generalStyle.colorMinMappingContinuous, jsonParsed.generalStyle.colorMaxMappingContinuous, jsonParsed.generalStyle.maxReactionThreshold, jsonParsed.generalStyle.displayLabelsForOpt, jsonParsed.generalStyle.displayLinksForOpt, jsonParsed.generalStyle.displayConvexhulls, jsonParsed.generalStyle.clustered,  oldGeneralStyle.isDisplayedCaption(), oldGeneralStyle.hasEventForNodeInfo(), oldGeneralStyle.loadButtonIsHidden(), oldGeneralStyle.windowsAlertIsDisable());
+			metExploreD3.setGeneralStyle(style);
+		}
 
 		var sessions = jsonParsed.sessions;				
 		for (var key in sessions) {
@@ -571,6 +589,13 @@ metExploreD3.GraphPanel = {
 				});
 			}	
 
+			var anim = sessions[key].animated;
+
+			if(!anim)
+				anim = false;
+
+			networkVizSession.setAnimated(anim);
+
 			var networkData = new NetworkData(key);
 			networkData.cloneObject(sessions[key].d3Data);
 
@@ -607,15 +632,7 @@ metExploreD3.GraphPanel = {
 			if(key=='viz') _metExploreViz.setInitialData(_metExploreViz.cloneNetworkData(networkData));
 			networkVizSession.setD3Data(networkData);
 
-			if(sessions[key].mapped)
-			{
-				networkVizSession.setMapped(sessions[key].mapped);
-			}	
-
-			if(sessions[key].mappingDataType)
-			{
-				networkVizSession.setMappingDataType(sessions[key].mappingDataType);
-			}	
+			
 
 			if(sessions[key].selectedNodes)
 			{
@@ -624,12 +641,8 @@ metExploreD3.GraphPanel = {
 				});
 			}			
 			
-			if(sessions[key].activeMapping)
-			{
-				networkVizSession.setActiveMapping(sessions[key].activeMapping);
-			}
 
-			if(_metExploreViz.getMappingsLength()>0 && key=="viz" && metExploreD3.getGeneralStyle().windowsAlertIsDisable())
+			if(_metExploreViz.getMappingsLength()>0 && key=="viz" && !metExploreD3.getGeneralStyle().windowsAlertIsDisable())
 			{
 				metExploreD3.displayMessageYesNo("Mapping",'Do you want keep mappings.',function(btn){
 	                if(btn=="yes")
@@ -654,6 +667,21 @@ metExploreD3.GraphPanel = {
 	           });
 				
 			}
+
+			if(sessions[key].mapped)
+			{
+				networkVizSession.setMapped(sessions[key].mapped);
+			}	
+
+			if(sessions[key].mappingDataType)
+			{
+				networkVizSession.setMappingDataType(sessions[key].mappingDataType);
+			}	
+			
+			if(sessions[key].activeMapping)
+			{
+				networkVizSession.setActiveMapping(sessions[key].activeMapping);
+			}
 		}
 
 
@@ -674,12 +702,6 @@ metExploreD3.GraphPanel = {
 		{
 			var style = new ReactionStyle(jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.label, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth);
 			metExploreD3.setReactionStyle(style);
-		}
-
-		if(jsonParsed.generalStyle)
-		{
-			var style = new GeneralStyle(jsonParsed.generalStyle.websiteName, jsonParsed.generalStyle.colorMinMappingContinuous, jsonParsed.generalStyle.colorMaxMappingContinuous, jsonParsed.generalStyle.maxReactionThreshold, jsonParsed.generalStyle.displayLabelsForOpt, jsonParsed.generalStyle.displayLinksForOpt, jsonParsed.generalStyle.displayConvexhulls, jsonParsed.generalStyle.clustered);
-			metExploreD3.setGeneralStyle(style);
 		}
 
 		for (var key in sessions) {

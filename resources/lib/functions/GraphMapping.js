@@ -398,7 +398,7 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	* @param {} func : callback function
 	*/
-	mapFluxes : function(mappingName, conditionName, colorMax, colorMin, func) {
+	mapFluxes : function(mappingName, conditionName, colorMax, colorMin, useOpacity, func) {
 		var mapping = _metExploreViz.getMappingByName(mappingName);
 		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
 	
@@ -469,12 +469,20 @@ metExploreD3.GraphMapping = {
 	          			if(colorMin==false)
 		        			colorMin=generalStyle.getColorMinMappingContinuous();
 	          		}
+	          		else
+	          		{
+	          			generalStyle.setMinColorMappingContinuous(colorMin);
+	          		}
 
 		        	if(colorMax==undefined){
 		        		colorMax = metExploreD3.GraphUtils.colorNameToHex(generalStyle.getColorMaxMappingContinuous());
 	          			if(colorMax==false)
 		        			colorMax=generalStyle.getColorMaxMappingContinuous();
 		        	}
+	          		else
+	          		{
+	          			generalStyle.setMaxColorMappingContinuous(colorMax);
+	          		}
 		          	
 		          	var vis = d3.select("#viz").select("#D3viz");
 		          	          	
@@ -486,9 +494,20 @@ metExploreD3.GraphMapping = {
 			    	if(conditions[1]==conditionName)
 			    		colorNode = colorMin;
 
+			    	if(useOpacity)
+			    	{
+			    		var quart = 0.5;
+			    		var midl = 0.2;
+			    	}
+			    	else
+			    	{
+			    		var quart = 1;
+			    		var midl = 1;
+			    	}
+
 			    	var opacity = d3.scale.linear()
-						.domain([-4, 1, 0, 1, 4])
-			    		.range([1, 0.5, 0.2, 0.5, 1]);
+						.domain([-4, -1, 0, 1, 4])
+			    		.range([1, quart, midl, quart, 1]);
 
 			    	var scaleValue = d3.scale.linear()
 						.domain([-maxValue, 0, maxValue])
@@ -524,13 +543,8 @@ metExploreD3.GraphMapping = {
 										_MyThisGraphNode.addText(d, 'viz', reactionStyle);
 										d3.select(this)
 											.transition().duration(2000)
-											.attr("mapped", colorNode)
-											.style("fill", colorNode)
 											.style("opacity", opacity(scaleValue(parseFloat(mapVal))));
-
-										
-				                        var color = metExploreD3.GraphUtils.chooseTextColor(colorNode);
-										d3.select(this).select('text').style("fill", color);  
+ 
 										session.addSelectedNode(d.getId());    	
 									}
 					            }
@@ -618,7 +632,7 @@ metExploreD3.GraphMapping = {
 		                    	}
 								else
 								{
-									d3.select(this) .style("opacity", opacity(scaleValue(parseFloat(mapVal))));
+									d3.select(this).style("opacity", opacity(scaleValue(parseFloat(mapVal))));
 								}
 								if(metabolite.getIsSideCompound())
 										d3.select(this).style("opacity", 0.1);
@@ -654,7 +668,7 @@ metExploreD3.GraphMapping = {
 								}
 								else
 								{
-									d3.select(this) .style("opacity", opacity(scaleValue(parseFloat(mapVal))));
+									d3.select(this).style("opacity", opacity(scaleValue(parseFloat(mapVal))));
 								}
 								if(metabolite.getIsSideCompound())
 										d3.select(this) .style("opacity", 0.1);
@@ -693,7 +707,7 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	* @param {} func : callback function
 	*/
-	mapUniqueFlux : function(mappingName, conditionName, colorMax, func) {
+	mapUniqueFlux : function(mappingName, conditionName, colorMax, useOpacity, func) {
 		var mapping = _metExploreViz.getMappingByName(mappingName);
 		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
 		
@@ -759,7 +773,9 @@ metExploreD3.GraphMapping = {
 		          	
 		          	if(colorMax==undefined)
 		        		colorMax=generalStyle.getColorMaxMappingContinuous();
-
+		        	else
+		          		generalStyle.setMaxColorMappingContinuous(colorMax);
+	          		
 		          	var vis = d3.select("#viz").select("#D3viz");
 		          	          	
 					var colorStore = session.getColorMappingsSet();
@@ -769,9 +785,20 @@ metExploreD3.GraphMapping = {
 						.domain([-4, -1, 1, 4])
 			    		.range([colorMax, colorMax, colorMax, colorMax]);
 
+
+			    	if(useOpacity)
+			    	{
+			    		var quart = 0.5;
+			    		var midl = 0.2;
+			    	}
+			    	else
+			    	{
+			    		var quart = 1;
+			    		var midl = 1;
+			    	}
 			    	var opacity = d3.scale.linear()
-						.domain([-4, 1, 0, 1, 4])
-			    		.range([1, 0.5, 0.2, 0.5, 1]);
+						.domain([-4, -1, 0, 1, 4])
+			    		.range([1, quart, midl, quart, 1]);
 
 			    	var colorMin = d3.scale.linear()
 						.domain([-4, -1, 1, 4])
@@ -803,13 +830,8 @@ metExploreD3.GraphMapping = {
 												_MyThisGraphNode.addText(d, 'viz', reactionStyle);
 												d3.select(this)
 													.transition().duration(2000)
-													.attr("mapped", colorNode(parseFloat(scaleValue(map.getMapValue()))))
-													.style("fill", colorNode(scaleValue(parseFloat(map.getMapValue()))))
 													.style("opacity", opacity(scaleValue(parseFloat(map.getMapValue()))));
 
-												
-						                        var color = metExploreD3.GraphUtils.chooseTextColor(colorNode(parseFloat(scaleValue(map.getMapValue()))));
-												d3.select(this).select('text').style("fill", color);  
 												session.addSelectedNode(d.getId());    	
 							                }
 										}
@@ -1053,16 +1075,16 @@ metExploreD3.GraphMapping = {
 	},
 
 
- 	graphMappingFlux : function(mappingName, conditionName, fluxType, colorMax, colorMin){
+ 	graphMappingFlux : function(mappingName, conditionName, fluxType, colorMax, colorMin, isOpac){
 		metExploreD3.onloadMapping(mappingName, function(){
 			var session = _metExploreViz.getSessionById('viz');
 			metExploreD3.GraphMapping.parseFluxValues(mappingName);
 			metExploreD3.GraphLink.loadLinksForFlux("viz", session.getD3Data(), metExploreD3.getLinkStyle(), metExploreD3.getMetaboliteStyle());
 			
 			if(fluxType=='Compare')
-				metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin);
+				metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac);
 			else
-				metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax);
+				metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac);
 
 			
 		});
@@ -1451,15 +1473,15 @@ metExploreD3.GraphMapping = {
 			          		
 			        	if(colorMin==undefined)
 			        		colorMin=generalStyle.getColorMinMappingContinuous();
-
+			        	else
+		          			generalStyle.setMinColorMappingContinuous(colorMin);
+	          		
 			        	if(colorMax==undefined)
 			        		colorMax=generalStyle.getColorMaxMappingContinuous();
+		          		else
+		          			generalStyle.setMaxColorMappingContinuous(colorMax);
+	          		
 			          	var vis = d3.select("#viz").select("#D3viz");
-
-
-	          	       var scaleNode = d3.scale.linear()
-						    .domain([parseFloat(minValue), parseFloat(maxValue)])
-						    .range([1, 3]);
 
 						var colorStore = session.getColorMappingsSet();
 				      	session.resetColorMapping();
@@ -1500,7 +1522,6 @@ metExploreD3.GraphMapping = {
 													
 													d3.select(this)
 														.transition().duration(2000)
-														.attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleNode(parseFloat(map.getMapValue()))+")")
 														.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
 														.style("fill", colorScale(parseFloat(map.getMapValue())));
 
@@ -1529,7 +1550,6 @@ metExploreD3.GraphMapping = {
 
 														d3.select(this)
 															.transition().duration(2000)
-															.attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleNode(parseFloat(map.getMapValue()))+")")
 															.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
 															.style("fill", colorScale(parseFloat(map.getMapValue())));
 														session.addSelectedNode(d.getId());

@@ -11,6 +11,7 @@ metExploreD3.GraphNode = {
 	panelParent :"",
 	activePanel :"",
 	taskClick :"",
+	charKey :"",
 	ctrlKey :"",
 	groups:"",
 	groupPath:"",
@@ -26,6 +27,29 @@ metExploreD3.GraphNode = {
 		metExploreD3.GraphNode.panelParent = parent;
 		_MyThisGraphNode = metExploreD3.GraphNode;
 		activePanel = metExploreD3.GraphNode;
+	},
+
+
+	/*******************************************
+    * Permit to select neighbour of a node
+    * @param {} d : a node
+    */
+	selectNeighbours : function(d, panel) {
+		d3.select("#viz").select("#D3viz").select("#graphComponent")
+			.selectAll("path.link")
+			.filter(function(link){
+				return link.getSource()==d || link.getTarget()==d;
+			})
+			.each(function(link){
+				if(link.getSource()==d){
+					if(!link.getTarget().isSelected()) 
+						_MyThisGraphNode.selection(link.getTarget(), panel);
+				}
+				else{
+					if(!link.getSource().isSelected()) 
+						_MyThisGraphNode.selection(link.getSource(), panel);
+				}
+			});
 	},
 
 	/*******************************************
@@ -47,11 +71,22 @@ metExploreD3.GraphNode = {
 		{	
 			// For the right click you can't deselectionate the node
 			if(d3.event.sourceEvent.button==2){
-				if(!d.isSelected())
+				if(!d.isSelected()){
 					_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
+
+					// 78 = N like neighbour
+					if(_MyThisGraphNode.charKey==78 && d.isSelected())
+						_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
+				}
 			}
 			else
+			{
 				_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
+
+				// 78 = N like neighbour
+				if(_MyThisGraphNode.charKey==78 && d.isSelected())
+					_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
+			}
 
 			d3.selectAll("#D3viz")
 				.style("cursor", "move");
@@ -185,8 +220,13 @@ metExploreD3.GraphNode = {
 	dragmove : function(d, i) {
 			
 
-		if(!d.isSelected())
+		if(!d.isSelected()){
 			_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
+			console.log(_MyThisGraphNode.charKey);
+			// 78 = N like neighbour
+			if(_MyThisGraphNode.charKey==78)
+				_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
+		}
 
 		// with updating both px,py,x,y on d !
 		_MyThisGraphNode.moveNode(d,_MyThisGraphNode.activePanel);
@@ -393,6 +433,32 @@ metExploreD3.GraphNode = {
 			
 		var metabolite_Store = metExploreD3.getMetabolitesSet();
 		var reaction_Store = metExploreD3.getReactionsSet();
+
+
+		var content = 
+			"<b>Name:</b> " + d.getName() 
+			+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
+			((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment() : "" )+
+			((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
+			((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
+			((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
+			((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
+			((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+
+		d.getMappingDatas().forEach(function(map){
+			content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
+		});
+
+		content+="</table>";
+		
+		if(d.getSvg()!="" && d.getSvg()!=undefined && d.getSvg()!="undefined"){
+			content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
+		}
+
+   		document.getElementById("tooltip2").innerHTML = content;
+   		document.getElementById("tooltip2").classList.remove("hide");
+		// Fix the tooltip of node
+		document.getElementById("tooltip2").classList.add("fixed");
 
 		// Fix the node
 		// Add  node in the list of selected nodes
@@ -665,9 +731,11 @@ metExploreD3.GraphNode = {
 	refreshNode : function(parent) {
 		d3.select("body")
 		    .on("keydown", function() {
+		    	_MyThisGraphNode.charKey = d3.event.keyCode;
               	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
 		    })
 		    .on("keyup", function(e) {
+		    	_MyThisGraphNode.charKey = 'none';
               	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
 		    });
 
@@ -701,7 +769,7 @@ metExploreD3.GraphNode = {
 
 	    // Create function to manage double click
 	    d3.selectAll("#D3viz")
-			.on("mouseup", this.unselectIfDBClick)
+			.on("mouseup", this.unselectIfDBClick);
 		        
 	 
 	 	var scale = metExploreD3.getScaleById(parent);
@@ -791,30 +859,31 @@ metExploreD3.GraphNode = {
 				var xScale=scale.getXScale();
 				var yScale=scale.getYScale();
 				
+				if(!document.getElementById("tooltip2").classList.contains("fixed"))
+				{
+					var content = 
+						"<b>Name:</b> " + d.getName() 
+						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
+						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
+						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
+						((d.getEC()!=undefined) ? "<br/><b>EC number: </b>" + d.getEC() : "" )+
+						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
+						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
+						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
-				var content = 
-					"<b>Name:</b> " + d.getName() 
-					+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
-					((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
-					((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
-					((d.getEC()!=undefined) ? "<br/><b>EC number: " + d.getEC() : "" )+
-					((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
-					((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
-					((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+	    			d.getMappingDatas().forEach(function(map){
+	    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
+	    			});
 
-    			d.getMappingDatas().forEach(function(map){
-    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
-    			});
+	    			content+="</table>";
+	    			
+	    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
+	    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
+	    			}
 
-    			content+="</table>";
-    			
-    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
-    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
-    			}
-
-		   		document.getElementById("tooltip2").innerHTML = content;
-		   		document.getElementById("tooltip2").classList.remove("hide");
-
+			   		document.getElementById("tooltip2").innerHTML = content;
+			   		document.getElementById("tooltip2").classList.remove("hide");
+				}
 
 				// d3.select("#"+parent).select("#D3viz").select('#tooltip')
 		    })
@@ -913,33 +982,32 @@ metExploreD3.GraphNode = {
 				var xScale=scale.getXScale();
 				var yScale=scale.getYScale();
 				
+				if(!document.getElementById("tooltip2").classList.contains("fixed"))
+				{
+					var content = 
+						"<b>Name:</b> " + d.getName() 
+						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
+						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
+						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
+						((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
+						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
+						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
+						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
-				var content = 
-					"<b>Name:</b> " + d.getName() 
-					+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
-					((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment() : "" )+
-					((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
-					((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
-					((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
-					((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
-					((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+	    			d.getMappingDatas().forEach(function(map){
+	    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
+	    			});
 
-    			d.getMappingDatas().forEach(function(map){
-    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
-    			});
+	    			content+="</table>";
+	    			
+	    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
+	    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
+	    			}
 
-    			content+="</table>";
-    			
-    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
-    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
-    			}
+			   		document.getElementById("tooltip2").innerHTML = content;
+			   		document.getElementById("tooltip2").classList.remove("hide");
+				}
 
-		   		document.getElementById("tooltip2").innerHTML = content;
-		   		document.getElementById("tooltip2").classList.remove("hide");
-
-
-				// d3.select("#"+parent).select("#D3viz").select('#tooltip')
-			
 			})
 		    // .on("mouseout", function(d) {   
 		    // 	d3.select("#"+parent).select("#D3viz").select('#tooltip')
@@ -1413,6 +1481,9 @@ metExploreD3.GraphNode = {
 	},
 
 	unselectIfDBClick : function() { 
+		if(d3.event.target==d3.select("#D3viz")[0][0])
+			document.getElementById("tooltip2").classList.remove("fixed");
+		
 		if(_MyThisGraphNode.dblClickable && d3.event.button==0){
 			_MyThisGraphNode.activePanel = this.parentNode.id;
          	d3.select(this).select("#graphComponent")
@@ -1481,9 +1552,11 @@ metExploreD3.GraphNode = {
 	loadNode : function(parent) {
 		d3.select("body")
 		    .on("keydown", function() {
+		    	_MyThisGraphNode.charKey = d3.event.keyCode;
               	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
 		    })
 		    .on("keyup", function(e) {
+		    	_MyThisGraphNode.charKey = 'none';
               	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
 		    });
 
@@ -1608,62 +1681,31 @@ metExploreD3.GraphNode = {
 					var xScale=scale.getXScale();
 					var yScale=scale.getYScale();
 					
+					if(!document.getElementById("tooltip2").classList.contains("fixed"))
+					{
+						var content = 
+							"<b>Name:</b> " + d.getName() 
+							+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
+							((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
+							((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
+							((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
+							((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
+							((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
+							((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
-					var content = 
-						"<b>Name:</b> " + d.getName() 
-						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
-						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment() : "" )+
-						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
-						((d.getEC()!=undefined) ? "<br/>EC number: " + d.getEC() : "" )+
-						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
-						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
-						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+		    			d.getMappingDatas().forEach(function(map){
+		    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
+		    			});
 
-        			d.getMappingDatas().forEach(function(map){
-        				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
-        			});
+		    			content+="</table>";
+		    			
+		    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
+		    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
+		    			}
 
-        			content+="</table>";
-        			
-        			if(d.getSvg()!=undefined && d.getSvg()!="undefined" && d.getSvg()!=""){
-        				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
-        			}
-
-			   		document.getElementById("tooltip2").innerHTML = content;
-			   		document.getElementById("tooltip2").classList.remove("hide");
-
-
-					/*d3.select("#"+parent).select("#D3viz").select('#tooltip')
-			    		.select('text')
-			    		.text(function() {
-							return $("<div/>").html(d.getName()).text();
-							// return $("<div/>").html(d.get(sessionMain.getDisplayNodeName())).text();
-						});
-
-			    	var witdh = document.getElementById(parent).childNodes.item(1).getElementById('tooltip-text').getBoundingClientRect().width;
-			    	d3.select("#"+parent).select("#D3viz").select('#tooltip')
-						.attr("width", witdh+10)
-			    		.attr("cx", function() {
-							return xScale(d.x*2);
-						})
-						.attr("cy", function() {
-							return yScale(d.y);
-						})
-						.attr("transform", function() {
-							if(d.getBiologicalType()=="metabolite")
-								var rayon = metaboliteStyle.getWidth()/2;
-							else
-								var rayon = reactionStyle.getWidth()/2;
-							return "translate(" + xScale((d.x+parseInt(rayon)*2)) + "," + yScale(d.y) + ")";
-						});*/
-
-					/*// Manage tooltip to display label of 
-			    	d3.select("#"+parent).select("#D3viz").select('#tooltip')
-			    		.select('rect')
-						.attr("width", witdh+10);
-
-					d3.select("#"+parent).select("#D3viz").select('#tooltip')
-			    		.classed("hide", false);*/
+				   		document.getElementById("tooltip2").innerHTML = content;
+				   		document.getElementById("tooltip2").classList.remove("hide");
+					}
 
 			    })
 		        .on("mouseleave", function(d) { 
@@ -2110,6 +2152,7 @@ metExploreD3.GraphNode = {
 		 
 				var color = metExploreD3.GraphUtils.RGB2Color(red,green,blue);
 				d.color = color;
+				console.log(d);
 				return color;
 				/*var color = d3.scale.linear()
 				    .domain([0, metExploreD3.getPathwaysLength()/2, metExploreD3.getPathwaysLength()-1])

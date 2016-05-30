@@ -211,14 +211,14 @@ metExploreD3.GraphLink = {
 			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
 
 			// 5 -- 15 
-			var heightArrow = 5*Math.abs(value);
+			var heightArrow = 2*Math.abs(value);
 			if(heightArrow<3)heightArrow=3;
 			var xBaseArrow = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
 			var yBaseArrow = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
 
 			// 2 -- 6
-			var widthArrow = 2*Math.abs(value);
-			var widthFeet = (2*Math.abs(value))*2/3;
+			var widthArrow = 2.5*Math.abs(value);
+			var widthFeet = (2.5*Math.abs(value))*1/2;
 			if(widthArrow<2)widthArrow=2;
 
 			var xWBaseArrow = xBaseArrow + dY*(-widthArrow/d);
@@ -228,7 +228,7 @@ metExploreD3.GraphLink = {
 			var yIntermBaseArrow = yBaseArrow - dX*(-widthFeet/d);
 
 			// 1.5 -- 4.5
-			var heightFeet = 1.5*Math.abs(value);
+			var heightFeet = Math.abs(value);
 			var xBaseFeet = source.x + dX*(heightFeet/d);
 			var yBaseFeet = source.y + dY*(heightFeet/d);
 
@@ -284,14 +284,14 @@ metExploreD3.GraphLink = {
 			var yTarget = source.y + dY*((d-largeurNoeudT)/d);
 
 			// 5 -- 15 
-			var heightArrow = 5*Math.abs(value);
+			var heightArrow = 2*Math.abs(value);
 			if(heightArrow<3)heightArrow=3;
 			var xBaseArrow = source.x + dX*((d-largeurNoeudT-heightArrow)/d);
 			var yBaseArrow = source.y + dY*((d-largeurNoeudT-heightArrow)/d);
 
 			// 2 -- 6
-			var widthArrow = 2*Math.abs(value);
-			var widthFeet = (2*Math.abs(value))*2/3;
+			var widthArrow = 2.5*Math.abs(value);
+			var widthFeet = (2.5*Math.abs(value))*1/2;
 			if(widthArrow<2)widthArrow=2;
 			var xWBaseArrow = xBaseArrow + dY*(widthArrow/d);
 			var yWBaseArrow = yBaseArrow - dX*(widthArrow/d);
@@ -300,7 +300,7 @@ metExploreD3.GraphLink = {
 			var yIntermBaseArrow = yBaseArrow - dX*(widthFeet/d);
 
 			// 1.5 -- 4.5
-			var heightFeet = 1.5*Math.abs(value);
+			var heightFeet = Math.abs(value);
 			var xBaseFeet = source.x + dX*(heightFeet/d);
 			var yBaseFeet = source.y + dY*(heightFeet/d);
 
@@ -1545,37 +1545,19 @@ metExploreD3.GraphLink = {
 						}
 					}
 					
-					var content = 
+					if(!document.getElementById("tooltip2").classList.contains("fixed"))
+					{
+						var content = 
 						"Name: " + d.id 
-						+"<br/>Source: " + source.getName() 
-						+"<br/>Target: " + target.getName() +
+						+"<br/><b>Source:</b> " + source.getName() 
+						+"<br/><b>Target:</b> " + target.getName() +
 						((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
 					
-					content+='<br/>';
-					if(source==reaction){
-						content+=source.getDbIdentifier() + ' ---> ';
-						if(target.getSvg()!=undefined  && target.getSvg()!="undefined" && target.getSvg()!=""){
-							content+='<img src="resources/images/structure_metabolite/'+target.getSvg()+'"/>';
-						}
-						else
-						{
-							content+=target.getDbIdentifier();
-						}
-					}
-					else
-					{
-						if(source.getSvg()!=undefined  && source.getSvg()!="undefined" && source.getSvg()!=""){
-							content+='<img src="resources/images/structure_metabolite/'+source.getSvg()+'"/>';
-						}
-						else
-						{
-							content+=source.getDbIdentifier();
-						}
-						content+=' ---> ' + target.getDbIdentifier();
-					}
+						content+='<br/>';
 
-					document.getElementById("tooltip2").innerHTML = content;
-					document.getElementById("tooltip2").classList.remove("hide");
+				   		document.getElementById("tooltip2").innerHTML = content;
+				   		document.getElementById("tooltip2").classList.remove("hide");
+					}
 				 })
 				.on("mouseout", function(d)
 				 {
@@ -1619,38 +1601,19 @@ metExploreD3.GraphLink = {
 						}
 					}
 						
-
-					var content = 
+					if(!document.getElementById("tooltip2").classList.contains("fixed"))
+					{
+						var content = 
 						"Name: " + d.id 
-						+"<br/>Source: " + source.getName() 
-						+"<br/>Target: " + target.getName() +
+						+"<br/><b>Source: </b>" + source.getName() 
+						+"<br/><b>Target: </b>" + target.getName() +
 						((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
 					
-					content+='<br/>';
-					if(source==reaction){
-						content+=source.getDbIdentifier() + ' ---> ';
-						if(target.getSvg()!=undefined  && target.getSvg()!="undefined" && target.getSvg()!=""){
-							content+='<img src="resources/images/structure_metabolite/'+target.getSvg()+'"/>';
-						}
-						else
-						{
-							content+=target.getDbIdentifier();
-						}
-					}
-					else
-					{
-						if(source.getSvg()!=undefined  && source.getSvg()!="undefined" && source.getSvg()!=""){
-							content+='<img src="resources/images/structure_metabolite/'+source.getSvg()+'"/>';
-						}
-						else
-						{
-							content+=source.getDbIdentifier();
-						}
-						content+=' ---> ' + target.getDbIdentifier();
-					}
+						content+='<br/>';
 
-					document.getElementById("tooltip2").innerHTML = content;
-					document.getElementById("tooltip2").classList.remove("hide");
+				   		document.getElementById("tooltip2").innerHTML = content;
+				   		document.getElementById("tooltip2").classList.remove("hide");
+					}
 				 })
 				.on("mouseout", function(d)
 				 {

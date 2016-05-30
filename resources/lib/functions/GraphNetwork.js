@@ -7,7 +7,6 @@
     	
 metExploreD3.GraphNetwork = {
     
-    zoomListener:"",
     task:"",
 
 	/*******************************************
@@ -454,11 +453,11 @@ metExploreD3.GraphNetwork = {
 				.zoom()
 				.x( xScale )
 				.y( yScale )
-				.scaleExtent([ 0.01, 20 ])
+				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
 						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 					var session = _metExploreViz.getSessionById(panel);
 	        		
@@ -492,8 +491,8 @@ metExploreD3.GraphNetwork = {
 					.on("zoom", function(e){
 
 						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 						var session = _metExploreViz.getSessionById(this.parentNode.id);
 						
@@ -737,7 +736,22 @@ metExploreD3.GraphNetwork = {
 					d3.selectAll("#brush").classed("hide", false);
 				})
 			);
-			
+		var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+		var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
+		
+		// Options div
+		d3.select("#"+panel)
+			.select("#D3viz")
+			.append("foreignObject")	
+			.attr('x', w-300)
+			.attr('y', 100)
+			.attr("width", "500")
+			.attr("height", "500")
+			.append("xhtml:div")
+			.attr("id","tooltip2")
+			.classed("tooltip2", true)
+			.classed("hide", true);
+
 		// Define zoomListener
 		vis.svg = d3.select("#"+panel).select("#D3viz")
 				.call(metExploreD3.GraphNetwork.zoomListener)
@@ -968,47 +982,6 @@ metExploreD3.GraphNetwork = {
 		
 		metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
 		metExploreD3.GraphNode.refreshNode(panel);
-
-
-  //       var iDiv = document.createElement('div');
-		// iDiv.id = 'tooltip2';
-		
-		// iDiv.className = 'tooltip2';
-		// iDiv.classList.add("hide");
-		// document.getElementById("viz").appendChild(iDiv);  
-
-		// Options div
-		var optionsInfo = document.createElement('div');
-		optionsInfo.className = 'tooltip2';
-
-		optionsInfo.id = 'tooltip2';
-		// menu.classList.add("hide");
-		document.getElementById("viz-body").appendChild(optionsInfo);  
-
-		optionsInfo.classList.add("hide");
-
-		// optionsCaption.appendChild(pathwDiv);
-		
-		// var tooltip = d3.select("#"+panel).select("#D3viz")
-		// 	.append('svg:g')
-		// 	.attr("class","tooltip").attr("id","tooltip")
-		// 	.classed("hide", true);
-
-		// tooltip
-		// 	.append("rect")
-		// 	.attr("height", 30)
-		// 	.attr( "transform", "translate(-" + 5 + ",-" + 15 + ")");
-			
-		// tooltip
-		// 	.append("text")
-		// 	.attr("class","tooltip-text").attr("id","tooltip-text")
-		// 	.text("name")
-		// 	.style("font-size","15px")
-		// 	.attr("dy", ".3em");
-
-	
-
-			
 		
 		// Define play and stop button ->play function
 		if(panel!="viz"){
@@ -1361,7 +1334,10 @@ metExploreD3.GraphNetwork = {
 
 								if(d.getMappingDatasLength()>0){
 					                d.getMappingDatas().forEach(function(mappingData){
-					                    node.addMappingData(new MappingData(node, mappingData.getMappingName().valueOf(), mappingData.getConditionName().valueOf(), mappingData.getMapValue().valueOf()));
+					                	if(mappingData.getMapValue()==undefined)
+											node.addMappingData(new MappingData(node, mappingData.getMappingName().valueOf(), mappingData.getConditionName().valueOf(), undefined));
+					                	else
+					                		node.addMappingData(new MappingData(node, mappingData.getMappingName().valueOf(), mappingData.getConditionName().valueOf(), mappingData.getMapValue().valueOf()));
 					                });
 					            }
 								// Select same nodes that the main graph
@@ -1663,37 +1639,19 @@ metExploreD3.GraphNetwork = {
 							}
 						}
 						
-						var content = 
+						if(!document.getElementById("tooltip2").classList.contains("fixed"))
+						{
+							var content = 
 							"Name: " + d.id 
-							+"<br/>Source: " + source.getName() 
-							+"<br/>Target: " + target.getName() +
+							+"<br/><b>Source:</b> " + source.getName() 
+							+"<br/><b>Target:</b> " + target.getName() +
 							((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
 						
-						content+='<br/>';
-						if(source==reaction){
-							content+=source.getDbIdentifier() + ' ---> ';
-							if(target.getSvg()!=undefined  && target.getSvg()!="undefined" && target.getSvg()!=""){
-								content+='<img src="resources/images/structure_metabolite/'+target.getSvg()+'"/>';
-							}
-							else
-							{
-								content+=target.getDbIdentifier();
-							}
-						}
-						else
-						{
-							if(source.getSvg()!=undefined  && source.getSvg()!="undefined" && source.getSvg()!=""){
-								content+='<img src="resources/images/structure_metabolite/'+source.getSvg()+'"/>';
-							}
-							else
-							{
-								content+=source.getDbIdentifier();
-							}
-							content+=' ---> ' + target.getDbIdentifier();
-						}
+							content+='<br/>';
 
-						document.getElementById("tooltip2").innerHTML = content;
-						document.getElementById("tooltip2").classList.remove("hide");
+					   		document.getElementById("tooltip2").innerHTML = content;
+					   		document.getElementById("tooltip2").classList.remove("hide");
+						}
 					 })
 					.on("mouseout", function(d)
 					 {
@@ -1773,43 +1731,24 @@ metExploreD3.GraphNetwork = {
 							}
 						}
 							
-
-						var content = 
+						if(!document.getElementById("tooltip2").classList.contains("fixed"))
+						{
+							var content = 
 							"Name: " + d.id 
-							+"<br/>Source: " + source.getName() 
-							+"<br/>Target: " + target.getName() +
+							+"<br/><b>Source: </b>" + source.getName() 
+							+"<br/><b>Target: </b>" + target.getName() +
 							((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
 						
-						content+='<br/>';
-						if(source==reaction){
-							content+=source.getDbIdentifier() + ' ---> ';
-							if(target.getSvg()!=undefined  && target.getSvg()!="undefined" && target.getSvg()!=""){
-								content+='<img src="resources/images/structure_metabolite/'+target.getSvg()+'"/>';
-							}
-							else
-							{
-								content+=target.getDbIdentifier();
-							}
-						}
-						else
-						{
-							if(source.getSvg()!=undefined  && source.getSvg()!="undefined" && source.getSvg()!=""){
-								content+='<img src="resources/images/structure_metabolite/'+source.getSvg()+'"/>';
-							}
-							else
-							{
-								content+=source.getDbIdentifier();
-							}
-							content+=' ---> ' + target.getDbIdentifier();
-						}
+							content+='<br/>';
 
-						document.getElementById("tooltip2").innerHTML = content;
-						document.getElementById("tooltip2").classList.remove("hide");
-					 })
+					   		document.getElementById("tooltip2").innerHTML = content;
+					   		document.getElementById("tooltip2").classList.remove("hide");
+						}
+					})
 					.on("mouseout", function(d)
-					 {
+					{
 						document.getElementById("tooltip2").classList.add("hide");
-					 });	
+					});	
 			
 			});
 		}
@@ -1946,67 +1885,62 @@ metExploreD3.GraphNetwork = {
 			})
 			.on("mouseover", function(d) { 
 
-					d.fixed = true;
-					
-					if(d.getBiologicalType()=="reaction"){
-						d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-							.selectAll("path.link")
-							.filter(function(link){return d.getId()==link.getSource().getId();})
-							.style("stroke", "green"); 	
-						 
-						d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-							.selectAll("path.link")
-							.filter(function(link){return d.getId()==link.getTarget().getId();})
-							.style("stroke", "red"); 	
-					}
-					else
-					{
-						d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-							.selectAll("path.link")
-							.filter(function(link){return d.getId()==link.getSource().getId();})
-							.style("stroke", "red"); 	
-						 
-						d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-							.selectAll("path.link")
-							.filter(function(link){return d.getId()==link.getTarget().getId();})
-							.style("stroke", "green"); 
-					}
+				d.fixed = true;
+				
+				if(d.getBiologicalType()=="reaction"){
+					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+						.selectAll("path.link")
+						.filter(function(link){return d.getId()==link.getSource().getId();})
+						.style("stroke", "green"); 	
 					 
-					var xScale=scale.getXScale();
-					var yScale=scale.getYScale();
-					
-
+					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+						.selectAll("path.link")
+						.filter(function(link){return d.getId()==link.getTarget().getId();})
+						.style("stroke", "red"); 	
+				}
+				else
+				{
+					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+						.selectAll("path.link")
+						.filter(function(link){return d.getId()==link.getSource().getId();})
+						.style("stroke", "red"); 	
+					 
+					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+						.selectAll("path.link")
+						.filter(function(link){return d.getId()==link.getTarget().getId();})
+						.style("stroke", "green"); 
+				}
+				 
+				var xScale=scale.getXScale();
+				var yScale=scale.getYScale();
+				
+				if(!document.getElementById("tooltip2").classList.contains("fixed"))
+				{
 					var content = 
 						"<b>Name:</b> " + d.getName() 
 						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
-						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment() : "" )+
+						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
 						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
 						((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
 						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
 						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
-						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/>Mappings:<br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
+						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
-        			d.getMappingDatas().forEach(function(map){
-        				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
-        			});
+	    			d.getMappingDatas().forEach(function(map){
+	    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
+	    			});
 
-        			content+="</table>";
-        			
-        			if(d.getSvg()!="" && d.getSvg()!=undefined && d.getSvg()!="undefined"){
-        				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
-        			}
+	    			content+="</table>";
+	    			
+	    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
+	    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
+	    			}
 
 			   		document.getElementById("tooltip2").innerHTML = content;
 			   		document.getElementById("tooltip2").classList.remove("hide");
+				}
 
-
-					// d3.select("#"+parent).select("#D3viz").select('#tooltip')
-			
 			})
-		    // .on("mouseout", function(d) {   
-		    // 	d3.select("#"+parent).select("#D3viz").select('#tooltip')
-		    // 		.classed("hide", true); 
-	     //    })
 	        .on("mouseleave", function(d) {  
 				d3.select(this)
 					.attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
@@ -2015,8 +1949,7 @@ metExploreD3.GraphNetwork = {
 				var linkStyle = metExploreD3.getLinkStyle();  
 
 		   		document.getElementById("tooltip2").classList.add("hide");
-		    	// d3.select("#"+parent).select("#D3viz").select('#tooltip')
-		    	// 	.classed("hide", true); 
+
 	    		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 					.selectAll("path.link")
 					.filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
@@ -3405,8 +3338,8 @@ setTimeout(
 				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
 						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 					var session = _metExploreViz.getSessionById(panel);
 	        		
@@ -3455,8 +3388,8 @@ setTimeout(
 					.scaleExtent([ 0.01, 30 ])
 					.on("zoom", function(e){
 						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 						var session = _metExploreViz.getSessionById(this.parentNode.id);
 		        		
@@ -3873,20 +3806,6 @@ setTimeout(
 		iDiv.id = 'tooltip2';
 		iDiv.className = 'tooltip2';
 		
-		// document.getElementById("viz").appendChild(iDiv);  
-		// var tooltip = d3.select("#"+panel).select("#D3viz")
-		// 	.append('svg:g')
-		// 	.attr("class","tooltip").attr("id","tooltip")
-		// 	.classed("hide", true);
-		
-		// tooltip
-		// 	.append("text")
-		// 	.attr("class","tooltip-text").attr("id","tooltip-text")
-		// 	.text("name")
-		// 	.style("font-size","15px")
-		// 	.attr("dy", ".3em");
-
-		
 		
 		metExploreD3.GraphNetwork.looksLinked();
 		if(session.isLinked()){
@@ -3939,15 +3858,17 @@ setTimeout(
 		
 			// Define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleSents
 			var that = metExploreD3.GraphNetwork;
-			metExploreD3.GraphNetwork.zoomListener = d3.behavior
+			var scale = metExploreD3.getScaleById(panel);
+			var zoomListener = scale.getZoom();
+			zoomListener = d3.behavior
 				.zoom()
 				.x( xScale )
 				.y( yScale )
 				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
 						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 					var session = metExploreD3.getSessionById(panel);
 	        		
@@ -3970,24 +3891,25 @@ setTimeout(
 				'zoomScale' : 1,
 				'xScaleCompare' : 1,
 				'yScaleCompare' : 1,
-				'zoomScaleCompare' : metExploreD3.GraphNetwork.zoomListener.scale(),
-				"zoom" : metExploreD3.GraphNetwork.zoomListener
+				'zoomScaleCompare' : zoomListener.scale(),
+				"zoom" : zoomListener
 			});	
 			
 		}
 		else
 		{
 			var that = metExploreD3.GraphNetwork;
-			
-			metExploreD3.GraphNetwork.zoomListener = d3.behavior
+			var scale = metExploreD3.getScaleById(panel);
+			var zoomListener = scale.getZoom();
+			zoomListener = d3.behavior
 					.zoom()
 					.x( xScale )
 					.y( yScale )
 					.scaleExtent([ 0.01, 30 ])
 					.on("zoom", function(e){
 						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+						if(zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 									
 						var session = metExploreD3.getSessionById(this.parentNode.id);
@@ -4003,7 +3925,7 @@ setTimeout(
 					});
 			scale
 				.getStoreByGraphName(panel)
-				.setScale(xScale, yScale, 1, 1, 1, metExploreD3.GraphNetwork.zoomListener.scale(), metExploreD3.GraphNetwork.zoomListener);			
+				.setScale(xScale, yScale, 1, 1, 1, zoomListener.scale(), zoomListener);			
 		}
 
 		// Remove all sub-elements in the SVG that corresponds to the D3Viz part --- tenth mss
@@ -4218,10 +4140,13 @@ setTimeout(
 					d3.selectAll("#brush").classed("hide", false);
 				})
 			);
-			
+
+		var scale = metExploreD3.getScaleById(panel);
+		var zoomListener = scale.getZoom();
+
 		// Define zoomListener
 		vis.svg = d3.select("#"+panel).select("#D3viz")
-				.call(metExploreD3.GraphNetwork.zoomListener)
+				.call(zoomListener)
 				// Remove zoom on double click
 				.on("dblclick.zoom", null)
 				.attr("pointer-events", "all")
@@ -4440,23 +4365,6 @@ setTimeout(
 		iDiv.id = 'tooltip2';
 		iDiv.className = 'tooltip2';
 		document.getElementById("viz").appendChild(iDiv);  
-		
-		// var tooltip = d3.select("#"+panel).select("#D3viz")
-		// 	.append('svg:g')
-		// 	.attr("class","tooltip").attr("id","tooltip")
-		// 	.classed("hide", true);
-
-		// tooltip
-		// 	.append("rect")
-		// 	.attr("height", 30)
-		// 	.attr( "transform", "translate(-" + 5 + ",-" + 15 + ")");
-			
-		// tooltip
-		// 	.append("text")
-		// 	.attr("class","tooltip-text").attr("id","tooltip-text")
-		// 	.text("name")
-		// 	.style("font-size","15px")
-		// 	.attr("dy", ".3em");
 
 		var linked = d3.select(that).attr("isLink");
 		d3.select(that).select("image").remove();
