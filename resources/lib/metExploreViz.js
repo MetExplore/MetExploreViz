@@ -675,7 +675,7 @@ var metExploreD3 = {
     * @param {} type : Message type
     * @param {} msg : Message to display
     */
-    displayMessage : function(type, msg, icon){
+    displayMessage : function(type, msg){
        Ext.Msg.alert(type, msg);
     },
 
