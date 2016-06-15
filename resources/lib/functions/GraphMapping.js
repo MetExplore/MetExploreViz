@@ -4,6 +4,48 @@
  */
 metExploreD3.GraphMapping = {
 
+	compareMappingConditionChart : function(){
+		var sessions = _metExploreViz.getSessionsSet();
+		var arrayNodes = [];
+		var mappingName = [];
+		var condName = [];
+		for (var key in sessions) {
+			mappingName.push(sessions[key].getActiveMapping());
+			condName.push(sessions[key].isMapped());
+			if(key!='viz'){
+				arrayNodes = sessions[key].getD3Data().getNodes().concat(arrayNodes);
+			}
+		}
+
+		var categories = [];
+		arrayNodes.forEach(function(node){
+			var index = arrayNodes.filter(function(n){ return n.getIdentifier()==node.getIdentifier(); });
+			if(index.length>1 && categories.indexOf(node)==-1 && node.getMappingDataByNameAndCond(mappingName[0], condName[0])!=undefined)
+			 	categories.push(node);
+			
+		});
+
+		var categoriesName=categories.map(function(node){return node.getName()});
+
+		var mapping = _metExploreViz.getMappingByName(mappingName);
+		var dataCond1 = categories.map(function(node){return Math.abs(parseInt(node.getMappingDataByNameAndCond(mappingName[0], condName[0]).getMapValue()))});
+		var dataCond2 = categories.map(function(node){return -Math.abs(parseInt(node.getMappingDataByNameAndCond(mappingName[1], condName[1]).getMapValue()))});
+
+        var conditions2=
+        [
+            {
+                name: condName[0],
+                data: dataCond1
+            }, {
+                name: condName[1],
+                data: dataCond2
+            }
+        ];
+        var dataChart2 = {categories:categoriesName, conditions:conditions2};
+        var compareChart = new MetXCompareBar(dataChart2, 1300, categoriesName.length*15, "xaxis", "yaxis", mappingName[0]+" analysis");
+		// document.getElementById(this.id).insertBefore(compareChart, document.getElementById(this.id).firstChild);
+        return compareChart;
+	},
 	/***********************************************
 	* Mapping to data from file
 	* This function will assignmapping value to each nodes in datas
