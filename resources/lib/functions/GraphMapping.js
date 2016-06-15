@@ -1888,40 +1888,42 @@ metExploreD3.GraphMapping = {
     },
 
 	loadDataFromJSON : function(json) {
-		var session = _metExploreViz.getSessionById('viz');
-		var force = session.getForce();
-		force.stop(); 
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
-		if(myMask!= undefined){
+		var mappingJSON = metExploreD3.GraphUtils.decodeJSON(json);
+		if(mappingJSON){
+			var session = _metExploreViz.getSessionById('viz');
+			var force = session.getForce();
+			force.stop(); 
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			if(myMask!= undefined){
 
-			metExploreD3.showMask(myMask);
-	        setTimeout(
-			function() {
-				var mappingJSON = Ext.decode(json);	
-				var conds =[];
-				mappingJSON.mappings.forEach(function(condition){
-		        	conds.push(condition.name);
-		        });
-	   			
-	   			var mapping = new Mapping(mappingJSON.name, conds, mappingJSON.targetLabel);
-				
-				_metExploreViz.addMapping(mapping);
-
-        		metExploreD3.GraphMapping.generateMapping(mapping, mappingJSON.mappings);
-				
-				metExploreD3.hideMask(myMask);
-
-
-		        metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
-				var anim=metExploreD3.GraphNetwork.isAnimated("viz");
-				if (anim=='true') {
-					var force = session.getForce();
+				metExploreD3.showMask(myMask);
+		        setTimeout(
+				function() {	
+					var conds =[];
+					mappingJSON.mappings.forEach(function(condition){
+			        	conds.push(condition.name);
+			        });
+		   			
+		   			var mapping = new Mapping(mappingJSON.name, conds, mappingJSON.targetLabel);
 					
-					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.resume();
+					_metExploreViz.addMapping(mapping);
+
+	        		metExploreD3.GraphMapping.generateMapping(mapping, mappingJSON.mappings);
+					
+					metExploreD3.hideMask(myMask);
+
+
+			        metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+					if (anim=='true') {
+						var force = session.getForce();
+						
+						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+							force.resume();
+						}
 					}
-				}
-			}, 1);
+				}, 1);
+			}
 		}
 	},
 

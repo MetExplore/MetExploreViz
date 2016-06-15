@@ -33,6 +33,7 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 	* Update the network to fit the cart content
 	*/
 	loadData : function(tabTxt, title) {
+
 		var data = tabTxt;
 		tabTxt = tabTxt.replace(/\r/g, "");
 	    var lines = tabTxt.split('\n');
@@ -42,14 +43,21 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 	   
 	    var targetName = firstLine.splice(0, 1);
 	    var array = [];
-	    var mapping = new Mapping(title, firstLine, targetName[0], array);
-	    _metExploreViz.addMapping(mapping);	 
-	   
-
-	    for (var i = lines.length - 1; i >= 0; i--) {
-	    	lines[i] = lines[i].split('\t');
-	    };
-	    metExploreD3.GraphMapping.mapNodeData(mapping, lines);
-	    metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+		if(targetName[0]=="reactionDBIdentifier" || targetName[0]=="metaboliteDBIdentifier" || targetName[0]=="reactionId" || targetName[0]=="metaboliteId" || targetName[0]=="inchi")
+		{
+		    var mapping = new Mapping(title, firstLine, targetName[0], array);
+		    _metExploreViz.addMapping(mapping);	 
+		   
+		    for (var i = lines.length - 1; i >= 0; i--) {
+		    	lines[i] = lines[i].split('\t');
+		    };
+		    metExploreD3.GraphMapping.mapNodeData(mapping, lines);
+		    metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+		}
+		else
+		{
+			// Type ERROR
+			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. See <a href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#import">MetExploreViz documentation</a>.');
+		}
 	}
 });

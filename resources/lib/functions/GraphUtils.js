@@ -3,7 +3,15 @@
  * @description : Basic functions
  */
 metExploreD3.GraphUtils = {
-    
+    decodeJSON : function(json){
+    	try {
+		    var jsonParsed = Ext.decode(json);
+		}
+		catch (ex) {
+			metExploreD3.displayWarning('Invalid JSON String', 'Unable to parse the JSON');
+		}
+		return jsonParsed;
+    },
     launchWebService : function(url, func){
         //var mapJSON = '{"name": "mapping_D-Galactose", "mappings":[{"name": "conditionName1", "data": [{"node" : "D-Galactose"}, {"node" : "D-galactose"}]  }]}';
         $.ajax({
@@ -944,19 +952,20 @@ metExploreD3.GraphUtils = {
 			        // }
 			        if(child.tagName!="image")
 			        {
-			        
 			            while (child) {
-				            if(child.getAttribute("href")!="resources/icons/pause.svg" 
-				                && child.getAttribute("href")!="resources/icons/whiteBlack.png" 
-				                && child.getAttribute("href")!="resources/icons/invertColor.svg" 
-				                && child.getAttribute("href")!="resources/icons/link.svg" 
-				                && child.getAttribute("href")!="resources/icons/unlink.svg")
-				            {
-				                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
-				                  	tree.push(child);
-				                    visit(child);
-				                }
-				                child = child.nextSibling;
+		        			if(child.getAttribute!=undefined){
+					            if(child.getAttribute("href")!="resources/icons/pause.svg" 
+					                && child.getAttribute("href")!="resources/icons/whiteBlack.png" 
+					                && child.getAttribute("href")!="resources/icons/invertColor.svg" 
+					                && child.getAttribute("href")!="resources/icons/link.svg" 
+					                && child.getAttribute("href")!="resources/icons/unlink.svg")
+					            {
+					                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
+					                  	tree.push(child);
+					                    visit(child);
+					                }
+					                child = child.nextSibling;
+			            		}
 				            }
 				            else
 				            {
@@ -965,7 +974,7 @@ metExploreD3.GraphUtils = {
 				                }
 				                child = child.nextSibling;
 				            }
-			            }
+			        	}
 			        }
 		        }
 		        else

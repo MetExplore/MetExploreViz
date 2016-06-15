@@ -222,7 +222,6 @@ metExploreD3.GraphNode = {
 
 		if(!d.isSelected()){
 			_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
-			console.log(_MyThisGraphNode.charKey);
 			// 78 = N like neighbour
 			if(_MyThisGraphNode.charKey==78)
 				_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
@@ -2152,7 +2151,6 @@ metExploreD3.GraphNode = {
 		 
 				var color = metExploreD3.GraphUtils.RGB2Color(red,green,blue);
 				d.color = color;
-				console.log(d);
 				return color;
 				/*var color = d3.scale.linear()
 				    .domain([0, metExploreD3.getPathwaysLength()/2, metExploreD3.getPathwaysLength()-1])

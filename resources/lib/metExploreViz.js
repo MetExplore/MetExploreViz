@@ -675,8 +675,22 @@ var metExploreD3 = {
     * @param {} type : Message type
     * @param {} msg : Message to display
     */
-    displayMessage : function(type, msg){
+    displayMessage : function(type, msg, icon){
        Ext.Msg.alert(type, msg);
+    },
+
+    /******************************************
+    * Display message 
+    * @param {} type : Message type
+    * @param {} msg : Message to display
+    */
+    displayWarning : function(msgTitle, msg){
+        Ext.Msg.show({
+           title:msgTitle,
+           msg: msg,
+           buttons: Ext.Msg.OK,
+           icon: Ext.Msg.ERROR
+       });
     },
 
     /******************************************
