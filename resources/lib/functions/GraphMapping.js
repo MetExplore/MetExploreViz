@@ -41,10 +41,27 @@ metExploreD3.GraphMapping = {
                 data: dataCond2
             }
         ];
+
+
+        // donnees.forEach(function(aData){
+        //     aData.color=scale(aData.z);
+        // });
+
         var dataChart2 = {categories:categoriesName, conditions:conditions2};
         var compareChart = new MetXCompareBar(dataChart2, 1300, categoriesName.length*15, "xaxis", "yaxis", mappingName[0]+" analysis");
-		// document.getElementById(this.id).insertBefore(compareChart, document.getElementById(this.id).firstChild);
-        return compareChart;
+
+		// console.log(d3.select(compareChart));
+		// var array = [];
+		// d3.select(compareChart).select('svg').selectAll('.highcharts-series').selectAll('rect').each(function(){array.push(this.height.animVal.value)});
+		
+		// console.log(array);
+		// var scale = d3.scale.linear()
+  //           .domain([Math.min.apply(null, array),Math.max.apply(null, array)])
+  //           .range([sessions["viz"].getColorMappingsSet()[1].getValue(),sessions["viz"].getColorMappingsSet()[0].getValue()]);
+		
+		// d3.select(compareChart).selectAll('svg').selectAll('.highcharts-series').selectAll('rect').attr('fill', function(){return scale(this.height.animVal.value)})
+		
+		return compareChart;
 	},
 	/***********************************************
 	* Mapping to data from file

@@ -40,7 +40,7 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenu', {
                  text: 'Export Comparison of Condition',
                  reference:'exportComparison',
                  tooltip:'Export Comparison of Condition as a png file',
-                 iconCls:'exportJng'
+                 iconCls:'exportComparePng'
                 }
         ]
 });

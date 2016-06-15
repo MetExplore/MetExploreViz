@@ -59,12 +59,15 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenuController', {
 			//         xtype: 'panel', // A dummy empty data store
 			//         listeners: {
 			//         	render : function(){
-			//         		metExploreD3.GraphMapping.compareMappingConditionChart();
+			//         		var chart = metExploreD3.GraphMapping.compareMappingConditionChart();
+			// 				chart.exportChart();
+			//         		document.getElementById(this.id).insertBefore(chart, document.getElementById(this.id).firstChild);
+        
 			//         	}
 			//         }
 			//     }
 			// }).show();
-			var chart = metExploreD3.GraphMapping.compareMappingConditionChart();
+    		var chart = metExploreD3.GraphMapping.compareMappingConditionChart();
 			chart.exportChart();
 		}
 	}
