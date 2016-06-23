@@ -59,6 +59,11 @@ metExploreD3.GraphNetwork = {
 				var vizRect = document.getElementById(panel).getBoundingClientRect();
 				var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
 				
+				var width = parseInt(d3.select("#"+panel).select("#D3viz")
+					.style("width"));
+				var height = parseInt(d3.select("#"+panel).select("#D3viz")
+					.style("height"));
+
 				if(vizRect.top>graphComponentRect.top 
 					|| vizRect.left>graphComponentRect.left 
 					|| vizRect.bottom<graphComponentRect.bottom 
@@ -72,11 +77,6 @@ metExploreD3.GraphNetwork = {
 					metExploreD3.fixDelay(metExploreD3.GraphNetwork.task, delay);
 
 					var zoomListener = scale.getZoom();
-
-					var width = parseInt(d3.select("#"+panel).select("#D3viz")
-						.style("width"));
-					var height = parseInt(d3.select("#"+panel).select("#D3viz")
-						.style("height"));
 
 					var updateScale = 0.01*dataLength/100;
 			    	var newScale = previousScale-(previousScale*updateScale);
@@ -93,6 +93,38 @@ metExploreD3.GraphNetwork = {
 	            	scale.setZoomScale(newScale);
 					scale.setXScale(zoomListener.x());
 					scale.setYScale(zoomListener.y());	
+				}
+				else
+				{
+					if(!((vizRect.top+height/10>graphComponentRect.top && vizRect.bottom-height/10<graphComponentRect.bottom) 
+										|| (vizRect.left+width/10>graphComponentRect.left && vizRect.right-width/10<graphComponentRect.right))){
+						var dataLength =session.getD3Data().getNodesLength();
+						var delay = 3000;
+						if (dataLength < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())						
+							delay = 3000;
+							
+						metExploreD3.fixDelay(metExploreD3.GraphNetwork.task, delay);
+
+						var zoomListener = scale.getZoom();
+
+						if(updateScale==undefined) updateScale = 0.01;
+						else updateScale = updateScale/2;
+
+				    	var newScale = previousScale+(previousScale*updateScale);
+		            	zoomListener.scale(newScale);
+
+						var newWidth = newScale*width;
+						var newHeight = newScale*height;
+						var xScale = (width-newWidth)/2;
+						var yScale = (height-newHeight)/2;
+						zoomListener.translate([xScale,yScale]);
+						
+						zoomListener.event(d3.select("#"+panel).select("#D3viz"));	
+		            	
+		            	scale.setZoomScale(newScale);
+						scale.setXScale(zoomListener.x());
+						scale.setYScale(zoomListener.y());	
+					}
 				}
 			}
 		}

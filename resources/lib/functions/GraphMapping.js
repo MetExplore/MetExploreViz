@@ -28,8 +28,8 @@ metExploreD3.GraphMapping = {
 		var categoriesName=categories.map(function(node){return node.getName()});
 
 		var mapping = _metExploreViz.getMappingByName(mappingName);
-		var dataCond1 = categories.map(function(node){return Math.abs(parseInt(node.getMappingDataByNameAndCond(mappingName[0], condName[0]).getMapValue()))});
-		var dataCond2 = categories.map(function(node){return -Math.abs(parseInt(node.getMappingDataByNameAndCond(mappingName[1], condName[1]).getMapValue()))});
+		var dataCond1 = categories.map(function(node){return -Math.abs(parseInt(node.getMappingDataByNameAndCond(mappingName[0], condName[0]).getMapValue()))});
+		var dataCond2 = categories.map(function(node){return Math.abs(parseInt(node.getMappingDataByNameAndCond(mappingName[1], condName[1]).getMapValue()))});
 
         var conditions2=
         [
