@@ -472,7 +472,7 @@ metExploreD3.GraphMapping = {
 				  	var vis = d3.select("#viz").select("#D3viz");
 				  	var session = _metExploreViz.getSessionById('viz');
 		          	var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes(); 
-		          	var conditions = mapping.getConditions();	
+		          	var conditions = metExploreD3.getConditionsMapped();
 					var maxValue = undefined;
 		          	var minValue = undefined;
 		          	var mappingName = mapping.getName();
@@ -748,7 +748,7 @@ metExploreD3.GraphMapping = {
 						var session = _metExploreViz.getSessionById('viz');
 						
 						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-								force.resume();
+								force.start();
 						}
 					}
 					metExploreD3.GraphNetwork.tick('viz');
@@ -876,11 +876,8 @@ metExploreD3.GraphMapping = {
 								{
 									if(d.getBiologicalType() == 'reaction')
 			            			{
-										var map1 = d.getMappingDataByNameAndCond(mappingName, conditions[0]);
-										var map2 = d.getMappingDataByNameAndCond(mappingName, conditions[1]);
-										var map = map1;
-								    	if(conditions[1]==conditionName)
-								    		map = map2;
+			            				var condition = metExploreD3.getConditionsMapped()[0];
+										var map = d.getMappingDataByNameAndCond(mappingName, condition);
 
 										if(map!=null){
 											if(!isNaN(map.getMapValue()))
@@ -913,16 +910,12 @@ metExploreD3.GraphMapping = {
 								reaction = link.getTarget();
 							}
 
-							var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
-							var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
-							
+			            	var condition = metExploreD3.getConditionsMapped()[0];
+							var map = reaction.getMappingDataByNameAndCond(mappingName, condition);
+
 							vis.selectAll('g#node'+metabolite.getId()+'.node')
 								.each(function(node){
 									
-									var map = map1;
-							    	if(conditions[1]==conditionName)
-							    		map = map2;
-
 							    	if(map==null)
 										var mapVal = 0;
 
@@ -943,89 +936,42 @@ metExploreD3.GraphMapping = {
 									return opacity(node.flux);
 								});	
 
-							if(conditions[0]==conditionName)
-							{
-								if(this.id != "linkRev"){
-									if(map1==null)
-										var map1Val = 0;
-									else
-									{
-										if (isNaN(map1.getMapValue()))
-											var map1Val = 0;
-										else
-											var map1Val = map1.getMapValue();
-
-
-									}
-
-			                    	if(scaleValue(map1Val) == 0)
-			                    	{
-			                    		var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
-	
-										d3.select(this)
-											.style("opacity", 0.5)
-											.style("stroke", "black")
-											.style("stroke-width", 0.5)
-											.style("stroke-dasharray", "2,3")
-											.each(function(link){
-												var first = links[0][0];
-												this.parentNode.insertBefore(this, first);
-											});
-			                    	}
-									else
-									{
-										d3.select(this).style("opacity", opacity(scaleValue(parseFloat(map1Val))));
-									}
-									if(metabolite.getIsSideCompound())
-										d3.select(this) .style("opacity", 0.1);
-
-									return colorNode(scaleValue(map1Val));
-				            
-								}
-							}
+							if(map==null)
+								var mapVal = 0;
 							else
 							{
-								if(this.id == "linkRev"){
-									if(map2==null)
-										var map2Val = 0;
-									else
-									{
-										if (isNaN(map2.getMapValue()))
-											var map2Val = 0;
-										else
-											var map2Val = map2.getMapValue();
+								if (isNaN(map.getMapValue()))
+									var mapVal = 0;
+								else
+									var mapVal = map.getMapValue();
+							}
 
+	                    	if(scaleValue(mapVal) == 0)
+	                    	{
+	                    		var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
 
-									}
-			                    	if(scaleValue(map2Val) == 0)
-			                    	{
-										var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
-	
-										d3.select(this)
-											.style("opacity", 0.5)
-											.style("stroke", "black")
-											.style("stroke-width", 0.5)
-											.style("stroke-dasharray", "2,3") 
-											.each(function(link){
-												var first = links[0][0];
-												this.parentNode.insertBefore(this, first);
-											});
-									}
-									else
-									{
-										d3.select(this).style("opacity", opacity(scaleValue(parseFloat(map2Val))));
-									}
-									if(metabolite.getIsSideCompound())
-										d3.select(this) .style("opacity", 0.1);
-									return colorNode(scaleValue(map2Val));
-				                }
-							} 
+								d3.select(this)
+									.style("opacity", 0.5)
+									.style("stroke", "black")
+									.style("stroke-width", 0.5)
+									.style("stroke-dasharray", "2,3")
+									.each(function(link){
+										var first = links[0][0];
+										this.parentNode.insertBefore(this, first);
+									});
+	                    	}
+							else
+							{
+								d3.select(this).style("opacity", opacity(scaleValue(parseFloat(mapVal))));
+							}
+							if(metabolite.getIsSideCompound())
+								d3.select(this).style("opacity", 0.1);
+
+							return colorNode(scaleValue(mapVal));
+					
 						})
 						.filter(function(link){
-							if(conditions[0]==conditionName)
-								return this.id == "linkRev";
-							else
-								return this.id != "linkRev";
+							return this.id == "linkRev";
 						})
 						.remove();
 
@@ -1041,7 +987,7 @@ metExploreD3.GraphMapping = {
 						var session = _metExploreViz.getSessionById('viz');
 						
 						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-								force.resume();
+								force.start();
 						}
 					}
 					metExploreD3.GraphNetwork.tick('viz');

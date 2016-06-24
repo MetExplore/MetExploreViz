@@ -476,6 +476,11 @@ var metExploreD3 = {
     },
 
 
+    getConditionsMapped : function(){
+        return Ext.getCmp('selectConditionForm').lookupReference('selectCondition').lastValue;
+    },
+
+
     // MappingInfo
     setMappingInfosSet : function(store){
         Ext.getStore("S_MappingInfo") = store;

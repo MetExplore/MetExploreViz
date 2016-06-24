@@ -55,7 +55,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 		view.lookupReference('selectConditionType').on({
 			change : function(that, newVal, old){
-				console.log(view.lookupReference('opacity'));
 				if(newVal!="Flux")
 					view.lookupReference('opacity').setHidden(true);
 				else
@@ -92,25 +91,30 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				var that = this;
 
 				// If the main network is already mapped we inform the user: OK/CANCEL
-				if(networkVizSession.isMapped()!='false')	
+				console.log(view.lookupReference('selectCondition').getValue());	
+				
+				if(view.lookupReference('selectCondition').getValue().length>0)	
 				{
-			        Ext.Msg.show({
-			           title:'Are you sure?',
-			           msg: 'This action will remove previous mapping. <br />Would you like to do this?',
-			           buttons: Ext.Msg.OKCANCEL,
-			           fn: function(btn){
-							if(btn=="ok")
-							{	
-								var newMapping ='true';
-								me.closeMapping(newMapping);
-								that.map();
-							}
-			           },
-			           icon: Ext.Msg.QUESTION
-			       });
+					if(networkVizSession.isMapped()!='false')	
+					{
+				        Ext.Msg.show({
+				           title:'Are you sure?',
+				           msg: 'This action will remove previous mapping. <br />Would you like to do this?',
+				           buttons: Ext.Msg.OKCANCEL,
+				           fn: function(btn){
+								if(btn=="ok")
+								{	
+									var newMapping ='true';
+									me.closeMapping(newMapping);
+									that.map();
+								}
+				           },
+				           icon: Ext.Msg.QUESTION
+				       });
+					}
+					else
+						this.map();	
 				}
-				else
-					this.map();	
 			},
 			scope:me
 		});
@@ -142,8 +146,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				    }
 			    
 
-					var container = Ext.getCmp('panel'+session.isMapped());
-					
+					console.log(container);
+					var container = Ext.getCmp('panel'+session.isMapped().replace('.',''));
 					if(container!=undefined){				
 						container.close();
 						var colorStore = session.getColorMappingsSet();
@@ -200,7 +204,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		    }
 		    
 
-			var container = Ext.getCmp('panel'+session.isMapped());
+			var container = Ext.getCmp('panel'+session.isMapped().replace(".", ""));
 			
 			if(container!=undefined){				
 				container.close();
@@ -257,7 +261,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			if(newMapping!=undefined)
 				this.removeGraphMapping(oldMapping);
 
-			if(session.getMappingDataType()=="Continuous", session.getMappingDataType()=="Flux"){
+			if(session.getMappingDataType()=="Continuous" || session.getMappingDataType()=="Flux"){
 				var colorStore = session.getColorMappingsSet();        
 		        var newColor = session.getColorMappingsSetLength()==0;
 		        
@@ -266,10 +270,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		        }
 		    }
 
-		    if(session.getMappingDataType()=="Flux")
-				var container = Ext.getCmp('panel'+session.isMapped()[0]);
+		    if(session.getMappingDataType()=="Flux"|| Array.isArray(session.isMapped()))
+				var container = Ext.getCmp('panel'+session.isMapped()[0].replace(".", ""));
 			else
-				var container = Ext.getCmp('panel'+session.isMapped());
+				var container = Ext.getCmp('panel'+session.isMapped().replace(".", ""));
 			
 			if(container!=undefined){				
 				container.close();
@@ -357,11 +361,12 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		var networkVizSession = _metExploreViz.getSessionById("viz");
 		networkVizSession.setMapped(selectedCondition);
 
-		if(type=="flux")
+
+		if(type=="flux" || Array.isArray(selectedCondition))
 			var cond = selectedCondition[0];
 		else
 			var cond = selectedCondition;
-		
+
 		if(selectConditionForm !=undefined)
 		{
 			if(Ext.getCmp('panel'+ cond)==undefined)
@@ -441,9 +446,9 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 					idColors.push(newId);
 			    }
 				);
-			
+				
 				var newConditionPanel = Ext.create('Ext.panel.Panel', {
-			    	id: 'panel'+cond,
+			    	id: 'panel'+cond.replace('.',''),
 			    	border:false,
 			    	width: '100%',
 				    bodyBorder: false,
@@ -466,8 +471,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		            tooltip:'You must choose a condition to add it',
 		            //formBind: true,
 		            margin:'5 5 5 0',
-		            id: 'delCondition'+cond,
-		            action: 'delCondition'+cond,     
+		            id: 'delCondition'+cond.replace('.',''),
+		            action: 'delCondition'+cond.replace('.',''),     
 				    handler: function() {
 				        var container = this.findParentBy(function (component)
 						{
@@ -488,8 +493,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				var refreshColorButton = Ext.create('Ext.Button', {
 				    iconCls:'refresh',
 		            margin:'5 5 5 0',
-		            id: 'refreshColor'+cond,
-		            action: 'refreshColor'+cond,     
+		            id: 'refreshColor'+cond.replace('.',''),
+		            action: 'refreshColor'+cond.replace('.',''),     
 				    handler: function() {
 				        var mapping = mapp;
 				    	var colorStore = networkVizSession.getColorMappingsSet();
@@ -534,7 +539,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 							}
 							
 							if(type=="continuous"){
-								metExploreD3.GraphMapping.graphMappingContinuousData(mapp, selectedCondition, networkVizSession.getColorMappingById(minValue).getValue(), networkVizSession.getColorMappingById(maxValue).getValue());
+								metExploreD3.GraphMapping.graphMappingContinuousData(mapp, cond, networkVizSession.getColorMappingById(minValue).getValue(), networkVizSession.getColorMappingById(maxValue).getValue());
 							}
 							else
 							{
