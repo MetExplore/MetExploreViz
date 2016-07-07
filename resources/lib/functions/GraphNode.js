@@ -184,10 +184,46 @@ metExploreD3.GraphNode = {
 				undefined,
 				metaboliteStyle.getStrokeWidth()/2
 			);
+		var minDim = Math.min(metaboliteStyle.getWidth(), metaboliteStyle.getHeight());
 
 		metabolites.each(function(node){
 			metExploreD3.GraphNode.addText(node, "viz");
 		});
+		
+		metabolites.select('.structure_metabolite')
+			.attr(
+				"viewBox",
+				function(d) { 
+					console.log(minDim);
+					return "0 0 " + minDim
+							+ " " + minDim;
+				}
+			)
+			.attr("width", minDim *8/10 + "px")
+			.attr("height", minDim *8/10+ "px")
+			.attr("x", (-minDim/2)+(minDim*1/10))
+			.attr("preserveAspectRatio", "xMinYMin")
+			.attr("y", (-minDim/2)+(minDim*1/10));
+
+		var session = _metExploreViz.getSessionById("viz");
+		
+		var force = session.getForce();
+		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+		var reactionStyle = metExploreD3.getReactionStyle();
+
+		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
+		var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
+		var maxDim = Math.max(maxDimRea, maxDimMet);
+		
+		
+		var linkStyle = metExploreD3.getLinkStyle();  
+		force.linkDistance(function(link){
+			if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+				return linkStyle.getSize()/2+maxDim;
+			else
+				return linkStyle.getSize()+maxDim;
+		});
+		
 	},
 
 	/*******************************************
@@ -1920,16 +1956,16 @@ metExploreD3.GraphNode = {
 			// Image definition
 			metExploreD3.GraphNode.node
 				.filter(
-						function(d) {
-							return (d.getBiologicalType() == 'metabolite' && d.getSvg() != "undefined" && d.getSvg()!=undefined && d.getSvg()!="");
-						})
+					function(d) {
+						return (d.getBiologicalType() == 'metabolite' && d.getSvg() != "undefined" && d.getSvg()!=undefined && d.getSvg()!="");
+					})
 				.append("svg")
 				.attr(
-						"viewBox",
-						function(d) {
-							return "0 0 " + minDim
-									+ " " + minDim;
-						})
+					"viewBox",
+					function(d) {
+						return "0 0 " + minDim
+								+ " " + minDim;
+				})
 				.attr("width", minDim *8/10 + "px")
 				.attr("height", minDim *8/10+ "px")
 				.attr("x", (-minDim/2)+(minDim*1/10))

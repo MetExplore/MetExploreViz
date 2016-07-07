@@ -440,15 +440,20 @@ metExploreD3.GraphNetwork = {
 		var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 		var linkStyle = metExploreD3.getLinkStyle();
 		var generalStyle = metExploreD3.getGeneralStyle();				
-		
+		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+		var reactionStyle = metExploreD3.getReactionStyle();
+
+		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
+		var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
+		var maxDim = Math.max(maxDimRea, maxDimMet);
 		// Initiate the D3 force drawing algorithm
 		var force = d3.layout.force().friction(0.90).gravity(0.06)
 				.charge(-150)
 				.linkDistance(function(link){
 					if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-						return linkStyle.getSize()/2;
+						return linkStyle.getSize()/2+maxDim;
 					else
-						return linkStyle.getSize();
+						return linkStyle.getSize()+maxDim;
 				})
 				.size([ w, h ]);
 		
@@ -2275,12 +2280,20 @@ metExploreD3.GraphNetwork = {
 			
 		});
 
+		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+		var reactionStyle = metExploreD3.getReactionStyle();
+
+		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
+		var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
+		var maxDim = Math.max(maxDimRea, maxDimMet);
+		
+		
 		var linkStyle = metExploreD3.getLinkStyle();  
 		force.linkDistance(function(link){
 			if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-				return linkStyle.getSize()/2;
+				return linkStyle.getSize()/2+maxDim;
 			else
-				return linkStyle.getSize();
+				return linkStyle.getSize()+maxDim;
 		});
 	}, 	
 	
