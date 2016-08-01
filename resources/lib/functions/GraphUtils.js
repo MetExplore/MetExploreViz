@@ -1300,7 +1300,7 @@ metExploreD3.GraphUtils = {
 				    	if(node.isDuplicated()!=undefined)
 				    		networkJSON+="\"duplicated\":"+JSON.stringify(node.isDuplicated())+",";
 				    	else
-				    		networkJSON+="\"duplicated\":'undefined',";
+				    		networkJSON+="\"duplicated\":false,";
 				    	
 				    	networkJSON+="\"labelVisible\":"+JSON.stringify(node.getLabelVisible())+",";
 				    	
