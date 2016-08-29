@@ -1116,7 +1116,12 @@ metExploreD3.GraphMapping = {
 				switch (mapping.getTargetLabel()) {
 				    case "reactionDBIdentifier":
 				        mapping.getData().forEach(function(map){
-							var node = networkData.getNodeByDbIdentifier(map.getNode());
+				        	if(typeof map.getNode()=="object")
+								var node = networkData.getNodeByDbIdentifier(map.getNode().getDbIdentifier());
+							else
+								var node = networkData.getNodeByDbIdentifier(map.getNode());
+
+							console.log(node);
 							if(node!=undefined){
 								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
 								node.addMappingData(mapNode);
@@ -1126,7 +1131,11 @@ metExploreD3.GraphMapping = {
 
 					case "reactionId":
 				        mapping.getData().forEach(function(map){
-							var node = networkData.getNodeById(map.getNode());
+				        	if(typeof map.getNode()=="object")
+								var node = networkData.getNodeById(map.getNode().getId());
+							else
+								var node = networkData.getNodeById(map.getNode());
+
 							if(node!=undefined){
 								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
 								node.addMappingData(mapNode);
@@ -1136,7 +1145,11 @@ metExploreD3.GraphMapping = {
 
 					case "metaboliteId":
 				        mapping.getData().forEach(function(map){
-							var node = networkData.getNodeById(map.getNode());
+				        	if(typeof map.getNode()=="object")
+								var node = networkData.getNodeById(map.getNode().getId());
+							else
+								var node = networkData.getNodeById(map.getNode());
+
 							if(node!=undefined){
 								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
 								node.addMappingData(mapNode);
@@ -1146,7 +1159,11 @@ metExploreD3.GraphMapping = {
 
 				    case "metaboliteDBIdentifier":
 				       	mapping.getData().forEach(function(map){
-							var node = networkData.getNodeByDbIdentifier(map.getNode());
+							if(typeof map.getNode()=="object")
+								var node = networkData.getNodeByDbIdentifier(map.getNode().getDbIdentifier());
+							else
+								var node = networkData.getNodeByDbIdentifier(map.getNode());
+							
 							if(node!=undefined){
 								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
 								node.addMappingData(mapNode);
