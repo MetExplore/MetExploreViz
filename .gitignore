@@ -1,5 +1,6 @@
 # ---> ExtJs
+sass
+bootstrap.json
 .idea
 .architect
 build/
-
