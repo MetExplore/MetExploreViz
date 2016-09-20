@@ -1,6 +1,2 @@
-bootstrap.json
-sass
-.idea
-# ---> ExtJs
-.architect
-build/
+build/production/
+build/development/
