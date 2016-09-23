@@ -1378,7 +1378,7 @@ metExploreD3.GraphNode = {
 
 
 		metExploreD3.GraphNode.node
-			.filter(function(d) { console.log( d.isLocked()); return d.isLocked(); })
+			.filter(function(d) { return d.isLocked(); })
 			.each(function(d) { d.fixed=true; });
 
 		metExploreD3.GraphNode.node
