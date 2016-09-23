@@ -641,8 +641,6 @@ metExploreD3.GraphPanel = {
 				if(key=='viz') _metExploreViz.setInitialData(_metExploreViz.cloneNetworkData(networkData));
 				networkVizSession.setD3Data(networkData);
 
-				
-
 				if(sessions[key].selectedNodes)
 				{
 					sessions[key].selectedNodes.forEach(function(nodeId){
@@ -800,6 +798,11 @@ metExploreD3.GraphPanel = {
 								
 					            }
 				            });
+				            d3.select("#viz").select("#graphComponent")
+								.selectAll("g.node")
+						        .filter(function(d) { return d.isLocked(); })
+						        .each(function(d) { d.fixed=true; });
+
 				            d3.select("#viz").select("#graphComponent")
 								.selectAll("g.node")
 						        .filter(function(d) { return selected.indexOf(d.id)!=-1; })

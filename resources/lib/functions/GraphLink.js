@@ -113,9 +113,9 @@ metExploreD3.GraphLink = {
 
 	//arrayValue already scale
 	funcPathForFlux : function(link, panel, linkId){
-		var source, target, path, reaction;metExploreD3.getConditionsMapped();
+		var source, target, path, reaction;
 		var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
-		var conditions = metExploreD3.getConditionsMapped();
+		var conditions = _metExploreViz.getSessionById(panel).isMapped();
 		var map1, map2;
 		var minValue= undefined;
 		var maxValue = undefined;

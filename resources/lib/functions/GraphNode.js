@@ -1309,7 +1309,7 @@ metExploreD3.GraphNode = {
 	        })
 	        .filter(function(node){
 	        	var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
-	        	return mappingData!=null; 
+	        	return (mappingData!=null && session.getColorMappingById(mappingData.getMapValue())!=null); 
 	        })
 			.attr("mapped",function(node){
 				var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
@@ -1335,6 +1335,7 @@ metExploreD3.GraphNode = {
 					
 					return colorScale(parseFloat(mappingData.getMapValue()));
 				}
+
 				var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
 				return color;
 			})
