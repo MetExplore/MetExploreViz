@@ -1969,6 +1969,20 @@ metExploreD3.GraphNetwork = {
 
 				d.fixed = true;
 				
+				node
+					.filter(function(n){return n==d})
+					.select('.locker')
+					.classed('hide', false)
+					.select('.iconlocker')
+					.attr(
+						"xlink:href",
+						function(d) {
+							if(d.isLocked())
+								return "resources/icons/lock_font_awesome.svg";
+							else
+								return "resources/icons/unlock_font_awesome.svg";
+					});
+
 				if(d.getBiologicalType()=="reaction"){
 					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 						.selectAll("path.link")
@@ -2026,8 +2040,15 @@ metExploreD3.GraphNetwork = {
 	        .on("mouseleave", function(d) {  
 				d3.select(this)
 					.attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
-				if(!d.isSelected())
+				
+				if(!d.isLocked())
 					d.fixed = false;
+
+				node
+					.filter(function(n){return n==d})
+					.select('.locker')
+					.classed('hide', true);
+
 				var linkStyle = metExploreD3.getLinkStyle();  
 
 		   		document.getElementById("tooltip2").classList.add("hide");
@@ -2147,6 +2168,27 @@ metExploreD3.GraphNetwork = {
 										+ d.getSvg();
 							}).attr("width", "100%").attr(
 							"height", "100%");
+
+				// Lock Image definition
+				node
+					.filter(function(d) { return d.getId() == identifier })
+					.append("svg")
+					.attr(
+						"viewBox",
+						function(d) {
+									+ " " + minDim;
+						})
+					.attr("width", minDim / 2 + "px")
+					.attr("height", minDim / 2+ "px")
+					.attr("preserveAspectRatio", "xMinYMin")
+					.attr("y", -minDim)
+					.attr("class", "locker")
+					.classed('hide', true)
+					.append("image")
+					.attr("class", "iconlocker")
+					.attr("width", "100%")
+					.attr("height", "100%");
+			
 
 				// We define the text for a reaction
 				node
