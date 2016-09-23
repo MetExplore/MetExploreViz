@@ -1296,6 +1296,7 @@ metExploreD3.GraphUtils = {
 				    	networkJSON+="\"biologicalType\":"+JSON.stringify(node.getBiologicalType())+",";
 				    	
 				    	networkJSON+="\"selected\":"+JSON.stringify(node.isSelected())+",";
+				    	networkJSON+="\"locked\":"+JSON.stringify(node.isLocked())+",";
 				    	
 				    	if(node.isDuplicated()!=undefined)
 				    		networkJSON+="\"duplicated\":"+JSON.stringify(node.isDuplicated())+",";

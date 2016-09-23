@@ -72,7 +72,7 @@ metExploreD3.GraphNode = {
 			// For the right click you can't deselectionate the node
 			if(d3.event.sourceEvent.target.classList.contains("iconlocker")){
 				if(d3.event.sourceEvent.button!=2){
-					d.setLocked(!d.isLocked())
+					d.setLocked(!d.isLocked());
 					d.fixed=d.isLocked();
 					metExploreD3.GraphNode.node
 						.filter(function(node){return node==d})
@@ -276,6 +276,14 @@ metExploreD3.GraphNode = {
 	* @param {} d : The node to move
 	*/
 	dragmove : function(d, i) {
+	
+		if(!d.isSelected()){
+			_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
+
+			// 78 = N like neighbour
+			if(_MyThisGraphNode.charKey==78 && d.isSelected())
+				_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
+		}
 	
 		// with updating both px,py,x,y on d !
 		_MyThisGraphNode.moveNode(d,_MyThisGraphNode.activePanel);
@@ -1370,6 +1378,10 @@ metExploreD3.GraphNode = {
 
 
 		metExploreD3.GraphNode.node
+			.filter(function(d) { console.log( d.isLocked()); return d.isLocked(); })
+			.each(function(d) { d.fixed=true; });
+
+		metExploreD3.GraphNode.node
 	        .filter(function(node){
 	        	return node.getMappingDatasLength()>0 && session.getActiveMapping()!=""; 
 	        })
@@ -2326,5 +2338,18 @@ metExploreD3.GraphNode = {
 				.style("stroke-linejoin", "round")
 				.style("opacity", .15)
 				
+	},
+	
+	/*******************************************
+	* Fix all selected node
+	*/
+	fixSelectedNode : function() {
+		metExploreD3.GraphNode.node
+			.filter(function(node){ return node.isSelected();})
+			.each(function(node){
+				node.setLocked(true);
+				node.fixed=node.isLocked();
+			})		
 	}
+
 }

@@ -276,11 +276,11 @@ NetworkData.prototype = {
          this.nodes.push(node);
     },
    
-    addNode:function(name,compartment,dbIdentifier,id,reactionReversibility,biologicalType,selected,labelVisible,svg,svgWidth,svgHeight,isSideCompound,ec,isDuplicated, identifier, pathway){
+    addNode:function(name,compartment,dbIdentifier,id,reactionReversibility,biologicalType,selected,labelVisible,svg,svgWidth,svgHeight,isSideCompound,ec,isDuplicated, identifier, pathway, locked){
         if(this.nodes == undefined)
             this.nodes = [];
 
-        var object = new NodeData(name, compartment, dbIdentifier, ec, id, reactionReversibility, isSideCompound, biologicalType, selected, labelVisible, svg, svgWidth, svgHeight, undefined, isDuplicated, identifier, pathway);
+        var object = new NodeData(name, compartment, dbIdentifier, ec, id, reactionReversibility, isSideCompound, biologicalType, selected, labelVisible, svg, svgWidth, svgHeight, undefined, isDuplicated, identifier, pathway, locked);
         //console.log('ec '+ec);
         //console.log('ec '+object.getEC());
         this.nodes.push(object);
@@ -368,7 +368,7 @@ NetworkData.prototype = {
                         undefined, node.dbIdentifier,
                         node.id, node.reactionReversibility,
                         'reaction', false, true, undefined,
-                        undefined, undefined,undefined,node.ec, false, undefined, node.pathways);
+                        undefined, undefined,undefined,node.ec, false, undefined, node.pathways, node.locked);
                 }
                 else
                 {
@@ -377,7 +377,7 @@ NetworkData.prototype = {
                         node.compartment, node.dbIdentifier,
                         node.id, undefined,
                         'metabolite', false, true, node.svg,
-                        node.svgWidth, node.svgHeight,node.isSideCompound,undefined, node.duplicated, node.identifier, node.pathways);
+                        node.svgWidth, node.svgHeight,node.isSideCompound,undefined, node.duplicated, node.identifier, node.pathways, node.locked);
                 }
                 if(node.mappingDatas!=undefined){
                     if(node.mappingDatas.length>0){
