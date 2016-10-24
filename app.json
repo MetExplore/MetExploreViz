@@ -233,6 +233,10 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/tulip-javascript/demos/tulip.js",
+            "bundle": true
+        },
+        {
             "path": "resources/lib/graphjs/graph.js",
             "bundle": true
         },

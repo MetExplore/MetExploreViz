@@ -25,6 +25,12 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  iconCls:'delete-sideCompounds'
              },
              {
+                 text: 'Draw hierarchical layout',
+                 reference:'drawHierarchicalLayout',
+                 tooltip:'Draw the network with a hierarchical layout',
+                 iconCls:'drawhierarchicallayout'
+             },
+             {
                  text: 'Duplicate side compounds',
                  reference:'duplicateSideCompounds',
                  tooltip:'Duplicate metabolites annotated as side compounds',
