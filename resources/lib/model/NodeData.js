@@ -98,6 +98,10 @@ NodeData.prototype = {
     {
       return this.reactionReversibility;
     },
+    setReactionReversibility:function(reactionReversibility)
+    {
+      this.reactionReversibility = reactionReversibility;
+    },
 
     getName:function()
     {

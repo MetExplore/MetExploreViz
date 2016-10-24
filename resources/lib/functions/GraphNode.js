@@ -2105,6 +2105,32 @@ metExploreD3.GraphNode = {
     },
 
 	/*******************************************
+	* To load nodes in visualization
+	* @param {} panel : The panel where the action is launched
+	*/
+	setIsReversibleById : function(idR, val) { 
+        var networkData = _metExploreViz.getSessionById("viz").getD3Data();
+		var nodes = networkData.getNodes();
+       	if(nodes!=undefined)
+        {
+            var node=networkData.getNodeById(idR);
+            if(node!=undefined)
+                node.setReactionReversibility(val);
+            
+            var sessions =  _metExploreViz.getSessionsSet();
+            for (var key in sessions) {                     
+                if(sessions[key].getId()!='viz')
+                {
+                    var nodeLinked = sessions[key].getD3Data().getNodeById(idR)
+                    nodeLinked.setReactionReversibility(val);
+                    if(nodeLinked!=undefined)
+                        nodeLinked.setReactionReversibility(val);
+                }
+            }    
+        }
+    },
+
+	/*******************************************
 	* Init the visualization of links
 	* @param {} parent : The panel where the action is launched
 	* @param {} component : pathway or compartment
