@@ -849,6 +849,8 @@ metExploreD3.GraphNode = {
 						
 					links.filter(function(link){return d.getId()==link.getSource().getId();})
 						.style("stroke", "green")
+						.style("stroke-width", "1.5")
+
 						// .each(function(link){
 						// 	var last = links[0][links.size()-1];
 						// 	this.parentNode.insertBefore(this, last);
@@ -856,6 +858,7 @@ metExploreD3.GraphNode = {
 					 
 					 links.filter(function(link){return d.getId()==link.getTarget().getId();})
 						.style("stroke", "red")
+						.style("stroke-width", "1.5")
 						// .each(function(link){
 						// 	var last = links[0][links.size()-1];
 						// 	this.parentNode.insertBefore(this, last);
@@ -865,6 +868,7 @@ metExploreD3.GraphNode = {
 				{
 					links.filter(function(link){return d.getId()==link.getSource().getId();})
 						.style("stroke", "red")
+						.style("stroke-width", "1.5")
 						// .each(function(link){
 						// 	var last = links[0][links.size()-1];
 						// 	this.parentNode.insertBefore(this, last);
@@ -872,6 +876,7 @@ metExploreD3.GraphNode = {
 					 
 					links.filter(function(link){return d.getId()==link.getTarget().getId();})
 						.style("stroke", "green")
+						.style("stroke-width", "1.5")
 						// .each(function(link){
 						// 	var last = links[0][links.size()-1];
 						// 	this.parentNode.insertBefore(this, last);
@@ -943,7 +948,8 @@ metExploreD3.GraphNode = {
 	    		d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 					.selectAll("path.link")
 					.filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
-					.style("stroke",linkStyle.getStrokeColor());
+					.style("stroke",linkStyle.getStrokeColor())
+					.style("stroke-width", "0.5");
 
 				if(d.getBiologicalType()=="reaction"){
 					d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
@@ -994,24 +1000,28 @@ metExploreD3.GraphNode = {
 					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 						.selectAll("path.link")
 						.filter(function(link){return d.getId()==link.getSource().getId();})
-						.style("stroke", "green"); 	
+						.style("stroke", "green")
+						.style("stroke-width", "1.5"); 	
 					 
 					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 						.selectAll("path.link")
 						.filter(function(link){return d.getId()==link.getTarget().getId();})
-						.style("stroke", "red"); 	
+						.style("stroke", "red")
+						.style("stroke-width", "1.5"); 	
 				}
 				else
 				{
 					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 						.selectAll("path.link")
 						.filter(function(link){return d.getId()==link.getSource().getId();})
-						.style("stroke", "red"); 	
+						.style("stroke", "red")
+						.style("stroke-width", "1.5"); 	
 					 
 					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 						.selectAll("path.link")
 						.filter(function(link){return d.getId()==link.getTarget().getId();})
-						.style("stroke", "green"); 
+						.style("stroke", "green")
+						.style("stroke-width", "1.5"); 
 				}
 				 
 				var xScale=scale.getXScale();
@@ -1670,6 +1680,7 @@ metExploreD3.GraphNode = {
 							
 						links.filter(function(link){return d.getId()==link.getSource().getId();})
 							.style("stroke", "green")
+						.style("stroke-width", "1.5")
 							// .each(function(link){
 							// 	var last = links[0][links.size()-1];
 							// 	this.parentNode.insertBefore(this, last);
@@ -1677,6 +1688,7 @@ metExploreD3.GraphNode = {
 						 
 						 links.filter(function(link){return d.getId()==link.getTarget().getId();})
 							.style("stroke", "red")
+						.style("stroke-width", "1.5")
 							// .each(function(link){
 							// 	var last = links[0][links.size()-1];
 							// 	this.parentNode.insertBefore(this, last);
@@ -1686,6 +1698,7 @@ metExploreD3.GraphNode = {
 					{
 						links.filter(function(link){return d.getId()==link.getSource().getId();})
 							.style("stroke", "red")
+						.style("stroke-width", "1.5")
 							// .each(function(link){
 							// 	var last = links[0][links.size()-1];
 							// 	this.parentNode.insertBefore(this, last);
@@ -1693,6 +1706,7 @@ metExploreD3.GraphNode = {
 						 
 						links.filter(function(link){return d.getId()==link.getTarget().getId();})
 							.style("stroke", "green")
+						.style("stroke-width", "1.5")
 							// .each(function(link){
 							// 	var last = links[0][links.size()-1];
 							// 	this.parentNode.insertBefore(this, last);
@@ -1765,7 +1779,8 @@ metExploreD3.GraphNode = {
 		    		d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 						.selectAll("path.link")
 						.filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
-						.style("stroke",linkStyle.getStrokeColor());
+						.style("stroke",linkStyle.getStrokeColor())
+						.style("stroke-width", "0.5");
 
 					if(d.getBiologicalType()=="reaction"){
 						d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
