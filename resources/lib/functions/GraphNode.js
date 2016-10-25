@@ -2181,33 +2181,36 @@ metExploreD3.GraphNode = {
 		
         metExploreD3.GraphNode.groupPath = function(d) {
         	var scale = metExploreD3.getScaleById("viz");
-			if(d.values.length>0)
+			if(d.values!=undefined)
 			{				
-				if(d.values.length>2)
+				if(d.values.length>0)
 				{
-				
-					return "M" + 
-				      d3.geom.hull(d.values.map(function(i) { return [i.x, i.y]; }))
-				        .join("L")
-				    + "Z";
-				}
-				else
-				{			
-					var fakeNodes = [];
-					d.values.forEach(function(val){
-						fakeNodes.push([val.x,val.y]);
-					});
-					var dx, dy;
-					for (var i = d.values.length ; i < 3; i++) {
-						dx = d.values[0].x*(1+0.00001*i);
-						dy = d.values[0].y*(1+0.000011*i);
-						fakeNodes.push([dx, dy]);
-					};
+					if(d.values.length>2)
+					{
 					
-					return "M" + 
-				      d3.geom.hull(fakeNodes)
-				        .join("L")
-				    + "Z";
+						return "M" + 
+					      d3.geom.hull(d.values.map(function(i) { return [i.x, i.y]; }))
+					        .join("L")
+					    + "Z";
+					}
+					else
+					{			
+						var fakeNodes = [];
+						d.values.forEach(function(val){
+							fakeNodes.push([val.x,val.y]);
+						});
+						var dx, dy;
+						for (var i = d.values.length ; i < 3; i++) {
+							dx = d.values[0].x*(1+0.00001*i);
+							dy = d.values[0].y*(1+0.000011*i);
+							fakeNodes.push([dx, dy]);
+						};
+						
+						return "M" + 
+					      d3.geom.hull(fakeNodes)
+					        .join("L")
+					    + "Z";
+					}
 				}
 			}
 		};

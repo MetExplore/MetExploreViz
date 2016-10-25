@@ -1244,6 +1244,8 @@ metExploreD3.GraphNetwork = {
 					var nbComp = 0;
 					for (var key in session.groups) {
 					  	if (session.groups.hasOwnProperty(key)) {
+					  	  	if(session.groups[key].values!=undefined)
+					  	  		return false;
 					  	  	
 							var index = session.groups[key].values.indexOf(node);
 							if(index!=-1)
@@ -3412,7 +3414,7 @@ setTimeout(
 		var scale = metExploreD3.getScaleById(panel);
 		// Call GraphCaption to draw the caption
 		metExploreD3.GraphCaption.drawCaption();
-				
+
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
 		// console.log("----Viz: START refresh/init Viz");
