@@ -13,7 +13,6 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
         'metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu',
         'metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu',
         'metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenu',
-        'metExploreViz.view.menu.viz_CaptionMenu.Viz_CaptionMenu',
         'metExploreViz.view.menu.viz_ColorMenu.Viz_ColorMenu',
         'metExploreViz.view.menu.viz_LoadMenu.Viz_LoadMenu',
         'metExploreViz.view.button.buttonImportMapping.ButtonImportMapping',

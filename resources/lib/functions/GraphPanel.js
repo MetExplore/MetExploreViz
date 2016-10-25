@@ -554,7 +554,20 @@ metExploreD3.GraphPanel = {
 			if(jsonParsed.generalStyle)
 			{
 				var oldGeneralStyle = metExploreD3.getGeneralStyle();                   
-				var style = new GeneralStyle(oldGeneralStyle.getWebsiteName(), jsonParsed.generalStyle.colorMinMappingContinuous, jsonParsed.generalStyle.colorMaxMappingContinuous, jsonParsed.generalStyle.maxReactionThreshold, jsonParsed.generalStyle.displayLabelsForOpt, jsonParsed.generalStyle.displayLinksForOpt, jsonParsed.generalStyle.displayConvexhulls, jsonParsed.generalStyle.clustered,  oldGeneralStyle.isDisplayedCaption(), oldGeneralStyle.hasEventForNodeInfo(), oldGeneralStyle.loadButtonIsHidden(), oldGeneralStyle.windowsAlertIsDisable());
+				var style = new GeneralStyle(
+					oldGeneralStyle.getWebsiteName(), 
+					jsonParsed.generalStyle.colorMinMappingContinuous, 
+					jsonParsed.generalStyle.colorMaxMappingContinuous, 
+					jsonParsed.generalStyle.maxReactionThreshold, 
+					jsonParsed.generalStyle.displayLabelsForOpt, 
+					jsonParsed.generalStyle.displayLinksForOpt, 
+					jsonParsed.generalStyle.displayConvexhulls, 
+					jsonParsed.generalStyle.clustered,  
+					jsonParsed.generalStyle.displayCaption, 
+					oldGeneralStyle.hasEventForNodeInfo(), 
+					oldGeneralStyle.loadButtonIsHidden(), 
+					oldGeneralStyle.windowsAlertIsDisable()
+				);
 				metExploreD3.setGeneralStyle(style);
 			}
 

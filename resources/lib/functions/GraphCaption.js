@@ -250,6 +250,31 @@ metExploreD3.GraphCaption = {
 			.select('#captionComparment')
 			.classed('hide', true);
 
+		metExploreD3.GraphCaption.majCaption();
+	},
+
+	/*****************************************************
+	* Maj caption
+	*/
+	majCaption : function(){
+		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+		
+		var component = s_GeneralStyle.isDisplayedCaption();
+		if(component=="Pathways"){
+			metExploreD3.GraphCaption.colorPathwayLegend(175);
+			d3.select("#viz").select("#D3viz")
+				.select('#captionComparment')
+				.classed('hide', true);
+		}
+		else
+		{
+			d3.select("#viz").select("#D3viz")
+							.select('#captionComparment')
+							.classed('hide', false);
+			d3.select("#viz").select("#D3viz")
+				.select('#captionPathway')
+				.remove();
+		}
 	},
 
 	/*****************************************************

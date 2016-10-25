@@ -3412,7 +3412,7 @@ setTimeout(
 		var scale = metExploreD3.getScaleById(panel);
 		// Call GraphCaption to draw the caption
 		metExploreD3.GraphCaption.drawCaption();
-		
+				
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
 		// console.log("----Viz: START refresh/init Viz");
