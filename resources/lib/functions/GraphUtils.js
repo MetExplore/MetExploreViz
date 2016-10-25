@@ -1346,16 +1346,20 @@ metExploreD3.GraphUtils = {
 				    * Saving links 
 				    */
 				    networkJSON+="\"links\":[" ;
-				    _metExploreViz.getSessionById(key).getD3Data().getLinks().forEach(function(link){
-				    	networkJSON+="{\"id\":"+JSON.stringify(link.getId())+",";
-				    	networkJSON+="\"source\":"+JSON.stringify(link.getSource().index)+",";
-				    	networkJSON+="\"target\":"+JSON.stringify(link.getTarget().index)+",";
-				    	networkJSON+="\"interaction\":"+JSON.stringify(link.getInteraction())+",";
-				    	networkJSON+="\"reversible\":"+JSON.stringify(link.isReversible());
-				    	networkJSON+="}";
-				    	var index = _metExploreViz.getSessionById(key).getD3Data().getLinks().indexOf(link);
-				    	if(index != _metExploreViz.getSessionById(key).getD3Data().getLinks().length-1)
-				    		networkJSON+=",";
+				    var linksToSave = _metExploreViz.getSessionById(key).getD3Data().getLinks()
+				    	.filter(function(link){
+				    		return link.getInteraction()!="hiddenForce";
+				    	})
+				    linksToSave.forEach(function(link){
+					    	networkJSON+="{\"id\":"+JSON.stringify(link.getId())+",";
+					    	networkJSON+="\"source\":"+JSON.stringify(link.getSource().index)+",";
+					    	networkJSON+="\"target\":"+JSON.stringify(link.getTarget().index)+",";
+					    	networkJSON+="\"interaction\":"+JSON.stringify(link.getInteraction())+",";
+					    	networkJSON+="\"reversible\":"+JSON.stringify(link.isReversible());
+					    	networkJSON+="}";
+					    	var index = linksToSave.indexOf(link);
+					    	if(index != linksToSave.length-1)
+					    		networkJSON+=",";
 				    });
 				    networkJSON+="]},";
 
