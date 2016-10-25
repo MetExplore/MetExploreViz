@@ -772,8 +772,8 @@ var metExploreViz = function(panel, webSite){
     this.dataFromWebSite = null;
     this.panel = panel;
     this.linkStyle = new LinkStyle(25, 2, 5, 5, 'red', 'green', 'black', '0.7', 'black');
-    this.reactionStyle = new ReactionStyle(10, 20, 3, 3, 'ec', 8, 'black', 1);
-    this.metaboliteStyle = new MetaboliteStyle(10, 10, 5, 5, 6, 1,'name', '#b2ae92');
+    this.reactionStyle = new ReactionStyle(15, 30, 3, 3, 'ec', 9, 'black', 1);
+    this.metaboliteStyle = new MetaboliteStyle(14, 14, 7, 7, 7, 1,'name', '#b2ae92');
     this.generalStyle = new GeneralStyle("Website", "yellow", "blue", 500, false, false, false, false, false);
     this.initialData = undefined;
     
