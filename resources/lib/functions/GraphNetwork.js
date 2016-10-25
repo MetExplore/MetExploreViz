@@ -3248,10 +3248,12 @@ setTimeout(
 					nodes.splice(indexTgt,1);
 				}
 			});
+
 		vis.selectAll("g.node").filter(function(node){
 			return nodes.indexOf(node.getId())!=-1;
 		})
-			.transition().duration(1000).style("opacity", 0)
+		.each(function(node){nodesToRemove.push(node);})
+		.transition().duration(1000).style("opacity", 0)
 		.remove();
 
 		setTimeout(
