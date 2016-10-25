@@ -99,7 +99,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							hidden : false,
 							handler : function(){ metExploreD3.GraphNetwork.duplicateASideCompoundSelected(target.parentNode, "viz"); }
 						},{
-							text : 'Select neighbour',
+							text : 'Select neighbour (N+select)',
 							hidden : false,
 							handler : function(){ metExploreD3.GraphNode.selectNeighbours(_metExploreViz.getSessionById('viz').getD3Data().getNodeById(target.id), "viz"); }
 						}
