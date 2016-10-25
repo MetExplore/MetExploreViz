@@ -315,7 +315,7 @@ metExploreD3.GraphCaption = {
 			position+=10;
 
 			caption.append("svg:text")
-				.text(compartment.getName())
+				.html(compartment.getName())
 				.attr('x', 20)
 				.attr('y', -6)
 				.attr("transform","translate(30,"+position+")");
@@ -390,7 +390,7 @@ metExploreD3.GraphCaption = {
 			position+=10;
 
 			caption.append("svg:text")
-				.text(group.key)
+				.html(group.key)
 				.attr('x', 20)
 				.attr('y', -6)
 				.attr("transform","translate(30,"+position+")");
