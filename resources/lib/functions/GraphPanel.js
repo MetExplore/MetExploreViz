@@ -664,10 +664,10 @@ metExploreD3.GraphPanel = {
 		                {
 		                	metExploreD3.fireEventArg('buttonMap', "reloadMapping", false);
 			                metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", false);
+		                	metExploreD3.fireEventArg('selectConditionForm', "closeMapping", _metExploreViz.getActiveMapping);
 			                _metExploreViz.resetMappings();
 		                	// metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", false);
 		                	// metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", false);
-		                	// metExploreD3.fireEventArg('selectConditionForm', "closeMapping", _metExploreViz.getActiveMapping);
 		                	// metExploreD3.fireEvent('selectMappingVisu', "resetMapping");
 		                	// _metExploreViz.resetMappings();
 		                }

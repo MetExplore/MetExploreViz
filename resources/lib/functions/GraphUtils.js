@@ -1220,23 +1220,7 @@ metExploreD3.GraphUtils = {
 				networkJSON+=",\n\"metaboliteStyle\":"+JSON.stringify(metExploreD3.getMetaboliteStyle());
 				networkJSON+=",\n\"comparedPanels\":"+JSON.stringify(_metExploreViz.comparedPanels);
 				networkJSON+=",\n\"linkedByTypeOfMetabolite\":"+JSON.stringify(_metExploreViz.linkedByTypeOfMetabolite);
-					
-			   	if(_metExploreViz.getMappingsLength!=undefined) 
-			   		networkJSON+=",\n\"mappings\":"
-			   			+JSON.stringify(_metExploreViz.getMappingsSet(),
-							function (cle, valeur) {
-							if (cle === "name") {
-								if(valeur.search("(json)")==-1)
-						    		valeur+="(json)";
-						    	
-								return valeur;
-							}
-							if (cle === "data") {
-								return undefined;
-							}
-							return valeur;
-						});
-			    
+							    
 			    networkJSON+=",\n\"sessions\":{";
 			   
 			    var sessions = _metExploreViz.getSessionsSet();
@@ -1309,26 +1293,6 @@ metExploreD3.GraphUtils = {
 					    	networkJSON+="\"svgWidth\":"+JSON.stringify(node.getSvgWidth())+",";
 					    	networkJSON+="\"svgHeight\":"+JSON.stringify(node.getSvgHeight())+",";
 					   	}
-
-
-					   	if(node.getMappingDatasLength()>0){
-				   			networkJSON+="\"mappingDatas\":[" ;
-					   		node.getMappingDatas().forEach(function(mappingData){
-						    	networkJSON+="{\"node\":"+JSON.stringify(node.index)+",";
-						    	if(mappingData.getMappingName().search("(json)")==-1)
-						    		networkJSON+="\"mappingName\":"+JSON.stringify(mappingData.getMappingName()+"(json)")+",";
-				    			else
-						    		networkJSON+="\"mappingName\":"+JSON.stringify(mappingData.getMappingName())+",";
-
-						    	networkJSON+="\"conditionName\":"+JSON.stringify(mappingData.getConditionName())+",";
-						    	networkJSON+="\"mapValue\":"+JSON.stringify(mappingData.getMapValue());
-						    	networkJSON+="}";
-						    	var index = node.getMappingDatas().indexOf(mappingData);
-						    	if(index != node.getMappingDatas().length-1)
-						    		networkJSON+=",";
-					   		});
-						    networkJSON+="],";	
-					   	}
 					   	
 					   	if(node.x!=undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
 					   	if(node.y!=undefined) networkJSON+="\"y\":"+JSON.stringify(node.y)+",";
@@ -1367,16 +1331,6 @@ metExploreD3.GraphUtils = {
 				    networkJSON+="\n\"linked\":" + JSON.stringify(_metExploreViz.getSessionById(key).isLinked()) + ",";
 				    networkJSON+="\n\"active\":" + JSON.stringify(_metExploreViz.getSessionById(key).isActive()) + ",";
 
-				    networkJSON+="\n\"mapped\":" + JSON.stringify(_metExploreViz.getSessionById(key).isMapped()) + ",";
-
-				    networkJSON+="\n\"mappingDataType\":" + JSON.stringify(_metExploreViz.getSessionById(key).getMappingDataType()) + ",";
-				    if(JSON.stringify(_metExploreViz.getSessionById(key).getActiveMapping())!=undefined && _metExploreViz.getSessionById(key).getActiveMapping().search("(json)")==-1){
-				    	var map = JSON.stringify(_metExploreViz.getSessionById(key).getActiveMapping()+"(json)");
-				    }
-				    else
-				    	var map = JSON.stringify(_metExploreViz.getSessionById(key).getActiveMapping());
-
-			    	networkJSON+="\n\"activeMapping\":" + map + ",";
 				    networkJSON+="\n\"duplicatedNodes\":" + JSON.stringify(_metExploreViz.getSessionById(key).getDuplicatedNodes()) + ",";
 				   	   
 				    networkJSON+="\n\"selectedNodes\":" + JSON.stringify(_metExploreViz.getSessionById(key).getSelectedNodes()) + ",";

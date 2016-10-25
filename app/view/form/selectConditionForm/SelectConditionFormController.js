@@ -265,8 +265,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			var storeCond = Ext.getStore('S_Condition');
 			var oldMapping = session.isMapped();
 
-			if(newMapping!=undefined)
-				this.removeGraphMapping(oldMapping);
+			this.removeGraphMapping(oldMapping);
 
 			if(session.getMappingDataType()=="Continuous" || session.getMappingDataType()=="Flux"){
 				var colorStore = session.getColorMappingsSet();        
