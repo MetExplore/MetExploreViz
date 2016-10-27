@@ -8,7 +8,8 @@
 * link is an array of Link objects
 */
 var NetworkData = function(id){
-    this.id = id,
+    this.id = id;
+    this.biosource = undefined;
     this.nodes = [];
     this.links = [];
     this.compartments = [];
@@ -35,16 +36,16 @@ NetworkData.prototype = {
             node.index = tabNodes.indexOf(node);
         })
     },
+
     getNodes:function()
     {
       return this.nodes;
     },
-
+    
     setId:function(newId)
     {
        this.id = newId;
-    },
-        
+    },      
 
     getId:function()
     {

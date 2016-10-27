@@ -776,7 +776,7 @@ var metExploreViz = function(panel, webSite){
     this.metaboliteStyle = new MetaboliteStyle(14, 14, 7, 7, 7, 1,'name', '#b2ae92');
     this.generalStyle = new GeneralStyle("Website", "yellow", "blue", 500, false, false, false, false, false);
     this.initialData = undefined;
-    
+    this.biosource = undefined; 
     this.comparedPanels = [];
     this.mappings = [];
     this.linkedByTypeOfMetabolite = false;
@@ -790,6 +790,15 @@ var metExploreViz = function(panel, webSite){
 
 metExploreViz.prototype = {
 
+    getBiosource:function()
+    {
+       return this.biosource;
+    }, 
+    
+    setBiosource:function(biosource)
+    {
+       this.biosource = biosource;
+    },
     getDataFromWebSite : function(){
         return this.dataFromWebSite;
     },
