@@ -70,7 +70,7 @@ metExploreD3.GraphNode = {
 		if(session!=undefined)  
 		{	
 			// For the right click you can't deselectionate the node
-			if(d3.event.sourceEvent.target.classList.contains("iconlocker")){
+			if(d3.event.sourceEvent.target.classList.contains("backgroundlocker") || d3.event.sourceEvent.target.classList.contains("iconlocker")){
 				if(d3.event.sourceEvent.button!=2){
 					d.setLocked(!d.isLocked());
 					d.fixed=d.isLocked();
@@ -277,7 +277,7 @@ metExploreD3.GraphNode = {
 	*/
 	dragmove : function(d, i) {
 	
-		if(!d.isSelected()){
+		if(!d.isSelected() && !(d3.event.sourceEvent.target.classList.contains("backgroundlocker") || d3.event.sourceEvent.target.classList.contains("iconlocker"))){
 			_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
 
 			// 78 = N like neighbour
@@ -1316,24 +1316,88 @@ metExploreD3.GraphNode = {
 				.attr("width", "100%")
 				.attr("height", "100%");
 			
+
 			// Lock Image definition
-			metExploreD3.GraphNode.node
-				.append("svg")
+			var box = metExploreD3.GraphNode.node
+				.insert("svg", ":first-child")
 				.attr(
 					"viewBox",
 					function(d) {
 								+ " " + minDim;
-					})
-				.attr("width", minDim / 2 + "px")
-				.attr("height", minDim / 2+ "px")
+					}
+				)
+				.attr("width",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return metaboliteStyle.getWidth();
+					if(node.getBiologicalType()=="reaction")
+						return reactionStyle.getWidth();
+				})
+				.attr("height",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return metaboliteStyle.getHeight();
+					if(node.getBiologicalType()=="reaction")
+						return reactionStyle.getHeight();
+				})
 				.attr("preserveAspectRatio", "xMinYMin")
-				.attr("y", -minDim)
+				.attr("y",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return -metaboliteStyle.getHeight();
+					if(node.getBiologicalType()=="reaction")
+						return -reactionStyle.getHeight();
+				})
+				.attr("x",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return -metaboliteStyle.getWidth();
+					if(node.getBiologicalType()=="reaction")
+						return -reactionStyle.getWidth();
+				})
 				.attr("class", "locker")
-				.classed('hide', true)
-				.append("image")
+				.classed('hide', true);
+
+			box.append("svg:path")
+				.attr("class", "backgroundlocker")
+				.attr("d", function(node){
+					if(node.getBiologicalType()=="metabolite")
+					{
+						var pathBack = "M"+metaboliteStyle.getWidth()+","+metaboliteStyle.getHeight()+
+							" L0,"+metaboliteStyle.getHeight()+
+							" L0,"+metaboliteStyle.getRY()*2+
+							" A"+metaboliteStyle.getRX()*2+","+metaboliteStyle.getRY()*2+",0 0 1 "+metaboliteStyle.getRX()*2+",0"+
+							" L"+metaboliteStyle.getWidth()+",0";
+						return pathBack;
+
+					}
+					if(node.getBiologicalType()=="reaction")
+					{
+						var pathBack = "M"+reactionStyle.getWidth()+","+reactionStyle.getHeight()+
+							" L0,"+reactionStyle.getHeight()+
+							" L0,"+reactionStyle.getRY()*2+
+							" A"+reactionStyle.getRX()*2+","+reactionStyle.getRY()*2+",0 0 1 "+reactionStyle.getRX()*2+",0"+
+							" L"+reactionStyle.getWidth()+",0"; 
+						return pathBack;
+							
+					}
+					
+				})
+				.attr("opacity", "0.20")
+				.attr("fill", "black");
+			
+			box.append("image")
 				.attr("class", "iconlocker")
-				.attr("width", "100%")
-				.attr("height", "100%");
+				.attr("y",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return metaboliteStyle.getHeight()/4-(metaboliteStyle.getHeight()-metaboliteStyle.getRY()*2)/8;
+					if(node.getBiologicalType()=="reaction")
+						return reactionStyle.getHeight()/4-(reactionStyle.getHeight()-reactionStyle.getRY()*2)/8;
+				})
+				.attr("x",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return metaboliteStyle.getWidth()/4-(metaboliteStyle.getWidth()-metaboliteStyle.getRX()*2)/8;
+					if(node.getBiologicalType()=="reaction")
+						return reactionStyle.getWidth()/4-(reactionStyle.getWidth()-reactionStyle.getRX()*2)/8;
+				})
+				.attr("width", "40%")
+				.attr("height", "40%");
 			
 			// We define the text for a reaction
 			metExploreD3.GraphNode.node
