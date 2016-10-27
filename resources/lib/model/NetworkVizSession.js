@@ -145,7 +145,6 @@ NetworkVizSession.prototype = {
     setId:function(newId)
     {
        this.id = newId;
-       this.d3Data.setId(newId);
     },
 
     getScale:function()
