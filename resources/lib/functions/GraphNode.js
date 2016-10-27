@@ -70,22 +70,44 @@ metExploreD3.GraphNode = {
 		if(session!=undefined)  
 		{	
 			// For the right click you can't deselectionate the node
-			if(d3.event.sourceEvent.button==2){
-				if(!d.isSelected()){
+			if(d3.event.sourceEvent.target.classList.contains("backgroundlocker") || d3.event.sourceEvent.target.classList.contains("iconlocker")){
+				if(d3.event.sourceEvent.button!=2){
+					d.setLocked(!d.isLocked());
+					d.fixed=d.isLocked();
+					metExploreD3.GraphNode.node
+						.filter(function(node){return node==d})
+						.select('.locker')
+						.classed('hide', false)
+						.select('.iconlocker')
+						.attr(
+						"xlink:href",
+						function(d) {
+							if(d.isLocked())
+								return "resources/icons/lock_font_awesome.svg";
+							else
+								return "resources/icons/unlock_font_awesome.svg";
+						});
+				}
+			}
+			else
+			{	
+				if(d3.event.sourceEvent.button==2){
+					if(!d.isSelected()){
+						_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
+
+						// 78 = N like neighbour
+						if(_MyThisGraphNode.charKey==78 && d.isSelected())
+							_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
+					}
+				}
+				else
+				{
 					_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
 
 					// 78 = N like neighbour
 					if(_MyThisGraphNode.charKey==78 && d.isSelected())
 						_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
 				}
-			}
-			else
-			{
-				_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
-
-				// 78 = N like neighbour
-				if(_MyThisGraphNode.charKey==78 && d.isSelected())
-					_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
 			}
 
 			d3.selectAll("#D3viz")
@@ -254,15 +276,15 @@ metExploreD3.GraphNode = {
 	* @param {} d : The node to move
 	*/
 	dragmove : function(d, i) {
-			
-
-		if(!d.isSelected()){
+	
+		if(!d.isSelected() && !(d3.event.sourceEvent.target.classList.contains("backgroundlocker") || d3.event.sourceEvent.target.classList.contains("iconlocker"))){
 			_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
+
 			// 78 = N like neighbour
-			if(_MyThisGraphNode.charKey==78)
+			if(_MyThisGraphNode.charKey==78 && d.isSelected())
 				_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
 		}
-
+	
 		// with updating both px,py,x,y on d !
 		_MyThisGraphNode.moveNode(d,_MyThisGraphNode.activePanel);
 		
@@ -500,8 +522,7 @@ metExploreD3.GraphNode = {
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("g.node")
 			.filter(function(node){return d.getId()==node.getId();})
-			.each(function(node){ 
-				node.fixed = true; 
+			.each(function(node){  
 				session.addSelectedNode(node.getId()); 
 				if(node.getBiologicalType()=="reaction")
 					d3.select(this).select('text').style("fill","white");
@@ -537,7 +558,6 @@ metExploreD3.GraphNode = {
 			.filter(function(node){return d.getId()==node.getId();})
 			.each(function(node){ 
 				session.removeSelectedNode(node.getId()); 
-				node.fixed = false;
 				if(node.getBiologicalType()=="reaction"){
 					var rgb;
 					var color = metExploreD3.GraphUtils.chooseTextColor(this.style.getPropertyValue("fill"));
@@ -891,11 +911,23 @@ metExploreD3.GraphNode = {
 					var last = nodes[0][nodes.size()-1];
 					this.parentNode.insertBefore(this, last);
 				});
-					
+
 				d.fixed = true;
-				// console.log(d);
 				
-				 
+				metExploreD3.GraphNode.node
+					.filter(function(node){return node==d})
+					.select('.locker')
+					.classed('hide', false)
+					.select('.iconlocker')
+					.attr(
+					"xlink:href",
+					function(d) {
+						if(d.isLocked())
+							return "resources/icons/lock_font_awesome.svg";
+						else
+							return "resources/icons/unlock_font_awesome.svg";
+					});
+
 				var xScale=scale.getXScale();
 				var yScale=scale.getYScale();
 				
@@ -934,11 +966,16 @@ metExploreD3.GraphNode = {
 				var scaleVal=scale.substring(6, scale.indexOf(')'));
 				if(isNaN(scaleVal))
 						scaleVal=1;
-							
+						
+				metExploreD3.GraphNode.node
+					.filter(function(node){return node==d})
+					.select('.locker')
+					.classed('hide', true);
+
 				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
 
-				if(!d.isSelected())
+				if(!d.isLocked())
 					d.fixed = false;
 				var linkStyle = metExploreD3.getLinkStyle();  
 
@@ -1027,7 +1064,6 @@ metExploreD3.GraphNode = {
 			})
 			.on("mouseover", function(d) { 
 		        var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-			
 	        	d3.select(this)
 				.each(function(node){
 					var last = nodes[0][nodes.size()-1];
@@ -1035,7 +1071,45 @@ metExploreD3.GraphNode = {
 				});
 					
 				d.fixed = true;
-				
+
+				metExploreD3.GraphNode.node
+					.filter(function(node){return node==d})
+					.select('.locker')
+					.classed('hide', false)
+					.select('.iconlocker')
+					.attr(
+					"xlink:href",
+					function(d) {
+						if(d.isLocked())
+							return "resources/icons/lock_font_awesome.svg";
+						else
+							return "resources/icons/unlock_font_awesome.svg";
+					});
+
+				if(d.getBiologicalType()=="reaction"){
+					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+						.selectAll("path.link")
+						.filter(function(link){return d.getId()==link.getSource().getId();})
+						.style("stroke", "green"); 	
+					 
+					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+						.selectAll("path.link")
+						.filter(function(link){return d.getId()==link.getTarget().getId();})
+						.style("stroke", "red"); 	
+				}
+				else
+				{
+					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+						.selectAll("path.link")
+						.filter(function(link){return d.getId()==link.getSource().getId();})
+						.style("stroke", "red"); 	
+					 
+					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+						.selectAll("path.link")
+						.filter(function(link){return d.getId()==link.getTarget().getId();})
+						.style("stroke", "green"); 
+				}
+				 
 				var xScale=scale.getXScale();
 				var yScale=scale.getYScale();
 				
@@ -1078,10 +1152,15 @@ metExploreD3.GraphNode = {
 				if(isNaN(scaleVal))
 						scaleVal=1;
 					
+				metExploreD3.GraphNode.node
+					.filter(function(node){return node==d})
+					.select('.locker')
+					.classed('hide', true);
+
 				var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 				d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
 
-				if(!d.isSelected())
+				if(!d.isLocked())
 					d.fixed = false;
 				var linkStyle = metExploreD3.getLinkStyle();  
 
@@ -1284,6 +1363,89 @@ metExploreD3.GraphNode = {
 				.attr("width", "100%")
 				.attr("height", "100%");
 			
+
+			// Lock Image definition
+			var box = metExploreD3.GraphNode.node
+				.insert("svg", ":first-child")
+				.attr(
+					"viewBox",
+					function(d) {
+								+ " " + minDim;
+					}
+				)
+				.attr("width",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return metaboliteStyle.getWidth();
+					if(node.getBiologicalType()=="reaction")
+						return reactionStyle.getWidth();
+				})
+				.attr("height",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return metaboliteStyle.getHeight();
+					if(node.getBiologicalType()=="reaction")
+						return reactionStyle.getHeight();
+				})
+				.attr("preserveAspectRatio", "xMinYMin")
+				.attr("y",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return -metaboliteStyle.getHeight();
+					if(node.getBiologicalType()=="reaction")
+						return -reactionStyle.getHeight();
+				})
+				.attr("x",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return -metaboliteStyle.getWidth();
+					if(node.getBiologicalType()=="reaction")
+						return -reactionStyle.getWidth();
+				})
+				.attr("class", "locker")
+				.classed('hide', true);
+
+			box.append("svg:path")
+				.attr("class", "backgroundlocker")
+				.attr("d", function(node){
+					if(node.getBiologicalType()=="metabolite")
+					{
+						var pathBack = "M"+metaboliteStyle.getWidth()+","+metaboliteStyle.getHeight()+
+							" L0,"+metaboliteStyle.getHeight()+
+							" L0,"+metaboliteStyle.getRY()*2+
+							" A"+metaboliteStyle.getRX()*2+","+metaboliteStyle.getRY()*2+",0 0 1 "+metaboliteStyle.getRX()*2+",0"+
+							" L"+metaboliteStyle.getWidth()+",0";
+						return pathBack;
+
+					}
+					if(node.getBiologicalType()=="reaction")
+					{
+						var pathBack = "M"+reactionStyle.getWidth()+","+reactionStyle.getHeight()+
+							" L0,"+reactionStyle.getHeight()+
+							" L0,"+reactionStyle.getRY()*2+
+							" A"+reactionStyle.getRX()*2+","+reactionStyle.getRY()*2+",0 0 1 "+reactionStyle.getRX()*2+",0"+
+							" L"+reactionStyle.getWidth()+",0"; 
+						return pathBack;
+							
+					}
+					
+				})
+				.attr("opacity", "0.20")
+				.attr("fill", "black");
+			
+			box.append("image")
+				.attr("class", "iconlocker")
+				.attr("y",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return metaboliteStyle.getHeight()/4-(metaboliteStyle.getHeight()-metaboliteStyle.getRY()*2)/8;
+					if(node.getBiologicalType()=="reaction")
+						return reactionStyle.getHeight()/4-(reactionStyle.getHeight()-reactionStyle.getRY()*2)/8;
+				})
+				.attr("x",function(node){
+					if(node.getBiologicalType()=="metabolite")
+						return metaboliteStyle.getWidth()/4-(metaboliteStyle.getWidth()-metaboliteStyle.getRX()*2)/8;
+					if(node.getBiologicalType()=="reaction")
+						return reactionStyle.getWidth()/4-(reactionStyle.getWidth()-reactionStyle.getRX()*2)/8;
+				})
+				.attr("width", "40%")
+				.attr("height", "40%");
+			
 			// We define the text for a reaction
 			metExploreD3.GraphNode.node
 					.filter(function(d) {
@@ -1325,6 +1487,10 @@ metExploreD3.GraphNode = {
 					_MyThisGraphNode.fixNodeOnRefresh(aSelectedNode, 'viz');
         		});
 
+
+		metExploreD3.GraphNode.node
+			.filter(function(d) { return d.isLocked(); })
+			.each(function(d) { d.fixed=true; });
 
 		metExploreD3.GraphNode.node
 	        .filter(function(node){
@@ -1563,6 +1729,36 @@ metExploreD3.GraphNode = {
 
 				metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400); 
 			}
+			else
+			{
+				
+			}
+		}
+
+		if(_MyThisGraphNode.dblClickable && d3.event.button==1){
+			_MyThisGraphNode.activePanel = this.parentNode.id;
+         	d3.select(this).select("#graphComponent")
+				.selectAll("g.node")
+		        .filter(function(d) { return d.isLocked(); })
+		        .each(function(d) { d.fixed=false; });
+		}
+		else
+		{
+			if(d3.event.button==1){
+				_MyThisGraphNode.dblClickable = true;
+
+				_MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
+					function(){
+                        _MyThisGraphNode.dblClickable=false;
+                	}
+                );
+
+				metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400); 
+			}
+			else
+			{
+
+			}
 		}	 
 		var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 		if(session!=undefined)  
@@ -1738,9 +1934,21 @@ metExploreD3.GraphNode = {
 						});
 
 					d.fixed = true;
-					// console.log(d);
-					
-					 
+
+					metExploreD3.GraphNode.node
+						.filter(function(node){return node==d})
+						.select('.locker')
+						.classed('hide', false)
+						.select('.iconlocker')
+						.attr(
+							"xlink:href",
+							function(d) {
+								if(d.isLocked())
+									return "resources/icons/lock_font_awesome.svg";
+								else
+									return "resources/icons/unlock_font_awesome.svg";
+						});
+
 					var xScale=scale.getXScale();
 					var yScale=scale.getYScale();
 					
@@ -1778,11 +1986,15 @@ metExploreD3.GraphNode = {
 					
 					if(isNaN(scaleVal))
 						scaleVal=1;
-			
+					metExploreD3.GraphNode.node
+						.filter(function(node){return node==d})
+						.select('.locker')
+						.classed('hide', true);
+
 					var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 					d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
 		        	
-					if(!d.isSelected())
+					if(!d.isLocked())
 						d.fixed = false;
 					var linkStyle = metExploreD3.getLinkStyle();  
 
@@ -2272,5 +2484,18 @@ metExploreD3.GraphNode = {
 				.style("stroke-linejoin", "round")
 				.style("opacity", .15)
 				
+	},
+	
+	/*******************************************
+	* Fix all selected node
+	*/
+	fixSelectedNode : function() {
+		metExploreD3.GraphNode.node
+			.filter(function(node){ return node.isSelected();})
+			.each(function(node){
+				node.setLocked(true);
+				node.fixed=node.isLocked();
+			})		
 	}
+
 }

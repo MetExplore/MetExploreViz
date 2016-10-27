@@ -57,6 +57,10 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								hidden : false,
 								handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
 							},{
+								text : 'Fix selected nodes',
+								hidden : false,
+								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
+							},{
 								text : 'Side compounds (duplicate)',
 								hidden : false,
 								handler : function(){ 

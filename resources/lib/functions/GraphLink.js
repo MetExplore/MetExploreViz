@@ -2119,7 +2119,7 @@ metExploreD3.GraphLink = {
 
 		  // If you want to use selection on compartments path
 		d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path")
-			.filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="link";})
+			.filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="backgroundlocker" && $(this).attr('class')!="link";})
 		    .attr("d", metExploreD3.GraphNode.groupPath)
 		    .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform")); 
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
