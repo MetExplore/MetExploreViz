@@ -433,7 +433,7 @@ metExploreD3.GraphPanel = {
 	/*****************************************************
 	* Update the network to fit the cart content
 	*/
-	refreshJSON : function(json) {
+	refreshJSON : function(json, controlBiosource) {
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
 			if(!_metExploreViz.isLaunched())
@@ -456,7 +456,7 @@ metExploreD3.GraphPanel = {
 							// console.log("----Viz: START refresh/init Viz");
 							
 							if(jsonParsed.sessions!=undefined)
-								metExploreD3.GraphPanel.loadDataJSON(json, end);
+								metExploreD3.GraphPanel.loadDataJSON(json, end, controlBiosource);
 							else
 								metExploreD3.GraphPanel.initDataJSON(json, end); // Init of metabolite network
 
@@ -480,13 +480,14 @@ metExploreD3.GraphPanel = {
 	/*****************************************************
 	* Update the network 
 	*/
-	refreshPanel : function(json, func) {
+	refreshPanel : function(json, func, controlBiosource) {
+		console.log(controlBiosource);
 		var me = this;
 		metExploreD3.hideInitialMask();
 		if(metExploreD3.GraphUtils.decodeJSON(json).nodes || metExploreD3.GraphUtils.decodeJSON(json).sessions){
 			if(!_metExploreViz.isLaunched() || metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
 				
-				metExploreD3.GraphPanel.refreshJSON(json);
+				metExploreD3.GraphPanel.refreshJSON(json, controlBiosource);
 				if(typeof func==='function') func();
 			}
 			else
@@ -498,7 +499,7 @@ metExploreD3.GraphPanel = {
 		           fn: function(btn){
 						if(btn=="ok")
 						{	
-							metExploreD3.GraphPanel.refreshJSON(json);
+							metExploreD3.GraphPanel.refreshJSON(json, controlBiosource);
 							if(func!=undefined && typeof func==='function') func();
 						}
 		           },
@@ -516,14 +517,21 @@ metExploreD3.GraphPanel = {
 	/*****************************************************
 	* Fill the data models with the store reaction
 	*/
-	loadDataJSON : function(json, end){
+	loadDataJSON : function(json, endFunc, controlBiosource){
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
-
-			_metExploreViz.setBiosource(jsonParsed.biosource);
-			metExploreD3.fireEventParentWebSite("loadNetworkBiosource", {biosource : jsonParsed.biosource, func:load, endFunc:end, json:json});
-
-			function load(){
+			console.log(controlBiosource);
+			if(controlBiosource)
+			{
+				_metExploreViz.setBiosource(jsonParsed.biosource);
+				metExploreD3.fireEventParentWebSite("loadNetworkBiosource", {biosource : jsonParsed.biosource, func:loadJSON, endFunc:endFunc, json:json});
+			}
+			else
+			{
+				loadJSON();
+				endFunc();
+			}
+			function loadJSON(){
 				var networkVizSession = _metExploreViz.getSessionById("viz");
 			
 				var oldForce = networkVizSession.getForce();
@@ -732,7 +740,7 @@ metExploreD3.GraphPanel = {
 				for (var key in sessions) {
 					metExploreD3.GraphNetwork.refreshSvg(key);	
 			    }
-				end();
+				endFunc();
 			}
 		}
 	},
