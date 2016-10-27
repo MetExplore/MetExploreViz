@@ -2171,25 +2171,44 @@ metExploreD3.GraphNetwork = {
 							}).attr("width", "100%").attr(
 							"height", "100%");
 
-				// Lock Image definition
-				node
-					.filter(function(d) { return d.getId() == identifier })
-					.append("svg")
-					.attr(
-						"viewBox",
-						function(d) {
-									+ " " + minDim;
-						})
-					.attr("width", minDim / 2 + "px")
-					.attr("height", minDim / 2+ "px")
-					.attr("preserveAspectRatio", "xMinYMin")
-					.attr("y", -minDim)
-					.attr("class", "locker")
-					.classed('hide', true)
-					.append("image")
-					.attr("class", "iconlocker")
-					.attr("width", "100%")
-					.attr("height", "100%");
+				
+			// Lock Image definition
+			var box = node
+				.filter(function(d) { return d.getId() == identifier })
+				.insert("svg", ":first-child")
+				.attr(
+					"viewBox",
+					function(d) {
+								+ " " + minDim;
+					}
+				)
+				.attr("width",metaboliteStyle.getWidth()/2)
+				.attr("height",metaboliteStyle.getHeight()/2)
+				.attr("preserveAspectRatio", "xMinYMin")
+				.attr("y",-metaboliteStyle.getHeight()/2)
+				.attr("x",-metaboliteStyle.getWidth()/2)
+				.attr("class", "locker")
+				.classed('hide', true);
+
+			box.append("svg:path")
+				.attr("class", "backgroundlocker")
+				.attr("d", function(node){
+						var pathBack = "M"+metaboliteStyle.getWidth()/2+","+metaboliteStyle.getHeight()/2+
+							" L0,"+metaboliteStyle.getHeight()/2+
+							" L0,"+metaboliteStyle.getRY()*2/2+
+							" A"+metaboliteStyle.getRX()*2/2+","+metaboliteStyle.getRY()*2/2+",0 0 1 "+metaboliteStyle.getRX()*2/2+",0"+
+							" L"+metaboliteStyle.getWidth()/2+",0";
+						return pathBack;					
+				})
+				.attr("opacity", "0.20")
+				.attr("fill", "black");
+			
+			box.append("image")
+				.attr("class", "iconlocker")
+				.attr("y",metaboliteStyle.getHeight()/4/2-(metaboliteStyle.getHeight()/2-metaboliteStyle.getRY()*2/2)/8)
+				.attr("x",metaboliteStyle.getWidth()/4/2-(metaboliteStyle.getWidth()/2-metaboliteStyle.getRX()*2/2)/8)
+				.attr("width", "40%")
+				.attr("height", "40%");
 			
 
 				// We define the text for a reaction
