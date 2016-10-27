@@ -433,7 +433,7 @@ metExploreD3.GraphPanel = {
 	/*****************************************************
 	* Update the network to fit the cart content
 	*/
-	refreshJSON : function(json, controlBiosource) {
+	refreshJSON : function(json) {
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
 			if(!_metExploreViz.isLaunched())
@@ -456,7 +456,7 @@ metExploreD3.GraphPanel = {
 							// console.log("----Viz: START refresh/init Viz");
 							
 							if(jsonParsed.sessions!=undefined)
-								metExploreD3.GraphPanel.loadDataJSON(json, end, controlBiosource);
+								metExploreD3.GraphPanel.loadDataJSON(json, end);
 							else
 								metExploreD3.GraphPanel.initDataJSON(json, end); // Init of metabolite network
 
@@ -480,14 +480,13 @@ metExploreD3.GraphPanel = {
 	/*****************************************************
 	* Update the network 
 	*/
-	refreshPanel : function(json, func, controlBiosource) {
-		console.log(controlBiosource);
+	refreshPanel : function(json, func) {
 		var me = this;
 		metExploreD3.hideInitialMask();
 		if(metExploreD3.GraphUtils.decodeJSON(json).nodes || metExploreD3.GraphUtils.decodeJSON(json).sessions){
 			if(!_metExploreViz.isLaunched() || metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
 				
-				metExploreD3.GraphPanel.refreshJSON(json, controlBiosource);
+				metExploreD3.GraphPanel.refreshJSON(json);
 				if(typeof func==='function') func();
 			}
 			else
@@ -499,7 +498,7 @@ metExploreD3.GraphPanel = {
 		           fn: function(btn){
 						if(btn=="ok")
 						{	
-							metExploreD3.GraphPanel.refreshJSON(json, controlBiosource);
+							metExploreD3.GraphPanel.refreshJSON(json);
 							if(func!=undefined && typeof func==='function') func();
 						}
 		           },
@@ -517,11 +516,12 @@ metExploreD3.GraphPanel = {
 	/*****************************************************
 	* Fill the data models with the store reaction
 	*/
-	loadDataJSON : function(json, endFunc, controlBiosource){
+	loadDataJSON : function(json, endFunc){
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
-			console.log(controlBiosource);
-			if(controlBiosource)
+
+			console.log(metExploreD3.bioSourceControled());
+			if(metExploreD3.bioSourceControled())
 			{
 				_metExploreViz.setBiosource(jsonParsed.biosource);
 				metExploreD3.fireEventParentWebSite("loadNetworkBiosource", {biosource : jsonParsed.biosource, func:loadJSON, endFunc:endFunc, json:json});

@@ -758,6 +758,14 @@ var metExploreD3 = {
 
     onloadMapping : function(mappingName, func){
         metExploreD3.launchMetexploreMapping(mappingName, func);
+    },
+
+
+    bioSourceControled:function(){
+        return _metExploreViz.bioSourceControled();
+    },
+    setControlBioSource:function(bool){
+        _metExploreViz.setControlBioSource(bool);
     }
 };
 
@@ -779,6 +787,7 @@ var metExploreViz = function(panel, webSite){
     this.biosource = undefined; 
     this.comparedPanels = [];
     this.mappings = [];
+    this.bioSourceControl = false;
     this.linkedByTypeOfMetabolite = false;
     this.parentWebSite = webSite;
     this.oldCoodinates = [];
@@ -789,6 +798,14 @@ var metExploreViz = function(panel, webSite){
 };
 
 metExploreViz.prototype = {
+
+
+    bioSourceControled:function(){
+        return this.bioSourceControl;
+    },
+    setControlBioSource:function(bool){
+        this.bioSourceControl = bool;
+    },
 
     getBiosource:function()
     {
