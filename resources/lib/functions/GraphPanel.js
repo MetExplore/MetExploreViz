@@ -828,8 +828,11 @@ metExploreD3.GraphPanel = {
 				            });
 				            d3.select("#viz").select("#graphComponent")
 								.selectAll("g.node")
-						        .filter(function(d) { return d.isLocked(); })
-						        .each(function(d) { d.fixed=true; });
+						        .filter(function(d) { return selected.indexOf(d.id)!=-1; })
+						        .each(function(d) { 
+						        	d.setLocked(!d.isLocked());
+									d.fixed=d.isLocked();
+						        });
 
 				            d3.select("#viz").select("#graphComponent")
 								.selectAll("g.node")
