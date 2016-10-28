@@ -331,6 +331,10 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/functions/Features.js",
+            "bundle": true
+        },
+        {
             "path": "resources/lib/functions/GraphFunction.js",
             "bundle": true
         },
