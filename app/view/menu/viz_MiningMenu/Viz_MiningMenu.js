@@ -22,7 +22,8 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
                  text: 'Highlight Subnetwork',
                  reference :'highlightSubnetwork',
                  tooltip:'Highlight sub-network based on node selection or mapped nodes',
-                 iconCls:'highlightSubnetwork'
+                 iconCls:'highlightSubnetwork',
+                 hidden:true
              },
               {
                  text: 'Extract Subnetwork',

@@ -31,11 +31,13 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			click : me.clustMetabolites,
 			scope : me
 		});
-
-		view.lookupReference('drawHierarchicalLayout').on({
-			click : me.drawHierarchicalLayout,
-			scope : me
-		});
+		
+		if(metExploreD3.Features.isEnabled('drawHierarchicalLayout')){
+			view.lookupReference('drawHierarchicalLayout').on({
+				click : me.drawHierarchicalLayout,
+				scope : me
+			});
+		}
 
 		view.lookupReference('makeClusters').on({
 			click : me.makeClusters,
