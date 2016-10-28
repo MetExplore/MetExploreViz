@@ -1,1 +1,122 @@
-var ReactionStyle=function(a,c,g,f,b,e,d,h){this.height=a;this.width=c;this.rx=g;this.ry=f;this.label=b;this.strokeColor=d;this.fontSize=e;this.strokeWidth=h};ReactionStyle.prototype={getHeight:function(){return this.height},setHeight:function(a){this.height=a},getStrokeWidth:function(){return this.strokeWidth},setStrokeWidth:function(a){this.strokeWidth=a},getWidth:function(){return this.width},setWidth:function(a){this.width=a},getRX:function(){return this.rx},setRX:function(a){this.rx=a},getRY:function(){return this.ry},setRY:function(a){this.ry=a},getStrokeColor:function(){return this.strokeColor},setStrokeColor:function(a){this.strokeColor=a},getFontSize:function(){return this.fontSize},setFontSize:function(a){this.fontSize=a},getLabel:function(){return this.label},setLabel:function(a){this.label=a},getDisplayLabel:function(b,a){var c;switch(a){case"ec":c=b.getEC();break;case"name":c=b.getName();break;case"dbIdentifier":c=b.getDbIdentifier();break;default:c=b.getName()}if(c==undefined){c=b.getName()}return c}};
+/**
+ * @author MC
+ * @description 
+ */
+ /**
+ * draw a reaction
+ */
+ 
+var ReactionStyle = function(height, width, rx, ry, displayNodeName, fontSize, strokeColor, strokeWidth){
+    this.height = height;
+    this.width = width;
+    this.rx = rx;
+    this.ry = ry;
+    this.label = displayNodeName;
+    this.strokeColor = strokeColor;
+    this.fontSize = fontSize;
+    this.strokeWidth = strokeWidth;
+};
+
+ReactionStyle.prototype = {
+	// Getters & Setters
+    getHeight:function()
+    {
+      return this.height;
+    },
+
+    setHeight:function(newData)
+    {
+      this.height = newData;
+    },
+
+    getStrokeWidth:function()
+    {
+      return this.strokeWidth;
+    },
+
+    setStrokeWidth:function(newData)
+    {
+      this.strokeWidth = newData;
+    },
+
+    getWidth:function()
+    {
+      return this.width;
+    },
+
+    setWidth:function(newData)
+    {
+      this.width = newData;
+    },
+
+    getRX:function()
+    {
+      return this.rx;
+    },
+
+    setRX:function(newData)
+    {
+      this.rx = newData;
+    },
+
+    getRY:function()
+    {
+      return this.ry;
+    },
+
+    setRY:function(newData)
+    {
+      this.ry = newData;
+    },
+
+    getStrokeColor:function()
+    {
+      return this.strokeColor;
+    },
+
+    setStrokeColor:function(newData)
+    {
+      this.strokeColor = newData;
+    },
+    getFontSize:function()
+    {
+      return this.fontSize;
+    },
+    setFontSize:function(newData)
+    {
+      this.fontSize = newData;
+    },
+
+
+    getLabel:function()
+    {
+      return this.label;
+    },
+
+    setLabel:function(newData)
+    {
+      this.label = newData;
+    },
+
+    getDisplayLabel:function(node, label)
+    {
+        var displayedLabel;
+        switch(label) {
+            case "ec":
+                displayedLabel = node.getEC();
+                break;
+            case "name":
+                displayedLabel = node.getName();
+                break;
+            case "dbIdentifier":
+                displayedLabel = node.getDbIdentifier();
+                break;
+            default:
+                displayedLabel = node.getName();
+        }
+        if(displayedLabel == undefined)
+            displayedLabel = node.getName();
+        
+        return displayedLabel;
+    }
+};

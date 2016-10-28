@@ -2,7 +2,6 @@
 // @require C:\wamp\www\MetExplore\lib\javascript\metExploreViz\app.js
 // @require C:\wamp\www\MetExplore\lib\javascript\metExploreViz\metexploreviz.js
 // @require C:\wamp\www\MetExplore\lib\javascript\metExploreViz\resources\lib\d3.js\d3.min.js
-// @require C:\wamp\www\MetExplore\lib\javascript\metExploreViz\resources\lib\tulip-javascript\demos\tulip.js
 // @require C:\wamp\www\MetExplore\lib\javascript\metExploreViz\resources\lib\graphjs\graph.js
 // @require C:\wamp\www\MetExplore\lib\javascript\metExploreViz\resources\lib\jscolor\jscolor.js
 // @require C:\wamp\www\MetExplore\lib\javascript\metExploreViz\resources\lib\metExploreViz.js

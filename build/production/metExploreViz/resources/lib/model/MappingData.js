@@ -1,1 +1,31 @@
-var MappingData=function(c,b,a,d){this.node=c;this.mappingName=b;this.conditionName=a;this.mapValue=d};MappingData.prototype={getNode:function(){return this.node},setNode:function(a){this.node=a},getMappingName:function(){return this.mappingName},getConditionName:function(){return this.conditionName},getMapValue:function(){return this.mapValue},setMapValue:function(a){this.mapValue=a}};
+var MappingData = function(node, titleMap, conditionN, val){
+
+	this.node = node;
+	this.mappingName = titleMap;
+	this.conditionName = conditionN;
+	this.mapValue = val;
+};
+
+MappingData.prototype = {
+	getNode : function(){
+		return this.node;
+	},
+	setNode : function(newNode){
+		this.node = newNode;
+	},
+	
+	getMappingName : function(){
+		return this.mappingName;
+	},
+
+	getConditionName : function(){
+		return this.conditionName;
+	},
+	
+	getMapValue : function(){
+		return this.mapValue;
+	},
+	setMapValue : function(val){
+		this.mapValue = val;
+	}
+};

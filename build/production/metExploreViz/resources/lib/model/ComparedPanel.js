@@ -1,1 +1,58 @@
-var ComparedPanel=function(a,d,b,c){this.panel=a;this.visible=d;this.parent=b;this.title=c};ComparedPanel.prototype={getPanel:function(){return this.panel},setPanel:function(a){this.panel=a},isVisible:function(){return this.visible},setVisible:function(a){this.visible=a},getParent:function(){return this.parent},setParent:function(a){this.parent=a},getTitle:function(){return this.title},setTitle:function(a){this.title=a}};
+/**
+ * @author MC
+ * @description 
+ */
+ /**
+ * ComparedPanel
+ */
+var ComparedPanel = function(panel, visible, parent, title){
+    this.panel = panel;
+    this.visible = visible;
+    this.parent = parent;
+    this.title = title;
+};
+
+ComparedPanel.prototype = {
+
+    // Getters & Setters
+    getPanel:function()
+    {
+      return this.panel;
+    },
+
+    setPanel:function(newData)
+    {
+      this.panel = newData;
+    },
+
+    isVisible:function()
+    {
+      return this.visible;
+    },
+
+    setVisible:function(newData)
+    {
+      this.visible = newData;
+    },
+
+    getParent:function()
+    {
+      return this.parent;
+    },
+
+    setParent:function(newData)
+    {
+      this.parent = newData;
+    },
+
+    getTitle:function()
+    {
+      return this.title;
+    },
+
+    setTitle:function(newData)
+    {
+      this.title = newData;
+    }
+
+};

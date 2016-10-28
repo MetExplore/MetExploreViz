@@ -1,1 +1,2172 @@
-metExploreD3.GraphMapping={compareMappingConditionChart:function(){var i=_metExploreViz.getSessionsSet();var c=[];var k=[];var j=[];for(var m in i){k.push(i[m].getActiveMapping());j.push(i[m].isMapped());if(m!="viz"){c=i[m].getD3Data().getNodes().concat(c)}}var d=[];c.forEach(function(o){var n=c.filter(function(p){return p.getIdentifier()==o.getIdentifier()});if(n.length>1&&d.indexOf(o)==-1&&o.getMappingDataByNameAndCond(k[0],j[0])!=undefined){d.push(o)}});var l=d.map(function(n){return n.getName()});var a=_metExploreViz.getMappingByName(k);var g=d.map(function(n){return -Math.abs(parseInt(n.getMappingDataByNameAndCond(k[0],j[0]).getMapValue()))});var f=d.map(function(n){return Math.abs(parseInt(n.getMappingDataByNameAndCond(k[1],j[1]).getMapValue()))});var e=[{name:j[0],data:g},{name:j[1],data:f}];var b={categories:l,conditions:e};var h=new MetXCompareBar(b,1300,l.length*15,"xaxis","yaxis",k[0]+" analysis");return h},mapNodeDataFile:function(b,d){var e=_metExploreViz.getSessionById("viz");var c=e.getForce();c.stop();var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){var l=e.getD3Data();var m=b.getConditions();var f=d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");var h=undefined;switch(b.getTargetLabel()){case"reactionDBIdentifier":for(var g=m.length-1;g>=0;g--){d.forEach(function(o){var n=new MappingData(o[b.getTargetLabel()],b.getName(),m[g],o[m[g]]);b.addMap(n);h=l.getNodeByDbIdentifier(o[b.getTargetLabel()]);if(h!=undefined){var i=new MappingData(h,b.getName(),m[g],o[m[g]]);h.addMappingData(i)}})}break;case"reactionId":for(var g=m.length-1;g>=0;g--){d.forEach(function(o){var n=new MappingData(o[b.getTargetLabel()],b.getName(),m[g],o[m[g]]);b.addMap(n);h=l.getNodeByDbIdentifier(o[b.getTargetLabel()]);if(h!=undefined){var i=new MappingData(h,b.getName(),m[g],o[m[g]]);h.addMappingData(i)}})}break;case"metaboliteId":for(var g=m.length-1;g>=0;g--){d.forEach(function(o){var n=new MappingData(o[b.getTargetLabel()],b.getName(),m[g],o[m[g]]);b.addMap(n);h=l.getNodeByDbIdentifier(o[b.getTargetLabel()]);if(h!=undefined){var i=new MappingData(h,b.getName(),m[g],o[m[g]]);h.addMappingData(i)}})}break;case"metaboliteDBIdentifier":for(var g=m.length-1;g>=0;g--){d.forEach(function(o){var n=new MappingData(o[b.getTargetLabel()],b.getName(),m[g],o[m[g]]);b.addMap(n);h=l.getNodeByDbIdentifier(o[b.getTargetLabel()]);if(h!=undefined){var i=new MappingData(h,b.getName(),m[g],o[m[g]]);h.addMappingData(i)}})}break;case"inchi":for(var g=m.length-1;g>=0;g--){d.forEach(function(n){var i=new MappingData(n[b.getTargetLabel()],b.getName(),m[g],n[m[g]]);b.addMap(i);h=l.getNodeByMappedInchi(n[b.getTargetLabel()]);if(h!=undefined){h.forEach(function(p){var o=new MappingData(p,b.getName(),m[g],n[m[g]]);p.addMappingData(o)})}})}break;default:metExploreD3.displayMessage("Warning",'The type of node "'+b.getTargetLabel()+"\" isn't know.")}metExploreD3.hideMask(a);var k=metExploreD3.GraphNetwork.isAnimated("viz");if(k=="true"){var j=e.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){j.resume()}}},1)}},mapNodeData:function(c,b){console.log(b);var e=_metExploreViz.getSessionById("viz");var d=e.getForce();d.stop();var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){var l=e.getD3Data();var m=c.getConditions();var f=d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");var h=undefined;switch(c.getTargetLabel()){case"reactionDBIdentifier":for(var g=m.length-1;g>=0;g--){b.forEach(function(i){var o=new MappingData(i[0],c.getName(),m[g],i[g+1]);c.addMap(o);h=l.getNodeByDbIdentifier(i[0]);if(h!=undefined){var n=new MappingData(h,c.getName(),m[g],i[g+1]);h.addMappingData(n)}})}break;case"reactionId":for(var g=m.length-1;g>=0;g--){b.forEach(function(i){var o=new MappingData(i[0],c.getName(),m[g],i[g+1]);c.addMap(o);h=l.getNodeById(i[0]);if(h!=undefined){var n=new MappingData(h,c.getName(),m[g],i[g+1]);h.addMappingData(n)}})}break;case"metaboliteId":for(var g=m.length-1;g>=0;g--){b.forEach(function(i){var o=new MappingData(i[0],c.getName(),m[g],i[g+1]);c.addMap(o);h=l.getNodeById(i[0]);if(h!=undefined){var n=new MappingData(h,c.getName(),m[g],i[g+1]);h.addMappingData(n)}})}break;case"metaboliteDBIdentifier":for(var g=m.length-1;g>=0;g--){b.forEach(function(i){var o=new MappingData(i[0],c.getName(),m[g],i[g+1]);c.addMap(o);h=l.getNodeByDbIdentifier(i[0]);if(h!=undefined){var n=new MappingData(h,c.getName(),m[g],i[g+1]);h.addMappingData(n)}})}break;case"inchi":break;default:metExploreD3.displayMessage("Warning",'The type of node "'+c.getTargetLabel()+"\" isn't know.")}metExploreD3.hideMask(a);var k=metExploreD3.GraphNetwork.isAnimated("viz");if(k=="true"){var j=e.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){j.resume()}}},1)}},mapNodes:function(b,a){metExploreD3.onloadMapping(b,function(){d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(e){if(this.getAttribute("mapped")==undefined||this.getAttribute("mapped")==false||this.getAttribute("mapped")=="false"){return false}else{return true}}).attr("mapped","false").selectAll("rect.stroke").remove();var c=metExploreD3.createLoadMask("Mapping in progress...","viz");var d=_metExploreViz.getMappingByName(b);if(c!=undefined){metExploreD3.showMask(c);setTimeout(function(){var h=_metExploreViz.getSessionById("viz");var f=h.getForce();f.stop();var g=d.getConditions();g.forEach(function(i){d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(j){if(this.getAttribute("mapped")==undefined||this.getAttribute("mapped")==false||this.getAttribute("mapped")=="false"){return true}else{return false}}).each(function(l){if(l.getBiologicalType()=="reaction"){if(l.getMappingDataByNameAndCond(d.getName(),i)!=null){var j=metExploreD3.getReactionStyle();_MyThisGraphNode.addText(l,"viz",j);d3.select(this).attr("mapped","true").insert("rect",":first-child").attr("class","stroke").attr("width",parseInt(d3.select(this).select(".reaction").attr("width"))+10).attr("height",parseInt(d3.select(this).select(".reaction").attr("height"))+10).attr("rx",parseInt(d3.select(this).select(".reaction").attr("rx"))+5).attr("ry",parseInt(d3.select(this).select(".reaction").attr("ry"))+5).attr("transform","translate(-"+parseInt(parseInt(d3.select(this).select(".reaction").attr("width"))+10)/2+",-"+parseInt(parseInt(d3.select(this).select(".reaction").attr("height"))+10)/2+")").style("opacity","0.5").style("fill","red");h.addSelectedNode(l.getId())}}else{if(l.getBiologicalType()=="metabolite"){var m=d3.select(this).select(".metabolite").attr("identifier");if(l.getMappingDataByNameAndCond(d.getName(),i)!=null){var k=metExploreD3.getReactionStyle();_MyThisGraphNode.addText(l,"viz",k);d3.select(this).attr("mapped","true").insert("rect",":first-child").attr("class","stroke").attr("width",parseInt(d3.select(this).select(".metabolite").attr("width"))+10).attr("height",parseInt(d3.select(this).select(".metabolite").attr("height"))+10).attr("rx",parseInt(d3.select(this).select(".metabolite").attr("rx"))+5).attr("ry",parseInt(d3.select(this).select(".metabolite").attr("ry"))+5).attr("transform","translate(-"+parseInt(parseInt(d3.select(this).select(".metabolite").attr("width"))+10)/2+",-"+parseInt(parseInt(d3.select(this).select(".metabolite").attr("height"))+10)/2+")").style("opacity","0.5").style("fill","red");h.addSelectedNode(l.getId())}}}}).each(function(l){if(d3.select(this).select(".stroke")[0][0]==null){if(l.getBiologicalType()=="reaction"){if(l.getMappingDataByNameAndCond(d.getName(),i)!=null){var j=metExploreD3.getReactionStyle();_MyThisGraphNode.addText(l,"viz",j);d3.select(this).insert("rect",":first-child").attr("class","stroke").attr("width",parseInt(d3.select(this).select(".reaction").attr("width"))+10).attr("height",parseInt(d3.select(this).select(".reaction").attr("height"))+10).attr("rx",parseInt(d3.select(this).select(".reaction").attr("rx"))+5).attr("ry",parseInt(d3.select(this).select(".reaction").attr("ry"))+5).attr("transform","translate(-"+parseInt(parseInt(d3.select(this).select(".reaction").attr("width"))+10)/2+",-"+parseInt(parseInt(d3.select(this).select(".reaction").attr("height"))+10)/2+")").style("opacity","0.5").style("fill","red");h.addSelectedNode(l.getId());return true}else{return false}}else{if(l.getBiologicalType()=="metabolite"){var m=d3.select(this).select(".metabolite").attr("identifier");if(l.getMappingDataByNameAndCond(d.getName(),i)!=null){var k=metExploreD3.getReactionStyle();_MyThisGraphNode.addText(l,"viz",k);d3.select(this).insert("rect",":first-child").attr("class","stroke").attr("width",parseInt(d3.select(this).select(".metabolite").attr("width"))+10).attr("height",parseInt(d3.select(this).select(".metabolite").attr("height"))+10).attr("rx",parseInt(d3.select(this).select(".metabolite").attr("rx"))+5).attr("ry",parseInt(d3.select(this).select(".metabolite").attr("ry"))+5).attr("transform","translate(-"+parseInt(parseInt(d3.select(this).select(".metabolite").attr("width"))+10)/2+",-"+parseInt(parseInt(d3.select(this).select(".metabolite").attr("height"))+10)/2+")").style("opacity","0.5").style("fill","red");h.addSelectedNode(l.getId());return true}else{return false}}}}})});metExploreD3.hideMask(c);if(a!=undefined){a()}var e=metExploreD3.GraphNetwork.isAnimated("viz");if(e=="true"){var h=_metExploreViz.getSessionById("viz");var f=h.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){f.resume()}}},1)}})},mapFluxes:function(g,d,f,h,b,e){var c=_metExploreViz.getMappingByName(g);var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){var u=_metExploreViz.getGeneralStyle();var n=d3.select("#viz").select("#D3viz");var s=_metExploreViz.getSessionById("viz");var k=_metExploreViz.getSessionById("viz").getD3Data().getNodes();var v=metExploreD3.getConditionsMapped();var r=undefined;var w=undefined;var x=c.getName();var o=metExploreD3.getLinkStyle();var m=s.getForce();m.linkDistance(function(z){if(z.getSource().getIsSideCompound()||z.getTarget().getIsSideCompound()){return o.getSize()}else{return o.getSize()*2}});n.selectAll("g.node").filter(function(z){if(this.getAttribute("mapped")==undefined||this.getAttribute("mapped")==false||this.getAttribute("mapped")=="false"){return false}else{return true}}).selectAll("rect.stroke").remove();v.forEach(function(z){k.forEach(function(B){var C=B.getMappingDataByNameAndCond(x,z);if(C!=null){var A=Math.abs(C.getMapValue())}else{var A=0}if(!isNaN(A)){if(r==undefined){w=parseFloat(A);r=parseFloat(A)}else{if(w>parseFloat(A)){w=parseFloat(A)}if(r<parseFloat(A)){r=parseFloat(A)}}}})});if(h==undefined){h=metExploreD3.GraphUtils.colorNameToHex(u.getColorMinMappingContinuous());if(h==false){h=u.getColorMinMappingContinuous()}}else{u.setMinColorMappingContinuous(h)}if(f==undefined){f=metExploreD3.GraphUtils.colorNameToHex(u.getColorMaxMappingContinuous());if(f==false){f=u.getColorMaxMappingContinuous()}}else{u.setMaxColorMappingContinuous(f)}var n=d3.select("#viz").select("#D3viz");var j=s.getColorMappingsSet();s.resetColorMapping();var l=f;if(v[1]==d){l=h}if(b){var i=0.5;var y=0.2}else{var i=1;var y=1}var q=d3.scale.linear().domain([-4,-1,0,1,4]).range([1,i,y,i,1]);var t=d3.scale.linear().domain([-r,0,r]).range([-7,0,7]);s.addColorMapping(r,f);s.addColorMapping(-r,h);n.selectAll("g.node").each(function(E){if(E.getMappingDatasLength()!=0){if(E.getBiologicalType()=="reaction"){var D=E.getMappingDataByNameAndCond(x,v[0]);var C=E.getMappingDataByNameAndCond(x,v[1]);var B=D;if(v[1]==d){B=C}if(B==null){var z=0}else{if(isNaN(B.getMapValue())){var z=0}else{var z=B.getMapValue()}}var A=metExploreD3.getReactionStyle();_MyThisGraphNode.addText(E,"viz",A);d3.select(this).transition().duration(2000).style("opacity",q(t(parseFloat(z))));s.addSelectedNode(E.getId())}}});metExploreD3.hideMask(a);d3.select("#viz").select("#D3viz").selectAll("path.link").style("fill",function(B){var C,E;if(B.getSource().getBiologicalType()=="reaction"){C=B.getSource();E=B.getTarget()}else{E=B.getSource();C=B.getTarget()}var F=C.getMappingDataByNameAndCond(x,v[0]);var D=C.getMappingDataByNameAndCond(x,v[1]);n.selectAll("g#node"+E.getId()+".node").each(function(H){var I=F;if(v[1]==d){I=D}if(I==null){var G=0}else{if(isNaN(I.getMapValue())){var G=0}else{var G=I.getMapValue()}}if(H.flux==undefined){H.flux=t(G)}else{if(Math.abs(H.flux)<Math.abs(t(G))){H.flux=t(G)}}});n.selectAll("g#node"+E.getId()+".node").style("opacity",function(G){if(G.getIsSideCompound()){return 0.2}return q(G.flux)});if(this.id!="linkRev"){if(F==null){var z=0}else{if(isNaN(F.getMapValue())){var z=0}else{var z=F.getMapValue()}}if(t(z)==0){var A=d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");d3.select(this).style("opacity",0.5).style("stroke","black").style("stroke-width",0.5).style("stroke-dasharray","2,3").each(function(G){var H=A[0][0];this.parentNode.insertBefore(this,H)})}else{d3.select(this).style("opacity",q(t(parseFloat(z))))}if(E.getIsSideCompound()){d3.select(this).style("opacity",0.1)}return f}else{if(D==null){var z=0}else{if(isNaN(D.getMapValue())){var z=0}else{var z=D.getMapValue()}}if(t(z)==0){var A=d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");d3.select(this).style("opacity",0.5).style("stroke","black").style("stroke-width",0.5).style("stroke-dasharray","2,3").each(function(G){var H=A[0][0];this.parentNode.insertBefore(this,H)})}else{d3.select(this).style("opacity",q(t(parseFloat(z))))}if(E.getIsSideCompound()){d3.select(this).style("opacity",0.1)}return h}});if(w!=undefined){metExploreD3.fireEventArg("selectConditionForm","afterContinuousMapping","flux")}else{metExploreD3.displayMessage("Warning","No mapped node on network.")}if(e!=undefined){e()}var p=metExploreD3.GraphNetwork.isAnimated("viz");if(p=="true"){var s=_metExploreViz.getSessionById("viz");if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){m.start()}}metExploreD3.GraphNetwork.tick("viz")},1)}},mapUniqueFlux:function(g,d,f,b,e){var c=_metExploreViz.getMappingByName(g);var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){var u=_metExploreViz.getGeneralStyle();var s=d3.select("#viz").select("#D3viz");var i=_metExploreViz.getSessionById("viz");var t=_metExploreViz.getSessionById("viz").getD3Data().getNodes();var n=c.getConditions();var w=undefined;var r=undefined;var o=c.getName();var x=metExploreD3.getLinkStyle();var j=i.getForce();j.linkDistance(function(z){if(z.getSource().getIsSideCompound()||z.getTarget().getIsSideCompound()){return x.getSize()}else{return x.getSize()*2}});s.selectAll("g.node").filter(function(z){if(this.getAttribute("mapped")==undefined||this.getAttribute("mapped")==false||this.getAttribute("mapped")=="false"){return false}else{return true}}).selectAll("rect.stroke").remove();n.forEach(function(z){t.forEach(function(B){var C=B.getMappingDataByNameAndCond(o,z);if(C!=null){var A=C.getMapValue();if(!isNaN(A)){if(w==undefined){r=parseFloat(A);w=parseFloat(A)}else{if(r>parseFloat(A)){r=parseFloat(A)}if(w<parseFloat(A)){w=parseFloat(A)}}}}})});if(f==undefined){f=u.getColorMaxMappingContinuous()}else{u.setMaxColorMappingContinuous(f)}var s=d3.select("#viz").select("#D3viz");var m=i.getColorMappingsSet();i.resetColorMapping();var p=d3.scale.linear().domain([-4,-1,1,4]).range([f,f,f,f]);if(b){var k=0.5;var h=0.2}else{var k=1;var h=1}var l=d3.scale.linear().domain([-4,-1,0,1,4]).range([1,k,h,k,1]);var q=d3.scale.linear().domain([-4,-1,1,4]).range([f,f,f,f]);var y=d3.scale.linear().domain([r,0,w]).range([-7,0,7]);i.addColorMapping(w,p(parseFloat(w)));s.selectAll("g.node").each(function(B){if(B.getMappingDatasLength()!=0){if(B.getBiologicalType()=="reaction"){var C=metExploreD3.getConditionsMapped()[0];var A=B.getMappingDataByNameAndCond(o,C);if(A!=null){if(!isNaN(A.getMapValue())){var z=metExploreD3.getReactionStyle();_MyThisGraphNode.addText(B,"viz",z);d3.select(this).transition().duration(2000).style("opacity",l(y(parseFloat(A.getMapValue()))));i.addSelectedNode(B.getId())}}}}});metExploreD3.hideMask(a);d3.select("#viz").select("#D3viz").selectAll("path.link").style("fill",function(B){var C,E;if(B.getSource().getBiologicalType()=="reaction"){C=B.getSource();E=B.getTarget()}else{E=B.getSource();C=B.getTarget()}var F=metExploreD3.getConditionsMapped()[0];var D=C.getMappingDataByNameAndCond(o,F);s.selectAll("g#node"+E.getId()+".node").each(function(H){if(D==null){var G=0}if(H.flux==undefined){H.flux=y(G)}else{if(Math.abs(H.flux)<Math.abs(y(G))){H.flux=y(G)}}});s.selectAll("g#node"+E.getId()+".node").style("opacity",function(G){if(G.getIsSideCompound()){return 0.2}return l(G.flux)});if(D==null){var z=0}else{if(isNaN(D.getMapValue())){var z=0}else{var z=D.getMapValue()}}if(y(z)==0){var A=d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");d3.select(this).style("opacity",0.5).style("stroke","black").style("stroke-width",0.5).style("stroke-dasharray","2,3").each(function(G){var H=A[0][0];this.parentNode.insertBefore(this,H)})}else{d3.select(this).style("opacity",l(y(parseFloat(z))))}if(E.getIsSideCompound()){d3.select(this).style("opacity",0.1)}return p(y(z))}).filter(function(z){return this.id=="linkRev"}).remove();if(r!=undefined){metExploreD3.fireEventArg("selectConditionForm","afterContinuousMapping","flux")}else{metExploreD3.displayMessage("Warning","No mapped node on network.")}if(e!=undefined){e()}var v=metExploreD3.GraphNetwork.isAnimated("viz");if(v=="true"){var i=_metExploreViz.getSessionById("viz");if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){j.start()}}metExploreD3.GraphNetwork.tick("viz")},1)}},parseFluxValues:function(c){var b=_metExploreViz.getMappingByName(c);var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){var j=_metExploreViz.getSessionById("viz");var e=_metExploreViz.getSessionById("viz").getD3Data().getNodes();var i=b.getConditions();var h=undefined;var f=undefined;var g=b.getName();var k=[];i.forEach(function(l){e.forEach(function(n){var o=n.getMappingDataByNameAndCond(g,l);if(o!=null){var m=o.getMapValue()}else{var m=0}if(!isNaN(m)){if(parseFloat(m)!=0&(999999-Math.abs(parseFloat(m)))*100/999999<0.001){k.push(n)}else{if(h==undefined){f=parseFloat(m);h=parseFloat(m)}else{if(f>parseFloat(m)){f=parseFloat(m)}if(h<parseFloat(m)){h=parseFloat(m)}}}}})});if(k.length>0){h=h+h/2;var d=_metExploreViz.getSessionById("viz").getColorMappingsSet();k.forEach(function(l){i.forEach(function(m){if((999999-Math.abs(parseFloat(l.getMappingDataByNameAndCond(g,m).getMapValue())))*100/999999<0.001){d.forEach(function(n){if(n.getName()==parseFloat(l.getMappingDataByNameAndCond(g,m).getMapValue())){n.setName(f)}if(n.getName()==parseFloat(l.getMappingDataByNameAndCond(g,m).getMapValue())){n.setName(h)}});l.setMappingDataByNameAndCond(g,m,h)}})})}metExploreD3.hideMask(a)},1)}},graphMappingFlux:function(e,a,c,b,f,d){metExploreD3.onloadMapping(e,function(){var g=_metExploreViz.getSessionById("viz");metExploreD3.GraphMapping.parseFluxValues(e);metExploreD3.GraphLink.loadLinksForFlux("viz",g.getD3Data(),metExploreD3.getLinkStyle(),metExploreD3.getMetaboliteStyle());if(c=="Compare"){metExploreD3.GraphMapping.mapFluxes(e,a,b,f,d)}else{metExploreD3.GraphMapping.mapUniqueFlux(e,a,b,d)}})},reloadMapping:function(b){var d=_metExploreViz.getSessionById("viz");var c=d.getForce();c.stop();var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){var h=d.getD3Data();var i=b.getConditions();var e=undefined;switch(b.getTargetLabel()){case"reactionDBIdentifier":b.getData().forEach(function(l){if(typeof l.getNode()=="object"){var j=h.getNodeByDbIdentifier(l.getNode().getDbIdentifier())}else{var j=h.getNodeByDbIdentifier(l.getNode())}console.log(j);if(j!=undefined){var k=new MappingData(j,b.getName(),l.getConditionName(),l.getMapValue());j.addMappingData(k)}});break;case"reactionId":b.getData().forEach(function(l){if(typeof l.getNode()=="object"){var j=h.getNodeById(l.getNode().getId())}else{var j=h.getNodeById(l.getNode())}if(j!=undefined){var k=new MappingData(j,b.getName(),l.getConditionName(),l.getMapValue());j.addMappingData(k)}});break;case"metaboliteId":b.getData().forEach(function(l){if(typeof l.getNode()=="object"){var j=h.getNodeById(l.getNode().getId())}else{var j=h.getNodeById(l.getNode())}if(j!=undefined){var k=new MappingData(j,b.getName(),l.getConditionName(),l.getMapValue());j.addMappingData(k)}});break;case"metaboliteDBIdentifier":b.getData().forEach(function(l){if(typeof l.getNode()=="object"){var j=h.getNodeByDbIdentifier(l.getNode().getDbIdentifier())}else{var j=h.getNodeByDbIdentifier(l.getNode())}if(j!=undefined){var k=new MappingData(j,b.getName(),l.getConditionName(),l.getMapValue());j.addMappingData(k)}});break;case"inchi":break;default:metExploreD3.displayMessage("Warning",'The type of node "'+b.getTargetLabel()+"\" isn't know.")}metExploreD3.hideMask(a);var g=metExploreD3.GraphNetwork.isAnimated("viz");if(g=="true"){var f=d.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){f.resume()}}},1)}},graphMappingDiscreteData:function(c,a,b){metExploreD3.onloadMapping(c,function(){var e=_metExploreViz.getMappingByName(c);var d=metExploreD3.createLoadMask("Mapping in progress...","viz");if(d!=undefined){metExploreD3.showMask(d);setTimeout(function(){var s=_metExploreViz.getSessionById("viz");var j=s.getForce();j.stop();var t=e.getConditions();var h=s.getD3Data().getNodes();var w=[];var k=d3.select("#viz").select("#D3viz");k.selectAll("g.node").filter(function(i){if(this.getAttribute("mapped")==undefined||this.getAttribute("mapped")==false||this.getAttribute("mapped")=="false"){return false}else{return true}}).selectAll("rect.stroke").remove();t.forEach(function(i){h.forEach(function(z){var A=z.getMappingDataByNameAndCond(e.getName(),i);if(A!=null){var y=false;var x=A.getMapValue().valueOf();w.forEach(function(B){if(B.valueOf()==x.valueOf()){y=true}});if(!y){w.push(x)}}})});function f(x,i){if(parseFloat(x)<parseFloat(i)){return -1}if(parseFloat(x)>parseFloat(i)){return 1}return 0}function q(x,i){if(x<i){return -1}if(x>i){return 1}return 0}var r=[];var v=[];w.forEach(function(i){if(isNaN(i)){v.push(i)}else{r.push(i)}});r.sort(f);v.sort(q);w=r.concat(v);if(w.length==undefined){w.length=0}center=128;width=127;frequency=Math.PI*2*0.95/w.length;var p=top;var g=s.getColorMappingsSet();s.resetColorMapping();for(var o=0;o<w.length;o++){var l=Math.sin(frequency*o+2+w.length)*width+center;var n=Math.sin(frequency*o+0+w.length)*width+center;var u=Math.sin(frequency*o+4+w.length)*width+center;color=metExploreD3.GraphUtils.RGB2Color(l,n,u);s.addColorMapping(w[o],color);metExploreD3.GraphMapping.fixMappingColorOnNodeData(color,w[o],a,e.getName())}metExploreD3.hideMask(d);if(b!=undefined){b()}if(w.length!=0){metExploreD3.fireEventArg("selectConditionForm","afterDiscreteMapping","discrete")}else{metExploreD3.displayMessage("Warning","No mapped node on network.")}var m=metExploreD3.GraphNetwork.isAnimated("viz");if(m=="true"){var s=_metExploreViz.getSessionById("viz");var j=s.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){j.resume()}}},1)}})},fixMappingColorOnNodeData:function(a,e,c,g){var d=d3.select("#viz").select("#D3viz");var f=_metExploreViz.getSessionById("viz");var b=a;d.selectAll("g.node").filter(function(k){if(k.getBiologicalType()=="reaction"){if(k.getMappingDatasLength()==0){return false}else{var j=k.getMappingDataByNameAndCond(g,c);if(j!=null){if(j.getMapValue()==e){var h=metExploreD3.getReactionStyle();_MyThisGraphNode.addText(k,"viz",h);f.addSelectedNode(k.getId());return true}else{return false}}else{return false}}}else{if(k.getBiologicalType()=="metabolite"){if(k.getMappingDatasLength()==0){return false}else{var j=k.getMappingDataByNameAndCond(g,c);if(j!=null){if(j.getMapValue()==e){var i=metExploreD3.getMetaboliteStyle();_MyThisGraphNode.addText(k,"viz",i);f.addSelectedNode(k.getId());return true}else{return false}}else{return false}}}}}).transition().duration(3000).attr("mapped",a).style("fill",a).each(function(i){if(i.getBiologicalType()=="reaction"){var h=metExploreD3.GraphUtils.chooseTextColor(b);d3.select(this).select("text").style("fill",h)}})},graphMappingContinuousData:function(d,a,e,c,b){metExploreD3.onloadMapping(d,function(){var g=_metExploreViz.getMappingByName(d);var f=metExploreD3.createLoadMask("Mapping in progress...","viz");if(f!=undefined){metExploreD3.showMask(f);setTimeout(function(){var s=_metExploreViz.getGeneralStyle();var k=d3.select("#viz").select("#D3viz");var r=_metExploreViz.getSessionById("viz");var i=_metExploreViz.getSessionById("viz").getD3Data().getNodes();var t=g.getConditions();var o=undefined;var u=undefined;var v=g.getName();var q='{"mapping":[';var p=metExploreD3.getMetaboliteStyle();var m=metExploreD3.getReactionStyle();k.selectAll("g.node").filter(function(w){if(this.getAttribute("mapped")==undefined||this.getAttribute("mapped")==false||this.getAttribute("mapped")=="false"){return false}else{return true}}).selectAll("rect.stroke").remove();t.forEach(function(w){q+='\n{"'+w+'":[';i.forEach(function(y){var z=y.getMappingDataByNameAndCond(v,w);if(z!=null){q+="\n{";var x=z.getMapValue();q+='"node" : "'+y.getName();q+='", "value" : "'+x;if(!isNaN(x)){if(o==undefined){u=parseFloat(x);o=parseFloat(x)}else{if(u>parseFloat(x)){u=parseFloat(x)}if(o<parseFloat(x)){o=parseFloat(x)}}}q+='"},\n'}});q+="]}\n"});q+="]}\n";if(e==undefined){e=s.getColorMinMappingContinuous()}else{s.setMinColorMappingContinuous(e)}if(c==undefined){c=s.getColorMaxMappingContinuous()}else{s.setMaxColorMappingContinuous(c)}var k=d3.select("#viz").select("#D3viz");var h=r.getColorMappingsSet();r.resetColorMapping();var n=d3.scale.linear().domain([parseFloat(u),parseFloat(o)]).range([e,c]);if(u==o){r.addColorMapping(o,n(parseFloat(o)))}else{r.addColorMapping(o,n(parseFloat(o)));r.addColorMapping(u,n(parseFloat(u)))}k.selectAll("g.node").each(function(z){if(z.getMappingDatasLength()!=0){if(z.getBiologicalType()=="reaction"){var y=z.getMappingDataByNameAndCond(v,a);if(y!=null){if(!isNaN(y.getMapValue())){_MyThisGraphNode.addText(z,"viz",m);d3.select(this).transition().duration(2000).attr("mapped",n(parseFloat(parseFloat(y.getMapValue())))).style("fill",n(parseFloat(y.getMapValue())));var w=metExploreD3.GraphUtils.chooseTextColor(n(parseFloat(y.getMapValue())));d3.select(this).select("text").style("fill",w);r.addSelectedNode(z.getId())}}}else{var y=z.getMappingDataByNameAndCond(v,a);if(y!=null){if(!isNaN(y.getMapValue())){var x=metExploreD3.getMetaboliteStyle();_MyThisGraphNode.addText(z,"viz",x);d3.select(this).transition().duration(2000).attr("mapped",n(parseFloat(parseFloat(y.getMapValue())))).style("fill",n(parseFloat(y.getMapValue())));r.addSelectedNode(z.getId())}}}}});metExploreD3.hideMask(f);if(u!=undefined){metExploreD3.fireEventArg("selectConditionForm","afterContinuousMapping","continuous")}else{metExploreD3.displayMessage("Warning","No mapped node on network.")}if(b!=undefined){b()}var l=metExploreD3.GraphNetwork.isAnimated("viz");if(l=="true"){var r=_metExploreViz.getSessionById("viz");var j=r.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){j.resume()}}},1)}})},graphMappingBinary:function(b){var c=metExploreD3.getSessionsSet();var e=metExploreD3.getSessionById(c,"viz");var d=e.getForce();d.stop();var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){metExploreD3.GraphMapping.fixMappingColorOnNode("#056da1",1,b);metExploreD3.hideMask(a);var h=metExploreD3.GraphNetwork.isAnimated("viz");if(h=="true"){var f=metExploreD3.getSessionsSet();var i=metExploreD3.getSessionById(f,"viz");var g=i.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){g.resume()}}},1)}},fixMappingColorOnNode:function(b,e,c){var d=d3.select("#viz").select("#D3viz");var f=metExploreD3.getMetabolitesSet();var a=metExploreD3.getReactionsSet();d.selectAll("g.node").filter(function(i){if(i.getBiologicalType()=="reaction"){if(metExploreD3.getReactionById(a,i.getId()).get("mapped")==undefined){return false}else{if((metExploreD3.getReactionById(a,i.getId()).get("mapped")!=0)&&metExploreD3.getReactionById(a,i.getId()).get(c)==e){var j=metExploreD3.getSessionsSet();var g=metExploreD3.getReactionStyle();_MyThisGraphNode.addText(i,"viz",g,j);return true}else{return false}}}else{if(i.getBiologicalType()=="metabolite"&&!i.isSideCompound()){if(metExploreD3.getMetaboliteById(f,i.getId())==null){return false}if(metExploreD3.getMetaboliteById(f,i.getId()).get("mapped")==undefined){return false}else{if((metExploreD3.getMetaboliteById(f,i.getId()).get("mapped")!=0)&&metExploreD3.getMetaboliteById(f,i.getId()).get(c)==e){var j=metExploreD3.getSessionsSet();var h=metExploreD3.getMetaboliteStyle();_MyThisGraphNode.addText(i,"viz",h,j);return true}else{return false}}}}}).transition().duration(4000).attr("mapped",b).style("fill",b)},setDiscreteMappingColor:function(b,e,c,g){var f=_metExploreViz.getSessionById("viz");var d=f.getForce();d.stop();var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){var i=d3.select("#viz").select("#D3viz");var j=f.getColorMappingsSet();var h=f.getColorMappingById(e);h.setValue(b);metExploreD3.GraphMapping.fixMappingColorOnNodeData(b,e,c,g);metExploreD3.hideMask(a)},1)}},setContinuousMappingColor:function(f,i,j,e){var h=_metExploreViz.getSessionById("viz");var b=h.getForce();b.stop();var d=metExploreD3.createLoadMask("Mapping in progress...","viz");if(d!=undefined){metExploreD3.showMask(d);var c=d3.select("#viz").select("#D3viz");var a=h.getColorMappingsSet();var g=h.getColorMappingById(i);g.setValue(f);metExploreD3.hideMask(d)}},removeGraphMapping:function(b){var e=_metExploreViz.getSessionById("viz");var c=d3.select("#viz").select("#D3viz");var d=metExploreD3.getMetabolitesSet();var a=metExploreD3.getReactionsSet();c.selectAll("g.node").filter(function(f){if(f.getBiologicalType()=="reaction"){if(metExploreD3.getReactionById(a,f.getId()).get("mapped")==undefined){return false}else{return metExploreD3.getReactionById(a,f.getId()).get("mapped")!=0}}else{if(f.getBiologicalType()=="metabolite"){if(metExploreD3.getMetaboliteById(d,f.getId()).get("mapped")==undefined){return false}else{return metExploreD3.getMetaboliteById(d,f.getId()).get("mapped")!=0}}}}).transition().duration(1000).attr("transform",function(f){return"translate("+f.x+", "+f.y+") scale(1)"}).style("fill","white");c.selectAll("g.node").filter(function(f){if(this.getAttribute("mapped")==undefined||this.getAttribute("mapped")==false||this.getAttribute("mapped")=="false"){return false}else{return true}}).attr("mapped","false").selectAll("rect.stroke").remove()},removeGraphMappingData:function(a){var e=_metExploreViz.getSessionById("viz");var c=d3.select("#viz").select("#D3viz");c.selectAll("g.node").transition().duration(1000).attr("transform",function(f){return"translate("+f.x+", "+f.y+") scale(1)"}).style("fill","white").style("opacity",1).each(function(f){if(f.getBiologicalType()=="reaction"){if(f.isSelected()){d3.select(this).select("text").transition().duration(4000).style("fill","white")}else{d3.select(this).select("text").transition().duration(4000).style("fill","black")}}});c.selectAll("g.node").filter(function(f){if(this.getAttribute("mapped")==undefined||this.getAttribute("mapped")==false||this.getAttribute("mapped")=="false"){return false}else{return true}}).attr("mapped","false").selectAll("rect.stroke").remove();var d=metExploreD3.getMetaboliteStyle();var b=metExploreD3.getLinkStyle();metExploreD3.GraphLink.refreshLink("viz",e,b,d)},launchAfterMappingFunction:function(b,d){var a=_metExploreViz.getMappingByName(b);if(a!==null){d(a);return}var c=this;setTimeout(function(){c.launchAfterMappingFunction(b,d)},100)},onloadMapping:function(a,b){this.launchAfterMappingFunction(a,b)},removeMappingData:function(a){this.onloadMapping(a.get("title"),function(b){metExploreD3.fireEventArg("selectConditionForm","removeMapping",b)})},loadDataFromJSON:function(b){var c=metExploreD3.GraphUtils.decodeJSON(b);if(c){var e=_metExploreViz.getSessionById("viz");var d=e.getForce();d.stop();var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);setTimeout(function(){var g=[];c.mappings.forEach(function(j){g.push(j.name)});var f=new Mapping(c.name,g,c.targetLabel);_metExploreViz.addMapping(f);metExploreD3.GraphMapping.generateMapping(f,c.mappings);metExploreD3.hideMask(a);metExploreD3.fireEventArg("selectMappingVisu","jsonmapping",f);var i=metExploreD3.GraphNetwork.isAnimated("viz");if(i=="true"){var h=e.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){h.resume()}}},1)}}},loadDataTSV:function(b,c){var e=_metExploreViz.getSessionById("viz");var d=e.getForce();d.stop();var a=metExploreD3.createLoadMask("Mapping in progress...","viz");if(a!=undefined){metExploreD3.showMask(a);d3.tsv(b,function(i){var j=b.split("/");var n=b.split("/")[j.length-1];var k=Object.keys(i[0])[0];var o=Object.keys(i[0]).indexOf(k);var l=Object.keys(i[0]);if(o>-1){l.splice(o,1)}var m=[];var f=new Mapping(n,l,k,m);_metExploreViz.addMapping(f);metExploreD3.GraphMapping.mapNodeDataFile(f,i);metExploreD3.fireEventArg("selectMappingVisu","jsonmapping",f);metExploreD3.hideMask(a);if(c!=undefined){c()}var h=metExploreD3.GraphNetwork.isAnimated("viz");if(h=="true"){var g=e.getForce();if((d3.select("#viz").select("#D3viz").attr("animation")=="true")||(d3.select("#viz").select("#D3viz").attr("animation")==null)){g.resume()}}})}},generateMapping:function(a,b){var d=_metExploreViz.getSessionById("viz");var c=d.getD3Data();switch(a.getTargetLabel()){case"reactionDBIdentifier":if(!(b.length==1&&b[0].name=="undefined")){b.forEach(function(e){e.data.forEach(function(h){var i=new MappingData(h.node,a.getName(),e.name,h.value);a.addMap(i);var f=c.getNodeByDbIdentifier(h.node);if(f!=undefined){var g=new MappingData(f,a.getName(),e.name,h.value);f.addMappingData(g)}})})}else{b[0].data.forEach(function(g){var h=new MappingData(g.node,a.getName(),b[0].name,g.value);a.addMap(h);var e=c.getNodeByDbIdentifier(g.node);if(e!=undefined){var f=new MappingData(e,a.getName(),b[0].name,g.value);e.addMappingData(f)}})}break;case"metaboliteDBIdentifier":b.forEach(function(e){e.data.forEach(function(h){var i=new MappingData(h.node,a.getName(),e.name,h.value);a.addMap(i);var f=c.getNodeByDbIdentifier(h.node);if(f!=undefined){var g=new MappingData(f,a.getName(),e.name,h.value);f.addMappingData(g)}})});break;case"reactionId":if(!(b.length==1&&b[0].name=="undefined")){b.forEach(function(e){e.data.forEach(function(h){var i=new MappingData(h.node,a.getName(),e.name,h.value);a.addMap(i);var f=c.getNodeById(h.node);if(f!=undefined){var g=new MappingData(f,a.getName(),e.name,h.value);f.addMappingData(g)}})})}else{b[0].data.forEach(function(g){var h=new MappingData(g.node,a.getName(),b[0].name,g.value);a.addMap(h);var e=c.getNodeById(g.node);if(e!=undefined){var f=new MappingData(e,a.getName(),b[0].name,g.value);e.addMappingData(f)}})}break;case"metaboliteId":b.forEach(function(e){e.data.forEach(function(h){var i=new MappingData(h.node,a.getName(),e.name,h.value);a.addMap(i);var f=c.getNodeById(h.node);if(f!=undefined){var g=new MappingData(f,a.getName(),e.name,h.value);if(h.inchi!=undefined){f.mappedInchi=h.inchi}f.addMappingData(g)}})});break;case"inchi":break;default:metExploreD3.displayMessage("Warning",'The type of node "'+a.getTargetLabel()+"\" isn't know.")}}};
+/**
+ * @author MC
+ * @description : Fonctions to map data on metabolic networks
+ */
+metExploreD3.GraphMapping = {
+
+	compareMappingConditionChart : function(){
+		var sessions = _metExploreViz.getSessionsSet();
+		var arrayNodes = [];
+		var mappingName = [];
+		var condName = [];
+		for (var key in sessions) {
+			mappingName.push(sessions[key].getActiveMapping());
+			condName.push(sessions[key].isMapped());
+			if(key!='viz'){
+				arrayNodes = sessions[key].getD3Data().getNodes().concat(arrayNodes);
+			}
+		}
+
+		var categories = [];
+		arrayNodes.forEach(function(node){
+			var index = arrayNodes.filter(function(n){ return n.getIdentifier()==node.getIdentifier(); });
+			if(index.length>1 && categories.indexOf(node)==-1 && node.getMappingDataByNameAndCond(mappingName[0], condName[0])!=undefined)
+			 	categories.push(node);
+			
+		});
+
+		var categoriesName=categories.map(function(node){return node.getName()});
+
+		var mapping = _metExploreViz.getMappingByName(mappingName);
+		var dataCond1 = categories.map(function(node){return -Math.abs(parseInt(node.getMappingDataByNameAndCond(mappingName[0], condName[0]).getMapValue()))});
+		var dataCond2 = categories.map(function(node){return Math.abs(parseInt(node.getMappingDataByNameAndCond(mappingName[1], condName[1]).getMapValue()))});
+
+        var conditions2=
+        [
+            {
+                name: condName[0],
+                data: dataCond1
+            }, {
+                name: condName[1],
+                data: dataCond2
+            }
+        ];
+
+
+        // donnees.forEach(function(aData){
+        //     aData.color=scale(aData.z);
+        // });
+
+        var dataChart2 = {categories:categoriesName, conditions:conditions2};
+        var compareChart = new MetXCompareBar(dataChart2, 1300, categoriesName.length*15, "xaxis", "yaxis", mappingName[0]+" analysis");
+
+		// console.log(d3.select(compareChart));
+		// var array = [];
+		// d3.select(compareChart).select('svg').selectAll('.highcharts-series').selectAll('rect').each(function(){array.push(this.height.animVal.value)});
+		
+		// console.log(array);
+		// var scale = d3.scale.linear()
+  //           .domain([Math.min.apply(null, array),Math.max.apply(null, array)])
+  //           .range([sessions["viz"].getColorMappingsSet()[1].getValue(),sessions["viz"].getColorMappingsSet()[0].getValue()]);
+		
+		// d3.select(compareChart).selectAll('svg').selectAll('.highcharts-series').selectAll('rect').attr('fill', function(){return scale(this.height.animVal.value)})
+		
+		return compareChart;
+	},
+	/***********************************************
+	* Mapping to data from file
+	* This function will assignmapping value to each nodes in datas
+	*/
+	mapNodeDataFile: function(mapping, objects) {
+		var session = _metExploreViz.getSessionById('viz');
+		var force = session.getForce();
+		force.stop(); 
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		if(myMask!= undefined){
+			metExploreD3.showMask(myMask);
+	        setTimeout(
+			function() {
+				var networkData = session.getD3Data();
+				var conditions = mapping.getConditions();
+				var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+				var node = undefined;
+				switch (mapping.getTargetLabel()) {
+				    case "reactionDBIdentifier":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	objects.forEach(function(obj){
+								var map = new MappingData(obj[mapping.getTargetLabel()], mapping.getName(), conditions[i], obj[conditions[i]]);
+								mapping.addMap(map);
+								node = networkData.getNodeByDbIdentifier(obj[mapping.getTargetLabel()]);
+								if(node!=undefined){
+									var mapNode = new MappingData(node, mapping.getName(), conditions[i], obj[conditions[i]]);
+									node.addMappingData(mapNode);
+								}
+							});
+				        };
+				        break;
+				    case "reactionId":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	objects.forEach(function(obj){
+								var map = new MappingData(obj[mapping.getTargetLabel()], mapping.getName(), conditions[i], obj[conditions[i]]);
+								mapping.addMap(map);
+								node = networkData.getNodeByDbIdentifier(obj[mapping.getTargetLabel()]);
+								if(node!=undefined){
+									var mapNode = new MappingData(node, mapping.getName(), conditions[i], obj[conditions[i]]);
+									node.addMappingData(mapNode);
+								}
+							});
+				        };
+				        break;
+				    case "metaboliteId":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	objects.forEach(function(obj){
+								var map = new MappingData(obj[mapping.getTargetLabel()], mapping.getName(), conditions[i], obj[conditions[i]]);
+								mapping.addMap(map);
+								node = networkData.getNodeByDbIdentifier(obj[mapping.getTargetLabel()]);
+								if(node!=undefined){
+									var mapNode = new MappingData(node, mapping.getName(), conditions[i], obj[conditions[i]]);
+									node.addMappingData(mapNode);
+								}
+							});
+				        };
+				        break;
+				    case "metaboliteDBIdentifier":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	objects.forEach(function(obj){
+								var map = new MappingData(obj[mapping.getTargetLabel()], mapping.getName(), conditions[i], obj[conditions[i]]);
+								mapping.addMap(map);
+								node = networkData.getNodeByDbIdentifier(obj[mapping.getTargetLabel()]);
+								if(node!=undefined){
+									var mapNode = new MappingData(node, mapping.getName(), conditions[i], obj[conditions[i]]);
+									node.addMappingData(mapNode);
+								}
+							});
+				        };
+				        break;
+				    case "inchi":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	objects.forEach(function(obj){
+								var map = new MappingData(obj[mapping.getTargetLabel()], mapping.getName(), conditions[i], obj[conditions[i]]);
+								mapping.addMap(map);
+								node = networkData.getNodeByMappedInchi(obj[mapping.getTargetLabel()]);
+								if(node!=undefined){
+									node.forEach(function(n){
+										var mapNode = new MappingData(n, mapping.getName(), conditions[i], obj[conditions[i]]);
+										n.addMappingData(mapNode);
+									});
+								}
+							});
+				        };
+				        break;
+				    default:
+        				metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
+				}
+							
+				metExploreD3.hideMask(myMask);
+
+				var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+				if (anim=='true') {
+					var force = session.getForce();
+					
+					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+						force.resume();
+					}
+				}
+	   		}, 1);
+		}
+	},
+	/***********************************************
+	* Mapping to data
+	* This function will assignmapping value to each nodes in datas
+	*/
+	mapNodeData: function(mapping, lines) {
+		console.log(lines);
+		var session = _metExploreViz.getSessionById('viz');
+		var force = session.getForce();
+		force.stop(); 
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+	        setTimeout(
+			function() {
+				var networkData = session.getD3Data();
+				var conditions = mapping.getConditions();
+				var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+				var node = undefined;
+				switch (mapping.getTargetLabel()) {
+				    case "reactionDBIdentifier":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	lines.forEach(function(line){
+								var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i+1]);
+								mapping.addMap(map);
+								node = networkData.getNodeByDbIdentifier(line[0]);
+								if(node!=undefined){
+									var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i+1]);
+									node.addMappingData(mapNode);
+								}
+							});
+				        };
+				        break;
+				    case "reactionId":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	lines.forEach(function(line){
+								var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i+1]);
+								mapping.addMap(map);
+								node = networkData.getNodeById(line[0]);
+								if(node!=undefined){
+									var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i+1]);
+									node.addMappingData(mapNode);
+								}
+							});
+				        };
+				        break;
+				    case "metaboliteId":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	lines.forEach(function(line){
+								var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i+1]);
+								mapping.addMap(map);
+								node = networkData.getNodeById(line[0]);
+								if(node!=undefined){
+									var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i+1]);
+									node.addMappingData(mapNode);
+								}
+							});
+				        };
+				        break;
+				    case "metaboliteDBIdentifier":
+				        for (var i = conditions.length-1 ; i >= 0; i--) {
+				        	lines.forEach(function(line){
+								var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i+1]);
+								mapping.addMap(map);
+								node = networkData.getNodeByDbIdentifier(line[0]);
+								if(node!=undefined){
+									var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i+1]);
+									node.addMappingData(mapNode);
+								}
+							});
+				        };
+				        break;
+				    case "inchi":
+				        // Blah
+				        break;
+				    default:
+        				metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
+				}
+							
+				metExploreD3.hideMask(myMask);
+
+				var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+				if (anim=='true') {
+					var force = session.getForce();
+					
+					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+						force.resume();
+					}
+				}
+	   		}, 1);
+		}
+	},
+
+	/***********************************************
+	* Mapping to binary data 0 1
+	* This function will look at metabolites that have data
+	* maped and will color their stroke in red 
+	* !!!!! Have to be modified in order to do some batch
+	* rendering
+	*/
+	mapNodes : function(mappingName, func) {
+		
+		metExploreD3.onloadMapping(mappingName, function(){
+
+			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+				.filter(function(d){
+					if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
+					else return true;
+				})
+				.attr("mapped", "false")
+				.selectAll("rect.stroke")
+				.remove();		
+
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			var mapping = _metExploreViz.getMappingByName(mappingName);
+			if(myMask!= undefined){
+
+				metExploreD3.showMask(myMask);
+		        setTimeout(
+					function() {
+						
+						var session = _metExploreViz.getSessionById('viz');
+						var force = session.getForce();
+						force.stop(); 
+						var conditions = mapping.getConditions();
+						conditions.forEach(
+							function(condition)
+							{
+								d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+									.filter(function(d){
+										if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return true;
+										else return false;
+									})
+									.each(
+										function(d) {
+											
+											if(d.getBiologicalType() == 'reaction' )
+											{
+												if(d.getMappingDataByNameAndCond(mapping.getName(), condition) != null ){
+													var reactionStyle = metExploreD3.getReactionStyle();
+
+													_MyThisGraphNode.addText(d, 'viz',reactionStyle);
+
+													d3.select(this)
+														.attr("mapped","true")
+														.insert("rect", ":first-child")
+														.attr("class", "stroke")
+														.attr("width", parseInt(d3.select(this).select(".reaction").attr("width"))+10)
+														.attr("height", parseInt(d3.select(this).select(".reaction").attr("height"))+10)
+														.attr("rx", parseInt(d3.select(this).select(".reaction").attr("rx"))+5)
+														.attr("ry",parseInt(d3.select(this).select(".reaction").attr("ry"))+5)
+														.attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select(".reaction").attr("width"))+10) / 2 + ",-"
+																				+ parseInt(parseInt(d3.select(this).select(".reaction").attr("height"))+10) / 2
+																				+ ")")
+														.style("opacity", '0.5')
+														.style("fill", 'red');
+													session.addSelectedNode(d.getId());
+
+												}
+											}
+											else
+											{
+												if(d.getBiologicalType() == 'metabolite')
+												{
+													var id = d3.select(this).select(".metabolite").attr("identifier");
+													
+													if(d.getMappingDataByNameAndCond(mapping.getName(), condition) != null){
+														var metaboliteStyle = metExploreD3.getReactionStyle();
+														
+														_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
+
+														d3.select(this)
+															.attr("mapped","true")
+															.insert("rect", ":first-child")
+															.attr("class", "stroke")
+															.attr("width", parseInt(d3.select(this).select(".metabolite").attr("width"))+10)
+															.attr("height", parseInt(d3.select(this).select(".metabolite").attr("height"))+10)
+															.attr("rx", parseInt(d3.select(this).select(".metabolite").attr("rx"))+5)
+															.attr("ry",parseInt(d3.select(this).select(".metabolite").attr("ry"))+5)
+															.attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select(".metabolite").attr("width"))+10) / 2 + ",-"
+																					+ parseInt(parseInt(d3.select(this).select(".metabolite").attr("height"))+10) / 2
+																					+ ")")
+															.style("opacity", '0.5')
+															.style("fill", 'red');
+														session.addSelectedNode(d.getId());
+													}
+												}
+											}
+										}
+									)		
+
+								//d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+									.each(
+										function(d) {
+											if(d3.select(this).select(".stroke")[0][0]==null)
+											{
+												if(d.getBiologicalType() == 'reaction' )
+												{
+													if(d.getMappingDataByNameAndCond(mapping.getName(), condition) != null ){
+														var reactionStyle = metExploreD3.getReactionStyle();
+
+														_MyThisGraphNode.addText(d, 'viz',reactionStyle);
+
+														d3.select(this)
+															.insert("rect", ":first-child")
+															.attr("class", "stroke")
+															.attr("width", parseInt(d3.select(this).select(".reaction").attr("width"))+10)
+															.attr("height", parseInt(d3.select(this).select(".reaction").attr("height"))+10)
+															.attr("rx", parseInt(d3.select(this).select(".reaction").attr("rx"))+5)
+															.attr("ry",parseInt(d3.select(this).select(".reaction").attr("ry"))+5)
+															.attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select(".reaction").attr("width"))+10) / 2 + ",-"
+																					+ parseInt(parseInt(d3.select(this).select(".reaction").attr("height"))+10) / 2
+																					+ ")")
+															.style("opacity", '0.5')
+															.style("fill", 'red');
+														session.addSelectedNode(d.getId());
+
+														return true;
+													}
+													else
+													{
+														return false;
+													}
+												}
+												else
+												{
+													if(d.getBiologicalType() == 'metabolite')
+													{
+														var id = d3.select(this).select(".metabolite").attr("identifier");
+														
+														if(d.getMappingDataByNameAndCond(mapping.getName(), condition) != null){
+															var metaboliteStyle = metExploreD3.getReactionStyle();
+															
+															_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
+
+															d3.select(this)
+																.insert("rect", ":first-child")
+																.attr("class", "stroke")
+																.attr("width", parseInt(d3.select(this).select(".metabolite").attr("width"))+10)
+																.attr("height", parseInt(d3.select(this).select(".metabolite").attr("height"))+10)
+																.attr("rx", parseInt(d3.select(this).select(".metabolite").attr("rx"))+5)
+																.attr("ry",parseInt(d3.select(this).select(".metabolite").attr("ry"))+5)
+																.attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select(".metabolite").attr("width"))+10) / 2 + ",-"
+																						+ parseInt(parseInt(d3.select(this).select(".metabolite").attr("height"))+10) / 2
+																						+ ")")
+																.style("opacity", '0.5')
+																.style("fill", 'red');
+															session.addSelectedNode(d.getId());
+															return true;
+														}
+														else
+														{
+															return false;
+														}
+													}
+												}
+											}
+										}
+									)		
+							}
+						);
+
+						metExploreD3.hideMask(myMask);
+
+						if (func!=undefined) {func()};
+
+						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+						if (anim=='true') {	
+							var session = _metExploreViz.getSessionById('viz');
+							var force = session.getForce();
+							
+							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+									force.resume();
+							}
+						}	
+
+			   		}, 1
+			   	);
+			}
+
+		
+		}); 
+	},
+
+	/***********************************************
+	* Mapping flux data
+	* This function will look at link that have data
+	* maped and will color them in gradient of bleu to white
+	* @param {} mappingName : mappingName choosed by the user
+	* @param {} conditionName : Condition choosed by the user
+	* @param {} func : callback function
+	*/
+	mapFluxes : function(mappingName, conditionName, colorMax, colorMin, useOpacity, func) {
+		var mapping = _metExploreViz.getMappingByName(mappingName);
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		
+								
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+	        setTimeout(
+				function() {
+
+					var generalStyle = _metExploreViz.getGeneralStyle();
+				  	var vis = d3.select("#viz").select("#D3viz");
+				  	var session = _metExploreViz.getSessionById('viz');
+		          	var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes(); 
+		          	var conditions = metExploreD3.getConditionsMapped();
+					var maxValue = undefined;
+		          	var minValue = undefined;
+		          	var mappingName = mapping.getName();
+		          	var linkStyle = metExploreD3.getLinkStyle();  
+		          	var force = session.getForce();
+					
+					force.linkDistance(function(link){
+						if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+							return linkStyle.getSize();
+						else
+							return linkStyle.getSize()*2;
+					});
+
+					vis.selectAll("g.node")
+						.filter(function(d){
+							if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
+							else return true;
+						})
+						.selectAll("rect.stroke")
+						.remove();
+
+		          	conditions.forEach(
+						function(condition)
+						{
+							nodes.forEach(function(node){
+							 	var mapNode = node.getMappingDataByNameAndCond(mappingName, condition);
+				             	if(mapNode != null)
+					             	var mapVal = Math.abs(mapNode.getMapValue());
+					            else
+					             	var mapVal = 0;
+				             		
+									if(!isNaN(mapVal))
+					            	{
+					             	  	if(maxValue==undefined){
+					                    	minValue = parseFloat(mapVal);
+					                    	maxValue = parseFloat(mapVal);
+					                  	}
+					                  	else
+					                 	{
+					                    	if(minValue > parseFloat(mapVal))
+					                      		minValue = parseFloat(mapVal);
+
+					                   	 	if(maxValue < parseFloat(mapVal))
+					                     	 	maxValue = parseFloat(mapVal);
+					                  	}
+					                }
+				          	});	
+						}
+					);	
+
+	          		if(colorMin==undefined){
+	          			colorMin = metExploreD3.GraphUtils.colorNameToHex(generalStyle.getColorMinMappingContinuous());						
+	          			if(colorMin==false)
+		        			colorMin=generalStyle.getColorMinMappingContinuous();
+	          		}
+	          		else
+	          		{
+	          			generalStyle.setMinColorMappingContinuous(colorMin);
+	          		}
+
+		        	if(colorMax==undefined){
+		        		colorMax = metExploreD3.GraphUtils.colorNameToHex(generalStyle.getColorMaxMappingContinuous());
+	          			if(colorMax==false)
+		        			colorMax=generalStyle.getColorMaxMappingContinuous();
+		        	}
+	          		else
+	          		{
+	          			generalStyle.setMaxColorMappingContinuous(colorMax);
+	          		}
+		          	
+		          	var vis = d3.select("#viz").select("#D3viz");
+		          	          	
+					var colorStore = session.getColorMappingsSet();
+			  		session.resetColorMapping();
+			      				
+
+			    	var colorNode = colorMax;
+			    	if(conditions[1]==conditionName)
+			    		colorNode = colorMin;
+
+			    	if(useOpacity)
+			    	{
+			    		var quart = 0.5;
+			    		var midl = 0.2;
+			    	}
+			    	else
+			    	{
+			    		var quart = 1;
+			    		var midl = 1;
+			    	}
+
+			    	var opacity = d3.scale.linear()
+						.domain([-4, -1, 0, 1, 4])
+			    		.range([1, quart, midl, quart, 1]);
+
+			    	var scaleValue = d3.scale.linear()
+						.domain([-maxValue, 0, maxValue])
+						.range([-7, 0, 7]);
+
+			    	session.addColorMapping(maxValue, colorMax); 
+					session.addColorMapping(-maxValue, colorMin);
+					 
+			     	vis.selectAll("g.node")
+			        	.each(
+			          		function(d) {
+			          			if (d.getMappingDatasLength()!=0)
+								{
+									if(d.getBiologicalType() == 'reaction')
+			            			{
+										var map1 = d.getMappingDataByNameAndCond(mappingName, conditions[0]);
+										var map2 = d.getMappingDataByNameAndCond(mappingName, conditions[1]);
+										var map = map1;
+								    	if(conditions[1]==conditionName)
+								    		map = map2;
+
+										if(map==null)
+											var mapVal = 0;
+										else
+										{
+											if(isNaN(map.getMapValue()))
+												var mapVal = 0;
+			            					else
+												var mapVal = map.getMapValue();
+
+							            }
+				                      	var reactionStyle = metExploreD3.getReactionStyle();
+										_MyThisGraphNode.addText(d, 'viz', reactionStyle);
+										d3.select(this)
+											.transition().duration(2000)
+											.style("opacity", opacity(scaleValue(parseFloat(mapVal))));
+ 
+										session.addSelectedNode(d.getId());    	
+									}
+					            }
+					        }); 	
+
+		          	metExploreD3.hideMask(myMask);
+
+		          	d3.select("#viz").select("#D3viz").selectAll("path.link")
+						.style("fill", function(link){
+							var reaction, metabolite;
+							if(link.getSource().getBiologicalType()=='reaction'){
+								reaction = link.getSource();
+								metabolite = link.getTarget();
+							}
+							else
+							{
+								metabolite = link.getSource();
+								reaction = link.getTarget();
+							}
+
+							var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
+							var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
+							
+							vis.selectAll('g#node'+metabolite.getId()+'.node')
+								.each(function(node){
+									
+									var map = map1;
+							    	if(conditions[1]==conditionName)
+							    		map = map2;
+
+							    	if(map==null)
+											var mapVal = 0;
+									else
+									{
+										if(isNaN(map.getMapValue()))
+											var mapVal = 0;
+		            					else
+											var mapVal = map.getMapValue();
+		            						
+						            }
+
+							    	if(node.flux==undefined)
+							    		node.flux = scaleValue(mapVal);
+							    	else
+							    	{
+							    		if(Math.abs(node.flux)<Math.abs(scaleValue(mapVal)))
+							    			node.flux = scaleValue(mapVal);
+							    	}
+
+								});
+
+							vis.selectAll('g#node'+metabolite.getId()+'.node')
+								.style("opacity", function(node){
+									if(node.getIsSideCompound())
+										return 0.2;
+									return opacity(node.flux);
+								});	
+
+							if(this.id != "linkRev"){
+								
+								if(map1==null)
+										var mapVal = 0;
+								else
+								{
+									if(isNaN(map1.getMapValue()))
+										var mapVal = 0;
+	            					else
+										var mapVal = map1.getMapValue();
+	            						
+					            }
+
+		                    	if(scaleValue(mapVal) == 0)
+		                    	{
+		                    		var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
+
+									d3.select(this)
+										.style("opacity", 0.5)
+										.style("stroke", "black")
+										.style("stroke-width", 0.5)
+										.style("stroke-dasharray", "2,3")
+										.each(function(link){
+											var first = links[0][0];
+											this.parentNode.insertBefore(this, first);
+										});
+		                    	}
+								else
+								{
+									d3.select(this).style("opacity", opacity(scaleValue(parseFloat(mapVal))));
+								}
+								if(metabolite.getIsSideCompound())
+										d3.select(this).style("opacity", 0.1);
+
+								return colorMax;
+							}
+							else
+							{
+								if(map2==null)
+										var mapVal = 0;
+								else
+								{
+									if(isNaN(map2.getMapValue()))
+										var mapVal = 0;
+	            					else
+										var mapVal = map2.getMapValue();
+	            						
+					            }
+
+		                    	if(scaleValue(mapVal) == 0)
+		                    	{
+									var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
+
+									d3.select(this)
+										.style("opacity", 0.5)
+										.style("stroke", "black")
+										.style("stroke-width", 0.5)
+										.style("stroke-dasharray", "2,3") 
+										.each(function(link){
+											var first = links[0][0];
+											this.parentNode.insertBefore(this, first);
+										});
+								}
+								else
+								{
+									d3.select(this).style("opacity", opacity(scaleValue(parseFloat(mapVal))));
+								}
+								if(metabolite.getIsSideCompound())
+										d3.select(this) .style("opacity", 0.1);
+
+								return colorMin;
+							} 
+						});
+
+		          	if(minValue!=undefined)
+		          		metExploreD3.fireEventArg('selectConditionForm', 'afterContinuousMapping', 'flux');
+		          	else
+		          		metExploreD3.displayMessage("Warning", 'No mapped node on network.');
+
+		          	if (func!=undefined) {func()};
+		        
+					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+					if (anim=='true') {	
+						var session = _metExploreViz.getSessionById('viz');
+						
+						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								force.start();
+						}
+					}
+					metExploreD3.GraphNetwork.tick('viz');
+		   		}, 1
+		   	);
+		}
+	},
+
+
+	/***********************************************
+	* Mapping only one flux data
+	* This function will look at link that have data
+	* maped and will color them in gradient of bleu to white
+	* @param {} mappingName : mappingName choosed by the user
+	* @param {} conditionName : Condition choosed by the user
+	* @param {} func : callback function
+	*/
+	mapUniqueFlux : function(mappingName, conditionName, colorMax, useOpacity, func) {
+		var mapping = _metExploreViz.getMappingByName(mappingName);
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+	        setTimeout(
+				function() {
+
+					var generalStyle = _metExploreViz.getGeneralStyle();
+				  	var vis = d3.select("#viz").select("#D3viz");
+				  	var session = _metExploreViz.getSessionById('viz');
+		          	var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes(); 
+		          	var conditions = mapping.getConditions();	
+					var maxValue = undefined;
+		          	var minValue = undefined;
+		          	var mappingName = mapping.getName();
+		          	var linkStyle = metExploreD3.getLinkStyle();  
+		          	var force = session.getForce();
+					
+					force.linkDistance(function(link){
+						if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+							return linkStyle.getSize();
+						else
+							return linkStyle.getSize()*2;
+					});
+
+					vis.selectAll("g.node")
+						.filter(function(d){
+							if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
+							else return true;
+						})
+						.selectAll("rect.stroke")
+						.remove();
+
+		          	conditions.forEach(
+						function(condition)
+						{
+							nodes.forEach(function(node){
+							 	var mapNode = node.getMappingDataByNameAndCond(mappingName, condition);
+				             	if(mapNode != null){
+
+					             	var mapVal = mapNode.getMapValue();
+									if(!isNaN(mapVal))
+					            	{
+					             	  	if(maxValue==undefined){
+					                    	minValue = parseFloat(mapVal);
+					                    	maxValue = parseFloat(mapVal);
+					                  	}
+					                  	else
+					                 	{
+					                    	if(minValue > parseFloat(mapVal))
+					                      		minValue = parseFloat(mapVal);
+
+					                   	 	if(maxValue < parseFloat(mapVal))
+					                     	 	maxValue = parseFloat(mapVal);
+					                  	}
+					                }
+					            }
+				          	});	
+						}
+					);	
+		          	
+		          	if(colorMax==undefined)
+		        		colorMax=generalStyle.getColorMaxMappingContinuous();
+		        	else
+		          		generalStyle.setMaxColorMappingContinuous(colorMax);
+	          		
+		          	var vis = d3.select("#viz").select("#D3viz");
+		          	          	
+					var colorStore = session.getColorMappingsSet();
+			  		session.resetColorMapping();
+			      			    	
+			    	var colorNode = d3.scale.linear()
+						.domain([-4, -1, 1, 4])
+			    		.range([colorMax, colorMax, colorMax, colorMax]);
+
+
+			    	if(useOpacity)
+			    	{
+			    		var quart = 0.5;
+			    		var midl = 0.2;
+			    	}
+			    	else
+			    	{
+			    		var quart = 1;
+			    		var midl = 1;
+			    	}
+
+			    	var opacity = d3.scale.linear()
+						.domain([-4, -1, 0, 1, 4])
+			    		.range([1, quart, midl, quart, 1]);
+
+			    	var colorMin = d3.scale.linear()
+						.domain([-4, -1, 1, 4])
+			    		.range([colorMax, colorMax, colorMax, colorMax]);
+
+			    	var scaleValue = d3.scale.linear()
+						.domain([minValue, 0, maxValue])
+						.range([-7, 0, 7]);
+
+			    	session.addColorMapping(maxValue, colorNode(parseFloat(maxValue)));
+					 
+			    	vis.selectAll("g.node")
+			        	.each(
+			          		function(d) {
+			          			if (d.getMappingDatasLength()!=0)
+								{
+									if(d.getBiologicalType() == 'reaction')
+			            			{
+			            				var condition = metExploreD3.getConditionsMapped()[0];
+										var map = d.getMappingDataByNameAndCond(mappingName, condition);
+
+										if(map!=null){
+											if(!isNaN(map.getMapValue()))
+			            					{
+						                      	var reactionStyle = metExploreD3.getReactionStyle();
+												_MyThisGraphNode.addText(d, 'viz', reactionStyle);
+												d3.select(this)
+													.transition().duration(2000)
+													.style("opacity", opacity(scaleValue(parseFloat(map.getMapValue()))));
+
+												session.addSelectedNode(d.getId());    	
+							                }
+										}
+									}
+					            }
+					        }); 	
+
+		          	metExploreD3.hideMask(myMask);
+
+		          	d3.select("#viz").select("#D3viz").selectAll("path.link")
+						.style("fill", function(link){
+							var reaction, metabolite;
+							if(link.getSource().getBiologicalType()=='reaction'){
+								reaction = link.getSource();
+								metabolite = link.getTarget();
+							}
+							else
+							{
+								metabolite = link.getSource();
+								reaction = link.getTarget();
+							}
+
+			            	var condition = metExploreD3.getConditionsMapped()[0];
+							var map = reaction.getMappingDataByNameAndCond(mappingName, condition);
+
+							vis.selectAll('g#node'+metabolite.getId()+'.node')
+								.each(function(node){
+									
+							    	if(map==null)
+										var mapVal = 0;
+
+							    	if(node.flux==undefined)
+							    		node.flux = scaleValue(mapVal);
+							    	else
+							    	{
+							    		if(Math.abs(node.flux)<Math.abs(scaleValue(mapVal)))
+							    			node.flux = scaleValue(mapVal);
+							    	}
+
+								});
+
+							vis.selectAll('g#node'+metabolite.getId()+'.node')
+								.style("opacity", function(node){
+									if(node.getIsSideCompound())
+										return 0.2;
+									return opacity(node.flux);
+								});	
+
+							if(map==null)
+								var mapVal = 0;
+							else
+							{
+								if (isNaN(map.getMapValue()))
+									var mapVal = 0;
+								else
+									var mapVal = map.getMapValue();
+							}
+
+	                    	if(scaleValue(mapVal) == 0)
+	                    	{
+	                    		var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
+
+								d3.select(this)
+									.style("opacity", 0.5)
+									.style("stroke", "black")
+									.style("stroke-width", 0.5)
+									.style("stroke-dasharray", "2,3")
+									.each(function(link){
+										var first = links[0][0];
+										this.parentNode.insertBefore(this, first);
+									});
+	                    	}
+							else
+							{
+								d3.select(this).style("opacity", opacity(scaleValue(parseFloat(mapVal))));
+							}
+							if(metabolite.getIsSideCompound())
+								d3.select(this).style("opacity", 0.1);
+
+							return colorNode(scaleValue(mapVal));
+					
+						})
+						.filter(function(link){
+							return this.id == "linkRev";
+						})
+						.remove();
+
+
+		          	d3.select("#viz").select("#D3viz").selectAll(".linklabel")
+		          		.filter(function(link){
+							return this.id == "linkRev";
+						})
+						.remove();
+
+		          	if(minValue!=undefined)
+		          		metExploreD3.fireEventArg('selectConditionForm', 'afterContinuousMapping', 'flux');
+		          	else
+		          		metExploreD3.displayMessage("Warning", 'No mapped node on network.');
+
+		          	if (func!=undefined) {func()};
+		        
+					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+					if (anim=='true') {	
+						var session = _metExploreViz.getSessionById('viz');
+						
+						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								force.start();
+						}
+					}
+					metExploreD3.GraphNetwork.tick('viz');
+		   		}, 1
+		   	);
+		}
+	},
+
+
+	/***********************************************
+	* Parse flux values to discriminate max and min infinity values 
+	* @param {} conditionName : mappingName choosed by the user
+	*/
+	parseFluxValues : function(mappingName) {
+		var mapping = _metExploreViz.getMappingByName(mappingName);
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+	        setTimeout(
+				function() {
+
+				  	var session = _metExploreViz.getSessionById('viz');
+		          	var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes(); 
+		          	var conditions = mapping.getConditions();	
+					var maxValue = undefined;
+		          	var minValue = undefined;
+		          	var mappingName = mapping.getName();
+		          	var arrayInfinity = [];
+
+			      	conditions.forEach(
+						function(condition)
+						{
+							nodes.forEach(function(node){
+							 	var mapNode = node.getMappingDataByNameAndCond(mappingName, condition);
+				             	if(mapNode != null)
+				             		var mapVal = mapNode.getMapValue();
+								else
+									var mapVal = 0;
+									
+								if(!isNaN(mapVal))
+				            	{
+				            		if(parseFloat(mapVal)!=0 & (999999 - Math.abs(parseFloat(mapVal)))*100/999999<0.001){
+				            			arrayInfinity.push(node);
+				            		}
+				            		else
+				            		{	
+					             	  	if(maxValue==undefined){
+					                    	minValue = parseFloat(mapVal);
+					                    	maxValue = parseFloat(mapVal);
+					                  	}
+					                  	else
+					                 	{
+					                    	if(minValue > parseFloat(mapVal))
+					                      		minValue = parseFloat(mapVal);
+
+					                   	 	if(maxValue < parseFloat(mapVal))
+					                     	 	maxValue = parseFloat(mapVal);
+					                  	}
+				            		}
+				                }
+				            
+				          	});	
+						}
+					);
+
+					if(arrayInfinity.length>0){
+						maxValue = maxValue+maxValue/2;
+				        var colors = _metExploreViz.getSessionById('viz').getColorMappingsSet();
+						arrayInfinity.forEach(function(node){
+							conditions.forEach(
+								function(condition)
+								{
+				            		if((999999 - Math.abs(parseFloat(node.getMappingDataByNameAndCond(mappingName, condition).getMapValue())))*100/999999<0.001){
+										colors.forEach(function(color){
+											if(color.getName() == parseFloat(node.getMappingDataByNameAndCond(mappingName, condition).getMapValue())) color.setName(minValue);
+											if(color.getName() == parseFloat(node.getMappingDataByNameAndCond(mappingName, condition).getMapValue())) color.setName(maxValue);
+										});
+										node.setMappingDataByNameAndCond(mappingName, condition, maxValue);
+				            		}
+								}
+							);
+						});
+					}	
+					metExploreD3.hideMask(myMask);	
+		   		}, 1
+		   	);
+		}
+	},
+
+
+ 	graphMappingFlux : function(mappingName, conditionName, fluxType, colorMax, colorMin, isOpac, showValues){
+		metExploreD3.onloadMapping(mappingName, function(){
+			var session = _metExploreViz.getSessionById('viz');
+			metExploreD3.GraphMapping.parseFluxValues(mappingName);
+			metExploreD3.GraphLink.loadLinksForFlux("viz", session.getD3Data(), metExploreD3.getLinkStyle(), metExploreD3.getMetaboliteStyle(), showValues, conditionName);
+			
+			if(fluxType=='Compare')
+				metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac);
+			else
+				metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac);
+
+			
+		});
+ 	},
+
+	
+	/*****************************************************
+	* Reload Mapping
+	*/
+	reloadMapping : function(mapping) {
+		
+		var session = _metExploreViz.getSessionById('viz');
+		var force = session.getForce();
+		force.stop(); 
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+	        setTimeout(
+			function() {
+				var networkData = session.getD3Data();
+				var conditions = mapping.getConditions();
+				var node = undefined;
+				switch (mapping.getTargetLabel()) {
+				    case "reactionDBIdentifier":
+				        mapping.getData().forEach(function(map){
+				        	if(typeof map.getNode()=="object")
+								var node = networkData.getNodeByDbIdentifier(map.getNode().getDbIdentifier());
+							else
+								var node = networkData.getNodeByDbIdentifier(map.getNode());
+
+							console.log(node);
+							if(node!=undefined){
+								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
+								node.addMappingData(mapNode);
+							}
+						});
+				        break;
+
+					case "reactionId":
+				        mapping.getData().forEach(function(map){
+				        	if(typeof map.getNode()=="object")
+								var node = networkData.getNodeById(map.getNode().getId());
+							else
+								var node = networkData.getNodeById(map.getNode());
+
+							if(node!=undefined){
+								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
+								node.addMappingData(mapNode);
+							}
+						});
+				        break;
+
+					case "metaboliteId":
+				        mapping.getData().forEach(function(map){
+				        	if(typeof map.getNode()=="object")
+								var node = networkData.getNodeById(map.getNode().getId());
+							else
+								var node = networkData.getNodeById(map.getNode());
+
+							if(node!=undefined){
+								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
+								node.addMappingData(mapNode);
+							}
+						});
+				        break;
+
+				    case "metaboliteDBIdentifier":
+				       	mapping.getData().forEach(function(map){
+							if(typeof map.getNode()=="object")
+								var node = networkData.getNodeByDbIdentifier(map.getNode().getDbIdentifier());
+							else
+								var node = networkData.getNodeByDbIdentifier(map.getNode());
+							
+							if(node!=undefined){
+								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
+								node.addMappingData(mapNode);
+							}
+						});
+				        break;
+				    case "inchi":
+				        // Blah
+				        break;
+				    default:
+        				metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')	
+        		}
+				
+				metExploreD3.hideMask(myMask);
+
+				var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+				if (anim=='true') {
+					var force = session.getForce();
+					
+					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+						force.resume();
+					}
+				}
+			}, 1);
+		}
+	},
+	/***********************************************
+	* Mapping to discrete data
+	* This function will look at metabolites that have data
+	* maped and will color them in a calculated color
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	graphMappingDiscreteData : function(mappingName, conditionName, func) {
+		metExploreD3.onloadMapping(mappingName, function(){
+
+			var mapping = _metExploreViz.getMappingByName(mappingName);
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			if(myMask!= undefined){
+
+				metExploreD3.showMask(myMask);
+		        setTimeout(
+					function() {
+						
+						var session = _metExploreViz.getSessionById('viz');
+						var force = session.getForce();
+						force.stop(); 
+						var conditions = mapping.getConditions();	
+						var nodes = session.getD3Data().getNodes(); 
+					  	
+						var values = [];
+						
+						var vis = d3.select("#viz").select("#D3viz");
+						vis.selectAll("g.node")
+							.filter(function(d){
+								if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
+								else return true;
+							})
+							.selectAll("rect.stroke")
+							.remove();	
+
+						// var idMapping = metExploreD3.getMappingSelection();
+						// var mappingInfoStore = metExploreD3.getMappingInfosSet();
+
+						// var theMapping = metExploreD3.findMappingInfo(mappingInfoStore, 'id', idMapping);
+					
+						// var ids = theMapping.get('idMapped');
+						// var idsTab = ids.split(",");
+						// var i;
+
+						conditions.forEach(
+							function(condition)
+							{
+								nodes.forEach(function(node){
+									var mapNode = node.getMappingDataByNameAndCond(mapping.getName(), condition);
+									if(mapNode != null){
+										var exist = false;
+										var mapVal = mapNode.getMapValue().valueOf();
+										
+										values.forEach(function(val){
+											if(val.valueOf()==mapVal.valueOf())
+												exist = true;
+										})
+										if(!exist)
+											values.push(mapVal);
+									}
+
+								});
+								// 	var metabolite = metExploreD3.getMetaboliteById(metabolite_Store, idsTab[i]);
+								// 	if(metabolite!=undefined)
+								// 		if (metabolite.get('mapped') != undefined)
+								// 			if (metabolite.get('mapped') != 0)
+								// 				if(metabolite.get(condition.getCondInMetabolite())!=undefined){
+													
+								// 				}
+								// }		
+							}
+						);	
+
+						function compareInteger(a,b) {
+							if (parseFloat(a) < parseFloat(b))
+								return -1;
+							if (parseFloat(a) > parseFloat(b))
+								return 1;
+							return 0;
+						}
+
+						function compareString(a,b) {
+							if (a < b)
+								return -1;
+							if (a > b)
+								return 1;
+							return 0;
+						}
+
+						var floats = [];
+						var strings = [];
+						
+						values.forEach(function(value){
+							if(isNaN(value))
+								strings.push(value);
+							else
+								floats.push(value);
+						});
+
+						floats.sort(compareInteger);
+						strings.sort(compareString);
+
+						values = floats.concat(strings);
+				        
+				        if (values.length == undefined) values.length = 0;
+				        center = 128;
+				        width = 127;
+				        frequency = Math.PI*2*0.95/values.length;
+				        var position = top;
+						var colorStore = session.getColorMappingsSet();
+				        
+				        session.resetColorMapping();
+						for (var i = 0; i < values.length; i++)
+				        {
+				        	var red   = Math.sin(frequency*i+2+values.length) * width + center;
+							var green = Math.sin(frequency*i+0+values.length) * width + center;
+							var blue  = Math.sin(frequency*i+4+values.length) * width + center;
+
+							color = metExploreD3.GraphUtils.RGB2Color(red,green,blue);
+
+							session.addColorMapping(values[i], color);
+			        		metExploreD3.GraphMapping.fixMappingColorOnNodeData(color, values[i], conditionName, mapping.getName());
+						}
+
+						metExploreD3.hideMask(myMask);
+
+						if (func!=undefined) {func()};
+
+						if(values.length!=0)
+							metExploreD3.fireEventArg('selectConditionForm', 'afterDiscreteMapping', 'discrete');
+			          	else
+			          		metExploreD3.displayMessage("Warning", 'No mapped node on network.');
+
+						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+						if (anim=='true') {	
+							var session = _metExploreViz.getSessionById('viz');
+							var force = session.getForce();
+							
+							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+									force.resume();
+							}
+						}
+			   		}, 1
+			   	);
+			}
+		});
+	},
+
+	/***********************************************
+	* Fill node with corresponding color
+	* @param {} color : Color to fill the node
+	* @param {} value : Value corresponding to the color
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	fixMappingColorOnNodeData : function(color, value, conditionName, mappingName){
+		var vis = d3.select("#viz").select("#D3viz");
+		var session = _metExploreViz.getSessionById('viz');
+		var contextColor = color;
+		
+		vis.selectAll("g.node")
+			.filter(
+				function(d) {
+					if(d.getBiologicalType() == 'reaction')
+					{
+						if (d.getMappingDatasLength()==0)
+							return false;
+						else
+						{
+							var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+							if(map!=null){
+								
+								if(map.getMapValue()==value){
+									
+									var reactionStyle = metExploreD3.getReactionStyle();
+									_MyThisGraphNode.addText(d, 'viz', reactionStyle);
+									session.addSelectedNode(d.getId());
+									return true;
+								}
+								else
+								{
+									return false;
+								}
+							}
+							else
+							{
+								return false;
+							}
+						}	
+					}
+					else
+					{
+						if(d.getBiologicalType() == 'metabolite')
+						{
+							if (d.getMappingDatasLength()==0)
+								return false;
+							else
+							{
+								var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+								if(map!=null){
+									if(map.getMapValue()==value){
+									
+										var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+										_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
+										session.addSelectedNode(d.getId());
+										return true;
+									}
+									else
+									{
+										return false;
+									}
+								}
+								else
+								{
+									return false;
+								}
+								
+							}	
+						}
+					}
+
+				}
+			)
+			.transition().duration(3000)
+			.attr("mapped", color)
+			.style("fill", color)
+			.each(function(node){
+				if(node.getBiologicalType()=="reaction"){
+					var colorText = metExploreD3.GraphUtils.chooseTextColor(contextColor);
+					d3.select(this).select('text').style("fill", colorText);
+				}
+			});	
+	},
+
+	/***********************************************
+	* Mapping to continuous data
+	* This function will look at metabolites that have data
+	* maped and will color them in gradient of bleu to yellow
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	graphMappingContinuousData : function(mappingName, conditionName, colorMin, colorMax, func) {
+		metExploreD3.onloadMapping(mappingName, function(){
+			var mapping = _metExploreViz.getMappingByName(mappingName);
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			if(myMask!= undefined){
+
+				metExploreD3.showMask(myMask);
+		        setTimeout(
+					function() {
+
+						var generalStyle = _metExploreViz.getGeneralStyle();
+					  	var vis = d3.select("#viz").select("#D3viz");
+					  	var session = _metExploreViz.getSessionById('viz');
+			          	var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes(); 
+			          	var conditions = mapping.getConditions();	
+						var maxValue = undefined;
+			          	var minValue = undefined;
+			          	var mappingName = mapping.getName();
+			          	var stringJSON="{\"mapping\":[";	
+						var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+						var reactionStyle = metExploreD3.getReactionStyle();
+																				
+						vis.selectAll("g.node")
+							.filter(function(d){
+								if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
+								else return true;
+							})
+							.selectAll("rect.stroke")
+							.remove();
+
+			          	conditions.forEach(
+							function(condition)
+							{
+								stringJSON+="\n{\""+condition+"\":[";
+								nodes.forEach(function(node){
+								 	var mapNode = node.getMappingDataByNameAndCond(mappingName, condition);
+					             	if(mapNode != null){
+										stringJSON+="\n{";
+
+						             	var mapVal = mapNode.getMapValue();
+						             	stringJSON+="\"node\" : \"" +node.getName();
+						             	stringJSON+="\", \"value\" : \""+mapVal;
+										if(!isNaN(mapVal))
+						            	{
+						             	  	if(maxValue==undefined){
+						                    	minValue = parseFloat(mapVal);
+						                    	maxValue = parseFloat(mapVal);
+						                  	}
+						                  	else
+						                 	{
+						                    	if(minValue > parseFloat(mapVal))
+						                      		minValue = parseFloat(mapVal);
+
+						                   	 	if(maxValue < parseFloat(mapVal))
+						                     	 	maxValue = parseFloat(mapVal);
+						                  	}
+						                }
+						            	stringJSON+='\"},\n';  
+						            }
+					          	});	
+								stringJSON+=']}\n';	
+							}
+						);	
+						stringJSON+=']}\n';	
+			          		
+			        	if(colorMin==undefined)
+			        		colorMin=generalStyle.getColorMinMappingContinuous();
+			        	else
+		          			generalStyle.setMinColorMappingContinuous(colorMin);
+	          		
+			        	if(colorMax==undefined)
+			        		colorMax=generalStyle.getColorMaxMappingContinuous();
+		          		else
+		          			generalStyle.setMaxColorMappingContinuous(colorMax);
+	          		
+			          	var vis = d3.select("#viz").select("#D3viz");
+
+						var colorStore = session.getColorMappingsSet();
+				      	session.resetColorMapping();
+				      	
+				      	var colorScale = d3.scale.linear()
+						    .domain([parseFloat(minValue), parseFloat(maxValue)])
+						    .range([colorMin, colorMax]);
+
+				     	// var color = metExploreD3.GraphUtils.RGB2Color(0,0,255);
+				      
+				      	// session.addColorMapping("max", color); 
+
+				      	// color = metExploreD3.GraphUtils.RGB2Color(255,255,0);
+
+				      	// session.addColorMapping("min", color); 
+				    	
+				    	if(minValue==maxValue){
+				    		session.addColorMapping(maxValue, colorScale(parseFloat(maxValue))); 
+						}
+				    	else
+				    	{
+				    		session.addColorMapping(maxValue, colorScale(parseFloat(maxValue))); 
+							session.addColorMapping(minValue, colorScale(parseFloat(minValue))); 
+				    	}
+				    
+				     	vis.selectAll("g.node")
+				        	.each(
+				          		function(d) {
+				          			if (d.getMappingDatasLength()!=0)
+									{
+										if(d.getBiologicalType() == 'reaction')
+				            			{
+											var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+											if(map!=null){
+												if(!isNaN(map.getMapValue()))
+				            					{
+							                     	_MyThisGraphNode.addText(d, 'viz', reactionStyle);
+													
+													d3.select(this)
+														.transition().duration(2000)
+														.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
+														.style("fill", colorScale(parseFloat(map.getMapValue())));
+
+
+													// var colorNorm = (parseFloat(map.getMapValue()-minValue)*255.0)/(maxValue-minValue);
+
+							      //                   d3.select(this)
+							      //                     .transition().duration(2000)
+							      //                     .attr("mapped", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")")
+							      //                     .style("fill", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")");
+
+							                        var color = metExploreD3.GraphUtils.chooseTextColor(colorScale(parseFloat(map.getMapValue())));
+													d3.select(this).select('text').style("fill", color);  
+													session.addSelectedNode(d.getId());    	
+								                }
+											}
+										}
+						                else
+						                {
+						                  var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+											if(map!=null){
+												if(!isNaN(map.getMapValue()))
+				            					{
+								                      	var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+														_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
+
+														d3.select(this)
+															.transition().duration(2000)
+															.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
+															.style("fill", colorScale(parseFloat(map.getMapValue())));
+														session.addSelectedNode(d.getId());
+								        //                 var colorNorm = (parseFloat(map.getMapValue()-minValue)*255.0)/(maxValue-minValue);
+
+								        //                 d3.select(this)
+								        //                   .transition().duration(2000)
+														  // .attr("mapped","rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")")
+								        //                   .style("fill", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")");
+								                    
+								                }
+											}
+						                }
+						            }
+						        }); 	
+
+			          	metExploreD3.hideMask(myMask);
+
+
+			          	if(minValue!=undefined)
+			          		metExploreD3.fireEventArg('selectConditionForm', 'afterContinuousMapping', 'continuous');
+			          	else
+			          		metExploreD3.displayMessage("Warning", 'No mapped node on network.');
+
+			          	if (func!=undefined) {func()};
+			        
+						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+						if (anim=='true') {	
+							var session = _metExploreViz.getSessionById('viz');
+							var force = session.getForce();
+							
+							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+									force.resume();
+							}
+						}
+
+
+
+						
+
+
+				        // donnees.forEach(function(aData){
+				        //     aData.color=scale(aData.z);
+				        // });
+
+// 				        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+// 							.each(function(node){
+// 								if (node.getMappingDatasLength()!=0)
+// 								{
+// 									var maps = node.getMappingDatas();
+// 									var dataCond1 = -Math.abs(parseInt(maps[0].getMapValue()));
+// 									var dataCond2 = Math.abs(parseInt(maps[1].getMapValue()));
+
+// 							        var conditions2=
+// 							        [
+// 							            {
+// 							                name: maps[0].getConditionName(),
+// 							                data: 500
+// 							            }, {
+// 							                name: maps[1].getConditionName(),
+// 							                data: 500
+// 							            }
+// 							        ];
+// var categories2 = [
+//             'Alanine and aspartate metabolism',
+//             'Alkaloid synthesis'
+// ];
+//         var conditions2=
+//         [
+//             {
+//                 name: '3j',
+//                 data: [-5, -54]
+//             }, {
+//                 name: '30j',
+//                 data: [75, 20]
+//             }
+//         ];
+//         var dataChart2 = {categories:categories2, conditions:conditions2};
+//          // var element3 = new MetXCompareBar(dataChart2, 1300, 1000, "xaxis", "yaxis", "title");
+// 					        		var minDim=1000;
+// 	        						// var dataChart2 = {categories:[node.getName()], conditions:conditions2};
+// 	        						var chartSvg = d3.select(this).append("svg")
+// 										.attr("viewBox",function(d) {return "0 0 "+minDim+" "+minDim;})
+// 										.attr("width", minDim *8/10 + "px")
+// 										.attr("height", minDim *8/10+ "px")
+// 										// .attr("x", (-minDim/2)+(minDim*1/10))
+// 										// .attr("y", (-minDim/2)+(minDim*1/10))
+// 					        		var compareChart = new MetXCompareBar(dataChart2, 1000, 200, "xaxis", "yaxis", maps[0].getMappingName() +" analysis");
+					        		
+// 										chartSvg.html(d3.select(compareChart).select('svg').node().outerHTML)
+										
+// 										// .attr("width", "100%").attr("height", "100%");
+// 								}
+// 							});
+						// var array = [];
+						// d3.select(compareChart).select('svg').selectAll('.highcharts-series').selectAll('rect').each(function(){array.push(this.height.animVal.value)});
+						
+						// console.log(array);
+						// var scale = d3.scale.linear()
+				  //           .domain([Math.min.apply(null, array),Math.max.apply(null, array)])
+				  //           .range([sessions["viz"].getColorMappingsSet()[1].getValue(),sessions["viz"].getColorMappingsSet()[0].getValue()]);
+						
+						// d3.select(compareChart).selectAll('svg').selectAll('.highcharts-series').selectAll('rect').attr('fill', function(){return scale(this.height.animVal.value)})
+						
+
+			   		}, 1
+			   	);
+			}
+
+		});
+	},
+
+
+
+	/*******************************************************************************************************
+	*
+	* Mapping for MetExplore
+	*
+	*/
+	
+	/***********************************************
+	* Mapping to binary data 0 1
+	* This function will look at metabolites that have data
+	* maped and will color them in blue
+	* !!!!! Have to be modified in order to do some batch
+	* rendering
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	graphMappingBinary : function(conditionName) {
+		var networkVizSessionStore = metExploreD3.getSessionsSet();
+		var session = metExploreD3.getSessionById(networkVizSessionStore, 'viz');
+		var force = session.getForce();
+		force.stop(); 
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+        setTimeout(
+				function() {
+					metExploreD3.GraphMapping.fixMappingColorOnNode("#056da1", 1, conditionName);
+					
+					metExploreD3.hideMask(myMask);
+					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+					if (anim=='true') {
+						var networkVizSessionStore = metExploreD3.getSessionsSet();	
+						var session = metExploreD3.getSessionById(networkVizSessionStore, 'viz');
+						var force = session.getForce();
+						
+						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								force.resume();
+						}
+					}
+		   		}, 1
+	   		);
+		}		
+	},
+
+	/***********************************************
+	* Fill node with corresponding color
+	* @param {} color : Color to fill the node
+	* @param {} value : Value corresponding to the color
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	fixMappingColorOnNode : function(color, value, conditionName){
+		var vis = d3.select("#viz").select("#D3viz");
+		var metabolite_Store = metExploreD3.getMetabolitesSet();
+		var reaction_Store = metExploreD3.getReactionsSet();
+
+		vis.selectAll("g.node")
+			.filter(
+				function(d) {
+					if(d.getBiologicalType() == 'reaction')
+					{
+						if (metExploreD3.getReactionById(reaction_Store, d.getId()).get(
+								'mapped') == undefined)
+							return false;
+						else
+						{
+							if((metExploreD3.getReactionById(reaction_Store, d.getId()).get('mapped') != 0)
+									&& metExploreD3.getReactionById(reaction_Store, d.getId()).get(conditionName)==value){
+								var sessionsStore = metExploreD3.getSessionsSet();
+								var reactionStyle = metExploreD3.getReactionStyle();
+								_MyThisGraphNode.addText(d, 'viz', reactionStyle, sessionsStore);
+								return true;
+							}
+							else
+							{
+								return false;
+							}
+						}	
+					}
+					else
+					{
+						if(d.getBiologicalType() == 'metabolite'&& !d.isSideCompound())
+					{
+						if(metExploreD3.getMetaboliteById(metabolite_Store, d.getId())==null)
+							return false;
+						if (metExploreD3.getMetaboliteById(metabolite_Store, d.getId()).get(
+								'mapped') == undefined)
+							return false;
+						else
+						{
+							if((metExploreD3.getMetaboliteById(metabolite_Store, d.getId()).get('mapped') != 0)
+									&& metExploreD3.getMetaboliteById(metabolite_Store, d.getId()).get(conditionName)==value){
+
+								var sessionsStore = metExploreD3.getSessionsSet();
+								var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+								_MyThisGraphNode.addText(d, 'viz', metaboliteStyle, sessionsStore);
+								return true;
+							}
+							else
+							{
+								return false;
+							}
+						}	
+					}
+					}
+
+				}
+			)
+			.transition().duration(4000)
+			.attr("mapped",color)
+			.style("fill", color)	
+	},
+
+	/***********************************************
+	* Change color for a value
+	* @param {} color : New color
+	* @param {} value : Value corresponding to the color
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	setDiscreteMappingColor : function(color, value, conditionName, selectedMapping){
+		
+		var session = _metExploreViz.getSessionById('viz');
+		var force = session.getForce();
+		force.stop(); 
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+	        setTimeout(
+				function() {
+					
+					var vis = d3.select("#viz").select("#D3viz");
+					
+					var colorStore = session.getColorMappingsSet();
+					
+					var theColor = session.getColorMappingById(value);	
+					theColor.setValue(color);
+					
+					metExploreD3.GraphMapping.fixMappingColorOnNodeData(color, value, conditionName, selectedMapping);
+				
+					metExploreD3.hideMask(myMask);
+					
+		   		}, 1
+		   	);
+		}
+	},
+
+	/***********************************************
+	* Change color for a value
+	* @param {} color : New color
+	* @param {} value : Value corresponding to the color
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	setContinuousMappingColor : function(color, value, conditionName, selectedMapping){
+		
+		var session = _metExploreViz.getSessionById('viz');
+		var force = session.getForce();
+		force.stop(); 
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+					
+			var vis = d3.select("#viz").select("#D3viz");
+			
+			var colorStore = session.getColorMappingsSet();
+			
+			var theColor = session.getColorMappingById(value);	
+			theColor.setValue(color);
+			
+			metExploreD3.hideMask(myMask);
+		}
+	},
+
+	/***********************************************
+	* Remove the mapping graphically
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	removeGraphMapping : function(conditionName) {
+		var session = _metExploreViz.getSessionById('viz');
+		var vis = d3.select("#viz").select("#D3viz");
+		var metabolite_Store = metExploreD3.getMetabolitesSet();
+		var reaction_Store = metExploreD3.getReactionsSet();
+
+		vis.selectAll("g.node")
+			.filter(
+				function(d) {
+					if(d.getBiologicalType() == 'reaction'){
+						if (metExploreD3.getReactionById(reaction_Store, d.getId()).get(
+								'mapped') == undefined)
+							return false;
+						else
+							return metExploreD3.getReactionById(reaction_Store, d.getId()).get('mapped') != 0
+					}
+					else
+					{
+						if(d.getBiologicalType() == 'metabolite'){
+							if (metExploreD3.getMetaboliteById(metabolite_Store, d.getId()).get(
+									'mapped') == undefined)
+								return false;
+							else
+								return metExploreD3.getMetaboliteById(metabolite_Store, d.getId()).get('mapped') != 0
+						}
+					}
+				}
+			)
+			.transition().duration(1000)
+			.attr("transform", function(d){
+				return "translate("+d.x+", "+d.y+") scale(1)";
+			})
+			.style("fill", "white");
+		
+		vis.selectAll("g.node")
+			.filter(function(d){
+				if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
+				else return true;
+			})
+			.attr("mapped", "false")
+			.selectAll("rect.stroke")
+			.remove();					
+	},
+	
+
+	/***********************************************
+	* Remove the mapping graphically
+	* @param {} conditionName : Condition choosed by the user
+	*/
+	removeGraphMappingData : function(conditionName) {
+		var session = _metExploreViz.getSessionById('viz');
+		var vis = d3.select("#viz").select("#D3viz");
+
+		vis.selectAll("g.node")
+			.transition().duration(1000)
+			.attr("transform", function(d){
+				return "translate("+d.x+", "+d.y+") scale(1)";
+			})
+			.style("fill", "white")
+			.style("opacity",1)
+			.each(function(node){
+				if(node.getBiologicalType()=="reaction"){
+					if(node.isSelected())
+						d3.select(this).select('text').transition().duration(4000).style("fill", "white");
+					else
+						d3.select(this).select('text').transition().duration(4000).style("fill", "black");
+				}
+			});	
+
+		vis.selectAll("g.node")
+			.filter(function(d){
+				if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
+				else return true;
+			})
+			.attr("mapped", "false")
+			.selectAll("rect.stroke")
+			.remove();
+
+		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+		var linkStyle = metExploreD3.getLinkStyle();
+		metExploreD3.GraphLink.refreshLink('viz', session, linkStyle, metaboliteStyle);					
+	},
+
+	launchAfterMappingFunction:function(mappingTitle, func) {
+        var mapping = _metExploreViz.getMappingByName(mappingTitle); 
+        if (mapping !== null) {
+           // the variable is defined
+           func(mapping);
+           return;
+        }
+        var that = this;
+        setTimeout(function(){that.launchAfterMappingFunction(mappingTitle, func);}, 100);    
+    },
+
+    onloadMapping : function(mapping, func){
+        this.launchAfterMappingFunction(mapping, func);
+    },
+    /***********************************************
+    * Remove the mapping in MetExploreViz
+    * @param {} conditionName : Condition choosed by the user
+    */
+    removeMappingData : function(mappingObj) {
+        this.onloadMapping(mappingObj.get('title'), function(mapping){
+	        metExploreD3.fireEventArg('selectConditionForm', "removeMapping", mapping);
+	        	// metExploreD3.fireEventArg('selectConditionForm', "closeMapping", null);
+	        	
+
+	        
+    	});
+     /*   var array = [];
+        _metExploreViz.getMappingsSet().forEach(function(map){
+            if (map.getName().search(mapping.get('title'))!=-1) {
+               array.push(); 
+            };
+        });*/
+
+    },
+
+	loadDataFromJSON : function(json) {
+		var mappingJSON = metExploreD3.GraphUtils.decodeJSON(json);
+		if(mappingJSON){
+			var session = _metExploreViz.getSessionById('viz');
+			var force = session.getForce();
+			force.stop(); 
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			if(myMask!= undefined){
+
+				metExploreD3.showMask(myMask);
+		        setTimeout(
+				function() {	
+					var conds =[];
+					mappingJSON.mappings.forEach(function(condition){
+			        	conds.push(condition.name);
+			        });
+		   			
+		   			var mapping = new Mapping(mappingJSON.name, conds, mappingJSON.targetLabel);
+					
+					_metExploreViz.addMapping(mapping);
+
+	        		metExploreD3.GraphMapping.generateMapping(mapping, mappingJSON.mappings);
+					
+					metExploreD3.hideMask(myMask);
+
+
+			        metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+					if (anim=='true') {
+						var force = session.getForce();
+						
+						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+							force.resume();
+						}
+					}
+				}, 1);
+			}
+		}
+	},
+
+	/*****************************************************
+    * Update the network to fit the cart content
+    */
+    loadDataTSV : function(url, func) {
+    	var session = _metExploreViz.getSessionById('viz');
+		var force = session.getForce();
+		force.stop(); 
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+	        d3.tsv(url, function(data) {
+	            
+	            var urlSplit = url.split('/');
+	            var title = url.split('/')[urlSplit.length-1];
+
+	            var targetName = Object.keys(data[0])[0];
+
+	            var indexOfTarget = Object.keys(data[0]).indexOf(targetName);
+	            var arrayAttr = Object.keys(data[0]);
+	            if (indexOfTarget > -1) {
+	                arrayAttr.splice(indexOfTarget, 1);
+	            }
+
+	            var array = [];
+	            var mapping = new Mapping(title, arrayAttr, targetName, array);
+	            _metExploreViz.addMapping(mapping);  
+	            
+	            metExploreD3.GraphMapping.mapNodeDataFile(mapping, data);
+
+	            metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+	            metExploreD3.hideMask(myMask);
+	            if (func!=undefined) {func()};
+	            var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+				if (anim=='true') {
+					var force = session.getForce();
+					
+					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+						force.resume();
+					}
+				}   
+	        });
+		}
+    },
+    
+	generateMapping: function(mapping, nodeMappingByCondition){
+		var session = _metExploreViz.getSessionById('viz');
+		var networkData = session.getD3Data();
+		switch (mapping.getTargetLabel()) {
+            case "reactionDBIdentifier":
+            	if(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"))
+                {
+                	nodeMappingByCondition.forEach(function(condition){
+    					condition.data.forEach(function(map){
+							var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+							mapping.addMap(mapData);
+    						var node = networkData.getNodeByDbIdentifier(map.node);
+    						if(node!=undefined){
+    							var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+    							node.addMappingData(mapNode);
+    						}
+    	        		});	
+                 	 });
+                }
+                else
+                {
+                	nodeMappingByCondition[0].data.forEach(function(map){
+						var mapData = new MappingData(map.node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
+						mapping.addMap(mapData);
+						var node = networkData.getNodeByDbIdentifier(map.node);
+						if(node!=undefined){
+							var mapNode = new MappingData(node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
+							node.addMappingData(mapNode);
+						}
+	        		});	
+                }
+                break;
+            case "metaboliteDBIdentifier":
+                nodeMappingByCondition.forEach(function(condition){
+					condition.data.forEach(function(map){   
+						var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+						mapping.addMap(mapData); 
+						var node = networkData.getNodeByDbIdentifier(map.node);
+						if(node!=undefined){
+							var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+							node.addMappingData(mapNode);
+						}
+	        		});	
+             	 });
+                break;
+            case "reactionId":
+            	if(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"))
+                {
+                	nodeMappingByCondition.forEach(function(condition){
+    					condition.data.forEach(function(map){
+							var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+							mapping.addMap(mapData);
+    						var node = networkData.getNodeById(map.node);
+    						if(node!=undefined){
+    							var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+    							node.addMappingData(mapNode);
+    						}
+    	        		});	
+                 	 });
+                }
+                else
+                {
+                	nodeMappingByCondition[0].data.forEach(function(map){
+						var mapData = new MappingData(map.node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
+						mapping.addMap(mapData);
+						var node = networkData.getNodeById(map.node);
+						if(node!=undefined){
+							var mapNode = new MappingData(node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
+							node.addMappingData(mapNode);
+						}
+	        		});	
+                }
+                break;
+            case "metaboliteId":
+                nodeMappingByCondition.forEach(function(condition){
+					condition.data.forEach(function(map){ 
+						var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+						mapping.addMap(mapData); 
+						var node = networkData.getNodeById(map.node);
+						if(node!=undefined){
+							var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+							if(map.inchi!= undefined)
+								node.mappedInchi = map.inchi;
+
+							node.addMappingData(mapNode);
+						}
+	        		});	
+             	});
+                break;
+            case "inchi":
+                // Blah
+                break;
+            default:
+                metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
+        }
+	}
+}
