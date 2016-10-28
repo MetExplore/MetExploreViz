@@ -9,7 +9,7 @@ metExploreD3.Features = {
 			"highlightSubnetwork":
 			{
 				description: "highlightSubnetwork",
-				enabledTo: ["all"]
+				enabledTo: ["lcottret", "npoupin"]
 			},
 			"drawHierarchicalLayout":
 			{
@@ -19,7 +19,7 @@ metExploreD3.Features = {
 	},
 
     isEnabled : function(feature, currentUser) {
-        return this.isEnabledForUser(feature, currentUser) || this.isEnabledForAll(feature) ;
+    	 return this.isEnabledForUser(feature, currentUser) || this.isEnabledForAll(feature) ;
     }, 
    
     isEnabledForUser : function(feature, currentUser) {

@@ -33,6 +33,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 		});
 		
 		if(metExploreD3.Features.isEnabled('drawHierarchicalLayout')){
+			view.lookupReference('drawHierarchicalLayout').setHidden(false);
 			view.lookupReference('drawHierarchicalLayout').on({
 				click : me.drawHierarchicalLayout,
 				scope : me

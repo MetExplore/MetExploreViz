@@ -18,6 +18,7 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenuController', {
      	});
      	
 	    if(metExploreD3.Features.isEnabled('highlightSubnetwork', "max")){
+			view.lookupReference('highlightSubnetwork').setHidden(false);
 			view.lookupReference('highlightSubnetwork').on({
 				click : me.highlightSubnetwork,
 				scope : me
