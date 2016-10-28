@@ -2118,10 +2118,10 @@ metExploreD3.GraphLink = {
 			funcPath = metExploreD3.GraphLink.funcPath3;
 
 		  // If you want to use selection on compartments path
-		d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path")
-			.filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="backgroundlocker" && $(this).attr('class')!="link";})
+		d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
 		    .attr("d", metExploreD3.GraphNode.groupPath)
 		    .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform")); 
+
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("path.link")
 			.attr("d", function(link){  return funcPath(link, panel, this.id);})
@@ -2133,8 +2133,7 @@ metExploreD3.GraphLink = {
 			
 		var generalStyle = _metExploreViz.getGeneralStyle();
 
-		var convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path")
-		  .filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="link";});
+		var convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull");
 
 
 		var isDisplay = generalStyle.isDisplayedConvexhulls();
@@ -2147,10 +2146,6 @@ metExploreD3.GraphLink = {
 		{
 			if(convexHullPath[0].length==0)
 				metExploreD3.GraphNode.loadPath(panel, isDisplay);  
-
-	  		convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path")
-				.filter(function(d){return $(this).attr('class')!="linkCaptionRev" && $(this).attr('class')!="link";});
-
 
 			convexHullPath
 			  .attr("d", metExploreD3.GraphNode.groupPath)

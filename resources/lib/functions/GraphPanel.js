@@ -1,4 +1,3 @@
-
 /**
  * @author MC
  * @description : To manage the panel where is the graph
