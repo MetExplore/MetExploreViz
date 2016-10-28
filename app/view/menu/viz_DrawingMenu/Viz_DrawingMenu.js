@@ -28,7 +28,8 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  text: 'Draw hierarchical layout',
                  reference:'drawHierarchicalLayout',
                  tooltip:'Draw the network with a hierarchical layout',
-                 iconCls:'drawhierarchicallayout'
+                 iconCls:'drawhierarchicallayout',
+                 hidden:true
              },
              {
                  text: 'Duplicate side compounds',

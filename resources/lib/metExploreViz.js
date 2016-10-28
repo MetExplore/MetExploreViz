@@ -10,6 +10,7 @@ var metExploreD3 = {
     GraphPanel:"",
     GraphPath:"",
     GraphNode:"",
+    Features:"",
 
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
        
