@@ -162,7 +162,8 @@
           <div data-role = "controlgroup" data-type = "vertical" >
             <a data-role = "button" class = "show-page-loading-msg" data-icon ="star" data-mini = "true" data-textonly="false" data-textvisible="true" data-msgtext="Applying 'Fast Overlap Removal' algorithm" onclick ="computeFastOverlapRemoval()" > Fast Overlap Removal </a>
             <a data-role = "button" class = "show-page-loading-msg" data-icon ="star" data-mini = "true" data-textonly="false" data-textvisible="true" data-msgtext="Applying 'Auto-Sizing' algorithm" onclick ="computeAutoSizing()" > Auto-Sizing </a>
-            <a data-role = "button" class = "show-page-loading-msg" data-icon ="star" data-mini = "true" data-textonly="false" data-textvisible="true" data-msgtext="Applying 'Edge bundling' algorithm" onclick ="computeEdgeBundling()" > Edge bundling </a>
+            <a data-role = "button" class = "show-page-loading-msg" data-icon ="star" data-mini = "true" data-textonly="false" data-textvisible="true" data-msgtext="Applying 'Curve edges' algorithm" onclick ="computeCurveEdges()" > Curve edges </a>
+            <a data-role = "button" class = "show-page-loading-msg" data-icon ="star" data-mini = "true" data-textonly="false" data-textvisible="true" data-msgtext="Applying 'Edge bundling' algorithm" onclick ="computeEdgeBundling()" > Edge bundling </a>         
             <a data-role = "button" class = "show-page-loading-msg" data-icon ="star" data-mini = "true" data-textonly="false" data-textvisible="true" data-msgtext="" onclick ="applyGraphScript()" > Magic script </a>
             <a data-role = "button" class = "show-page-loading-msg" data-icon ="star" data-mini = "true" data-textonly="false" data-textvisible="true" data-msgtext="" onclick ="computeLouvainClustering()" > Louvain clustering </a>
             <a data-role = "button" class = "show-page-loading-msg" data-icon ="star" data-mini = "true" data-textonly="false" data-textvisible="true" data-msgtext="" onclick ="computeMCLClustering()" > MCL clustering </a>
@@ -223,8 +224,8 @@
    return function() {
      $('.interactor-button').removeClass('ui-btn-active');
      $(this).addClass('ui-btn-active');
-     // tulipView.activateInteractor(interactorName);
-     // tulipView.draw();
+     tulipView.activateInteractor(interactorName);
+     tulipView.draw();
    }
   }
 
@@ -269,7 +270,7 @@
     renderingParameters.setElementsOrdered(false);
     renderingParameters.setElementsOrderingProperty(null);
     renderingParameters.setMaxSizeOfLabels(parseInt($('#labels-max-size').prop('value')));
-    // tulipView.setGraphsHullsVisible($('#display-hulls').prop('checked'), true);
+    tulipView.setGraphsHullsVisible($('#display-hulls').prop('checked'), true);
     var viewGlow = graph.getBooleanProperty('viewGlow');
     viewGlow.setAllNodeValue($('#glow-nodes').prop('checked'));
     tulip.unholdObservers();
@@ -308,18 +309,13 @@
   }
 
   function initGraphData(g) {
-
     var end = new Date().getTime();
     var time = (end - start) / 1000;
     console.log('Time for loading graph: ' + time + 's');
-    g.applyLayoutAlgorithm('FM^3 (OGDF)', g.getLocalLayoutProperty('viewLayout'));
-    g.getNodes().forEach(function(node) {
-       //viewLayout.setNodeValue(node, randomCoord());
-       console.log(viewColor.getNodeValue(node));
-    });
+
     setGlobalVars(g);
 
-    // applyRenderingParameters();
+    applyRenderingParameters();
 
     var tree = $('#jstree_div').jstree(true);
 
@@ -345,14 +341,14 @@
       if (data.action = "select_node") {
         var sgId = parseInt(data.node.id);
         if (isNaN(sgId)) {
-          // tulipView.setGraph(graph.getRoot());
+          tulipView.setGraph(graph.getRoot());
           setGlobalVars(graph.getRoot());
         } else {
           var sg = graph.getRoot().getDescendantGraph(sgId);
-          // tulipView.setGraph(sg);
+          tulipView.setGraph(sg);
           setGlobalVars(sg);
         }
-        // tulipView.setGraphsHullsVisible(graph.numberOfSubGraphs() > 0);
+        tulipView.setGraphsHullsVisible(graph.numberOfSubGraphs() > 0);
       }
     });
   }
@@ -367,13 +363,18 @@
 
   function algoFinishedCallback(graph, succeed) {
     initGraphData(graph);
-    // tulipView.setGraph(graph);
+    tulipView.setGraph(graph);
   }
 
   function computeEdgeBundling() {
     start = new Date().getTime();
     graphProperties.viewShape.setAllEdgeValue(tulip.EdgeShape.BezierCurve);
     graph.applyAlgorithmInWorker('Edge bundling', {}, algoFinishedCallback);
+  }
+
+  function computeCurveEdges() {
+    graphProperties.viewShape.setAllEdgeValue(tulip.EdgeShape.BezierCurve);
+    graph.applyAlgorithm('Curve edges');
   }
 
   function computeLayout(layoutAlgoName) {
@@ -396,7 +397,6 @@
     var viewSize = graph.getSizeProperty('viewSize');
     var viewShape = graph.getIntegerProperty('viewShape');
     viewShape.setAllEdgeValue(tulip.EdgeShape.BezierCurve);
-    console.log('on y passe');
     graph.applyLayoutAlgorithm('FM^3 (OGDF)', viewLayout);
     graph.applySizeAlgorithm('Auto Sizing', viewSize);
     graph.applyLayoutAlgorithm('Fast Overlap Removal', viewLayout);
@@ -538,7 +538,7 @@
         return function(e) {
           $('#navigation-button').trigger('click');
           start = new Date().getTime();
-          // tulipView.loadGraphFromData(theFile.name, e.target.result, $('#load-in-worker').prop('checked'), initGraphData);
+          tulipView.loadGraphFromData(theFile.name, e.target.result, $('#load-in-worker').prop('checked'), initGraphData);
         };
       })(files[0]);
       reader.readAsArrayBuffer(files[0]);
@@ -551,69 +551,17 @@
     return function(graph) {
       var sg = graph.getDescendantGraph(sgName);
       initGraphData(sg);
-      // tulipView.setGraph(sg);
+      tulipView.setGraph(sg);
     }
   }
 
   function loadGraphFromDataFolder(tlpFilename, graphLoadedCallback) {
     $('#navigation-button').trigger('click');
     start = new Date().getTime();
-
-    console.log('on y passe');
-
-    var graph = new tulip.Graph();
-    graph.setEventsActivated(true);
-    
- var EventReceiver = function() {
-
-   this.treatEvent = function(event) {
-     if (event instanceof tulip.GraphEvent) {
-       // console.log("Received graph event : ", event);
-     } else if (event instanceof tulip.PropertyEvent) {
-       // console.log("Received property event : ", event);
-     } else {
-       // console.log("Received event : ", event);
-     }
-   };
-
-   this.treatEvents = function(events) {
-     // console.log("Received events : ", events);
-   };
-
- };
-    var er = new EventReceiver();
-
-
-    tulip.addListener(graph, er);
-    tulip.addObserver(graph, er);
-
-    tulip.holdObservers();
-    graph.setName("Test Javascript Graph");
-    var n1 = graph.addNode();
-    var n2 = graph.addNode();
-    var n3 = graph.addNode();
-    var n4 = graph.addNode();
-    var e1 = graph.addEdge(n1, n2);
-    var e2 = graph.addEdge(n2, n3);
-    var e3 = graph.addEdge(n3, n4);
-    var e4 = graph.addEdge(n4, n1);
-    console.log(graph);
-    console.log(graph.getNodes());
-
-    viewLayout = graph.getLayoutProperty('viewLayout');
-    // console.log(graph);
-    // tulip.addListener(viewLayout, er);
-    // console.log(graph);
-    // tulip.addObserver(viewLayout, er);
-    viewLayout.setNodeValue(n1, new tulip.Coord(-10, 10, 0));
-    viewLayout.setNodeValue(n2, new tulip.Coord(10, 10, 0));
-    viewLayout.setNodeValue(n3, new tulip.Coord(10, -10, 0));
-    viewLayout.setNodeValue(n4, new tulip.Coord(-10, -10, 0));
-    initGraphData(graph);
     if (graphLoadedCallback) {
-      // tulipView.loadGraphFromFile("data/" + tlpFilename, $('#load-in-worker').prop('checked'), graphLoadedCallback);
+      tulipView.loadGraphFromFile("data/" + tlpFilename, $('#load-in-worker').prop('checked'), graphLoadedCallback);
     } else {
-      // tulipView.loadGraphFromFile("data/" + tlpFilename, $('#load-in-worker').prop('checked'), initGraphData);
+      tulipView.loadGraphFromFile("data/" + tlpFilename, $('#load-in-worker').prop('checked'), initGraphData);
     }
   }
 
@@ -624,17 +572,17 @@
       $('#spinner-div').hide();
       $('#tulip-view').css('vertical-align', 'baseline');
       var container = document.getElementById("tulip-view");
-      // tulipView = tulip.View(container, window.innerWidth-50, window.innerHeight-80);
-      // renderingParameters = tulipView.getRenderingParameters();
+      tulipView = tulip.View(container, window.innerWidth-50, window.innerHeight-80);
+      renderingParameters = tulipView.getRenderingParameters();
       loadGraphFromDataFolder("programming_language_network.tlp.gz");
     }
   }
 
   function resize() {
-    // if (tulipView && tulipView.fullScreenActivated) return;
-    // if (tulipView) {
-    //   tulipView.resize(window.innerWidth-50, window.innerHeight-80);
-    // }
+    if (tulipView && tulipView.fullScreenActivated) return;
+    if (tulipView) {
+      tulipView.resize(window.innerWidth-50, window.innerHeight-80);
+    }
   }
 
   $( document ).ready(function() {
@@ -658,7 +606,7 @@
     $('#display-hulls').prop('checked', true).checkboxradio('refresh');
 
     $(".rendering-params-modifier").change(function(){
-      // applyRenderingParameters();
+      applyRenderingParameters();
     });
 
     var oHead = document.head || document.getElementsByTagName("head")[0];
