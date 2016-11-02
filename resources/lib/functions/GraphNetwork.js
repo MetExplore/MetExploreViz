@@ -479,6 +479,12 @@ metExploreD3.GraphNetwork = {
 			    .domain([h, 0])
 			    .range([h, 0]);
 
+
+		// Call GraphCaption to draw the caption
+		if(panel=='viz')
+			metExploreD3.GraphCaption.drawCaption();
+
+
 		if(session.getScale()==undefined){
 		
 			// Define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleSents
@@ -1178,10 +1184,6 @@ metExploreD3.GraphNetwork = {
 
 		session.setForce(force);
 	
-		// Call GraphCaption to draw the caption
-		if(panel=='viz')
-			metExploreD3.GraphCaption.drawCaption();
-
 		// Sort compartiments store
 		metExploreD3.sortCompartmentInBiosource();
  		
@@ -3483,6 +3485,10 @@ setTimeout(
 		var force = sessionLoaded.getForce();
 		var scale = metExploreD3.getScaleById(panel);
 
+		// Call GraphCaption to draw the caption
+		if(panel=='viz')
+			metExploreD3.GraphCaption.drawCaption();
+
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
 		// console.log("----Viz: START refresh/init Viz");
@@ -3992,9 +3998,6 @@ setTimeout(
 		}
 		metExploreD3.GraphNetwork.tick(panel);
 
-		// Call GraphCaption to draw the caption
-		if(panel=='viz')
-			metExploreD3.GraphCaption.drawCaption();
 		// Sort compartiments store
 		metExploreD3.sortCompartmentInBiosource();
  		
@@ -4024,6 +4027,10 @@ setTimeout(
 		session.setForce(force);
 		
 		
+		// Call GraphCaption to draw the caption
+		if(panel=='viz')
+			metExploreD3.GraphCaption.drawCaption();
+
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
 		// console.log("----Viz: START refresh/init Viz");
@@ -4617,9 +4624,6 @@ setTimeout(
         
 		session.setForce(force);
 		
-		// Call GraphCaption to draw the caption
-		if(panel=='viz')
-			metExploreD3.GraphCaption.drawCaption();
 		// Sort compartiments store
 		metExploreD3.sortCompartmentInBiosource();
  		
