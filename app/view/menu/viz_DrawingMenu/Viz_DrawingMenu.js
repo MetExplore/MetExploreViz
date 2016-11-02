@@ -25,11 +25,14 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  iconCls:'delete-sideCompounds'
              },
              {
-                 text: 'Draw hierarchical layout',
-                 reference:'drawHierarchicalLayout',
-                 tooltip:'Draw the network with a hierarchical layout',
-                 iconCls:'drawhierarchicallayout',
-                 hidden:true
+                text: 'Layout', 
+                scale: 'large',
+                menu:{id:'vizIdLayoutMenu',xtype: 'vizLayoutMenu'},
+                id:'vizLayoutMenuID',
+                reference:'vizLayoutMenuID',
+                padding:'0 0 0 0',
+                iconCls:'drawhierarchicallayout',
+                hidden:true
              },
              {
                  text: 'Duplicate side compounds',

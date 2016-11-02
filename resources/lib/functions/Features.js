@@ -11,22 +11,28 @@ metExploreD3.Features = {
 				description: "highlightSubnetwork",
 				enabledTo: ["lcottret", "npoupin"]
 			},
-			"drawHierarchicalLayout":
+			"layouts":
 			{
-				description: "drawHierarchicalLayout",
+				description: "layouts",
 				enabledTo: ["lcottret", "npoupin"]
 			}
 	},
 
     isEnabled : function(feature, currentUser) {
-    	 return this.isEnabledForUser(feature, currentUser) || this.isEnabledForAll(feature) ;
+    	if(this.features[feature]!=undefined)
+    	 	return this.isEnabledForUser(feature, currentUser) || this.isEnabledForAll(feature) ;
+    	return false;
     }, 
    
     isEnabledForUser : function(feature, currentUser) {
-    	return this.features[feature].enabledTo.indexOf(currentUser)!=-1;
+    	if(this.features[feature]!=undefined)
+    		return this.features[feature].enabledTo.indexOf(currentUser)!=-1;
+    	return false;
     },
 
     isEnabledForAll : function(feature) {
-    	return this.features[feature].enabledTo.indexOf("all")!=-1;
+    	if(this.features[feature]!=undefined)
+    		return this.features[feature].enabledTo.indexOf("all")!=-1;
+    	return false;
     }
 }
