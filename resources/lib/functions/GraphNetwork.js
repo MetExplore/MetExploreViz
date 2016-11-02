@@ -462,9 +462,6 @@ metExploreD3.GraphNetwork = {
 		
 		session.setActivity(true);
 		session.setForce(force);
-		// Call GraphCaption to draw the caption
-		if(panel=='viz')
-			metExploreD3.GraphCaption.drawCaption();
 		
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
@@ -1180,6 +1177,17 @@ metExploreD3.GraphNetwork = {
 		if(isDisplay && panel=="viz") metExploreD3.GraphLink.displayConvexhulls(panel);
 
 		session.setForce(force);
+	
+		// Call GraphCaption to draw the caption
+		if(panel=='viz')
+			metExploreD3.GraphCaption.drawCaption();
+
+		// Sort compartiments store
+		metExploreD3.sortCompartmentInBiosource();
+ 		
+ 		
+ 		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+ 			
 	},
 
 	rescale : function(panel){
@@ -3473,8 +3481,6 @@ setTimeout(
 		// Initiate the D3 force drawing algorithm
 		var force = sessionLoaded.getForce();
 		var scale = metExploreD3.getScaleById(panel);
-		// Call GraphCaption to draw the caption
-		metExploreD3.GraphCaption.drawCaption();
 
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
@@ -3984,6 +3990,16 @@ setTimeout(
 			metExploreD3.GraphNetwork.graphAlignment(panel);
 		}
 		metExploreD3.GraphNetwork.tick(panel);
+
+		// Call GraphCaption to draw the caption
+		if(panel=='viz')
+			metExploreD3.GraphCaption.drawCaption();
+		// Sort compartiments store
+		metExploreD3.sortCompartmentInBiosource();
+ 		
+ 		
+ 		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+ 			
 	},
 
 
@@ -4006,9 +4022,6 @@ setTimeout(
 		session.setActivity(true);
 		session.setForce(force);
 		
-		// Call GraphCaption to draw the caption
-		if(panel=='viz')
-			metExploreD3.GraphCaption.drawCaption();
 		
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
@@ -4602,5 +4615,15 @@ setTimeout(
 			.start();
         
 		session.setForce(force);
+		
+		// Call GraphCaption to draw the caption
+		if(panel=='viz')
+			metExploreD3.GraphCaption.drawCaption();
+		// Sort compartiments store
+		metExploreD3.sortCompartmentInBiosource();
+ 		
+ 		
+ 		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+ 			
 	}
 }
