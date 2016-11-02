@@ -519,7 +519,6 @@ metExploreD3.GraphPanel = {
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
 
-			console.log(metExploreD3.bioSourceControled());
 			if(metExploreD3.bioSourceControled())
 			{
 				_metExploreViz.setBiosource(jsonParsed.biosource);

@@ -1185,7 +1185,6 @@ metExploreD3.GraphNetwork = {
 		// Sort compartiments store
 		metExploreD3.sortCompartmentInBiosource();
  		
- 		
  		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
  			
 	},
@@ -1195,12 +1194,12 @@ metExploreD3.GraphNetwork = {
 		var vizRect = document.getElementById(panel).getBoundingClientRect();
 		var hViz = vizRect.bottom - vizRect.top-20;
 		var hGC = graphComponentRect.bottom - graphComponentRect.top;
-		console.log(hGC);
+
 		var scale = metExploreD3.getScaleById(panel);
 		var zoomListener = scale.getZoom();
 
 		var newScale = hViz*zoomListener.scale()/hGC;
-		console.log(newScale);
+
 		scale.setZoomScale(newScale);
 
 		var wGC = graphComponentRect.right-graphComponentRect.left;
@@ -1215,7 +1214,9 @@ metExploreD3.GraphNetwork = {
 		var dcy = (hViz/2-((hViz/2)*zoom.scale()));
 		zoom.translate([dcx,dcy]);
 		d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform", "translate("+ dcx + "," + dcy +")scale(" + newScale + ")");
-
+		
+		metExploreD3.GraphLink.tick(panel, scale);
+		metExploreD3.GraphNode.tick(panel);
 	},
 	initCentroids : function(){
 		//d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1}).style("fill", 'red');
