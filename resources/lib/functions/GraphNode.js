@@ -2438,26 +2438,21 @@ metExploreD3.GraphNode = {
 			}
 			else
 			{
-				var pathways = metExploreD3.getPathwaysGroup();
-				for(var j=0 ; j<pathways.length ; j++){
-		 			if(d.key==pathways[j].key) 
-		 				color = pathways[j].color;
-		 		}
-		        return color;
-				// var phase = metExploreD3.getPathwaysLength();
-		  //       if (phase == undefined) phase = 0;
-		  //       center = 128;
-		  //       width = 127;
-		  //       frequency = Math.PI*2*0.95/phase;
+
+				var phase = metExploreD3.getPathwaysLength();
+		        if (phase == undefined) phase = 0;
+		        center = 128;
+		        width = 127;
+		        frequency = Math.PI*2*0.95/phase;
 
 
-				// var red   = Math.sin(frequency*i+2+phase) * width + center;
-				// var green = Math.sin(frequency*i+0+phase) * width + center;
-				// var blue  = Math.sin(frequency*i+4+phase) * width + center;
+				var red   = Math.sin(frequency*i+2+phase) * width + center;
+				var green = Math.sin(frequency*i+0+phase) * width + center;
+				var blue  = Math.sin(frequency*i+4+phase) * width + center;
 		 
-				// var color = metExploreD3.GraphUtils.RGB2Color(red,green,blue);
-				// d.color = color;
-				// return color;
+				var color = metExploreD3.GraphUtils.RGB2Color(red,green,blue);
+				d.color = color;
+				return color;
 				/*var color = d3.scale.linear()
 				    .domain([0, metExploreD3.getPathwaysLength()/2, metExploreD3.getPathwaysLength()-1])
 				    .range(["red", "black", "green"]);
