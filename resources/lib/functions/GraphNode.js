@@ -841,12 +841,45 @@ metExploreD3.GraphNode = {
 	* @param {} panel : The panel where the action is launched
 	*/
 	refreshNode : function(parent) {
+
+		// Load user's preferences
+		var reactionStyle = metExploreD3.getReactionStyle();
+		
+		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+		var generalStyle = metExploreD3.getGeneralStyle();
+
+		var session = _metExploreViz.getSessionById(parent);
+		var sessionMain = _metExploreViz.getSessionById('viz');
+
 		d3.select("body")
 		    .on("keydown", function() {
 		    	_MyThisGraphNode.charKey = d3.event.keyCode;
               	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+
+              	// 65=A
+		    	if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)
+		    	{
+					d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node")
+						.each((node) => {
+							if(!node.isSelected())
+ 							{
+								_MyThisGraphNode.selection(node, parent);
+							}
+						});
+		    	}
 		    })
 		    .on("keyup", function(e) {
+		    	// 46=Suppr
+		    	if(_MyThisGraphNode.charKey==46 && session.getSelectedNodes().length>0)
+		    	{
+		    		metExploreD3.displayMessageYesNo("Selected nodes",'Do you want remove selected nodes?',function(btn){
+		                if(btn=="yes")
+		                {   
+		                   metExploreD3.GraphNetwork.removeSelectedNode("viz") 
+		                }
+		           });
+		    	}
+
 		    	_MyThisGraphNode.charKey = 'none';
               	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
 		    });
@@ -864,14 +897,6 @@ metExploreD3.GraphNode = {
 			.on("dragend", _MyThisGraphNode.dragend);
 
 
-		// Load user's preferences
-		var reactionStyle = metExploreD3.getReactionStyle();
-		
-		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-		var generalStyle = metExploreD3.getGeneralStyle();
-
-		var session = _metExploreViz.getSessionById(parent);
-		var sessionMain = _metExploreViz.getSessionById('viz');
 
 		var networkData=session.getD3Data();
 	    var h = parseInt(d3.select("#"+_MyThisGraphNode.panelParent).select("#D3viz")
@@ -1758,6 +1783,7 @@ metExploreD3.GraphNode = {
 	},
 
 	unselectIfDBClick : function() { 
+		var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 		if(d3.event.target==d3.select("#D3viz")[0][0])
 			document.getElementById("tooltip2").classList.remove("fixed");
 		
@@ -1765,14 +1791,15 @@ metExploreD3.GraphNode = {
 			_MyThisGraphNode.activePanel = this.parentNode.id;
          	d3.select(this).select("#graphComponent")
 				.selectAll("g.node")
-		        .filter(function(d) { return d.isSelected(); })
+		        .filter(function(d) {  return d.isSelected(); })
 		        .each(function(d) { _MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel); });
+		        session.removeAllSelectedNodes();
 		}
 		else
 		{
 			if(d3.event.button==0){
 				_MyThisGraphNode.dblClickable = true;
-
+				
 				_MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
 					function(){
                         _MyThisGraphNode.dblClickable=false;
@@ -1812,7 +1839,6 @@ metExploreD3.GraphNode = {
 
 			}
 		}	 
-		var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 		if(session!=undefined)  
 		{
 			// We stop the previous animation
@@ -1857,20 +1883,6 @@ metExploreD3.GraphNode = {
 	* @param {} panel : The panel where the action is launched
 	*/
 	loadNode : function(parent) {
-		d3.select("body")
-		    .on("keydown", function() {
-		    	_MyThisGraphNode.charKey = d3.event.keyCode;
-              	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
-		    })
-		    .on("keyup", function(e) {
-		    	_MyThisGraphNode.charKey = 'none';
-              	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
-		    });
-
-		metExploreD3.GraphNode.panelParent = parent;
-
-		_MyThisGraphNode = metExploreD3.GraphNode;
-
 		// Load user's preferences
 		var reactionStyle = metExploreD3.getReactionStyle();
 		
@@ -1880,6 +1892,45 @@ metExploreD3.GraphNode = {
 		var session = _metExploreViz.getSessionById(parent);
 		var sessionMain = _metExploreViz.getSessionById('viz');
 
+
+		d3.select("body")
+		    .on("keydown", function() {
+		    	_MyThisGraphNode.charKey = d3.event.keyCode;
+              	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+
+              	// 65=A
+		    	if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)
+		    	{
+					d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node")
+						.each((node) => {
+							if(!node.isSelected())
+ 							{
+								_MyThisGraphNode.selection(node, parent);
+							}
+						});
+		    	}
+		    })
+		    .on("keyup", function(e) {
+		    	// 46=Suppr
+		    	if(_MyThisGraphNode.charKey==46 && session.getSelectedNodes().length>0)
+		    	{
+		    		metExploreD3.displayMessageYesNo("Selected nodes",'Do you want remove selected nodes?',function(btn){
+		                if(btn=="yes")
+		                {   
+		                   metExploreD3.GraphNetwork.removeSelectedNode("viz") 
+		                }
+		           });
+		    	}
+
+		    	_MyThisGraphNode.charKey = 'none';
+              	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+		    });
+
+		metExploreD3.GraphNode.panelParent = parent;
+
+		_MyThisGraphNode = metExploreD3.GraphNode;
+
+		
 		var networkData=session.getD3Data();
 	    var h = parseInt(d3.select("#"+_MyThisGraphNode.panelParent).select("#D3viz")
 			.style("height"));

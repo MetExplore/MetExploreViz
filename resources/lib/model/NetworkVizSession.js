@@ -278,10 +278,9 @@ NetworkVizSession.prototype = {
     },
 
     removeAllSelectedNodes:function(){
-        while(this.selectedNodes.length > 0) {
-            this.selectedNodes.pop();
-            }
+        this.selectedNodes = [];
     },
+
     getSelectedNodes:function(){
         return this.selectedNodes;
     },
