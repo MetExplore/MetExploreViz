@@ -11,10 +11,15 @@ metExploreD3.Features = {
 				description: "highlightSubnetwork",
 				enabledTo: ["lcottret", "npoupin"]
 			},
-			"layouts":
+            "layouts":
+            {
+                description: "layouts",
+                enabledTo: ["fjourdan"]
+            },
+			"algorithm":
 			{
 				description: "layouts",
-				enabledTo: ["lcottret", "npoupin"]
+				enabledTo: ["cfrainay"]
 			}
 	},
 

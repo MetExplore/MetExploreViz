@@ -40,6 +40,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			click : me.makeClusters,
 			scope : me
 		});
+		
 		view.on({
 			enableMakeClusters : function(){
 				this.lookupReference('makeClusters').setDisabled(false);
