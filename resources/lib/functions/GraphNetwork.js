@@ -462,9 +462,6 @@ metExploreD3.GraphNetwork = {
 		
 		session.setActivity(true);
 		session.setForce(force);
-		// Call GraphCaption to draw the caption
-		if(panel=='viz')
-			metExploreD3.GraphCaption.drawCaption();
 		
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
@@ -481,6 +478,12 @@ metExploreD3.GraphNetwork = {
 			  d3.scale.linear()
 			    .domain([h, 0])
 			    .range([h, 0]);
+
+
+		// Call GraphCaption to draw the caption
+		if(panel=='viz')
+			metExploreD3.GraphCaption.drawCaption();
+
 
 		if(session.getScale()==undefined){
 		
@@ -1180,6 +1183,12 @@ metExploreD3.GraphNetwork = {
 		if(isDisplay && panel=="viz") metExploreD3.GraphLink.displayConvexhulls(panel);
 
 		session.setForce(force);
+	
+		// Sort compartiments store
+		metExploreD3.sortCompartmentInBiosource();
+ 		
+ 		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+ 			
 	},
 
 	rescale : function(panel){
@@ -1187,12 +1196,12 @@ metExploreD3.GraphNetwork = {
 		var vizRect = document.getElementById(panel).getBoundingClientRect();
 		var hViz = vizRect.bottom - vizRect.top-20;
 		var hGC = graphComponentRect.bottom - graphComponentRect.top;
-		console.log(hGC);
+
 		var scale = metExploreD3.getScaleById(panel);
 		var zoomListener = scale.getZoom();
 
 		var newScale = hViz*zoomListener.scale()/hGC;
-		console.log(newScale);
+
 		scale.setZoomScale(newScale);
 
 		var wGC = graphComponentRect.right-graphComponentRect.left;
@@ -1207,7 +1216,9 @@ metExploreD3.GraphNetwork = {
 		var dcy = (hViz/2-((hViz/2)*zoom.scale()));
 		zoom.translate([dcx,dcy]);
 		d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform", "translate("+ dcx + "," + dcy +")scale(" + newScale + ")");
-
+		
+		metExploreD3.GraphLink.tick(panel, scale);
+		metExploreD3.GraphNode.tick(panel);
 	},
 	initCentroids : function(){
 		//d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1}).style("fill", 'red');
@@ -1244,6 +1255,8 @@ metExploreD3.GraphNetwork = {
 					var nbComp = 0;
 					for (var key in session.groups) {
 					  	if (session.groups.hasOwnProperty(key)) {
+					  	  	if(session.groups[key].values!=undefined)
+					  	  		return false;
 					  	  	
 							var index = session.groups[key].values.indexOf(node);
 							if(index!=-1)
@@ -1906,7 +1919,9 @@ metExploreD3.GraphNetwork = {
 			undefined, 
 			true, 
 			theNodeId,
-			networkData.getNodeById(reactionId).getPathways());
+			networkData.getNodeById(reactionId).getPathways(),
+			undefined,
+			theNode.getLabel());
 
 		//newNode.index = networkData.getNodes().indexOf(newNode);
 
@@ -1969,6 +1984,20 @@ metExploreD3.GraphNetwork = {
 
 				d.fixed = true;
 				
+				node
+					.filter(function(n){return n==d})
+					.select('.locker')
+					.classed('hide', false)
+					.select('.iconlocker')
+					.attr(
+						"xlink:href",
+						function(d) {
+							if(d.isLocked())
+								return "resources/icons/lock_font_awesome.svg";
+							else
+								return "resources/icons/unlock_font_awesome.svg";
+					});
+
 				if(d.getBiologicalType()=="reaction"){
 					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 						.selectAll("path.link")
@@ -2026,8 +2055,15 @@ metExploreD3.GraphNetwork = {
 	        .on("mouseleave", function(d) {  
 				d3.select(this)
 					.attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
-				if(!d.isSelected())
+				
+				if(!d.isLocked())
 					d.fixed = false;
+
+				node
+					.filter(function(n){return n==d})
+					.select('.locker')
+					.classed('hide', true);
+
 				var linkStyle = metExploreD3.getLinkStyle();  
 
 		   		document.getElementById("tooltip2").classList.add("hide");
@@ -2072,7 +2108,11 @@ metExploreD3.GraphNetwork = {
 					.append("svg:text")
 			        .attr("fill", "black")
 			        .attr("class", function(d) { return d.getBiologicalType(); })
-					.text(function(d) { return $("<div/>").html(d.getName()).text(); })
+					.text(function(d) { 
+						var name = d.getName();
+						if (d.getLabel()!=undefined) name = d.getLabel();
+						return $("<div/>").html(name).text(); 
+					})
 					.style(
 						"font-size",
 						function(d) {
@@ -2104,7 +2144,9 @@ metExploreD3.GraphNetwork = {
 						})
 						// .text(function(d) { return d.getName(); })
 					.text(function(d) {
-							return $("<div/>").html(d.getName()).text();
+							var name = d.getName();
+							if (d.getLabel()!=undefined) name = d.getLabel();
+							return $("<div/>").html(name).text();
 						})
 					.style(
 								"font-size",
@@ -2148,6 +2190,46 @@ metExploreD3.GraphNetwork = {
 							}).attr("width", "100%").attr(
 							"height", "100%");
 
+				
+			// Lock Image definition
+			var box = node
+				.filter(function(d) { return d.getId() == identifier })
+				.insert("svg", ":first-child")
+				.attr(
+					"viewBox",
+					function(d) {
+								+ " " + minDim;
+					}
+				)
+				.attr("width",metaboliteStyle.getWidth()/2)
+				.attr("height",metaboliteStyle.getHeight()/2)
+				.attr("preserveAspectRatio", "xMinYMin")
+				.attr("y",-metaboliteStyle.getHeight()/2)
+				.attr("x",-metaboliteStyle.getWidth()/2)
+				.attr("class", "locker")
+				.classed('hide', true);
+
+			box.append("svg:path")
+				.attr("class", "backgroundlocker")
+				.attr("d", function(node){
+						var pathBack = "M"+metaboliteStyle.getWidth()/2+","+metaboliteStyle.getHeight()/2+
+							" L0,"+metaboliteStyle.getHeight()/2+
+							" L0,"+metaboliteStyle.getRY()*2/2+
+							" A"+metaboliteStyle.getRX()*2/2+","+metaboliteStyle.getRY()*2/2+",0 0 1 "+metaboliteStyle.getRX()*2/2+",0"+
+							" L"+metaboliteStyle.getWidth()/2+",0";
+						return pathBack;					
+				})
+				.attr("opacity", "0.20")
+				.attr("fill", "black");
+			
+			box.append("image")
+				.attr("class", "iconlocker")
+				.attr("y",metaboliteStyle.getHeight()/4/2-(metaboliteStyle.getHeight()/2-metaboliteStyle.getRY()*2/2)/8)
+				.attr("x",metaboliteStyle.getWidth()/4/2-(metaboliteStyle.getWidth()/2-metaboliteStyle.getRX()*2/2)/8)
+				.attr("width", "40%")
+				.attr("height", "40%");
+			
+
 				// We define the text for a reaction
 				node
 					.filter(function(d) { return d.getId() == identifier; })
@@ -2164,7 +2246,9 @@ metExploreD3.GraphNetwork = {
 					})
 					// .text(function(d) { return d.getName(); })
 					.text(function(d) {
-						return $("<div/>").html(d.getName()).text();
+						var name = d.getName();
+						if (d.getLabel()!=undefined) name = d.getLabel();
+						return $("<div/>").html(name).text();
 					})
 					.style(
 							"font-size",
@@ -3248,10 +3332,12 @@ setTimeout(
 					nodes.splice(indexTgt,1);
 				}
 			});
+
 		vis.selectAll("g.node").filter(function(node){
 			return nodes.indexOf(node.getId())!=-1;
 		})
-			.transition().duration(1000).style("opacity", 0)
+		.each(function(node){nodesToRemove.push(node);})
+		.transition().duration(1000).style("opacity", 0)
 		.remove();
 
 		setTimeout(
@@ -3408,9 +3494,11 @@ setTimeout(
 		// Initiate the D3 force drawing algorithm
 		var force = sessionLoaded.getForce();
 		var scale = metExploreD3.getScaleById(panel);
+
 		// Call GraphCaption to draw the caption
-		metExploreD3.GraphCaption.drawCaption();
-		
+		if(panel=='viz')
+			metExploreD3.GraphCaption.drawCaption();
+
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
 		// console.log("----Viz: START refresh/init Viz");
@@ -3919,6 +4007,13 @@ setTimeout(
 			metExploreD3.GraphNetwork.graphAlignment(panel);
 		}
 		metExploreD3.GraphNetwork.tick(panel);
+
+		// Sort compartiments store
+		metExploreD3.sortCompartmentInBiosource();
+ 		
+ 		
+ 		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+ 			
 	},
 
 
@@ -3941,10 +4036,11 @@ setTimeout(
 		session.setActivity(true);
 		session.setForce(force);
 		
+		
 		// Call GraphCaption to draw the caption
 		if(panel=='viz')
 			metExploreD3.GraphCaption.drawCaption();
-		
+
 		// var startall = new Date().getTime();
 		// var start = new Date().getTime();
 		// console.log("----Viz: START refresh/init Viz");
@@ -4537,5 +4633,12 @@ setTimeout(
 			.start();
         
 		session.setForce(force);
+		
+		// Sort compartiments store
+		metExploreD3.sortCompartmentInBiosource();
+ 		
+ 		
+ 		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+ 			
 	}
 }

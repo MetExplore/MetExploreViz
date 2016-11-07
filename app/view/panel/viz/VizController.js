@@ -57,6 +57,10 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								hidden : false,
 								handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
 							},{
+								text : 'Fix selected nodes',
+								hidden : false,
+								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
+							},{
 								text : 'Side compounds (duplicate)',
 								hidden : false,
 								handler : function(){ 
@@ -99,7 +103,11 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							hidden : false,
 							handler : function(){ metExploreD3.GraphNetwork.duplicateASideCompoundSelected(target.parentNode, "viz"); }
 						},{
-							text : 'Select neighbour',
+							text : 'Change name',
+							hidden : false,
+							handler : function(){ metExploreD3.GraphNode.changeName(target.parentNode); }
+						},{
+							text : 'Select neighbour (N+select)',
 							hidden : false,
 							handler : function(){ metExploreD3.GraphNode.selectNeighbours(_metExploreViz.getSessionById('viz').getD3Data().getNodeById(target.id), "viz"); }
 						}

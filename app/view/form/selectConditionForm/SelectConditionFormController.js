@@ -55,10 +55,14 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 		view.lookupReference('selectConditionType').on({
 			change : function(that, newVal, old){
-				if(newVal!="Flux")
+				if(newVal!="Flux"){
 					view.lookupReference('opacity').setHidden(true);
-				else
+					view.lookupReference('valueonarrow').setHidden(true);
+				}
+				else{
 					view.lookupReference('opacity').setHidden(false);  
+					view.lookupReference('valueonarrow').setHidden(false);
+				}
 			},
 			scope:me
 		});
@@ -261,8 +265,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			var storeCond = Ext.getStore('S_Condition');
 			var oldMapping = session.isMapped();
 
-			if(newMapping!=undefined)
-				this.removeGraphMapping(oldMapping);
+			this.removeGraphMapping(oldMapping);
 
 			if(session.getMappingDataType()=="Continuous" || session.getMappingDataType()=="Flux"){
 				var colorStore = session.getColorMappingsSet();        
@@ -334,7 +337,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			metExploreD3.GraphMapping.graphMappingContinuousData(mappingName, conditionName);
 
 		if(dataType=="Flux")
-		 	metExploreD3.GraphMapping.graphMappingFlux(mappingName, conditionName, fluxType, undefined, undefined, Ext.getCmp("opacityCheck").checked);
+		 	metExploreD3.GraphMapping.graphMappingFlux(mappingName, conditionName, fluxType, undefined, undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked);
 		
 			
 		if(dataType=="Discrete")
@@ -549,12 +552,12 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 								if(selectedCondition.length==1)
 								{
 									var fluxType = 'Unique';
-									metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(color).getValue(), undefined, Ext.getCmp("opacityCheck").checked);
+									metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(color).getValue(), undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked);
 								}	
 								else
 								{
 									var fluxType = 'Compare';
-									metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(maxValue).getValue(), networkVizSession.getColorMappingById(minValue).getValue(), Ext.getCmp("opacityCheck").checked);
+									metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(maxValue).getValue(), networkVizSession.getColorMappingById(minValue).getValue(), Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked);
 								}
 							}
 						}

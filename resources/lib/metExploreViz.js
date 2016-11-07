@@ -10,6 +10,7 @@ var metExploreD3 = {
     GraphPanel:"",
     GraphPath:"",
     GraphNode:"",
+    Features:"",
 
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
        
@@ -723,6 +724,15 @@ var metExploreD3 = {
        
         Ext.Msg.confirm(msgTitle, msg, fct);
     },
+
+    /******************************************
+    * Display Promt
+    * @param {} type : Message type
+    * @param {} msg : Message to display
+    */
+    displayPrompt : function(msgTitle, msg, fct){
+        Ext.MessageBox.prompt(msgTitle, msg, fct);
+    },
     /******************************************
     * Defer function 
     * @param {} func : The function to defer
@@ -758,6 +768,14 @@ var metExploreD3 = {
 
     onloadMapping : function(mappingName, func){
         metExploreD3.launchMetexploreMapping(mappingName, func);
+    },
+
+
+    bioSourceControled:function(){
+        return _metExploreViz.bioSourceControled();
+    },
+    setControlBioSource:function(bool){
+        _metExploreViz.setControlBioSource(bool);
     }
 };
 
@@ -772,13 +790,14 @@ var metExploreViz = function(panel, webSite){
     this.dataFromWebSite = null;
     this.panel = panel;
     this.linkStyle = new LinkStyle(25, 2, 5, 5, 'red', 'green', 'black', '0.7', 'black');
-    this.reactionStyle = new ReactionStyle(10, 20, 3, 3, 'ec', 8, 'black', 1);
-    this.metaboliteStyle = new MetaboliteStyle(10, 10, 5, 5, 6, 1,'name', '#b2ae92');
+    this.reactionStyle = new ReactionStyle(15, 30, 3, 3, 'ec', 9, 'black', 1);
+    this.metaboliteStyle = new MetaboliteStyle(14, 14, 7, 7, 7, 1,'name', '#b2ae92');
     this.generalStyle = new GeneralStyle("Website", "yellow", "blue", 500, false, false, false, false, false);
     this.initialData = undefined;
-    
+    this.biosource = undefined; 
     this.comparedPanels = [];
     this.mappings = [];
+    this.bioSourceControl = false;
     this.linkedByTypeOfMetabolite = false;
     this.parentWebSite = webSite;
     this.oldCoodinates = [];
@@ -790,6 +809,23 @@ var metExploreViz = function(panel, webSite){
 
 metExploreViz.prototype = {
 
+
+    bioSourceControled:function(){
+        return this.bioSourceControl;
+    },
+    setControlBioSource:function(bool){
+        this.bioSourceControl = bool;
+    },
+
+    getBiosource:function()
+    {
+       return this.biosource;
+    }, 
+    
+    setBiosource:function(biosource)
+    {
+       this.biosource = biosource;
+    },
     getDataFromWebSite : function(){
         return this.dataFromWebSite;
     },
