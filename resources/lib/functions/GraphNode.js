@@ -52,6 +52,60 @@ metExploreD3.GraphNode = {
 			});
 	},
 
+
+	/*******************************************
+    * Permit to set name of a node
+    * @param {} d : a node
+    */
+	changeName : function(node) {
+		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+		var reactionStyle = metExploreD3.getReactionStyle();
+		var nodeData;
+		d3.select("#viz").select("#D3viz").select("#graphComponent")
+			.selectAll("g.node")
+			.each(function(n){
+
+				if(node.querySelector("rect.metabolite")!=null){
+					if( n.getId()==node.querySelector("rect.metabolite").id) nodeData=n;
+				}
+				else{
+					if(node.querySelector("rect.reaction")!=null){
+						if(n.getId()==node.querySelector("rect.reaction").id) nodeData=n;
+					}
+				}
+				
+			})
+
+		if(nodeData){
+
+			if(nodeData.getBiologicalType()=="metabolite")
+				var label = metaboliteStyle.getDisplayLabel(nodeData, metaboliteStyle.getLabel());
+			else
+				var label = reactionStyle.getDisplayLabel(nodeData, reactionStyle.getLabel());
+		}
+		
+		if(label)	
+			var person = metExploreD3.displayPrompt("New label", "Enter new label", function(btn, text){
+				if (text!=null && text!="" && btn=="ok") {
+			       d3.select("#viz").select("#D3viz").select("#graphComponent")
+						.selectAll("g.node")
+						.filter(function(n){
+							return nodeData.getId() == n.getId();
+						})
+						.each(function(node){
+							node.setLabel(text);
+							d3.select(this)
+								.select("text")
+								.remove();
+
+							metExploreD3.GraphNode.addText(node, "viz");
+						});
+			    }
+			});
+    
+	    
+	},
+
 	/*******************************************
     * Permit to start drag and drop of nodes
     * @param {} d : Color in byte
@@ -749,6 +803,9 @@ metExploreD3.GraphNode = {
         	var equalName = false;
         	if(d.getName()!=undefined) 
         		equalName = d.getName().toUpperCase().indexOf(upperCaseSelectedVal) > -1;
+			
+			if(d.getLabel()!=undefined) 
+        		equalName = d.getLabel().toUpperCase().indexOf(upperCaseSelectedVal) > -1;
 
         	var equalEc = false;
         	if(d.getEC()!=undefined) 

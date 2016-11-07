@@ -724,6 +724,15 @@ var metExploreD3 = {
        
         Ext.Msg.confirm(msgTitle, msg, fct);
     },
+
+    /******************************************
+    * Display Promt
+    * @param {} type : Message type
+    * @param {} msg : Message to display
+    */
+    displayPrompt : function(msgTitle, msg, fct){
+        Ext.MessageBox.prompt(msgTitle, msg, fct);
+    },
     /******************************************
     * Defer function 
     * @param {} func : The function to defer

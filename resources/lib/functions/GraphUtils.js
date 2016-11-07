@@ -1246,6 +1246,10 @@ metExploreD3.GraphUtils = {
 				    	
 				    	networkJSON+="{\"name\":"+JSON.stringify(node.getName())+",";
 				    	
+				    	if(node.getLabel()!=undefined){
+							networkJSON+="\"label\":"+JSON.stringify(node.getLabel())+",";
+				    	}
+
 				    	if(node.getCompartment()!=undefined){
 							networkJSON+="\"compartment\":"+JSON.stringify(node.getCompartment())+",";
 				    	}

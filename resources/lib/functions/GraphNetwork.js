@@ -1919,7 +1919,9 @@ metExploreD3.GraphNetwork = {
 			undefined, 
 			true, 
 			theNodeId,
-			networkData.getNodeById(reactionId).getPathways());
+			networkData.getNodeById(reactionId).getPathways(),
+			undefined,
+			theNode.getLabel());
 
 		//newNode.index = networkData.getNodes().indexOf(newNode);
 
@@ -2106,7 +2108,11 @@ metExploreD3.GraphNetwork = {
 					.append("svg:text")
 			        .attr("fill", "black")
 			        .attr("class", function(d) { return d.getBiologicalType(); })
-					.text(function(d) { return $("<div/>").html(d.getName()).text(); })
+					.text(function(d) { 
+						var name = d.getName();
+						if (d.getLabel()!=undefined) name = d.getLabel();
+						return $("<div/>").html(name).text(); 
+					})
 					.style(
 						"font-size",
 						function(d) {
@@ -2138,7 +2144,9 @@ metExploreD3.GraphNetwork = {
 						})
 						// .text(function(d) { return d.getName(); })
 					.text(function(d) {
-							return $("<div/>").html(d.getName()).text();
+							var name = d.getName();
+							if (d.getLabel()!=undefined) name = d.getLabel();
+							return $("<div/>").html(name).text();
 						})
 					.style(
 								"font-size",
@@ -2238,7 +2246,9 @@ metExploreD3.GraphNetwork = {
 					})
 					// .text(function(d) { return d.getName(); })
 					.text(function(d) {
-						return $("<div/>").html(d.getName()).text();
+						var name = d.getName();
+						if (d.getLabel()!=undefined) name = d.getLabel();
+						return $("<div/>").html(name).text();
 					})
 					.style(
 							"font-size",
