@@ -860,7 +860,7 @@ metExploreD3.GraphNode = {
 		    	if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)
 		    	{
 					d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node")
-						.each((node) => {
+						.each(function(node){
 							if(!node.isSelected())
  							{
 								_MyThisGraphNode.selection(node, parent);
@@ -1902,7 +1902,7 @@ metExploreD3.GraphNode = {
 		    	if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)
 		    	{
 					d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node")
-						.each((node) => {
+						.each(function(node){
 							if(!node.isSelected())
  							{
 								_MyThisGraphNode.selection(node, parent);
