@@ -65,6 +65,11 @@ metExploreD3.GraphCaption = {
 	    d3.select("#viz").select("#D3viz")
 			.select('#captionPathway')
 			.remove();
+
+	    d3.select("#viz")
+			.select("#D3viz")
+			.select(".logoViz")
+			.remove();
 		// Load user's preferences
 		var reactionStyle = metExploreD3.getReactionStyle();
 		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());

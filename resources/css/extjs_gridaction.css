@@ -244,6 +244,24 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.removeNode {
+       background-image: url(../icons/removeNode.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.importToRsxFromJSON {
+       background-image: url(../icons/importToRsxFromJSON.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.importToRsxFromWS {
+       background-image: url(../icons/importToRsxFromWS.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 
 .drawhierarchicallayout {
        background-image: url(../icons/drawhierarchicallayout.png);
@@ -267,6 +285,13 @@ p {
 }
 .unlink {
        background-image: url(../icons/unlink.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+
+.lock_font_awesome {
+       background-image: url(../icons/lock_font_awesome.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
@@ -367,7 +392,12 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat; 
 }
-
+.neighbours{
+    background-image: url(../icons/neighbours.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat; 
+}
 .removeMetabolites {
     background-image: url(../icons/removeMetabolites.svg);
     background-size: 100% 100%;
@@ -506,6 +536,13 @@ p {
 
 .open {
     background-image: url(../icons/open2.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
+.edit {
+    background-image: url(../icons/pencil.svg);
     background-size: 100% 100%;
   	background-position: 0% 0%;
     background-repeat: no-repeat;
