@@ -55,14 +55,17 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							items : [{
 								text : 'Remove selected nodes',
 								hidden : false,
+								iconCls:"removeNode",
 								handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
 							},{
 								text : 'Fix selected nodes',
 								hidden : false,
+								iconCls:"lock_font_awesome",
 								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
 							},{
 								text : 'Side compounds (duplicate)',
 								hidden : false,
+								iconCls:"duplicate-sideCompounds",
 								handler : function(){ 
 									var sessio = _metExploreViz.getSessionById('viz');
 									metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); 
@@ -97,23 +100,28 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 						{
 							text : 'Remove the node',
 							hidden : false,
+							iconCls:"removeNode",
 							handler : function(){ metExploreD3.GraphNetwork.removeOnlyClickedNode(metExploreD3.GraphNode.selectNodeData(target.parentNode), "viz"); }	
 						},{
 							text : 'Side compound (duplicate)',
 							hidden : false,
+							iconCls:"duplicate-sideCompounds",
 							handler : function(){ metExploreD3.GraphNetwork.duplicateASideCompoundSelected(target.parentNode, "viz"); }
 						},{
 							text : 'Change name',
 							hidden : false,
+							iconCls:"edit",
 							handler : function(){ metExploreD3.GraphNode.changeName(target.parentNode); }
 						},{
-							text : 'Select neighbour (N+select)',
+							text : 'Select neighbours (N+select)',
 							hidden : false,
+							iconCls:"neighbours",
 							handler : function(){ metExploreD3.GraphNode.selectNeighbours(_metExploreViz.getSessionById('viz').getD3Data().getNodeById(target.id), "viz"); }
 						}
 						,{
 							text : 'See more information',
 							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+							iconCls:"info",
 							handler : function() {
 
 								var id = target.id;
