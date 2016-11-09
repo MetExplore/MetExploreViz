@@ -1127,8 +1127,10 @@ metExploreViz.prototype = {
         return this.mappings;
     },
     addMapping : function(aMapping){
-        if(this.getMappingByName(aMapping.getName())!=null){
-            aMapping.setName(aMapping.getName()+"I");
+        if(aMapping.getId()==undefined){
+            aMapping.setId("IdMappingMetExploreViz"+this.mappings.length);
+        }
+        if(this.getMappingById(aMapping.getId())!=null){
             this.addMapping(aMapping);
         }
         else
@@ -1143,7 +1145,7 @@ metExploreViz.prototype = {
         var i=0;
         while(!found && i<this.mappings.length)
         {
-            if(this.mappings[i].getName()==aMapping)
+            if(this.mappings[i].getId()==aMapping)
             {
                 this.mappings.splice(i,1);
                 found=true;        
@@ -1153,6 +1155,14 @@ metExploreViz.prototype = {
     },
     getMappingsLength : function(){
         return this.mappings.length;
+    },
+    getMappingById : function(id){
+        var themapping = null;
+        this.mappings.forEach(function(aMapping){            
+            if(aMapping.getId()==id)
+                themapping = aMapping;
+        });
+        return themapping;
     },
     getMappingByName : function(name){
         var themapping = null;

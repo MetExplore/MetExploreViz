@@ -15,6 +15,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 					
+		this.regexpPanel=/\.| |=|\(|\)/g; 
 		// Action to launch mapping on  the visualization
 		view.on({
 			afterDiscreteMapping : this.addMappingCaptionForm,
@@ -149,15 +150,15 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				    }
 			    
 					if(session.getMappingDataType()=="Flux"|| Array.isArray(session.isMapped()))
-						var container = Ext.getCmp('panel'+session.isMapped()[0].replace(".", ""));
+						var container = Ext.getCmp('panel'+session.isMapped()[0].replace(this.regexpPanel, ""));
 					else
-						var container = Ext.getCmp('panel'+session.isMapped().replace('.',''));
+						var container = Ext.getCmp('panel'+session.isMapped().replace(this.regexpPanel, ""));
 
 					if(container!=undefined){				
 						container.close();
 						var colorStore = session.getColorMappingsSet();
 						colorStore.forEach(function(color){
-							var newId = color.getName().toString().replace(".", "_");
+							var newId = color.getName().toString().replace(this.regexpPanel, "_");
 							if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId)!=null)
 								Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
 						});
@@ -183,7 +184,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		 			
 	        }
         	metExploreD3.fireEventArg('selectMappingVisu', "removemapping", mapping);
-        	_metExploreViz.removeMapping(mapping.getName()); 
+        	_metExploreViz.removeMapping(mapping.getId()); 
 	    }
 
 	}
@@ -209,15 +210,15 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		    }
 		    
 			if(session.getMappingDataType()=="Flux"|| Array.isArray(session.isMapped()))
-				var container = Ext.getCmp('panel'+session.isMapped()[0].replace(".", ""));
+				var container = Ext.getCmp('panel'+session.isMapped()[0].replace(this.regexpPanel, ""));
 			else
-				var container = Ext.getCmp('panel'+session.isMapped().replace(".", ""));
+				var container = Ext.getCmp('panel'+session.isMapped().replace(this.regexpPanel, ""));
 			
 			if(container!=undefined){				
 				container.close();
 				var colorStore = session.getColorMappingsSet();
 				colorStore.forEach(function(color){
-					var newId = color.getName().toString().replace(".", "_");
+					var newId = color.getName().toString().replace(this.regexpPanel, "_");
 					if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId)!=null)
 						Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
 				});
@@ -277,15 +278,15 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		    }
 
 		    if(session.getMappingDataType()=="Flux"|| Array.isArray(session.isMapped()))
-				var container = Ext.getCmp('panel'+session.isMapped()[0].replace(".", ""));
+				var container = Ext.getCmp('panel'+session.isMapped()[0].replace(this.regexpPanel, ""));
 			else
-				var container = Ext.getCmp('panel'+session.isMapped().replace(".", ""));
+				var container = Ext.getCmp('panel'+session.isMapped().replace(this.regexpPanel, ""));
 			
 			if(container!=undefined){				
 				container.close();
 				var colorStore = session.getColorMappingsSet();
 				colorStore.forEach(function(color){
-					var newId = color.getName().toString().replace(".", "_");
+					var newId = color.getName().toString().replace(this.regexpPanel, "_");
 					if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId)!=null)
 						Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
 				});
@@ -397,7 +398,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			    	if(type=="flux")
 			    		value = selectedCondition[i];
 			    	i++;
-			    	var newId = colorName.toString().replace(".", "_");
+			    	var newId = colorName.toString().replace(this.regexpPanel, "_");
 			    	var newMappingCaptionForm = Ext.create('metExploreViz.view.form.MappingCaptionForm', {
 					
 				    	itemId: 'mappingCaptionForm'+newId,
@@ -452,9 +453,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 					idColors.push(newId);
 			    }
 				);
-				
+
+				console.log('panel'+cond.replace(this.regexpPanel, ""));
 				var newConditionPanel = Ext.create('Ext.panel.Panel', {
-			    	id: 'panel'+cond.replace('.',''),
+			    	id: 'panel'+cond.replace(this.regexpPanel, ""),
 			    	border:false,
 			    	width: '100%',
 				    bodyBorder: false,
@@ -477,8 +479,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		            tooltip:'You must choose a condition to add it',
 		            //formBind: true,
 		            margin:'5 5 5 0',
-		            id: 'delCondition'+cond.replace('.',''),
-		            action: 'delCondition'+cond.replace('.',''),     
+		            id: 'delCondition'+cond.replace(this.regexpPanel, ""),
+		            action: 'delCondition'+cond.replace(this.regexpPanel, ""),     
 				    handler: function() {
 				        var container = this.findParentBy(function (component)
 						{
@@ -499,14 +501,14 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				var refreshColorButton = Ext.create('Ext.Button', {
 				    iconCls:'refresh',
 		            margin:'5 5 5 0',
-		            id: 'refreshColor'+cond.replace('.',''),
-		            action: 'refreshColor'+cond.replace('.',''),     
+		            id: 'refreshColor'+cond.replace(this.regexpPanel, ""),
+		            action: 'refreshColor'+cond.replace(this.regexpPanel, ""),     
 				    handler: function() {
 				        var mapping = mapp;
 				    	var colorStore = networkVizSession.getColorMappingsSet();
 						if(type=="discrete"){
 							colorStore.forEach(function(color){
-								var newId = color.getName().toString().replace(".", "_");
+								var newId = color.getName().toString().replace(this.regexpPanel, "_");
 								if(Ext.getCmp("selectConditionForm").down("#hidden"+newId)!=null){
 									if(color.getValue()!=Ext.getCmp("selectConditionForm").down("#hidden"+newId).lastValue){
 										// PERF: Must be changed to set only the color
@@ -519,7 +521,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 						else
 						{
 							colorStore.forEach(function(color){
-								var newId = color.getName().toString().replace(".", "_");
+								var newId = color.getName().toString().replace(this.regexpPanel, "_");
 								if(Ext.getCmp("selectConditionForm").down("#hidden"+newId)!=null){
 									if(color.getValue()!=Ext.getCmp("selectConditionForm").down("#hidden"+newId).lastValue){
 										// PERF: Must be changed to set only the color
