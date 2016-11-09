@@ -1953,15 +1953,15 @@ metExploreD3.GraphMapping = {
 		metExploreD3.GraphLink.refreshLink('viz', session, linkStyle, metaboliteStyle);					
 	},
 
-	launchAfterMappingFunction:function(mappingTitle, func) {
-        var mapping = _metExploreViz.getMappingByName(mappingTitle); 
+	launchAfterMappingFunction:function(mappingId, func) {
+        var mapping = _metExploreViz.getMappingById(mappingId); 
         if (mapping !== null) {
            // the variable is defined
            func(mapping);
            return;
         }
         var that = this;
-        setTimeout(function(){that.launchAfterMappingFunction(mappingTitle, func);}, 100);    
+        setTimeout(function(){that.launchAfterMappingFunction(mappingId, func);}, 100);    
     },
 
     onloadMapping : function(mapping, func){
@@ -1972,12 +1972,9 @@ metExploreD3.GraphMapping = {
     * @param {} conditionName : Condition choosed by the user
     */
     removeMappingData : function(mappingObj) {
-        this.onloadMapping(mappingObj.get('title'), function(mapping){
+        this.onloadMapping(mappingObj.get('id'), function(mapping){
 	        metExploreD3.fireEventArg('selectConditionForm', "removeMapping", mapping);
-	        	// metExploreD3.fireEventArg('selectConditionForm', "closeMapping", null);
-	        	
-
-	        
+	        	// metExploreD3.fireEventArg('selectConditionForm', "closeMapping", null);	        
     	});
      /*   var array = [];
         _metExploreViz.getMappingsSet().forEach(function(map){
@@ -2004,9 +2001,8 @@ metExploreD3.GraphMapping = {
 					mappingJSON.mappings.forEach(function(condition){
 			        	conds.push(condition.name);
 			        });
-		   			
-		   			var mapping = new Mapping(mappingJSON.name, conds, mappingJSON.targetLabel);
-					
+		   			var mapping = new Mapping(mappingJSON.name, conds, mappingJSON.targetLabel, mappingJSON.id);
+							                
 					_metExploreViz.addMapping(mapping);
 
 	        		metExploreD3.GraphMapping.generateMapping(mapping, mappingJSON.mappings);

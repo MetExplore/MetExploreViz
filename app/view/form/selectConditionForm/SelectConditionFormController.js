@@ -183,7 +183,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		 			
 	        }
         	metExploreD3.fireEventArg('selectMappingVisu', "removemapping", mapping);
-        	_metExploreViz.removeMapping(mapping.getName()); 
+        	_metExploreViz.removeMapping(mapping.getId()); 
 	    }
 
 	}
