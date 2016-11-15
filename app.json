@@ -225,8 +225,7 @@
             "bundle": true
         },
         {
-            "path": "metexploreviz.js",
-            "bundle": true
+            "path": "metexploreviz.js"
         },
         {
             "path": "resources/lib/d3.js/d3.min.js",
