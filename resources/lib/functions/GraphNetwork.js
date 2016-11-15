@@ -448,14 +448,14 @@ metExploreD3.GraphNetwork = {
 		var maxDim = Math.max(maxDimRea, maxDimMet);
 		// Initiate the D3 force drawing algorithm
 		var force = d3.layout.force().friction(0.90).gravity(0.06)
-				.charge(-150)
-				.linkDistance(function(link){
-					if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-						return linkStyle.getSize()/2+maxDim;
-					else
-						return linkStyle.getSize()+maxDim;
-				})
-				.size([ w, h ]);
+			.charge(-150)
+			.linkDistance(function(link){
+				if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+					return linkStyle.getSize()/2+maxDim;
+				else
+					return linkStyle.getSize()+maxDim;
+			})
+			.size([ w, h ]);
 		
 		
 		var session = _metExploreViz.getSessionById(panel);
@@ -524,27 +524,28 @@ metExploreD3.GraphNetwork = {
 			var that = metExploreD3.GraphNetwork;
 			
 			metExploreD3.GraphNetwork.zoomListener = d3.behavior
-					.zoom()
-					.x( xScale )
-					.y( yScale )
-					.scaleExtent([ 0.01, 30 ])
-					.on("zoom", function(e){
+				.zoom()
+				.x( xScale )
+				.y( yScale )
+				.scaleExtent([ 0.01, 30 ])
+				.on("zoom", function(e){
 
-						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+					
+					if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+					else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
-						var session = _metExploreViz.getSessionById(this.parentNode.id);
-						
-						if(d3.event.sourceEvent !=null)
-							if(d3.event.sourceEvent.type=='wheel')
-								session.setResizable(false);
-		        	
-		        		// if visualisation is actived we add item to menu
-		        		if(session.isActive()){
-							that.zoom(this.parentNode.id);
-						}
-					});
+					var session = _metExploreViz.getSessionById(this.parentNode.id);
+					
+					if(d3.event.sourceEvent !=null)
+						if(d3.event.sourceEvent.type=='wheel')
+							session.setResizable(false);
+	        	
+	        		// if visualisation is actived we add item to menu
+	        		if(session.isActive()){
+						that.zoom(this.parentNode.id);
+					}
+				});
+
 			var scale = new Scale(panel);
 			scale.setScale(xScale, yScale, 1, 1, 1, metExploreD3.GraphNetwork.zoomListener.scale(), metExploreD3.GraphNetwork.zoomListener);
 
@@ -760,6 +761,7 @@ metExploreD3.GraphNetwork = {
 							}
 						}
 					}
+					
 					d3.event.target.clear();
 						d3.select(this).call(d3.event.target);
 						var scale = metExploreD3.getScaleById(panel);
