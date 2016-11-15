@@ -1336,9 +1336,11 @@ metExploreD3.GraphNode = {
 		if (networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt()) {
 			var minDim = Math.min(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
 			// We define the text for a metabolie WITHOUT the coresponding SVG image 
-			metExploreD3.GraphNode.node
+			metExploreD3.GraphNode.metabolites =metExploreD3.GraphNode.node
 				.filter(function(d) { return d.getLabelVisible() == true; })
-				.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
+				.filter(function(d) { return d.getBiologicalType() == 'metabolite'; });
+
+			metExploreD3.GraphNode.metabolites
 				.filter(function(d) { return d.getSvg() == "undefined" || d.getSvg()==undefined || d.getSvg()==""; })
 				.append("svg:text")
 		        .attr("fill", "black")
@@ -1361,12 +1363,6 @@ metExploreD3.GraphNode = {
 				.style("stroke-width", 1)
 				.style("stroke", "white")
 				.style("stroke-opacity", "0.7")
-				// 	function(d) {
-				// 		return Math.min(
-				// 			(minDim) / 2,
-				// 			((minDim - 3)/ this.getComputedTextLength() * 10) / 2
-				// 		)+ "px";
-				// })
 				.attr("dy", ".4em")
 				.style("font-weight", 'bold')
 				.style("pointer-events", 'none')
@@ -1374,9 +1370,7 @@ metExploreD3.GraphNode = {
 
 			// We define the text for a metabolie WITH the coresponding SVG image 
 			// Text definition
-			metExploreD3.GraphNode.node
-				.filter(function(d) { return d.getLabelVisible() == true; })
-				.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
+			metExploreD3.GraphNode.metabolites
 				.filter(function(d) { return d.getSvg() != "undefined" && d.getSvg()!=undefined && d.getSvg()!=""; })
 				.append("svg:text")
 		        .attr("fill", "black")
@@ -1411,11 +1405,7 @@ metExploreD3.GraphNode = {
 				.attr("y",minDim/2+3);
 
 			// Image definition
-			metExploreD3.GraphNode.node
-				.filter(
-					function(d) {
-						return (d.getBiologicalType() == 'metabolite' && d.getSvg() != "undefined" && d.getSvg()!=undefined && d.getSvg()!="");
-					})
+			metExploreD3.GraphNode.metabolites
 				.append("svg")
 				.attr(
 					"viewBox",
