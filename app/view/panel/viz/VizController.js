@@ -101,22 +101,35 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							text : 'Remove the node',
 							hidden : false,
 							iconCls:"removeNode",
-							handler : function(){ metExploreD3.GraphNetwork.removeOnlyClickedNode(metExploreD3.GraphNode.selectNodeData(target.parentNode), "viz"); }	
+							handler : function(){
+								console.log(target);
+							 	metExploreD3.GraphNetwork.removeOnlyClickedNode(metExploreD3.GraphNode.selectNodeData(target.parentNode), "viz"); 
+							}	
 						},{
 							text : 'Side compound (duplicate)',
 							hidden : false,
 							iconCls:"duplicate-sideCompounds",
-							handler : function(){ metExploreD3.GraphNetwork.duplicateASideCompoundSelected(target.parentNode, "viz"); }
+							handler : function(){ 
+								console.log(target);
+								metExploreD3.GraphNetwork.duplicateASideCompoundSelected(target.parentNode, "viz"); 
+							}
 						},{
 							text : 'Change name',
 							hidden : false,
 							iconCls:"edit",
-							handler : function(){ metExploreD3.GraphNode.changeName(target.parentNode); }
+							handler : function(){ 
+								console.log(target);
+								metExploreD3.GraphNode.changeName(target.parentNode); 
+								
+							}
 						},{
 							text : 'Select neighbours (N+select)',
 							hidden : false,
 							iconCls:"neighbours",
-							handler : function(){ metExploreD3.GraphNode.selectNeighbours(_metExploreViz.getSessionById('viz').getD3Data().getNodeById(target.id), "viz"); }
+							handler : function(){ 
+								console.log(target);
+								metExploreD3.GraphNode.selectNeighbours(metExploreD3.GraphNode.selectNodeData(target.parentNode), "viz"); 
+							}
 						}
 						,{
 							text : 'See more information',
@@ -126,7 +139,8 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
 								var id = target.id;
 								var theNode = _metExploreViz.getSessionById('viz').getD3Data().getNodeById(id);
-								metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
+								console.log(theNode);
+								metExploreD3.fireEventParentWebSite("seeMoreInformation", metExploreD3.GraphNode.selectNodeData(target.parentNode));
 							}
 						}
 						]
