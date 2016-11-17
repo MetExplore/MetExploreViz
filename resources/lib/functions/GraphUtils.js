@@ -358,8 +358,8 @@ metExploreD3.GraphUtils = {
 				  var newSources = metExploreD3.GraphUtils.getSources(doc, emptySvgDeclarationComputed, prefix);
 				  // because of prototype on NYT pages
 				  for (var i = 0; i < newSources.length; i++) {
-				  	
-				    if(newSources[i].classe=="D3viz")
+				  	console.log(typeof(newSources[i].classe));
+				    if(newSources[i].classe.includes("D3viz"))
 				      SVGSources.push(newSources[i]);
 				  }
 				});
@@ -374,7 +374,7 @@ metExploreD3.GraphUtils = {
 				} else if (SVGSources.length > 0) {
 				  return metExploreD3.GraphUtils.download(SVGSources[0], type);
 				} else {
-				  alert("The Crowbar couldn’t find any SVG nodes.");
+				  alert("Couldn’t find any SVG nodes.");
 				}
 			}, 100);
 		}
@@ -1092,7 +1092,7 @@ metExploreD3.GraphUtils = {
 		  var newSources = metExploreD3.GraphUtils.getSources(doc, emptySvgDeclarationComputed, prefix);
 		  // because of prototype on NYT pages
 		  for (var i = 0; i < newSources.length; i++) {
-		  	if(newSources[i].classe=="D3viz")
+		  	if(newSources[i].classe.includes("D3viz"))
 		   	{
 		   		SVGSources.push(newSources[i]);
 		   	}
