@@ -8,6 +8,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
         "metExploreViz.view.panel.comparePanel.ComparePanel",
 
         'metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu',
+        'metExploreViz.view.menu.viz_HelpMenu.Viz_HelpMenu',
         'metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenu',
         'metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenu',
         'metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu',
@@ -116,6 +117,15 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 id:'vizSaveMenuID',
                                 reference:'vizSaveMenuID',
                                 disabled:true,
+                                hidden:false,
+                                padding:'0 0 0 0'
+                          },
+                          {
+                                text: 'Help', 
+                                scale: 'large',
+                                menu:{xtype: 'vizHelpMenu'},
+                                id:'vizHelpMenuID',
+                                reference:'vizHelpMenuID',
                                 hidden:false,
                                 padding:'0 0 0 0'
                           },

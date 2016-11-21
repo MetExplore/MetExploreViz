@@ -183,7 +183,22 @@ p {
     background-image:url(../icons/folder_go.png);
 }
 .info {
-    background-image:url(../icons/information.png);
+    background-image:url(../icons/info.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.help {
+    background-image:url(../icons/help.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.documentation {
+    background-image:url(../icons/documentation.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
 }
 .cart {
     background-image:url(../icons/cart.png);
@@ -191,8 +206,8 @@ p {
 .del {
      background-image: url(../icons/delete.svg);
     background-size: 100% 100%;
-  background-position: 0% 0%;
-  background-repeat: no-repeat;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
 }
 .logoViz {
      background-image: url(../icons/metexplore-logo.svg);
