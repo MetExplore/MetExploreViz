@@ -119,6 +119,21 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 hidden:false,
                                 padding:'0 0 0 0'
                           },
+                          {
+                                xtype:'button'/*,text: 'Copy network'*/,
+                                overflowText: 'MetExploreViz documentation',
+                                scale: 'large',
+                                reference:'documentation',
+                                tooltip:'Link to MetExploreViz website',
+                                iconCls:'documentation',                              
+                                border: false,
+                                padding:'0 0 0 0',
+                                listeners: {
+                                    click : function() {
+                                        window.open('http://metexplore.toulouse.inra.fr/metexploreViz/doc/');
+                                    }
+                                }
+                            },
                            '-',
                            {
                                 xtype:'button'/*,text: 'Copy network'*/,
