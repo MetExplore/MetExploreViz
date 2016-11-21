@@ -358,8 +358,8 @@ metExploreD3.GraphUtils = {
 				  var newSources = metExploreD3.GraphUtils.getSources(doc, emptySvgDeclarationComputed, prefix);
 				  // because of prototype on NYT pages
 				  for (var i = 0; i < newSources.length; i++) {
-				  	
-				    if(newSources[i].classe=="D3viz")
+				  	console.log(typeof(newSources[i].classe));
+				    if(newSources[i].classe.includes("D3viz"))
 				      SVGSources.push(newSources[i]);
 				  }
 				});
@@ -374,7 +374,7 @@ metExploreD3.GraphUtils = {
 				} else if (SVGSources.length > 0) {
 				  return metExploreD3.GraphUtils.download(SVGSources[0], type);
 				} else {
-				  alert("The Crowbar couldn’t find any SVG nodes.");
+				  alert("Couldn’t find any SVG nodes.");
 				}
 			}, 100);
 		}
@@ -1092,7 +1092,7 @@ metExploreD3.GraphUtils = {
 		  var newSources = metExploreD3.GraphUtils.getSources(doc, emptySvgDeclarationComputed, prefix);
 		  // because of prototype on NYT pages
 		  for (var i = 0; i < newSources.length; i++) {
-		  	if(newSources[i].classe=="D3viz")
+		  	if(newSources[i].classe.includes("D3viz"))
 		   	{
 		   		SVGSources.push(newSources[i]);
 		   	}
@@ -1390,11 +1390,30 @@ metExploreD3.GraphUtils = {
 				networkJSON +="\ndirected 1\n";
 				var i = 0;
 				var corresp = {};
+				var sideCompounds = {};
+
 			   	_metExploreViz.getSessionById('viz').getD3Data().getNodes().forEach(function(node){
 				    corresp[node.getId()] = i;
 					networkJSON+="node [\n";
 						networkJSON+="id "+i+"\n";
-						networkJSON+='label "'+node.getName()+'"\n';
+						if(node.getIsSideCompound()){
+							console.log(sideCompounds[node.getName()]);
+							if(sideCompounds[node.getName()]!=undefined)
+							{
+								console.log(sideCompounds[node.getName()]);
+								sideCompounds[node.getName()]++;
+							}
+							else
+							{
+								sideCompounds[node.getName()]=1;
+								console.log(sideCompounds[node.getName()]);
+							}
+							networkJSON+='label "'+node.getName()+'('+sideCompounds[node.getName()]+')"\n';
+							console.log('label "'+node.getName()+sideCompounds[node.getName()]);
+						}
+						else{
+							networkJSON+='label "'+node.getName()+'"\n';
+						}
 
 						networkJSON+="graphics [\n";
 							networkJSON+="x "+node.x+"\n";

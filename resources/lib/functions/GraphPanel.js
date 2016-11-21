@@ -280,7 +280,7 @@ metExploreD3.GraphPanel = {
 				.attr('x', $("#viz").width() - 88)
 				.attr('y', $("#viz").height() - 70);
 
-			d3.select("#metexplore").text('metExploreViz').attr('x', $("#viz").width() - 112).attr(
+			d3.select("#metexplore").text('MetExploreViz').attr('x', $("#viz").width() - 112).attr(
 					'y',  $("#viz").height() - 10);	    
 		}
 	},

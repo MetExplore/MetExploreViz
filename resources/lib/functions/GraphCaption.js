@@ -200,7 +200,7 @@ metExploreD3.GraphCaption = {
 		d3.select("#viz").select("#D3viz")
 			.append("svg:text")
 			.attr('id', 'metexplore')
-			.text('metExploreViz')
+			.text('MetExploreViz')
 			.attr('x', $("#viz").width() - 130)
 			.attr('y', $("#viz").height() - 10);
 

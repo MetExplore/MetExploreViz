@@ -1411,7 +1411,6 @@ metExploreD3.GraphNetwork = {
     */
     graphAlignment : function(panel){
 		var session = _metExploreViz.getSessionById(panel);
-
 		if(panel!="viz")
 		{
 			var mainSession = _metExploreViz.getSessionById("viz");
@@ -1446,7 +1445,7 @@ metExploreD3.GraphNetwork = {
 									_MyThisGraphNode.selection(node, panel);
 								}
 								var colorMain = d3.select(this).select('rect.'+d.getBiologicalType()).style("fill");
-								
+							
 								if(color!=colorMain){
 									d3.select(nodeLinked)
 										.select('rect.'+d.getBiologicalType())
@@ -1480,6 +1479,52 @@ metExploreD3.GraphNetwork = {
 
 									session.setMappingDataType(mainSession.getMappingDataType());
 									session.setMapped(mainSession.isMapped());
+								}
+								else
+								{
+									if(d3.select(this).select('rect.stroke')[0][0]!=null)
+									{
+										var colorStrokeMain = d3.select(this).select('rect.stroke').style("fill");
+
+										if(d.getBiologicalType() == 'reaction' )
+										{
+											d3.select(nodeLinked)
+												.attr("mapped","true")
+												.insert("rect", ":first-child")
+												.attr("class", "stroke")
+												.attr("width", parseInt(d3.select(this).select(".reaction").attr("width"))+10)
+												.attr("height", parseInt(d3.select(this).select(".reaction").attr("height"))+10)
+												.attr("rx", parseInt(d3.select(this).select(".reaction").attr("rx"))+5)
+												.attr("ry",parseInt(d3.select(this).select(".reaction").attr("ry"))+5)
+												.attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select(".reaction").attr("width"))+10) / 2 + ",-"
+																		+ parseInt(parseInt(d3.select(this).select(".reaction").attr("height"))+10) / 2
+																		+ ")")
+												.style("opacity", '0.5')
+												.style("fill", 'red');
+										}
+										else
+										{
+											if(d.getBiologicalType() == 'metabolite')
+											{
+												
+												d3.select(nodeLinked)
+													.attr("mapped","true")
+													.insert("rect", ":first-child")
+													.attr("class", "stroke")
+													.attr("width", parseInt(d3.select(this).select(".metabolite").attr("width"))+10)
+													.attr("height", parseInt(d3.select(this).select(".metabolite").attr("height"))+10)
+													.attr("rx", parseInt(d3.select(this).select(".metabolite").attr("rx"))+5)
+													.attr("ry",parseInt(d3.select(this).select(".metabolite").attr("ry"))+5)
+													.attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select(".metabolite").attr("width"))+10) / 2 + ",-"
+																			+ parseInt(parseInt(d3.select(this).select(".metabolite").attr("height"))+10) / 2
+																			+ ")")
+													.style("opacity", '0.5')
+													.style("fill", 'red');
+											}
+										}
+										session.setMappingDataType(mainSession.getMappingDataType());
+										session.setMapped(mainSession.isMapped());	
+									}
 								}
 							}
 						});
