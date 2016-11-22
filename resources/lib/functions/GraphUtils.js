@@ -786,7 +786,7 @@ metExploreD3.GraphUtils = {
      * @param {} filename: default filename of the downloaded file
      */
     saveAsBinary: function(source, filename, type) {
-		var imgsrc = 'data:image/svg+xml;base64,'+ window.btoa(decodeURIComponent(encodeURIComponent(source.source)));
+		var imgsrc = 'data:image/svg+xml;base64,'+ window.btoa(unescape(encodeURIComponent(source.source)));
 
 		var canvas = document.createElement('canvas');
 		canvas.id = "canvas";
