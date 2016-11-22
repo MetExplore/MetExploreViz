@@ -2405,6 +2405,9 @@ metExploreD3.GraphNode = {
 	loadSideCompounds : function(sideCompounds, func) {
 	    var array = [];
 	  	sideCompounds.forEach(function(sideCompound){
+	  		var obj = {};
+	  		obj.value=sideCompound;
+			metExploreD3.fireEventParentWebSite("sideCompoundFromFile", obj);
 	    	var node = _metExploreViz.getSessionById("viz").getD3Data().getNodeByDbIdentifier(sideCompound);
 
 			if(node!=null){
