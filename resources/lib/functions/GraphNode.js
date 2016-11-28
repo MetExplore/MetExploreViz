@@ -578,8 +578,6 @@ metExploreD3.GraphNode = {
 			.filter(function(node){return d.getId()==node.getId();})
 			.each(function(node){  
 				session.addSelectedNode(node.getId()); 
-				if(node.getBiologicalType()=="reaction")
-					d3.select(this).select('text').style("fill","white");
 			});	
 		
 		// We define the text for a metabolie WITHOUT the coresponding SVG image 
@@ -641,39 +639,7 @@ metExploreD3.GraphNode = {
             	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 					.selectAll("g.node")
 					.filter(function(node){return d.getId()==node.getId();})
-		            .append("svg:text")
-	            	.attr("fill", "black")
-		            .attr("class", function(d) {
-							return d.getBiologicalType();
-						})
-					.each(function(d) { 
-						var el = d3.select(this);
-					    var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel());
-						name = name.split(' ');
-						el.text('');
-						for (var i = 0; i < name.length; i++) {
-					        var nameDOMFormat = $("<div/>").html(name[i]).text();
-			        var tspan = el.append('tspan').text(nameDOMFormat);
-					        if (i > 0)
-					            tspan.attr('x', 0).attr('dy', '5');
-					    }
-					})
-					.style("font-size",metaboliteStyle.getFontSize())
-					.style("paint-order","stroke")
-					.style("stroke-width",  1)
-					.style("stroke", "white")
-					.style("stroke-opacity", "0.7")
-					// 	function(d) {
-					// 		return Math.min(
-					// 			(minDim) / 2,
-					// 			((minDim - 3)/ this.getComputedTextLength() * 10) / 2
-					// 		)+ "px";
-					// })
-					.attr("dy", ".4em")
-					//.attr("y",+(3 / 4 * (minDim/2) ));
-					.style("font-weight", 'bold')
-					.style("pointer-events", 'none')
-					.attr("y",minDim/2+3);
+	            	.addNodeText(metaboliteStyle);
 
 
 			}
@@ -718,32 +684,7 @@ metExploreD3.GraphNode = {
 	        	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 					.selectAll("g.node")
 					.filter(function(node){return d.getId()==node.getId();})
-		            .append("svg:text")
-		            .attr("fill", "black")
-					.attr("class", function(d) {
-						return d.getBiologicalType();
-					})
-					// .text(function(d) { return d.getName(); })
-					.text(function(d) {
-						var text=$("<div/>").html(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())).text();
-						if(text=="")
-							var text=$("<div/>").html(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())).text();
-							// var text=$("<div/>").html(d.get(sessionMain.getDisplayNodeName())).text();
-
-						//text=text.replace(" ","<br>");
-						//console.log(text);
-						return text;
-					})
-					.style(
-						"font-size",//reactionStyle.getFontSize())
-						 function(d) {
-
-						 	if(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())=='NA')
-						 		return 6;
-						 	return Math.min(reactionStyle.getWidth(),(reactionStyle.getWidth() - reactionStyle.getWidth()/10)/ this.getComputedTextLength()* 10)+ "px";
-					})
-					.style("font-weight", 'bold')
-					.attr("dy", ".3em");
+					.addNodeText(reactionStyle);
 			}
 		} 
 	},
@@ -1340,37 +1281,7 @@ metExploreD3.GraphNode = {
 				.filter(function(d) { return d.getLabelVisible() == true; })
 				.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
 				.filter(function(d) { return d.getSvg() == "undefined" || d.getSvg()==undefined || d.getSvg()==""; })
-				.append("svg:text")
-		        .attr("fill", "black")
-		        .attr("class", function(d) { return d.getBiologicalType(); })
-				// .text(function(d) { return $("<div/>").html(d.get(sessionMain.getDisplayNodeName())).text(); })
-				.each(function(d) { 
-					var el = d3.select(this);
-				    var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel());
-					name = name.split(' ');
-					el.text('');
-					for (var i = 0; i < name.length; i++) {
-						var nameDOMFormat = $("<div/>").html(name[i]).text();
-				        var tspan = el.append('tspan').text(nameDOMFormat);
-				        if (i > 0)
-				            tspan.attr('x', 0).attr('dy', '5');
-				    }
-				})
-				.style("font-size",metaboliteStyle.getFontSize())
-				.style("paint-order","stroke")
-				.style("stroke-width", 1)
-				.style("stroke", "white")
-				.style("stroke-opacity", "0.7")
-				// 	function(d) {
-				// 		return Math.min(
-				// 			(minDim) / 2,
-				// 			((minDim - 3)/ this.getComputedTextLength() * 10) / 2
-				// 		)+ "px";
-				// })
-				.attr("dy", ".4em")
-				.style("font-weight", 'bold')
-				.style("pointer-events", 'none')
-				.attr("y",minDim/2+3);
+				.addNodeText(metaboliteStyle);
 
 			// We define the text for a metabolie WITH the coresponding SVG image 
 			// Text definition
@@ -1378,37 +1289,7 @@ metExploreD3.GraphNode = {
 				.filter(function(d) { return d.getLabelVisible() == true; })
 				.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
 				.filter(function(d) { return d.getSvg() != "undefined" && d.getSvg()!=undefined && d.getSvg()!=""; })
-				.append("svg:text")
-		        .attr("fill", "black")
-				.attr("class", function(d) { return d.getBiologicalType(); })
-				.each(function(d) { 
-					var el = d3.select(this);
-				    var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel());
-					name = name.split(' ');
-					el.text('');
-					for (var i = 0; i < name.length; i++) {
-				        var nameDOMFormat = $("<div/>").html(name[i]).text();
-				        var tspan = el.append('tspan').text(nameDOMFormat);
-				        if (i > 0)
-				            tspan.attr('x', 0).attr('dy', '7');
-				    }
-				})
-				.style("font-size",metaboliteStyle.getFontSize())
-				.style("paint-order","stroke")
-				.style("stroke-width",1)
-				.style("stroke", "white")
-				.style("stroke-opacity", "0.7")
-				// 	function(d) {
-				// 		return Math.min(
-				// 			(minDim) / 2,
-				// 			((minDim - 3)/ this.getComputedTextLength() * 10) / 2
-				// 		)+ "px";
-				// })
-				.attr("dy", ".4em")
-				//.attr("y",+(3 / 4 * (minDim/2) ));
-				.style("font-weight", 'bold')
-				.style("pointer-events", 'none')
-				.attr("y",minDim/2+3);
+				.addNodeText(metaboliteStyle);
 
 			// Image definition
 			metExploreD3.GraphNode.node
@@ -1531,30 +1412,7 @@ metExploreD3.GraphNode = {
 					.filter(function(d) {
 						return d.getBiologicalType() == 'reaction';
 					})
-					.append("svg:text")
-		            .attr("fill", "black")
-					.attr("class", function(d) {
-						return d.getBiologicalType();
-					})
-					.text(function(d) {
-						var text=$("<div/>").html(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())).text();
-						if(text=="")
-							var text=$("<div/>").html(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())).text();
-							// var text=$("<div/>").html(d.get(sessionMain.getDisplayNodeName())).text();
-
-						//text=text.replace(" ","<br>");
-						//console.log(text);
-						return text;
-					})
-					.style(
-						"font-size",//reactionStyle.getFontSize())
-						 function(d) {
-						 	if(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())=='NA')
-						 		return 6;
-						 	return Math.min(reactionStyle.getWidth(),(reactionStyle.getWidth() - reactionStyle.getWidth()/10)/ this.getComputedTextLength()* 10)+ "px";
-					})
-					.style("font-weight", 'bold')
-					.attr("dy", ".3em");
+					.addNodeText(reactionStyle);
 			
 		}
 
@@ -2226,37 +2084,7 @@ metExploreD3.GraphNode = {
 			metExploreD3.GraphNode.node.filter(function(d) { return d.getLabelVisible() == true; })
 				.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
 				.filter(function(d) { return d.getSvg() == "undefined" || d.getSvg()==undefined || d.getSvg()==""; })
-				.append("svg:text")
-		        .attr("fill", "black")
-		        .attr("class", function(d) { return d.getBiologicalType(); })
-				// .text(function(d) { return $("<div/>").html(d.get(sessionMain.getDisplayNodeName())).text(); })
-				.each(function(d) { 
-					var el = d3.select(this);
-				    var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel());
-					name = name.split(' ');
-					el.text('');
-					for (var i = 0; i < name.length; i++) {
-						var nameDOMFormat = $("<div/>").html(name[i]).text();
-				        var tspan = el.append('tspan').text(nameDOMFormat);
-				        if (i > 0)
-				            tspan.attr('x', 0).attr('dy', '5');
-				    }
-				})
-				.style("font-size",metaboliteStyle.getFontSize())
-				.style("paint-order","stroke")
-				.style("stroke-width", 1)
-				.style("stroke", "white")
-				.style("stroke-opacity", "0.7")
-				// 	function(d) {
-				// 		return Math.min(
-				// 			(minDim) / 2,
-				// 			((minDim - 3)/ this.getComputedTextLength() * 10) / 2
-				// 		)+ "px";
-				// })
-				.attr("dy", ".4em")
-				.style("font-weight", 'bold')
-				.style("pointer-events", 'none')
-				.attr("y",minDim/2+3);
+				.addNodeText(metaboliteStyle);
 
 			// We define the text for a metabolie WITH the coresponding SVG image 
 			// Text definition
@@ -2264,38 +2092,7 @@ metExploreD3.GraphNode = {
 				.filter(function(d) { return d.getLabelVisible() == true; })
 				.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
 				.filter(function(d) { return d.getSvg() != "undefined" && d.getSvg()!=undefined && d.getSvg()!=""; })
-				.append("svg:text")
-		        .attr("fill", "black")
-				.attr("class", function(d) { return d.getBiologicalType(); })
-				.each(function(d) { 
-					var el = d3.select(this);
-				    var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel());
-					name = name.split(' ');
-					el.text('');
-					for (var i = 0; i < name.length; i++) {
-				        var nameDOMFormat = $("<div/>").html(name[i]).text();
-				        var tspan = el.append('tspan').text(nameDOMFormat);
-				        if (i > 0)
-				            tspan.attr('x', 0).attr('dy', '7');
-				    }
-				})
-				.style("font-size",metaboliteStyle.getFontSize())
-				.style("paint-order","stroke")
-				.style("stroke-width", 1)
-				.style("stroke", "white")
-				.style("stroke-opacity", "0.7")
-
-				// 	function(d) {
-				// 		return Math.min(
-				// 			(minDim) / 2,
-				// 			((minDim - 3)/ this.getComputedTextLength() * 10) / 2
-				// 		)+ "px";
-				// })
-				.attr("dy", ".4em")
-				//.attr("y",+(3 / 4 * (minDim/2) ));
-				.style("font-weight", 'bold')
-				.style("pointer-events", 'none')
-				.attr("y",minDim/2+3);
+				.addNodeText(metaboliteStyle);
 
 			// Image definition
 			metExploreD3.GraphNode.node
@@ -2334,30 +2131,7 @@ metExploreD3.GraphNode = {
 					.filter(function(d) {
 						return d.getBiologicalType() == 'reaction';
 					})
-					.append("svg:text")
-		            .attr("fill", "black")
-					.attr("class", function(d) {
-						return d.getBiologicalType();
-					})
-					.text(function(d) {
-						var text=$("<div/>").html(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())).text();
-						if(text=="")
-							var text=$("<div/>").html(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())).text();
-							// var text=$("<div/>").html(d.get(sessionMain.getDisplayNodeName())).text();
-
-						//text=text.replace(" ","<br>");
-						//console.log(text);
-						return text;
-					})
-					.style(
-						"font-size",//reactionStyle.getFontSize())
-						 function(d) {
-						 	if(reactionStyle.getDisplayLabel(d, reactionStyle.getLabel())=='NA')
-						 		return 6;
-						 	return Math.min(reactionStyle.getWidth(),(reactionStyle.getWidth() - reactionStyle.getWidth()/10)/ this.getComputedTextLength()* 10)+ "px";
-					})
-					.style("font-weight", 'bold')
-					.attr("dy", ".3em");
+					.addNodeText(reactionStyle);
 			
 		}
 
