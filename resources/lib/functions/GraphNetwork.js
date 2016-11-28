@@ -2152,24 +2152,7 @@ metExploreD3.GraphNetwork = {
 					.filter(function(d) { return d.getLabelVisible() == true; })
 					.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
 					.filter(function(d) { return d.getSvg() == "undefined" || d.getSvg() == undefined || d.getSvg() == ""; })
-					.append("svg:text")
-			        .attr("fill", "black")
-			        .attr("class", function(d) { return d.getBiologicalType(); })
-					.text(function(d) { 
-						var name = d.getName();
-						if (d.getLabel()!=undefined) name = d.getLabel();
-						return $("<div/>").html(name).text(); 
-					})
-					.style(
-						"font-size",
-						function(d) {
-							return Math.min((2 * minDim/2), (2 * minDim/2 - 3) / this.getComputedTextLength()
-									* 10)
-									+ "px";
-						})
-					.attr("dy", ".3em")
-					.style("pointer-events", 'none')
-					.style("opacity",0.5);
+					.addNodeText(metaboliteStyle);
 
 				// We define the text for a metabolie WITH the coresponding SVG image 
 				// Text definition
@@ -2184,28 +2167,7 @@ metExploreD3.GraphNetwork = {
 					.filter(function(d) {
 							return d.getSvg() != "undefined" && d.getSvg() != undefined && d.getSvg() != "";
 						})
-					.append("svg:text")
-			        .attr("fill", "black")
-					.attr("class", function(d) {
-							return d.getBiologicalType();
-						})
-						// .text(function(d) { return d.getName(); })
-					.text(function(d) {
-							var name = d.getName();
-							if (d.getLabel()!=undefined) name = d.getLabel();
-							return $("<div/>").html(name).text();
-						})
-					.style(
-								"font-size",
-								function(d) {
-									return Math.min(
-													(minDim) / 2,
-													((minDim - 3)/ this.getComputedTextLength() * 10) / 2
-												)+ "px";
-								})
-					.attr("dy", ".3em")
-					.style("pointer-events", 'none')
-					.attr("y",+(3 / 4 * (minDim/2) ));
+					.addNodeText(metaboliteStyle);
 
 				// Image definition
 				node
@@ -2286,22 +2248,7 @@ metExploreD3.GraphNetwork = {
 					.filter(function(d) {
 						return d.getBiologicalType() == 'reaction';
 					})
-					.append("svg:text")
-		            .attr("fill", "black")
-					.attr("class", function(d) {
-						return d.getBiologicalType();
-					})
-					// .text(function(d) { return d.getName(); })
-					.text(function(d) {
-						var name = d.getName();
-						if (d.getLabel()!=undefined) name = d.getLabel();
-						return $("<div/>").html(name).text();
-					})
-					.style(
-							"font-size",
-							function(d) {
-								return Math.min(2 * minDim,(minDim - 2)/ this.getComputedTextLength()* 10)+ "px";
-							}).attr("dy", ".3em");
+					.addNodeText(metaboliteStyle);
 			}
 
 			if(isMapped!=undefined && isMapped!=false && isMapped!="false"){
