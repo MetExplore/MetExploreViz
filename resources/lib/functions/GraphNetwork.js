@@ -2660,27 +2660,17 @@ metExploreD3.GraphNetwork = {
 			metExploreD3.showMask(myMask);
 
 	        
-			metExploreD3.deferFunction(function() {			         
-				vis.selectAll("g.node")
-							.filter(function(d) {
-								if(theNode.querySelector("rect.metabolite")!=null)
-									return d.getId()==theNode.querySelector("rect.metabolite").id && d.isSelected() && d.getBiologicalType()=="metabolite";
-								else
-									return false;
-							})
-							.filter(function(d){
-								if(this.getAttribute("duplicated")==undefined) return true;
-								else return !this.getAttribute("duplicated");
-							})
-							.each(function(node){
-								if(metExploreD3.getMetabolitesSet()!=undefined){
-									var theMeta = metExploreD3.getMetaboliteById(metExploreD3.getMetabolitesSet(), node.getId());
-									theMeta.set("sideCompound", true);
-								}
-								node.setIsSideCompound(true);
-								metExploreD3.GraphNetwork.duplicateSideCompound(node, panel);
-								sideCompounds.push(node);
-							});
+			metExploreD3.deferFunction(function() {
+
+				if(!theNode.isDuplicated()){
+					if(metExploreD3.getMetabolitesSet()!=undefined){
+						var theMeta = metExploreD3.getMetaboliteById(metExploreD3.getMetabolitesSet(), theNode.getId());
+						theMeta.set("sideCompound", true);
+					}
+					theNode.setIsSideCompound(true);
+					metExploreD3.GraphNetwork.duplicateSideCompound(theNode, panel);
+					sideCompounds.push(theNode);
+				}
 
 
 				metExploreD3.hideMask(myMask);
