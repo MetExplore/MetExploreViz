@@ -358,7 +358,7 @@ metExploreD3.GraphUtils = {
 				  var newSources = metExploreD3.GraphUtils.getSources(doc, emptySvgDeclarationComputed, prefix);
 				  // because of prototype on NYT pages
 				  for (var i = 0; i < newSources.length; i++) {
-				  	console.log(typeof(newSources[i].classe));
+
 				    if(newSources[i].classe.includes("D3viz"))
 				      SVGSources.push(newSources[i]);
 				  }
@@ -854,13 +854,29 @@ metExploreD3.GraphUtils = {
     * Download the svg
     */
 	download : function(source, type) {
+
+	    var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+		var yyyy = today.getFullYear();
+
+		if(dd<10) {
+		    dd='0'+dd
+		} 
+
+		if(mm<10) {
+		    mm='0'+mm
+		} 
+
+		today = mm+'-'+dd+'-'+yyyy;
+
 		if(type=='jpeg' || type=='png')
-			metExploreD3.GraphUtils.saveAsBinary(source, "metabolicNetwork."+type, type);
+			metExploreD3.GraphUtils.saveAsBinary(source, "MetExploreViz_"+today+"."+type, type);
 		
 		if(type=='svg'){
 			var blob = new Blob([source.source], {type: "data:image/svg+xml"}); // pass a useful mime type here
 			var url = URL.createObjectURL(blob);
-			metExploreD3.GraphUtils.saveAsSvg(url, "metabolicNetwork.svg");
+			metExploreD3.GraphUtils.saveAsSvg(url, biosource+"_"+today+".svg");
 		}
 	
 		metExploreD3.GraphUtils.cleanup();
@@ -1182,7 +1198,24 @@ metExploreD3.GraphUtils = {
 				var link = document.createElement('a');
 				if (typeof link.download === 'string') {
 				    link.href = url;
-				    link.download = "save.dot";
+
+				    var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1; //January is 0!
+					var yyyy = today.getFullYear();
+
+					if(dd<10) {
+					    dd='0'+dd
+					} 
+
+					if(mm<10) {
+					    mm='0'+mm
+					} 
+
+					today = mm+'-'+dd+'-'+yyyy;
+
+				    link.download = "MetExploreViz_"+today+".dot";
+
 				    //Firefox requires the link to be in the body
 				    document.body.appendChild(link);
 				    
@@ -1360,7 +1393,25 @@ metExploreD3.GraphUtils = {
 				var link = document.createElement('a');
 				if (typeof link.download === 'string') {
 				    link.href = url;
-				    link.download = "save.json";
+
+
+				    var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1; //January is 0!
+					var yyyy = today.getFullYear();
+
+					if(dd<10) {
+					    dd='0'+dd
+					} 
+
+					if(mm<10) {
+					    mm='0'+mm
+					} 
+
+					today = mm+'-'+dd+'-'+yyyy;
+
+				    link.download = "MetExploreViz_"+today+".json";
+
 				    //Firefox requires the link to be in the body
 				    document.body.appendChild(link);
 				    
@@ -1397,19 +1448,15 @@ metExploreD3.GraphUtils = {
 					networkJSON+="node [\n";
 						networkJSON+="id "+i+"\n";
 						if(node.getIsSideCompound()){
-							console.log(sideCompounds[node.getName()]);
 							if(sideCompounds[node.getName()]!=undefined)
 							{
-								console.log(sideCompounds[node.getName()]);
 								sideCompounds[node.getName()]++;
 							}
 							else
 							{
 								sideCompounds[node.getName()]=1;
-								console.log(sideCompounds[node.getName()]);
 							}
 							networkJSON+='label "'+node.getName()+'('+sideCompounds[node.getName()]+')"\n';
-							console.log('label "'+node.getName()+sideCompounds[node.getName()]);
 						}
 						else{
 							networkJSON+='label "'+node.getName()+'"\n';
@@ -1457,7 +1504,23 @@ metExploreD3.GraphUtils = {
 				var link = document.createElement('a');
 				if (typeof link.download === 'string') {
 				    link.href = url;
-				    link.download = "save.gml";
+
+				    var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1; //January is 0!
+					var yyyy = today.getFullYear();
+
+					if(dd<10) {
+					    dd='0'+dd
+					} 
+
+					if(mm<10) {
+					    mm='0'+mm
+					} 
+
+					today = mm+'-'+dd+'-'+yyyy;
+
+				    link.download = "MetExploreViz_"+today+".gml";
 				    //Firefox requires the link to be in the body
 				    document.body.appendChild(link);
 				    
