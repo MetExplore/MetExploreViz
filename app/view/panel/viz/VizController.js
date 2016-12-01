@@ -104,7 +104,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							hidden : false,
 							iconCls:"removeNode",
 							handler : function(){
-								console.log(target);
 							 	metExploreD3.GraphNetwork.removeOnlyClickedNode(theNode, "viz"); 
 							}	
 						},{
@@ -112,7 +111,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							hidden : !isMetabolite,
 							iconCls:"duplicate-sideCompounds",
 							handler : function(){ 
-								console.log(target);
 								metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz"); 
 							}
 						},{
@@ -120,7 +118,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							hidden : false,
 							iconCls:"edit",
 							handler : function(){ 
-								console.log(target);
 								metExploreD3.GraphNode.changeName(theNode); 
 							}
 						},{
@@ -128,7 +125,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							hidden : false,
 							iconCls:"neighbours",
 							handler : function(){ 
-								console.log(target);
 								metExploreD3.GraphNode.selectNeighbours(theNode, "viz"); 
 							}
 						}
