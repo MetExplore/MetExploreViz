@@ -282,6 +282,10 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/model/Pathway.js",
+            "bundle": true
+        },
+        {
             "path": "resources/lib/model/Compartment.js",
             "bundle": true
         },
@@ -646,7 +650,7 @@
      * deltas between updates.
      */
     
-    "archivePath": "archive"
+    "archivePath": "archive",
     
 
 
@@ -698,5 +702,5 @@
      * Uniquely generated id for this application, used as prefix for localStorage keys.
      * Normally you should never change this value.
      */
-    // "id": "c2a09d62-4072-4cd8-93fd-00718ff8a8f2"
+    "id": "c2a09d62-4072-4cd8-93fd-00718ff8a8f2"
 }

@@ -1119,6 +1119,7 @@ metExploreD3.GraphNetwork = {
 								if(nbComp.length<2)
 									group = nbComp[0];
 							}
+							console.log(group);
 							if(group!=null)
 					    	{
 					    		var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
@@ -1222,6 +1223,8 @@ metExploreD3.GraphNetwork = {
 		metExploreD3.GraphLink.tick(panel, scale);
 		metExploreD3.GraphNode.tick(panel);
 	},
+
+
 	initCentroids : function(){
 		//d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1}).style("fill", 'red');
 
@@ -1294,7 +1297,7 @@ metExploreD3.GraphNetwork = {
 		else
 		{
 			networkData.getPathways().forEach(function(pathway){
-				components.push({"id":pathway,x:2,y:2});
+				components.push({"id":pathway.identifier,x:2,y:2});
 			});
 
 			var links = [];

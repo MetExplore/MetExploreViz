@@ -311,7 +311,7 @@ var metExploreD3 = {
 
                 var xCenter = wBegin+(mod * wDiv);
                 var yCenter = hBegin+(alt * hDiv);
-                var object = {key:pathway, center:{x:xCenter, y:yCenter}};
+                var object = {key:pathway.getIdentifier(), center:{x:xCenter, y:yCenter}};
                 pathwayGroup.push(object);
             }
         );

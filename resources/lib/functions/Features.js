@@ -14,7 +14,7 @@ metExploreD3.Features = {
             "layouts":
             {
                 description: "layouts",
-                enabledTo: ["fjourdan"]
+                enabledTo: ["cfrainay"]
             },
 			"algorithm":
 			{

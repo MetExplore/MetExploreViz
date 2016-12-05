@@ -94,6 +94,23 @@ NetworkData.prototype = {
         
     },
 
+    getCompartmentById: function(id){
+        var allCompartments=[];
+        allCompartments=this.compartments;
+        //console.log(this.data.nodes);
+        var comp;
+        for(i=0;i<allCompartments.length;i++)
+        {
+            if(allCompartments[i].getId()==(id))
+            {
+                comp=allCompartments[i];
+                return comp;
+            }
+        }
+        return null;
+        
+    },
+
     sortCompartments:function()
     {
         this.compartments.sort(function (a, b) {
@@ -131,7 +148,23 @@ NetworkData.prototype = {
         var comp;
         for(i=0;i<allPathways.length;i++)
         {
-            if(allPathways[i]==(name))
+            if(allPathways[i].getName()==(name))
+            {
+                comp=allPathways[i];
+                return comp;
+            }
+        }
+        return null;
+    },
+
+    getPathwayById: function(id){
+        var allPathways=[];
+        allPathways=this.pathways;
+        //console.log(this.data.nodes);
+        var comp;
+        for(i=0;i<allPathways.length;i++)
+        {
+            if(allPathways[i].getId()==(id))
             {
                 comp=allPathways[i];
                 return comp;
@@ -140,13 +173,13 @@ NetworkData.prototype = {
         return null;
         
     },
-
+    
     sortPathways:function()
     {
         this.pathways.sort(function (a, b) {
-            if (a > b)
+            if (a.name > b.name)
               return 1;
-            if (a < b)
+            if (a.name < b.name)
               return -1;
             // a doit être égale à b
             return 0;
@@ -154,10 +187,11 @@ NetworkData.prototype = {
     },
 
     addPathway:function(name){
-      if(this.pathways == undefined)
-        this.pathways = [];
-
-      this.pathways.push(name);
+        if(this.pathways == undefined)
+            this.pathways = [];
+        
+        var object = new Pathway(this.pathways.length, name);
+        this.pathways.push(object);
     },
 
     containsNode: function(id)
