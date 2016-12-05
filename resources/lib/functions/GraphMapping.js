@@ -170,7 +170,6 @@ metExploreD3.GraphMapping = {
 	* This function will assignmapping value to each nodes in datas
 	*/
 	mapNodeData: function(mapping, lines) {
-		console.log(lines);
 		var session = _metExploreViz.getSessionById('viz');
 		var force = session.getForce();
 		force.stop(); 
@@ -1129,7 +1128,6 @@ metExploreD3.GraphMapping = {
 							else
 								var node = networkData.getNodeByDbIdentifier(map.getNode());
 
-							console.log(node);
 							if(node!=undefined){
 								var mapNode = new MappingData(node, mapping.getName(), map.getConditionName(), map.getMapValue());
 								node.addMappingData(mapNode);
@@ -1422,12 +1420,6 @@ metExploreD3.GraphMapping = {
 			.transition().duration(3000)
 			.attr("mapped", color)
 			.style("fill", color)
-			.each(function(node){
-				if(node.getBiologicalType()=="reaction"){
-					var colorText = metExploreD3.GraphUtils.chooseTextColor(contextColor);
-					d3.select(this).select('text').style("fill", colorText);
-				}
-			});	
 	},
 
 	/***********************************************
@@ -1562,9 +1554,7 @@ metExploreD3.GraphMapping = {
 							      //                     .transition().duration(2000)
 							      //                     .attr("mapped", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")")
 							      //                     .style("fill", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")");
-
-							                        var color = metExploreD3.GraphUtils.chooseTextColor(colorScale(parseFloat(map.getMapValue())));
-													d3.select(this).select('text').style("fill", color);  
+ 
 													session.addSelectedNode(d.getId());    	
 								                }
 											}

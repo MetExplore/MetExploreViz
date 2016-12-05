@@ -590,11 +590,6 @@ metExploreD3.GraphNode = {
 			.filter(function(node){return d.getId()==node.getId();})
 			.each(function(node){ 
 				session.removeSelectedNode(node.getId()); 
-				if(node.getBiologicalType()=="reaction"){
-					var rgb;
-					var color = metExploreD3.GraphUtils.chooseTextColor(this.style.getPropertyValue("fill"));
-					d3.select(this).select('text').style("fill", color);
-				}
 			});
 	},
 
