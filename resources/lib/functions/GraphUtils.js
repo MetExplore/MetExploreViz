@@ -564,7 +564,8 @@ metExploreD3.GraphUtils = {
 
 				var allElements;
 
-				d3.select(clone).select("#graphComponent").selectAll("g.node")
+				var d3Clone = d3.select(clone);
+				d3Clone.select("#graphComponent").selectAll("g.node")
 					.select(".structure_metabolite")
 					.each(function(){
 						var url = this.firstChild.getAttribute("href");
@@ -602,7 +603,7 @@ metExploreD3.GraphUtils = {
 					}
 					);
 								
-				d3.select(clone).select(".logoViz")
+				d3Clone.select(".logoViz")
 					.each(function(){
 						var url = this.firstChild.getAttribute("href");
 		      			if (window.XDomainRequest) {
@@ -633,8 +634,12 @@ metExploreD3.GraphUtils = {
 						}
 					}
 					);
-
-						
+					
+				d3Clone.selectAll(".locker, .fontSelected")
+					.each(function(){
+						this.parentNode.removeChild(this);
+					}
+					);
 
 				allElements = metExploreD3.GraphUtils.setInlineStyles(clone, emptySvgDeclarationComputed, allElements);
 
@@ -644,18 +649,18 @@ metExploreD3.GraphUtils = {
 				// Version to catch all nodes in the picture
 				// d3.select(clone).select("#graphComponent").attr("transform",  "translate(0, 0) scale(1)");
 
-				var rectGraphComponent = d3.select(clone).select("#graphComponent")[0][0].getBoundingClientRect();
+				var rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
 				
 				var translateX = rectSvg.left+100 - rectGraphComponent.left;
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
 
-				d3.select(clone).select("#graphComponent").attr("transform",  "translate(" + translateX + "," + translateY + ") scale(1)");
+				d3Clone.select("#graphComponent").attr("transform",  "translate(" + translateX + "," + translateY + ") scale(1)");
 				// d3.select(clone).selectAll("path")
 				// 	.each(function(d){
 				// 			d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
 				// 	});
 
-				rectGraphComponent = d3.select(clone).select("#graphComponent")[0][0].getBoundingClientRect();
+				rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
 
 				var canvasWidth = rectSvg.width;
 				if((rectSvg.width + rectGraphComponent.right - rectSvg.right +20 )>canvasWidth){
@@ -663,7 +668,7 @@ metExploreD3.GraphUtils = {
 				}
 				else
 				{
-					d3.select(clone).select("#graphComponent").attr("transform",  "translate(0," + translateY + ") scale(1)");
+					d3Clone.select("#graphComponent").attr("transform",  "translate(0," + translateY + ") scale(1)");
 					// d3.select(clone).selectAll("path")
 					// 	.each(function(d){
 					// 			d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
@@ -676,22 +681,22 @@ metExploreD3.GraphUtils = {
 					canvasHeight = rectSvg.height + rectGraphComponent.bottom - rectSvg.bottom +20;
 				clone.setAttribute("height", canvasHeight);
 
-				d3.select(clone).select("#metexplore").text('MetExploreViz').attr('x',  clone.getAttribute("width") - 92).attr(
+				d3Clone.select("#metexplore").text('MetExploreViz').attr('x',  clone.getAttribute("width") - 92).attr(
 					'y', clone.getAttribute("height") - 10);
 				
 
-				var rectGraphComponent = d3.select(clone).select("#graphComponent")[0][0].getBoundingClientRect();
+				var rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
 				
 				var translateX = rectSvg.left+100 - rectGraphComponent.left;
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
-				d3.select(clone).select("#graphComponent").attr("transform",  d3.select(svg).select("#graphComponent").attr("transform"));
+				d3Clone.select("#graphComponent").attr("transform",  d3.select(svg).select("#graphComponent").attr("transform"));
 				
 				// d3.select(clone).selectAll("path")
 				// 	.each(function(d){
 				// 		d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
 				// 	});
 
-				rectGraphComponent = d3.select(clone).select("#graphComponent")[0][0].getBoundingClientRect();
+				rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
 
 				var canvasWidth = rectSvg.width;
 				clone.setAttribute("width",  canvasWidth);
@@ -715,7 +720,7 @@ metExploreD3.GraphUtils = {
 					source: [doctype + source]
 				});
 
-				d3.select(clone).remove();
+				d3Clone.remove();
 				
 				
 		
@@ -876,7 +881,7 @@ metExploreD3.GraphUtils = {
 		if(type=='svg'){
 			var blob = new Blob([source.source], {type: "data:image/svg+xml"}); // pass a useful mime type here
 			var url = URL.createObjectURL(blob);
-			metExploreD3.GraphUtils.saveAsSvg(url, biosource+"_"+today+".svg");
+			metExploreD3.GraphUtils.saveAsSvg(url, "MetExploreViz_"+today+".svg");
 		}
 	
 		metExploreD3.GraphUtils.cleanup();
@@ -886,36 +891,86 @@ metExploreD3.GraphUtils = {
 	/*******************************************
     * Fix all styles
     */
-	explicitlySetStyle : function(element, emptySvgDeclarationComputed) {
+	/*explicitlySetStyle : function(element, emptySvgDeclarationComputed) {
 	    var cSSStyleDeclarationComputed = getComputedStyle(element);
   	    var i, len, key, value;
 	    var computedStyleStr = "";
 	    for (i=0, len=cSSStyleDeclarationComputed.length; i<len; i++) {
 	        key=cSSStyleDeclarationComputed[i];
-	        value=cSSStyleDeclarationComputed.getPropertyValue(key);
-	        if (value!==emptySvgDeclarationComputed.getPropertyValue(key)) {
-	            if(element.tagName == "rect") 
-	            {
-	            	if(element.getAttribute("class")=="stroke"){
-	            		if(key!="height" && key!="width")
-		        	       	computedStyleStr+=key+":"+value+";";
-	            	}
-	            	else
-	            	{
-	            		if(key!="fill" && key!="height" && key!="width")
-		                	computedStyleStr+=key+":"+value+";";
-	            	}
-		        }
-		        else
-		        {	
-		        	if(key!="marker-start" || key!="marker-end")
-		            	computedStyleStr+=key+":"+value+";";
-		        }
-	        
-	        }
-	    }
 
-	    element.setAttribute('style', computedStyleStr);
+            if(element.tagName == "rect") 
+            {
+            	if(element.getAttribute("class")=="stroke"){
+            		if(key!="height" && key!="width"){
+	        			value=cSSStyleDeclarationComputed.getPropertyValue(key);
+			            	computedStyleStr+=key+":"+value+";";
+ 					}
+            	}
+            	else
+            	{
+            		if(key!="fill" && key!="height" && key!="width"){
+	        			value=cSSStyleDeclarationComputed.getPropertyValue(key);
+			            	computedStyleStr+=key+":"+value+";";
+            		}
+            	}
+	        }
+	        else
+	        {	
+	        	if(key!="marker-start" && key!="marker-end"){
+	        		value=cSSStyleDeclarationComputed.getPropertyValue(key);
+		            	computedStyleStr+=key+":"+value+";";
+	        	}
+	        }
+  	    }*/
+	/*******************************************
+    * Fix all styles
+    */
+	explicitlySetStyle : function(element, emptySvgDeclarationComputed) {
+	    var cSSStyleDeclarationComputed = getComputedStyle(element);
+  	    var i, len, key, value;
+	    var computedStyleStr = [];
+	    var deuxPoints = ":";
+	    var sep = ";";
+	    for (i=0, len=cSSStyleDeclarationComputed.length; i<len; i++) {
+	        key=cSSStyleDeclarationComputed[i];
+
+            if(element.tagName == "rect") 
+            {
+            	if(element.getAttribute("class")=="stroke"){
+            		if(key!="height" && key!="width"){
+	        			value=cSSStyleDeclarationComputed.getPropertyValue(key);
+		            	computedStyleStr.push(key);
+		            	computedStyleStr.push(deuxPoints);
+		            	computedStyleStr.push(value);
+		            	computedStyleStr.push(sep);
+ 					}
+            	}
+            	else
+            	{
+            		if(key!="fill" && key!="height" && key!="width"){
+	        			value=cSSStyleDeclarationComputed.getPropertyValue(key);
+			            	
+		            	computedStyleStr.push(key);
+		            	computedStyleStr.push(deuxPoints);
+		            	computedStyleStr.push(value);
+		            	computedStyleStr.push(sep);
+            		}
+            	}
+	        }
+	        else
+	        {	
+	        	if(key!="marker-start" && key!="marker-end"){
+	        		value=cSSStyleDeclarationComputed.getPropertyValue(key);
+		            
+	            	computedStyleStr.push(key);
+	            	computedStyleStr.push(deuxPoints);
+	            	computedStyleStr.push(value);
+	            	computedStyleStr.push(sep);
+	        	}
+	        }
+  	    }
+
+	    element.setAttribute('style', computedStyleStr.join(""));
 	},
 
 	/*******************************************
@@ -926,84 +981,88 @@ metExploreD3.GraphUtils = {
 	    tree.push(obj);
 	    visit(obj);
 	    function visit(node) {
-	        if (node && node.hasChildNodes()) {
-		        var child = node.firstChild;
+	    	if ((!(node.className.baseVal && node.className.baseVal=="linkGroup")) && node.tagName!='line' ){
+	    			    		
+		        if (node && node.hasChildNodes()) {
+			        var child = node.firstChild;
 
-		        if(child.className!=undefined)
-		      	{
-		      		// if(child.tagName=="image")
-			       //  {
-			   //      	if (window.XDomainRequest) {
-						// 	xdr = new XDomainRequest(); 
-						// } else if (window.XMLHttpRequest) {
-						// 	var XMLrequest = new XMLHttpRequest(); // new XML request
-						// 	XMLrequest.open("GET", 'resources/images/structure_metabolite/MetEx_M_100.svg', false); // URL of the SVG file on server
-						// 	XMLrequest.send(null); // get the SVG file
+			        if(child.className!=undefined)
+			      	{
+			      		// if(child.tagName=="image")
+				       //  {
+				   //      	if (window.XDomainRequest) {
+							// 	xdr = new XDomainRequest(); 
+							// } else if (window.XMLHttpRequest) {
+							// 	var XMLrequest = new XMLHttpRequest(); // new XML request
+							// 	XMLrequest.open("GET", 'resources/images/structure_metabolite/MetEx_M_100.svg', false); // URL of the SVG file on server
+							// 	XMLrequest.send(null); // get the SVG file
 
-						// 	var mySVG = XMLrequest.responseXML.getElementsByTagName("svg")[0];
-						// 	if(node.getAttribute('width')!=null){
-						// 		console.log(mySVG.getAttribute("width"));
-								
-						// 		var scale = parseFloat(node.getAttribute("width").split('px')[0])/parseFloat(mySVG.getAttribute("width").split('px')[0]); 
-						// 		console.log(scale);
-						// 		d3.select(mySVG).attr('transform','translate(0,0) scale('+scale+','+scale+')');
-								
-						// 		mySVG.setAttribute("x", node.getAttribute("x"));
-						// 		mySVG.setAttribute("y", node.getAttribute("y"));
-						// 		mySVG.setAttribute("width", node.getAttribute("width").split('px')[0]);
-						// 		mySVG.setAttribute("height", node.getAttribute("height").split('px')[0]);
-								
-						// 		mySVG.setAttribute("transform", "translate(0,0) scale("+scale+","+scale+")");
+							// 	var mySVG = XMLrequest.responseXML.getElementsByTagName("svg")[0];
+							// 	if(node.getAttribute('width')!=null){
+							// 		console.log(mySVG.getAttribute("width"));
+									
+							// 		var scale = parseFloat(node.getAttribute("width").split('px')[0])/parseFloat(mySVG.getAttribute("width").split('px')[0]); 
+							// 		console.log(scale);
+							// 		d3.select(mySVG).attr('transform','translate(0,0) scale('+scale+','+scale+')');
+									
+							// 		mySVG.setAttribute("x", node.getAttribute("x"));
+							// 		mySVG.setAttribute("y", node.getAttribute("y"));
+							// 		mySVG.setAttribute("width", node.getAttribute("width").split('px')[0]);
+							// 		mySVG.setAttribute("height", node.getAttribute("height").split('px')[0]);
+									
+							// 		mySVG.setAttribute("transform", "translate(0,0) scale("+scale+","+scale+")");
 
-						// 		var parent = node.parentNode;
-						// 		parent.removeChild(node);
-						// 		parent.appendChild(mySVG);
-						// 		console.log(parent.lastChild);
-			   //      			child = mySVG;
-						// 	}
-						// } else {
-						// 	alert("Votre navigateur ne gère pas l'AJAX cross-domain !");
-						// }
+							// 		var parent = node.parentNode;
+							// 		parent.removeChild(node);
+							// 		parent.appendChild(mySVG);
+							// 		console.log(parent.lastChild);
+				   //      			child = mySVG;
+							// 	}
+							// } else {
+							// 	alert("Votre navigateur ne gère pas l'AJAX cross-domain !");
+							// }
 
-			        // }
-			        if(child.tagName!="image")
-			        {
-			            while (child) {
-		        			if(child.getAttribute!=undefined){
-					            if(child.getAttribute("href")!="resources/icons/pause.svg" 
-					                && child.getAttribute("href")!="resources/icons/whiteBlack.png" 
-					                && child.getAttribute("href")!="resources/icons/invertColor.svg" 
-					                && child.getAttribute("href")!="resources/icons/link.svg" 
-					                && child.getAttribute("href")!="resources/icons/unlink.svg")
+				        // }
+
+				        if(child.tagName!="image")
+				        {
+				            while (child) {
+			        			if(child.getAttribute!=undefined){
+						            if(child.getAttribute("href")!="resources/icons/pause.svg" 
+						                && child.getAttribute("href")!="resources/icons/whiteBlack.png" 
+						                && child.getAttribute("href")!="resources/icons/invertColor.svg" 
+						                && child.getAttribute("href")!="resources/icons/link.svg" 
+						                && child.getAttribute("href")!="resources/icons/unlink.svg")
+						            {
+						                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
+						                  	tree.push(child);
+						                    visit(child);
+						                }
+						                child = child.nextSibling;
+				            		}
+					            }
+					            else
 					            {
 					                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
-					                  	tree.push(child);
 					                    visit(child);
 					                }
 					                child = child.nextSibling;
-			            		}
-				            }
-				            else
-				            {
-				                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
-				                    visit(child);
-				                }
-				                child = child.nextSibling;
-				            }
-			        	}
+					            }
+				        	}
+				        }
+			        }
+			        else
+			        {            
+			            while (child) {
+			        		
+			                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
+			                    visit(child);
+			                }
+			                child = child.nextSibling;
+			            }
 			        }
 		        }
-		        else
-		        {            
-		            while (child) {
-		        		
-		                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
-		                    visit(child);
-		                }
-		                child = child.nextSibling;
-		            }
-		        }
-	        }
+	    	}
 	    }
 	    return tree;
 	},
