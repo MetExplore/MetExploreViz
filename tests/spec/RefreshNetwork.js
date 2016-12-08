@@ -6,33 +6,48 @@ describe("Test session network after refresh", function() {
   	beforeEach(function(done) {
   		originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
       	jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-  		if(typeof myJsonString != 'string')
-        	myJsonString=JSON.stringify(myJsonString);
-      
-    	MetExploreViz.onloadMetExploreViz(function(){
-        	metExploreViz.GraphPanel.refreshPanel(myJsonString, done);
-    	});
+      	MetExploreViz.initFrame("visu");
+  		done();
   	});
 //This spec will not start until the done function is called in the call to beforeEach above. And this spec will not complete until its done is called.
 
 	it("Session not null ", function(done) {
-		expect(getSession()).toBeDefined();
-		done();
+		if(typeof myJsonString != 'string')
+        	myJsonString=JSON.stringify(myJsonString);
+      
+    	MetExploreViz.onloadMetExploreViz(function(){
+        	metExploreViz.GraphPanel.refreshPanel(myJsonString, function(){
+	        		expect(getSession()).toBeDefined();
+					done();
+	        	}
+        	);
+    	});
 	});
 
 	it("Mapping is null", function(done) {
-		expect(getMapping()).toBe(true);
-		done();
+		if(typeof myJsonString != 'string')
+        	myJsonString=JSON.stringify(myJsonString);
+      
+    	MetExploreViz.onloadMetExploreViz(function(){
+        	metExploreViz.GraphPanel.refreshPanel(myJsonString, function(){
+	        		expect(getMapping()).toBe(true);
+					done();
+	        	}
+        	);
+    	});
 	});
 	
 	afterEach(function() {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+      	document.getElementById("iFrameMetExploreViz").remove();
+		metExploreViz=undefined;
+    	jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
-//By default jasmine will wait for 5 seconds for an asynchronous spec to finish before causing a timeout failure. If the timeout expires before done is called, the current spec will be marked as failed and suite execution will continue as if done was called.
 
-//If specific specs should fail faster or need more time this can be adjusted by setting jasmine.DEFAULT_TIMEOUT_INTERVAL around them.
+	//By default jasmine will wait for 5 seconds for an asynchronous spec to finish before causing a timeout failure. If the timeout expires before done is called, the current spec will be marked as failed and suite execution will continue as if done was called.
 
-//If the entire suite should have a different timeout, jasmine.DEFAULT_TIMEOUT_INTERVAL can be set globally, outside of any given describe.
+	//If specific specs should fail faster or need more time this can be adjusted by setting jasmine.DEFAULT_TIMEOUT_INTERVAL around them.
+
+	//If the entire suite should have a different timeout, jasmine.DEFAULT_TIMEOUT_INTERVAL can be set globally, outside of any given describe.
 	
 	function getSession() {
 		var session = metExploreViz.getGlobals().getSessionById('viz');
@@ -41,8 +56,6 @@ describe("Test session network after refresh", function() {
 
 	function getMapping() {
 		var globals = metExploreViz.getGlobals();
-		console.log(globals.getMappingsLength());
-		console.log(globals.getSessionById("viz").getActiveMapping());
 		return (globals.getMappingsLength()==0 && globals.getSessionById("viz").getActiveMapping()=="");
     }
 

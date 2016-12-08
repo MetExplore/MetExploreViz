@@ -735,6 +735,7 @@ metExploreD3.GraphMapping = {
 							} 
 						});
 
+					metExploreD3.fireEventArg('selectCondition', 'setConditionProgramaticaly', conditionName);
 		          	if(minValue!=undefined)
 		          		metExploreD3.fireEventArg('selectConditionForm', 'afterContinuousMapping', 'flux');
 		          	else
@@ -982,6 +983,7 @@ metExploreD3.GraphMapping = {
 						})
 						.remove();
 
+					metExploreD3.fireEventArg('selectCondition', 'setConditionProgramaticaly', conditionName);
 		          	if(minValue!=undefined)
 		          		metExploreD3.fireEventArg('selectConditionForm', 'afterContinuousMapping', 'flux');
 		          	else
@@ -1203,6 +1205,7 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	*/
 	graphMappingDiscreteData : function(mappingName, conditionName, func) {
+		
 		metExploreD3.onloadMapping(mappingName, function(){
 
 			var mapping = _metExploreViz.getMappingByName(mappingName);
@@ -1323,6 +1326,7 @@ metExploreD3.GraphMapping = {
 
 						if (func!=undefined) {func()};
 
+						metExploreD3.fireEventArg('selectCondition', 'setConditionProgramaticaly', conditionName);
 						if(values.length!=0)
 							metExploreD3.fireEventArg('selectConditionForm', 'afterDiscreteMapping', 'discrete');
 			          	else
@@ -1429,6 +1433,7 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	*/
 	graphMappingContinuousData : function(mappingName, conditionName, colorMin, colorMax, func) {
+		
 		metExploreD3.onloadMapping(mappingName, function(){
 			var mapping = _metExploreViz.getMappingByName(mappingName);
 			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
@@ -1561,7 +1566,7 @@ metExploreD3.GraphMapping = {
 										}
 						                else
 						                {
-						                  var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+						                  	var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
 											if(map!=null){
 												if(!isNaN(map.getMapValue()))
 				            					{
@@ -1588,7 +1593,7 @@ metExploreD3.GraphMapping = {
 
 			          	metExploreD3.hideMask(myMask);
 
-
+			          	metExploreD3.fireEventArg('selectCondition', 'setConditionProgramaticaly', conditionName);
 			          	if(minValue!=undefined)
 			          		metExploreD3.fireEventArg('selectConditionForm', 'afterContinuousMapping', 'continuous');
 			          	else
@@ -1963,7 +1968,7 @@ metExploreD3.GraphMapping = {
     */
     removeMappingData : function(mappingObj) {
         this.onloadMapping(mappingObj.get('id'), function(mapping){
-	        metExploreD3.fireEventArg('selectConditionForm', "removeMapping", mapping);
+	        metExploreD3.fireEventArg('	', "removeMapping", mapping);
 	        	// metExploreD3.fireEventArg('selectConditionForm', "closeMapping", null);	        
     	});
      /*   var array = [];

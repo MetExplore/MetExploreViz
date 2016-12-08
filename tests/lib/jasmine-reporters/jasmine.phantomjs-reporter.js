@@ -91,7 +91,7 @@
             var failures = spec.failedExpectations.length;
 
             for (var i = 0; i < failures; i++) {
-                failure += ((i + 1) + ": " + escapeInvalidXmlChars(spec.message) + " ");
+                failure += ((i + 1) + ": " + escapeInvalidXmlChars(spec.status) + " ");
             }
             if (failure) {
               spec.output += "<failure>" + trim(failure) + "</failure>";

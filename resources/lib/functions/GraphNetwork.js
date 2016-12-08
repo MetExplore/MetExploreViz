@@ -2433,7 +2433,10 @@ metExploreD3.GraphNetwork = {
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
-
+			console.log(vis.selectAll("g.node")
+					.filter(function(d) {
+						return d.getIsSideCompound() && d.getBiologicalType()=="metabolite";
+					}));
 			metExploreD3.deferFunction(function() {			         
 				vis.selectAll("g.node")
 					.filter(function(d) {

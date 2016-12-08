@@ -7,12 +7,23 @@ Ext.define('metExploreViz.view.form.selectCondition.SelectConditionController', 
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.form-selectCondition-selectCondition',
 
-	/**
+/**
  * Aplies event linsteners to the view
  */
 	init:function(){
-		var te 		= this,
-		viewModel   = te.getViewModel(),
-		view      	= te.getView();
+		var me 		= this,
+		viewModel   = me.getViewModel(),
+		view      	= me.getView();
+
+		view.on({
+			setConditionProgramaticaly : me.setConditionProgramaticaly,
+			scope:me
+		});
+	},
+
+	setConditionProgramaticaly:function(conditionName){
+		if(this.getView().getRawValue()==""){
+			this.getView().setValue(conditionName);
+		}
 	}
 });
