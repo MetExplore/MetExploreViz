@@ -53,7 +53,7 @@ if ( system.args.length !== 3 ) {
             }, function() { // or, once it timesout...
                 console.log("phantomjs> timeout");
                 phantom.exit(1);
-            },30000);
+            },120000);
         } else {
             console.log("phantomjs> Could not load '" + htmlrunner + "'.");
             phantom.exit(1);

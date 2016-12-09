@@ -24,7 +24,6 @@ Ext.define('metExploreViz.view.form.SelectConditionType', {
             });
         },
         change: function(){
-            console.log('change');
             var comboCond = Ext.getCmp('selectCondition');
             comboCond.clearValue();
         }
