@@ -69,6 +69,23 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 									var sessio = _metExploreViz.getSessionById('viz');
 									metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); 
 								}
+							}
+							,{
+								text : 'Select nodes in table',
+								hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+								iconCls:"search",
+								handler : function() {
+									var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
+									var selectedNodesObj = [];
+									networkData = networkVizSessionStore.getD3Data();
+									
+									selectedNodesIds.forEach(function(id){
+										var node = networkData.getNodeById(id);
+										if(node)
+											selectedNodesObj.push(node);
+									})
+									metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
+								}
 							}]
 						});
 					}
@@ -134,6 +151,14 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							iconCls:"info",
 							handler : function() {
 								metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
+							}
+						}
+						,{
+							text : 'Select node in table',
+							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+							iconCls:"search",
+							handler : function() {
+								metExploreD3.fireEventParentWebSite("selectNodesInTable", [theNode]);
 							}
 						}
 						]
