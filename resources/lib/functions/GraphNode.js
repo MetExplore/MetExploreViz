@@ -197,6 +197,49 @@ metExploreD3.GraphNode = {
 			metExploreD3.GraphNode.addText(node, "viz");
 		});
 
+		var minDim = Math.min(reactionStyle.getWidth(), reactionStyle.getHeight());
+
+
+		// Lock Image definition
+		var box = reactions
+			.selectAll(".locker")
+			.attr(
+				"viewBox",
+				function(d) {
+							+ " " + minDim;
+				}
+			)
+			.attr("width", reactionStyle.getWidth())
+			.attr("height", reactionStyle.getHeight())
+			.attr("preserveAspectRatio", "xMinYMin")
+			.attr("y", -reactionStyle.getHeight())
+			.attr("x", -reactionStyle.getWidth())
+			.attr("class", "locker")
+			.classed('hide', true);
+
+		box.select(".backgroundlocker")
+			.attr("d", function(node){
+				var pathBack = "M"+reactionStyle.getWidth()+","+reactionStyle.getHeight()+
+					" L0,"+reactionStyle.getHeight()+
+					" L0,"+reactionStyle.getRY()*2+
+					" A"+reactionStyle.getRX()*2+","+reactionStyle.getRY()*2+",0 0 1 "+reactionStyle.getRX()*2+",0"+
+					" L"+reactionStyle.getWidth()+",0"; 
+				return pathBack;
+			})
+			.attr("opacity", "0.20")
+			.attr("fill", "black");
+		
+		box.select(".iconlocker")
+			.attr("y",function(node){
+				return reactionStyle.getHeight()/4-(reactionStyle.getHeight()-reactionStyle.getRY()*2)/8;
+			})
+			.attr("x",function(node){
+				return reactionStyle.getWidth()/4-(reactionStyle.getWidth()-reactionStyle.getRX()*2)/8;
+			})
+			.attr("width", "40%")
+			.attr("height", "40%");
+			
+
 	},
 
 	/*******************************************
@@ -246,7 +289,7 @@ metExploreD3.GraphNode = {
 			metExploreD3.GraphNode.addText(node, "viz");
 		});
 		
-		metabolites.select('.structure_metabolite')
+		metabolites.selectAll('.structure_metabolite')
 			.attr(
 				"viewBox",
 				function(d) { 
@@ -260,6 +303,54 @@ metExploreD3.GraphNode = {
 			.attr("x", (-minDim/2)+(minDim*1/10))
 			.attr("preserveAspectRatio", "xMinYMin")
 			.attr("y", (-minDim/2)+(minDim*1/10));
+
+		// Lock Image definition
+		var box = metabolites.selectAll(".locker")
+			.attr(
+				"viewBox",
+				function(d) {
+							+ " " + minDim;
+				}
+			)
+			.attr("width",function(node){
+				return metaboliteStyle.getWidth();
+			})
+			.attr("height",function(node){
+				return metaboliteStyle.getHeight();
+			})
+			.attr("preserveAspectRatio", "xMinYMin")
+			.attr("y",function(node){
+				return -metaboliteStyle.getHeight();
+			})
+			.attr("x",function(node){
+				return -metaboliteStyle.getWidth();
+			})
+			.attr("class", "locker")
+			.classed('hide', true);
+
+		box.select(".backgroundlocker")
+			.attr("d", function(node){
+				var pathBack = "M"+metaboliteStyle.getWidth()+","+metaboliteStyle.getHeight()+
+					" L0,"+metaboliteStyle.getHeight()+
+					" L0,"+metaboliteStyle.getRY()*2+
+					" A"+metaboliteStyle.getRX()*2+","+metaboliteStyle.getRY()*2+",0 0 1 "+metaboliteStyle.getRX()*2+",0"+
+					" L"+metaboliteStyle.getWidth()+",0";
+				return pathBack;
+				
+			})
+			.attr("opacity", "0.20")
+			.attr("fill", "black");
+		
+		box.select(".iconlocker")
+			.attr("y",function(node){
+				return metaboliteStyle.getHeight()/4-(metaboliteStyle.getHeight()-metaboliteStyle.getRY()*2)/8;
+				
+			})
+			.attr("x",function(node){
+				return metaboliteStyle.getWidth()/4-(metaboliteStyle.getWidth()-metaboliteStyle.getRX()*2)/8;
+			})
+			.attr("width", "40%")
+			.attr("height", "40%");
 
 		var session = _metExploreViz.getSessionById("viz");
 		
