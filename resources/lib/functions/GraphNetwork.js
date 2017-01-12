@@ -1456,9 +1456,6 @@ metExploreD3.GraphNetwork = {
 									else
 									{
 										var style = metExploreD3.getReactionStyle();
-
-										var colorText = metExploreD3.GraphUtils.chooseTextColor(colorMain);
-										d3.select(nodeLinked).select('text').style("fill", colorText);
 									}
 
 									var nbMapped = d3.select(this).select('rect.'+d.getBiologicalType()).attr("mapped");
@@ -2436,7 +2433,10 @@ metExploreD3.GraphNetwork = {
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
-
+			console.log(vis.selectAll("g.node")
+					.filter(function(d) {
+						return d.getIsSideCompound() && d.getBiologicalType()=="metabolite";
+					}));
 			metExploreD3.deferFunction(function() {			         
 				vis.selectAll("g.node")
 					.filter(function(d) {

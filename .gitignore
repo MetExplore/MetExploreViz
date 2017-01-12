@@ -1,5 +1,4 @@
-.idea
-node_modules/
 build/
-bootstrap.json
+.idea/
 sass/
+bootstrap.json

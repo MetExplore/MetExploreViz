@@ -14,7 +14,6 @@ describe('Test svg after refresh network', function() {
     });
 
     it('should be created', function() {
-        console.log(getSvg());
         expect(getSvg()).not.toBeNull();
     });
 
