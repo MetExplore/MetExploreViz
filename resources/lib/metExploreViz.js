@@ -1130,10 +1130,7 @@ metExploreViz.prototype = {
         if(aMapping.getId()==undefined){
             aMapping.setId("IdMappingMetExploreViz"+this.mappings.length);
         }
-        if(this.getMappingById(aMapping.getId())!=null){
-            this.addMapping(aMapping);
-        }
-        else
+        if(this.getMappingById(aMapping.getId())==null)
             this.mappings.push(aMapping);
     },
     resetMappings : function(aMapping){
