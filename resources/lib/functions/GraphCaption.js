@@ -58,7 +58,7 @@ metExploreD3.GraphCaption = {
 	* Draw caption
 	*/
 	drawCaption : function(){
-		 d3.select("#viz").select("#D3viz")
+		d3.select("#viz").select("#D3viz")
 			.select('#captionComparment')
 			.remove();
 
@@ -70,6 +70,7 @@ metExploreD3.GraphCaption = {
 			.select("#D3viz")
 			.select(".logoViz")
 			.remove();
+
 		// Load user's preferences
 		var reactionStyle = metExploreD3.getReactionStyle();
 		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
@@ -280,6 +281,13 @@ metExploreD3.GraphCaption = {
 		
 		var component = s_GeneralStyle.isDisplayedCaption();
 		if(component=="Pathways"){
+			
+			d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+			    .classed("hide", function(conv){
+			    	var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
+			    	return component.hidden();
+			    })
+
 			d3.select("#viz").select("#D3viz")
 				.select('#captionComparment')
 				.classed('hide', true);
@@ -290,6 +298,12 @@ metExploreD3.GraphCaption = {
 		}
 		else
 		{
+	    	d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+			    .classed("hide", function(conv){
+			    	var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
+			    	return component.hidden();
+			    })
+
 			d3.select("#viz").select("#D3viz")
 				.select('#captionComparment')
 				.classed('hide', false);
@@ -313,6 +327,10 @@ metExploreD3.GraphCaption = {
 			.attr("y1", 0)
 			.attr("x2", 15)
 			.attr("y2", 0);
+
+
+        var networkData = _metExploreViz.getSessionById("viz").getD3Data();
+
     	// Load user's preferences
 		var reactionStyle = metExploreD3.getReactionStyle();
 		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
@@ -339,7 +357,7 @@ metExploreD3.GraphCaption = {
 			.attr("transform","translate(15,"+position+")");
 
 		position+=20;
-
+ 
         for (var i = 0; i < phase; i++)
         {
 
@@ -349,28 +367,157 @@ metExploreD3.GraphCaption = {
 	 
 			var compartment = metExploreD3.getCompartmentInBiosourceSet()[i];
 			compartment.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));
+				
+			var captionCompartment = caption.append("svg:g")
+				.attr('id', compartment.getId())
+				.on("mouseover", function(d) { 
+			        var generalStyle = _metExploreViz.getGeneralStyle();
+					var isDisplay = generalStyle.isDisplayedConvexhulls();
 
-			caption.append("svg:line")
+					if(isDisplay){	
+			        	var compart = networkData.getCompartmentById(this.id);
+		
+			        	d3.select(this)
+			        		.select('.hideComponent'+this.id)
+							.classed('hide', false)
+							.select('.iconHideComponent')
+							.attr(
+							"xlink:href",
+							function(d) {			        
+								if(compart.hidden())
+									return "resources/icons/square.jpg";
+								else
+									return "resources/icons/check-square.svg";
+							});
+
+					}
+			    })
+		        .on("mouseleave", function(d) { 
+
+					d3.select(this)
+						.select('.hideComponent'+this.id)
+						.classed('hide', true);					
+		        });
+
+			var classImage = 'captionimage'+compartment.getId();
+			captionCompartment.append("svg:line")
 				.attr('class', 'metabolite')
+				.attr('class', classImage)
 				.attr("x1", 0)
 				.attr("y1", 0)
 				.attr("x2", 15)
 				.attr("y2", 0)
 				.style("stroke", compartment.getColor())
 				.style("stroke-width", 2)
-				.attr("transform","translate(15,"+position+")");
+				.attr("transform","translate(15,"+position+")")
+				.attr("opacity", function(){
+					if(compartment.hidden())
+						return 0.3;
+					else
+						return 1;
+				});
 
 			position+=10;
 
-			caption.append("svg:text")
+			var classText = 'captiontext'+compartment.getId();
+
+			captionCompartment.append("svg:text")
 				.html(compartment.getName())
+				.attr('class', classText)
+				.attr('id', compartment.getId())
 				.attr('x', 20)
 				.attr('y', -6)
-				.attr("transform","translate(30,"+position+")");
+				.attr("transform","translate(30,"+position+")")
+				.attr("opacity", function(){
+					if(compartment.hidden())
+						return 0.3;
+					else
+						return 1;
+				});
+
+			classText = '.'+classText;
+		    var textNodeDOM = captionCompartment.select(classText).node();
+			var sizeTextNodeDOM =textNodeDOM.getComputedTextLength();
+			var xhideComponent = 50 + sizeTextNodeDOM;
+
+			// button to disable compartement & pathway
+			var box = captionCompartment
+				.append("svg")
+				.attr(
+					"viewBox",
+					function(d) {
+								+ " " + 10; }
+				)
+				.attr("width", 40)
+				.attr("height",20)
+				.attr("rx", 10)
+				.attr("ry", 10)
+				.attr("preserveAspectRatio", "xMinYMin")
+				.attr("x", xhideComponent)
+				.attr("y", position-20)
+				.attr("id", compartment.getId())
+				.attr("class", 'hideComponent'+compartment.getId())
+				.classed('hide', true)
+				.attr("transform","translate("+xhideComponent+","+position+")")
+				.on("click", function(){
+					var compart = networkData.getCompartmentById(this.id);
+
+		        	compart.setHidden(!compart.hidden());
+
+		        	if(compart.hidden())
+		        	{
+			        	caption
+			        		.select('.captiontext'+compart.getId())
+							.attr("opacity", 0.5)
+			        	caption
+			        		.select('.captionimage'+compart.getId())
+							.attr("opacity", 0.3)
+		        	}
+		        	else
+		        	{
+		        		caption
+			        		.select('.captiontext'+compart.getId())
+							.attr("opacity", 1)
+		        		caption
+			        		.select('.captionimage'+compart.getId())
+							.attr("opacity", 1)
+		        	}
+
+					d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+					    .classed("hide", function(conv){
+					    	var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
+					    	return component.hidden();
+					    })
+
+		        	d3.select(this)
+						.select('.iconHideComponent')
+						.attr(
+							"xlink:href",
+							function(d) {
+								if(compart.hidden())
+									return "resources/icons/square.jpg";
+								else
+									return "resources/icons/check-square.svg";
+						});
+				});
+
+			box.append("svg:rect")
+				.attr("class", "backgroundHideComponent")
+				.attr("height", 20)
+				.attr("width", 40)
+				.attr("rx", 5)
+				.attr("ry", 5)
+				.attr("opacity", "0");
+			
+			box.append("image")
+				.attr("class", "iconHideComponent")
+				.attr("y",0)
+				.attr("x",0)
+				.attr("width", "100%")
+				.attr("height", "100%");
 
 			position+=10;				
         }
-    	
     },
 	/*****************************************************
 	* Draw caption of metabolic compartiments
@@ -380,6 +527,8 @@ metExploreD3.GraphCaption = {
 
 		var groups = metExploreD3.getPathwaysSet();
 		var pathways = [];
+
+		var networkData = _metExploreViz.getSessionById("viz").getD3Data();
 
 		groups.forEach(function(path){
 			pathways.push({"key":path});
@@ -398,8 +547,8 @@ metExploreD3.GraphCaption = {
 			green = Math.sin(frequency*i+0+phase) * width + center;
 			blue  = Math.sin(frequency*i+4+phase) * width + center;
 	 
-			var pathway = pathways[i];
-			pathway.color=metExploreD3.GraphUtils.RGB2Color(red,green,blue);				
+			var pathway = pathways[i].key;
+			pathway.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));		
         }
 
 		var caption =  d3.select("#viz").select("#D3viz")
@@ -449,27 +598,161 @@ metExploreD3.GraphCaption = {
 			green = Math.sin(frequency*i+0+phase) * width + center;
 			blue  = Math.sin(frequency*i+4+phase) * width + center;
 	 
-			var group = pathways[i];
+			var pathway = pathways[i].key;
 
-			caption.append("svg:line")
+			var captionPathway = caption.append("svg:g")
+				.attr('id', pathway.getId())
+				.on("mouseover", function(d) { 
+			        var generalStyle = _metExploreViz.getGeneralStyle();
+					var isDisplay = generalStyle.isDisplayedConvexhulls();
+
+					if(isDisplay){	
+			        	var compart = networkData.getPathwayById(this.id);
+			        	console.log(compart);
+			        	d3.select(this)
+			        		.select('.hideComponent'+this.id)
+							.classed('hide', false)
+							.select('.iconHideComponent')
+							.attr(
+								"xlink:href",
+								function(d) {
+									if(compart.hidden())
+										return "resources/icons/square.jpg";
+									else
+										return "resources/icons/check-square.svg";
+							});
+
+					}
+			    })
+		        .on("mouseleave", function(d) { 
+
+					d3.select(this)
+						.select('.hideComponent'+this.id)
+						.classed('hide', true);					
+		        });
+
+		    
+
+			var classImage = 'captionimage'+pathway.getId();
+			captionPathway.append("svg:line")
 				.attr('class', 'metabolite')
+				.attr('class', classImage)
 				.attr("x1", 0)
 				.attr("y1", 0)
 				.attr("x2", 15)
 				.attr("y2", 0)
-				.style("stroke", group.color)
+				.style("stroke", pathway.getColor())
 				.style("stroke-width", 2)
-				.attr("transform","translate(15,"+position+")");
+				.attr("transform","translate(15,"+position+")")
+				.attr("opacity", function(){
+					if(pathway.hidden())
+						return 0.3;
+					else
+						return 1;
+				});
 
 			position+=10;
 
-			caption.append("svg:text")
-				.html(group.key)
+			var classText = 'captiontext'+pathway.getId();
+
+			captionPathway.append("svg:text")
+				.html(pathway.getName())
+				.attr('class', classText)
+				.attr('id', pathway.getId())
 				.attr('x', 20)
 				.attr('y', -6)
-				.attr("transform","translate(30,"+position+")");
+				.attr("transform","translate(30,"+position+")")
+				.attr("opacity", function(){
+					if(pathway.hidden())
+						return 0.3;
+					else
+						return 1;
+				});
 
-			position+=10;				
+			classText = '.'+classText;
+		    var textNodeDOM = captionPathway.select(classText).node();
+			var sizeTextNodeDOM =textNodeDOM.getComputedTextLength();
+			var xhideComponent = 50 + sizeTextNodeDOM;
+
+			// button to disable compartement & pathway
+			var box = captionPathway
+				.append("svg")
+				.attr(
+					"viewBox",
+					function(d) {
+								+ " " + 10; }
+				)
+				.attr("width", 40)
+				.attr("height",20)
+				.attr("rx", 10)
+				.attr("ry", 10)
+				.attr("preserveAspectRatio", "xMinYMin")
+				.attr("x", xhideComponent)
+				.attr("y", position-20)
+				.attr("id", pathway.getId())
+				.attr("class", 'hideComponent'+pathway.getId())
+				.classed('hide', true)
+				.attr("transform","translate("+xhideComponent+","+position+")")
+				.on("click", function(){
+					var compart = networkData.getPathwayById(this.id);
+
+		        	compart.setHidden(!compart.hidden());
+
+		        	if(compart.hidden())
+		        	{
+			        	caption
+			        		.select('.captiontext'+compart.getId())
+							.attr("opacity", 0.5)
+			        	
+			        	caption
+			        		.select('.captionimage'+compart.getId())
+							.attr("opacity", 0.3)
+		        	}
+		        	else
+		        	{
+		        		caption
+			        		.select('.captiontext'+compart.getId())
+							.attr("opacity", 1)
+		        		caption
+			        		.select('.captionimage'+compart.getId())
+							.attr("opacity", 1)
+		        	}
+
+					d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+					    .classed("hide", function(conv){
+					    	var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
+					    	return component.hidden();
+					    })
+
+		        	d3.select(this)
+						.select('.iconHideComponent')
+						.attr(
+							"xlink:href",
+							function(d) {
+								if(compart.hidden())
+									return "resources/icons/square.jpg";
+								else
+									return "resources/icons/check-square.svg";
+						});
+
+				});
+
+			box.append("svg:rect")
+				.attr("class", "backgroundHideComponent")
+				.attr("height", 20)
+				.attr("width", 40)
+				.attr("rx", 5)
+				.attr("ry", 5)
+				.attr("opacity", "0");
+			
+			box.append("image")
+				.attr("class", "iconHideComponent")
+				.attr("y",0)
+				.attr("x",0)
+				.attr("width", "100%")
+				.attr("height", "100%");
+
+			position+=10;			
         }
     }
 }
