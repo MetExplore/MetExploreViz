@@ -9,17 +9,17 @@ metExploreD3.Features = {
 			"highlightSubnetwork":
 			{
 				description: "highlightSubnetwork",
-				enabledTo: ["lcottret", "npoupin"]
+				enabledTo: ["Cottret", "Poupin", "Chazalviel"]
 			},
             "layouts":
             {
                 description: "layouts",
-                enabledTo: ["cfrainay"]
+                enabledTo: ["Frainay", "Chazalviel"]
             },
 			"algorithm":
 			{
 				description: "layouts",
-				enabledTo: ["cfrainay"]
+				enabledTo: ["Frainay", "Chazalviel"]
 			}
 	},
 
