@@ -7,6 +7,9 @@ then
          echo 'Parameter is required : \n\t1: sencha cmd path'
 else
 	arg=$1
+        
+	cd ../
+	
 
 	cd ./scripts/
 	# Link to the file which contain metExploreViz version 
@@ -21,24 +24,16 @@ else
 	newversion=$(git describe --exact-match --abbrev=0)
 	echo $newversion
 
+	# Verify version in app.json
 	if [ "$newversion"!="$appversion" ]; then
 	 exit 1
 	fi
 
-	cd ../
 	# Build ExtJS
 	$arg app build  
 
 	cd ./scripts/
-	# Link to the file which contain metExploreViz version 
-	appJS="../build/production/metExploreViz/app.json"
-
-	# Parse JSON to get version
-	sub='\["version"]'
-	lineversion=$(./JSON.sh -l < $appJS| egrep $sub)
-	version=${lineversion#$sub}
-	newversion=$(echo $version | sed s/\"//g)
-	echo $newversion
+	
 	unixOS=$(uname)
 	echo $unixOS 
 	# ../licenses/compil\&licence.sh => add licenses
