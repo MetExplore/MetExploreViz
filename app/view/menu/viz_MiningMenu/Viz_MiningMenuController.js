@@ -39,7 +39,7 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenuController', {
 		
 		view.lookupReference('highlightSubnetwork').on({
 			setUser : function(){
-				if(metExploreD3.Features.isEnabled('highlightSubnetwork', "Chazalviel")){
+				if(metExploreD3.Features.isEnabled('highlightSubnetwork', metExploreD3.getUser())){
 					view.lookupReference('highlightSubnetwork').setHidden(false);
 				}
 				else
