@@ -362,13 +362,17 @@ metExploreD3.GraphCaption = {
 					var isDisplay = generalStyle.isDisplayedConvexhulls();
 
 					if(isDisplay){	
+					console.log("mouseover");
 			        	var compart = networkData.getCompartmentById(this.id);
+			        	console.log(compart);
 			        	d3.select('.hideComponent'+this.id)
 							.classed('hide', false)
 							.select('.iconHideComponent')
 							.attr(
 							"xlink:href",
 							function(d) {
+								console.log("xlink");
+			        
 								if(compart.hidden())
 									return "resources/icons/square.jpg";
 								else
@@ -578,6 +582,7 @@ metExploreD3.GraphCaption = {
 
 					if(isDisplay){	
 			        	var compart = networkData.getPathwayById(this.id);
+			        	console.log(compart);
 			        	d3.select('.hideComponent'+this.id)
 							.classed('hide', false)
 							.select('.iconHideComponent')
