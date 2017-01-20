@@ -9,7 +9,8 @@ else
 	arg=$1
         
 	cd ../
-	
+	# Build ExtJS
+	$arg app build  
 
 	cd ./scripts/
 	# Link to the file which contain metExploreViz version 
@@ -19,21 +20,8 @@ else
 	sub='\["version"]'
 	lineversion=$(./JSON.sh -l < $appJS| egrep $sub)
 	version=${lineversion#$sub}
-	appversion=$(echo $version | sed s/\"//g)
-
-	newversion=$(git describe --exact-match --abbrev=0)
+	newversion=$(echo $version | sed s/\"//g)
 	echo $newversion
-
-	# Verify version in app.json
-	if [ "$newversion"!="$appversion" ]; then
-	 exit 1
-	fi
-
-	# Build ExtJS
-	$arg app build  
-
-	cd ./scripts/
-	
 	unixOS=$(uname)
 	echo $unixOS 
 	# ../licenses/compil\&licence.sh => add licenses
