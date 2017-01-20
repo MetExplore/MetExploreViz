@@ -17,17 +17,38 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenuController', {
 	  		scope:me
      	});
 
-     	if(metExploreD3.Features.isEnabled('algorithm', metExploreD3.getUser())){
-			view.lookupReference('vizAlgorithmMenuID').setHidden(false);
-		}
-     	
-	    if(metExploreD3.Features.isEnabled('highlightSubnetwork', metExploreD3.getUser())){
-			view.lookupReference('highlightSubnetwork').setHidden(false);
-			view.lookupReference('highlightSubnetwork').on({
-				click : me.highlightSubnetwork,
-				scope : me
-			});
-	    }	
+	    
+		view.lookupReference('highlightSubnetwork').on({
+			click : me.highlightSubnetwork,
+			scope : me
+		});
+
+
+		view.lookupReference('vizAlgorithmMenuID').on({
+			setUser : function(){
+				if(metExploreD3.Features.isEnabled('algorithm', metExploreD3.getUser())){
+					view.lookupReference('vizAlgorithmMenuID').setHidden(false);
+				}
+				else
+				{
+					view.lookupReference('vizAlgorithmMenuID').setHidden(true);
+				}
+			},
+			scope : me
+		});
+		
+		view.lookupReference('highlightSubnetwork').on({
+			setUser : function(){
+				if(metExploreD3.Features.isEnabled('highlightSubnetwork', "Chazalviel")){
+					view.lookupReference('highlightSubnetwork').setHidden(false);
+				}
+				else
+				{
+					view.lookupReference('vizAlgorithmMenuID').setHidden(true);
+				}
+			},
+			scope : me
+		});
 		
 		view.lookupReference('keepOnlySubnetwork').on({
 			click : me.keepOnlySubnetwork,

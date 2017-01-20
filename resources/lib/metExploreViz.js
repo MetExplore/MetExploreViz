@@ -39,8 +39,15 @@ var metExploreD3 = {
         });
     },
 
+    featureFlipping:function(){
+        metExploreD3.fireEvent('vizLayoutMenuID', "setUser");
+        metExploreD3.fireEvent('vizAlgorithmMenuID', "setUser");
+        metExploreD3.fireEvent('highlightSubnetwork', "setUser");
+    },
+
     setUser:function(user){
         this.user = user;
+        this.featureFlipping();
     },
 
     getUser:function(){
@@ -789,6 +796,10 @@ var metExploreD3 = {
 
 var _metExploreViz;
 var metExploreViz = function(panel, webSite){
+    window.onerror = function(error) {
+      // do something clever here
+      console.log(error); // do NOT do this for real!
+    };
     _metExploreViz = this;
 
     // Global variables 
