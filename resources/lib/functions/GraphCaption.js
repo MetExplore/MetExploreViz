@@ -281,6 +281,13 @@ metExploreD3.GraphCaption = {
 		
 		var component = s_GeneralStyle.isDisplayedCaption();
 		if(component=="Pathways"){
+			
+			d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+			    .classed("hide", function(conv){
+			    	var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
+			    	return component.hidden();
+			    })
+
 			d3.select("#viz").select("#D3viz")
 				.select('#captionComparment')
 				.classed('hide', true);
@@ -291,6 +298,12 @@ metExploreD3.GraphCaption = {
 		}
 		else
 		{
+	    	d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+			    .classed("hide", function(conv){
+			    	var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
+			    	return component.hidden();
+			    })
+
 			d3.select("#viz").select("#D3viz")
 				.select('#captionComparment')
 				.classed('hide', false);
@@ -344,7 +357,7 @@ metExploreD3.GraphCaption = {
 			.attr("transform","translate(15,"+position+")");
 
 		position+=20;
-
+ 
         for (var i = 0; i < phase; i++)
         {
 
@@ -362,17 +375,15 @@ metExploreD3.GraphCaption = {
 					var isDisplay = generalStyle.isDisplayedConvexhulls();
 
 					if(isDisplay){	
-					console.log("mouseover");
 			        	var compart = networkData.getCompartmentById(this.id);
-			        	console.log(compart);
-			        	d3.select('.hideComponent'+this.id)
+		
+			        	d3.select(this)
+			        		.select('.hideComponent'+this.id)
 							.classed('hide', false)
 							.select('.iconHideComponent')
 							.attr(
 							"xlink:href",
-							function(d) {
-								console.log("xlink");
-			        
+							function(d) {			        
 								if(compart.hidden())
 									return "resources/icons/square.jpg";
 								else
@@ -383,7 +394,8 @@ metExploreD3.GraphCaption = {
 			    })
 		        .on("mouseleave", function(d) { 
 
-					d3.select('.hideComponent'+this.id)
+					d3.select(this)
+						.select('.hideComponent'+this.id)
 						.classed('hide', true);					
 		        });
 
@@ -397,7 +409,13 @@ metExploreD3.GraphCaption = {
 				.attr("y2", 0)
 				.style("stroke", compartment.getColor())
 				.style("stroke-width", 2)
-				.attr("transform","translate(15,"+position+")");
+				.attr("transform","translate(15,"+position+")")
+				.attr("opacity", function(){
+					if(compartment.hidden())
+						return 0.3;
+					else
+						return 1;
+				});
 
 			position+=10;
 
@@ -410,6 +428,12 @@ metExploreD3.GraphCaption = {
 				.attr('x', 20)
 				.attr('y', -6)
 				.attr("transform","translate(30,"+position+")")
+				.attr("opacity", function(){
+					if(compartment.hidden())
+						return 0.3;
+					else
+						return 1;
+				});
 
 			classText = '.'+classText;
 		    var textNodeDOM = captionCompartment.select(classText).node();
@@ -442,16 +466,20 @@ metExploreD3.GraphCaption = {
 
 		        	if(compart.hidden())
 		        	{
-			        	d3.select('.captiontext'+compart.getId())
+			        	caption
+			        		.select('.captiontext'+compart.getId())
 							.attr("opacity", 0.5)
-			        	d3.select('.captionimage'+compart.getId())
+			        	caption
+			        		.select('.captionimage'+compart.getId())
 							.attr("opacity", 0.3)
 		        	}
 		        	else
 		        	{
-		        		d3.select('.captiontext'+compart.getId())
+		        		caption
+			        		.select('.captiontext'+compart.getId())
 							.attr("opacity", 1)
-		        		d3.select('.captionimage'+compart.getId())
+		        		caption
+			        		.select('.captionimage'+compart.getId())
 							.attr("opacity", 1)
 		        	}
 
@@ -471,7 +499,6 @@ metExploreD3.GraphCaption = {
 								else
 									return "resources/icons/check-square.svg";
 						});
-
 				});
 
 			box.append("svg:rect")
@@ -491,7 +518,6 @@ metExploreD3.GraphCaption = {
 
 			position+=10;				
         }
-    	
     },
 	/*****************************************************
 	* Draw caption of metabolic compartiments
@@ -583,23 +609,25 @@ metExploreD3.GraphCaption = {
 					if(isDisplay){	
 			        	var compart = networkData.getPathwayById(this.id);
 			        	console.log(compart);
-			        	d3.select('.hideComponent'+this.id)
+			        	d3.select(this)
+			        		.select('.hideComponent'+this.id)
 							.classed('hide', false)
 							.select('.iconHideComponent')
 							.attr(
-							"xlink:href",
-							function(d) {
-								if(compart.hidden())
-									return "resources/icons/square.jpg";
-								else
-									return "resources/icons/check-square.svg";
+								"xlink:href",
+								function(d) {
+									if(compart.hidden())
+										return "resources/icons/square.jpg";
+									else
+										return "resources/icons/check-square.svg";
 							});
 
 					}
 			    })
 		        .on("mouseleave", function(d) { 
 
-					d3.select('.hideComponent'+this.id)
+					d3.select(this)
+						.select('.hideComponent'+this.id)
 						.classed('hide', true);					
 		        });
 
@@ -615,7 +643,13 @@ metExploreD3.GraphCaption = {
 				.attr("y2", 0)
 				.style("stroke", pathway.getColor())
 				.style("stroke-width", 2)
-				.attr("transform","translate(15,"+position+")");
+				.attr("transform","translate(15,"+position+")")
+				.attr("opacity", function(){
+					if(pathway.hidden())
+						return 0.3;
+					else
+						return 1;
+				});
 
 			position+=10;
 
@@ -628,6 +662,12 @@ metExploreD3.GraphCaption = {
 				.attr('x', 20)
 				.attr('y', -6)
 				.attr("transform","translate(30,"+position+")")
+				.attr("opacity", function(){
+					if(pathway.hidden())
+						return 0.3;
+					else
+						return 1;
+				});
 
 			classText = '.'+classText;
 		    var textNodeDOM = captionPathway.select(classText).node();
@@ -660,16 +700,21 @@ metExploreD3.GraphCaption = {
 
 		        	if(compart.hidden())
 		        	{
-			        	d3.select('.captiontext'+compart.getId())
+			        	caption
+			        		.select('.captiontext'+compart.getId())
 							.attr("opacity", 0.5)
-			        	d3.select('.captionimage'+compart.getId())
+			        	
+			        	caption
+			        		.select('.captionimage'+compart.getId())
 							.attr("opacity", 0.3)
 		        	}
 		        	else
 		        	{
-		        		d3.select('.captiontext'+compart.getId())
+		        		caption
+			        		.select('.captiontext'+compart.getId())
 							.attr("opacity", 1)
-		        		d3.select('.captionimage'+compart.getId())
+		        		caption
+			        		.select('.captionimage'+compart.getId())
 							.attr("opacity", 1)
 		        	}
 
