@@ -11,7 +11,7 @@ var metExploreD3 = {
     GraphPath:"",
     GraphNode:"",
     Features:"",
-
+    user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
        
         var data={
@@ -37,6 +37,14 @@ var metExploreD3 = {
                 console.log(response)
             }
         });
+    },
+
+    setUser:function(user){
+        this.user = user;
+    },
+
+    getUser:function(){
+        return this.user;
     },
 
     /*****************************************************
@@ -311,7 +319,7 @@ var metExploreD3 = {
 
                 var xCenter = wBegin+(mod * wDiv);
                 var yCenter = hBegin+(alt * hDiv);
-                var object = {key:pathway, center:{x:xCenter, y:yCenter}};
+                var object = {key:pathway.getIdentifier(), center:{x:xCenter, y:yCenter}};
                 pathwayGroup.push(object);
             }
         );
@@ -808,7 +816,6 @@ var metExploreViz = function(panel, webSite){
 };
 
 metExploreViz.prototype = {
-
 
     bioSourceControled:function(){
         return this.bioSourceControl;

@@ -32,7 +32,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			scope : me
 		});
 		
-		if(metExploreD3.Features.isEnabled('layouts')){
+		if(metExploreD3.Features.isEnabled('layouts', metExploreD3.getUser())){
 			view.lookupReference('vizLayoutMenuID').setHidden(false);
 		}
 

@@ -1,4 +1,4 @@
-var Compartment = function(id, name){
+var Pathway = function(id, name){
 	this.id = id;
 	this.identifier = name;
 	this.name = name;
@@ -6,7 +6,7 @@ var Compartment = function(id, name){
   this.hide = false;
 };
 
-Compartment.prototype = {
+Pathway.prototype = {
 		
 
    	getId:function()
