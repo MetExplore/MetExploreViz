@@ -1119,7 +1119,6 @@ metExploreD3.GraphNetwork = {
 								if(nbComp.length<2)
 									group = nbComp[0];
 							}
-							console.log(group);
 							if(group!=null)
 					    	{
 					    		var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
@@ -2436,10 +2435,7 @@ metExploreD3.GraphNetwork = {
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
-			console.log(vis.selectAll("g.node")
-					.filter(function(d) {
-						return d.getIsSideCompound() && d.getBiologicalType()=="metabolite";
-					}));
+
 			metExploreD3.deferFunction(function() {			         
 				vis.selectAll("g.node")
 					.filter(function(d) {
@@ -2450,8 +2446,7 @@ metExploreD3.GraphNetwork = {
 						else return !this.getAttribute("duplicated");
 					})
 					.each(function(node){
-						console.log(node);
-					console.log(panel);
+
 						metExploreD3.GraphNetwork.duplicateSideCompound(node, panel);
 						sideCompounds.push(node);
 					});
@@ -2540,8 +2535,7 @@ metExploreD3.GraphNetwork = {
 						else return !this.getAttribute("duplicated");
 					})
 					.each(function(node){
-						console.log(node);
-					console.log(panel);
+						
 						metExploreD3.GraphNetwork.duplicateSideCompound(node, panel);
 						sideCompounds.push(node);
 					});

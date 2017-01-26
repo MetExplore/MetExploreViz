@@ -142,7 +142,6 @@ var metExploreD3 = {
             //  var newMapping ='true';
             //  me.closeMapping(newMapping);
             // }
-        
         if(Ext.getCmp("maskInit")!= undefined){
             var mask = Ext.getCmp("maskInit");
             mask.show();
@@ -791,6 +790,15 @@ var metExploreD3 = {
     },
     setControlBioSource:function(bool){
         _metExploreViz.setControlBioSource(bool);
+    },
+    setLaunched:function(bool){
+        _metExploreViz.setLaunched(bool);
+    },
+    isNewBioSource:function(){
+        return _metExploreViz.isNewBioSource();
+    },
+    setIsNewBioSource:function(bool){
+        _metExploreViz.setIsNewBioSource(bool);
     }
 };
 
@@ -817,6 +825,7 @@ var metExploreViz = function(panel, webSite){
     this.comparedPanels = [];
     this.mappings = [];
     this.bioSourceControl = false;
+    this.newBioSource = false;
     this.linkedByTypeOfMetabolite = false;
     this.parentWebSite = webSite;
     this.oldCoodinates = [];
@@ -833,6 +842,13 @@ metExploreViz.prototype = {
     },
     setControlBioSource:function(bool){
         this.bioSourceControl = bool;
+    },
+
+    isNewBioSource:function(){
+        return this.newBioSource;
+    },
+    setIsNewBioSource:function(bool){
+        this.newBioSource = bool;
     },
 
     getBiosource:function()

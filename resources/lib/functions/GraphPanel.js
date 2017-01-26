@@ -435,7 +435,7 @@ metExploreD3.GraphPanel = {
 	refreshJSON : function(json) {
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
-			if(!_metExploreViz.isLaunched())
+			if(!_metExploreViz.isLaunched() || metExploreD3.isNewBioSource() )
 				metExploreD3.GraphPanel.initiateViz('D3');
 			
 			var vizComp = Ext.getCmp("viz");
@@ -469,6 +469,11 @@ metExploreD3.GraphPanel = {
 							function end(){
 								metExploreD3.hideMask(myMask);
 								metExploreD3.fireEvent('graphPanel', 'afterrefresh');
+								if(metExploreD3.isNewBioSource()){
+									metExploreD3.hideInitialMask();
+									metExploreD3.setIsNewBioSource(false);
+									_metExploreViz.setLaunched(true);
+								}
 							}
 				    }, 100);
 			    }
@@ -481,10 +486,12 @@ metExploreD3.GraphPanel = {
 	*/
 	refreshPanel : function(json, func) {
 		var me = this;
+
 		metExploreD3.hideInitialMask();
-		if(metExploreD3.GraphUtils.decodeJSON(json).nodes || metExploreD3.GraphUtils.decodeJSON(json).sessions){
-			if(!_metExploreViz.isLaunched() || metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
-				
+
+		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
+		if(jsonParsed.nodes || jsonParsed.sessions){
+			if(metExploreD3.isNewBioSource() || !_metExploreViz.isLaunched() || metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
 				metExploreD3.GraphPanel.refreshJSON(json);
 				if(typeof func==='function') func();
 			}
