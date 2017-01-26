@@ -25,7 +25,6 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 				
 				me.myRender(panel);
 				Ext.on('resize', function(w, h){
-					//console.log(document.getElementById("visualisation"));
 				    document.getElementById("visualisation").style.width = w+"px";
 				    document.getElementById("visualisation").style.height = h+"px";
 				    view.setSize(w, h);
@@ -102,7 +101,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 			        	this.hide();
 			        },
 					hideMask: function(){
-                        mask.hide();
+						mask.hide();
                     },
 			        setGeneralStyle: function(){
 			        	this.setText(metExploreD3.getGeneralStyle().getWebsiteName());
