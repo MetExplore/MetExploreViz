@@ -2450,6 +2450,8 @@ metExploreD3.GraphNetwork = {
 						else return !this.getAttribute("duplicated");
 					})
 					.each(function(node){
+						console.log(node);
+					console.log(panel);
 						metExploreD3.GraphNetwork.duplicateSideCompound(node, panel);
 						sideCompounds.push(node);
 					});
@@ -2538,6 +2540,8 @@ metExploreD3.GraphNetwork = {
 						else return !this.getAttribute("duplicated");
 					})
 					.each(function(node){
+						console.log(node);
+					console.log(panel);
 						metExploreD3.GraphNetwork.duplicateSideCompound(node, panel);
 						sideCompounds.push(node);
 					});
@@ -2584,6 +2588,7 @@ metExploreD3.GraphNetwork = {
 									var theMeta = metExploreD3.getMetaboliteById(metExploreD3.getMetabolitesSet(), node.getId());
 									theMeta.set("sideCompound", true);
 								}	
+
 								node.setIsSideCompound(true);	
 								metExploreD3.GraphNetwork.duplicateSideCompound(node, panel);
 								sideCompounds.push(node);
@@ -2713,7 +2718,8 @@ metExploreD3.GraphNetwork = {
 										sessions[key].setLinked(true);
 										mainSession.setLinked(true);
 										
-										metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, sessions[key].getId());
+										var node = sessions[key].getD3Data().getNodeById(theNode.getId());
+										metExploreD3.GraphNetwork.duplicateASideCompoundSelected(node, sessions[key].getId());
 										
 										metExploreD3.GraphNetwork.looksLinked();
 										if(sessions[key].isLinked()){
