@@ -31,6 +31,7 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
              {
                  text: 'Highlight Subnetwork',
                  reference :'highlightSubnetwork',
+                 id :'highlightSubnetwork',
                  tooltip:'Highlight sub-network based on node selection or mapped nodes',
                  iconCls:'highlightSubnetwork',
                  hidden:true

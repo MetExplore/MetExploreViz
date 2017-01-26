@@ -31,10 +31,19 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			click : me.clustMetabolites,
 			scope : me
 		});
-		
-		if(metExploreD3.Features.isEnabled('layouts', metExploreD3.getUser())){
-			view.lookupReference('vizLayoutMenuID').setHidden(false);
-		}
+	
+		view.lookupReference('vizLayoutMenuID').on({
+			setUser : function(){
+				if(metExploreD3.Features.isEnabled('layouts', metExploreD3.getUser())){
+					view.lookupReference('vizLayoutMenuID').setHidden(false);
+				}
+				else
+				{
+					view.lookupReference('vizLayoutMenuID').setHidden(true);
+				}
+			},
+			scope : me
+		});
 
 		view.lookupReference('makeClusters').on({
 			click : me.makeClusters,
