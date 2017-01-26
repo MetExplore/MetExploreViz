@@ -1967,7 +1967,7 @@ metExploreD3.GraphNetwork = {
 			true, 
 			theNodeId,
 			networkData.getNodeById(reactionId).getPathways(),
-			undefined,
+			false,
 			theNode.getLabel());
 
 		//newNode.index = networkData.getNodes().indexOf(newNode);
