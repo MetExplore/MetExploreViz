@@ -1315,6 +1315,11 @@ metExploreD3.GraphNode = {
 			.filter(function(d){ 
 				return d.isDuplicated(); })
 			.style("stroke-opacity",0.5)
+			.each(function(node){
+				var clone = new NodeData(node.getName(), node.getCompartment(), node.getDbIdentifier(), node.getEC(), node.getIdentifier(), node.getReactionReversibility(), node.getIsSideCompound(), node.getBiologicalType(), node.isSelected(), node.getLabelVisible(), node.getSvg(), node.getSvgWidth(), node.getSvgHeight(), undefined, node.isDuplicated(), node.getIdentifier(), node.getPathways(), node.isLocked(), node.getLabel());
+
+				metExploreD3.fireEventParentWebSite("sideCompound", clone);	
+			})
 			.addNodeForm(
 				metaboliteStyle.getWidth()/2,
 				metaboliteStyle.getHeight()/2,
