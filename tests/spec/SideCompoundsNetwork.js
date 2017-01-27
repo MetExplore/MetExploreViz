@@ -69,7 +69,6 @@ describe("Test session network after duplicating side compounds", function() {
     }
 
 	function getSC() {
-		var globals = metExploreViz.getGlobals();
 		var allAffected = true;
 		var networkData = getSession().getD3Data();
 		sideCompounds.forEach(function(sc){
