@@ -35,7 +35,7 @@ metExploreD3.GraphNode = {
     * @param {} d : a node
     */
 	selectNeighbours : function(d, panel) {
-		d3.select("#viz").select("#D3viz").select("#graphComponent")
+		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("path.link")
 			.filter(function(link){
 				return link.getSource()==d || link.getTarget()==d;
@@ -108,7 +108,8 @@ metExploreD3.GraphNode = {
 				if(d3.event.sourceEvent.button!=2){
 					d.setLocked(!d.isLocked());
 					d.fixed=d.isLocked();
-					metExploreD3.GraphNode.node
+					d3.select("#"+_MyThisGraphNode.activePanel)
+						.selectAll('g.node')
 						.filter(function(node){return node==d})
 						.select('.locker')
 						.classed('hide', false)
@@ -1002,20 +1003,23 @@ metExploreD3.GraphNode = {
 				});
 
 				d.fixed = true;
-				
-				metExploreD3.GraphNode.node
-					.filter(function(node){return node==d})
-					.select('.locker')
-					.classed('hide', false)
-					.select('.iconlocker')
-					.attr(
-					"xlink:href",
-					function(d) {
-						if(d.isLocked())
-							return "resources/icons/lock_font_awesome.svg";
-						else
-							return "resources/icons/unlock_font_awesome.svg";
-					});
+				if(parent=="viz")
+				{
+					d3.select("#"+parent)
+							.selectAll('g.node')
+						.filter(function(node){return node==d})
+						.select('.locker')
+						.classed('hide', false)
+						.select('.iconlocker')
+						.attr(
+						"xlink:href",
+						function(d) {
+							if(d.isLocked())
+								return "resources/icons/lock_font_awesome.svg";
+							else
+								return "resources/icons/unlock_font_awesome.svg";
+						});
+				}
 
 				var xScale=scale.getXScale();
 				var yScale=scale.getYScale();
@@ -1160,20 +1164,23 @@ metExploreD3.GraphNode = {
 				});
 					
 				d.fixed = true;
-
-				metExploreD3.GraphNode.node
-					.filter(function(node){return node==d})
-					.select('.locker')
-					.classed('hide', false)
-					.select('.iconlocker')
-					.attr(
-					"xlink:href",
-					function(d) {
-						if(d.isLocked())
-							return "resources/icons/lock_font_awesome.svg";
-						else
-							return "resources/icons/unlock_font_awesome.svg";
-					});
+				if(parent=="viz")
+				{
+					d3.select("#"+parent)
+						.selectAll('g.node')
+						.filter(function(node){return node==d})
+						.select('.locker')
+						.classed('hide', false)
+						.select('.iconlocker')
+						.attr(
+						"xlink:href",
+						function(d) {
+							if(d.isLocked())
+								return "resources/icons/lock_font_awesome.svg";
+							else
+								return "resources/icons/unlock_font_awesome.svg";
+						});		
+				}
 
 				if(d.getBiologicalType()=="reaction"){
 					d3.select("#"+parent).select("#D3viz").select("#graphComponent")
@@ -1966,20 +1973,23 @@ metExploreD3.GraphNode = {
 						});
 
 					d.fixed = true;
-
-					metExploreD3.GraphNode.node
-						.filter(function(node){return node==d})
-						.select('.locker')
-						.classed('hide', false)
-						.select('.iconlocker')
-						.attr(
-							"xlink:href",
-							function(d) {
-								if(d.isLocked())
-									return "resources/icons/lock_font_awesome.svg";
-								else
-									return "resources/icons/unlock_font_awesome.svg";
-						});
+					if(parent=="viz")
+					{
+						d3.select("#"+parent)
+							.selectAll('g.node')
+							.filter(function(node){return node==d})
+							.select('.locker')
+							.classed('hide', false)
+							.select('.iconlocker')
+							.attr(
+								"xlink:href",
+								function(d) {
+									if(d.isLocked())
+										return "resources/icons/lock_font_awesome.svg";
+									else
+										return "resources/icons/unlock_font_awesome.svg";
+							});
+					}
 
 					var xScale=scale.getXScale();
 					var yScale=scale.getYScale();

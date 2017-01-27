@@ -2029,20 +2029,23 @@ metExploreD3.GraphNetwork = {
 			.on("mouseover", function(d) { 
 
 				d.fixed = true;
-				
-				node
-					.filter(function(n){return n==d})
-					.select('.locker')
-					.classed('hide', false)
-					.select('.iconlocker')
-					.attr(
-						"xlink:href",
-						function(d) {
-							if(d.isLocked())
-								return "resources/icons/lock_font_awesome.svg";
-							else
-								return "resources/icons/unlock_font_awesome.svg";
-					});
+				if(parent=="viz")
+				{
+					d3.select("#"+panel)
+						.selectAll('g.node')
+						.filter(function(n){return n==d})
+						.select('.locker')
+						.classed('hide', false)
+						.select('.iconlocker')
+						.attr(
+							"xlink:href",
+							function(d) {
+								if(d.isLocked())
+									return "resources/icons/lock_font_awesome.svg";
+								else
+									return "resources/icons/unlock_font_awesome.svg";
+						});
+				}
 
 				if(d.getBiologicalType()=="reaction"){
 					d3.select("#"+panel).select("#D3viz").select("#graphComponent")

@@ -141,6 +141,7 @@ Ext.define( 'metExploreViz.view.panel.comparePanel.ComparePanelController',{
 				else
 					var target = e.target;
 				
+				var theNode = metExploreD3.GraphNode.selectNodeData(e.target);
 				viz.CtxMenu = new Ext.menu.Menu({
 					items : [
 					{
@@ -150,7 +151,7 @@ Ext.define( 'metExploreViz.view.panel.comparePanel.ComparePanelController',{
 					},{
 							text : 'Select neighbour',
 							hidden : false,
-							handler : function(){ metExploreD3.GraphNode.selectNeighbours(_metExploreViz.getSessionById(panelId).getD3Data().getNodeById(target.id), panelId); }
+							handler : function(){ metExploreD3.GraphNode.selectNeighbours(theNode, panelId); }
 						},{
 						text : 'See more information',
 						hidden : false,
