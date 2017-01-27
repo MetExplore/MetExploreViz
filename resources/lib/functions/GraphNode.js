@@ -2303,6 +2303,17 @@ metExploreD3.GraphNode = {
                 }
             }    
         }
+
+        var network = JSON.parse(_metExploreViz.getDataFromWebSite());
+
+        network.nodes
+	        .filter(function(node){
+	        	return node.id==idM;
+	        })
+	        .forEach(function(node){
+	        	node.isSideCompound=true;
+	        });
+	    _metExploreViz.setDataFromWebSite(JSON.stringify(network));
     },
 
 	/*******************************************

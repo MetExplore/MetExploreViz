@@ -561,6 +561,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 							if(networkVizSession.getColorMappingsSet()[1]!=undefined){
 								if(parseFloat(networkVizSession.getColorMappingsSet()[0].getName())<parseFloat(networkVizSession.getColorMappingsSet()[1].getName())){
 									maxValue = parseFloat(networkVizSession.getColorMappingsSet()[1].getName());
+									minValue = parseFloat(networkVizSession.getColorMappingsSet()[0].getName());
 								}
 								else
 								{
@@ -574,7 +575,13 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 							}
 							
 							if(type=="continuous"){
-								metExploreD3.GraphMapping.graphMappingContinuousData(mapp, cond, networkVizSession.getColorMappingById(minValue).getValue(), networkVizSession.getColorMappingById(maxValue).getValue());
+								if(networkVizSession.getColorMappingsSet()[1]!=undefined){
+									metExploreD3.GraphMapping.graphMappingContinuousData(mapp, cond, networkVizSession.getColorMappingById(minValue).getValue(), networkVizSession.getColorMappingById(maxValue).getValue());
+								}
+								else
+								{
+									metExploreD3.GraphMapping.graphMappingContinuousData(mapp, cond, networkVizSession.getColorMappingById(color).getValue(), networkVizSession.getColorMappingById(color).getValue());
+								}
 							}
 							else
 							{
