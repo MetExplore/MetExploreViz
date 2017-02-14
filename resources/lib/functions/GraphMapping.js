@@ -2067,13 +2067,20 @@ metExploreD3.GraphMapping = {
 	generateMapping: function(mapping, nodeMappingByCondition){
 		var session = _metExploreViz.getSessionById('viz');
 		var networkData = session.getD3Data();
+		console.log(nodeMappingByCondition);
+		console.log(nodeMappingByCondition.length==1);
+		console.log(nodeMappingByCondition[0].name=="undefined");
+		console.log(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"));
 		switch (mapping.getTargetLabel()) {
             case "reactionDBIdentifier":
             	if(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"))
                 {
                 	nodeMappingByCondition.forEach(function(condition){
     					condition.data
-    						.forEach(function(map){
+	                		.filter(function(map){
+	    							return (!isNaN(map.value) && map.value!=null)
+	    					})
+	    					.forEach(function(map){
 								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
 								mapping.addMap(mapData);
 	    						var node = networkData.getNodeByDbIdentifier(map.node);
@@ -2087,9 +2094,6 @@ metExploreD3.GraphMapping = {
                 else
                 {
                 	nodeMappingByCondition[0].data
-                		.filter(function(map){
-    							return (!isNaN(map.value) && map.value!=null)
-    					})
                 		.forEach(function(map){
 							var mapData = new MappingData(map.node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
 							mapping.addMap(mapData);
@@ -2106,6 +2110,9 @@ metExploreD3.GraphMapping = {
 	            {	
 	                nodeMappingByCondition.forEach(function(condition){
 						condition.data
+							.filter(function(map){
+		    					return (!isNaN(map.value) && map.value!=null)
+		    				})
 							.forEach(function(map){   
 								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
 								mapping.addMap(mapData); 
@@ -2121,9 +2128,6 @@ metExploreD3.GraphMapping = {
 	            {
 	            	nodeMappingByCondition.forEach(function(condition){
 						condition.data
-							.filter(function(map){
-		    					return (!isNaN(map.value) && map.value!=null)
-		    				})
 							.forEach(function(map){   
 								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
 								mapping.addMap(mapData); 
@@ -2141,6 +2145,9 @@ metExploreD3.GraphMapping = {
                 {
                 	nodeMappingByCondition.forEach(function(condition){
     					condition.data
+		                	.filter(function(map){
+								return (!isNaN(map.value) && map.value!=null)
+							})
 	    					.forEach(function(map){
 								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
 								mapping.addMap(mapData);
@@ -2155,9 +2162,6 @@ metExploreD3.GraphMapping = {
                 else
                 {
                 	nodeMappingByCondition[0].data
-	                	.filter(function(map){
-							return (!isNaN(map.value) && map.value!=null)
-						})
 	                	.forEach(function(map){
 							var mapData = new MappingData(map.node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
 							mapping.addMap(mapData);
@@ -2174,6 +2178,9 @@ metExploreD3.GraphMapping = {
 	            {	
 	                nodeMappingByCondition.forEach(function(condition){
 						condition.data
+							.filter(function(map){
+								return (!isNaN(map.value) && map.value!=null)
+							})
 							.forEach(function(map){ 
 								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
 								mapping.addMap(mapData); 
@@ -2192,9 +2199,6 @@ metExploreD3.GraphMapping = {
 	            {
 	            	nodeMappingByCondition.forEach(function(condition){
 						condition.data
-							.filter(function(map){
-								return (!isNaN(map.value) && map.value!=null)
-							})
 							.forEach(function(map){ 
 								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
 								mapping.addMap(mapData); 
