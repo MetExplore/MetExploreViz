@@ -5,7 +5,7 @@
  */
 
 metExploreD3.GraphNode = {
-	
+
 	node :"",
 	_MyThisGraphNode :"",
 	panelParent :"",
@@ -19,7 +19,7 @@ metExploreD3.GraphNode = {
 	dblClickable:false,
 
 	/*******************************************
-    * Initialization of variables  
+    * Initialization of variables
     * @param {} parent : The panel where are the node
     */
     delayedInitialisation : function(parent) {
@@ -29,6 +29,41 @@ metExploreD3.GraphNode = {
 		activePanel = metExploreD3.GraphNode;
 	},
 
+
+	/*******************************************
+    * Permit to highlight a node
+    * @param {} d : a node
+    */
+    highlightANode : function(id) {
+        d3.select("#viz").select("#D3viz")
+            .selectAll("g.node")
+            .filter(function(d){
+                return d.getDbIdentifier()==id || d.getId()==id;
+            })
+            .each(function(d){
+            	d.fixed=true;
+            	// if(!d.isSelected())
+                //     _MyThisGraphNode.selection(d, "viz")
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this)
+					.transition()
+					.duration(2000)
+					.attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*4+")")
+            		.transition()
+					.duration(4000)
+					.attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal+")");
+
+                if(!d.isSelected())
+                    _MyThisGraphNode.selection(d, "viz")
+            });
+	},
 
 	/*******************************************
     * Permit to select neighbour of a node
@@ -42,14 +77,26 @@ metExploreD3.GraphNode = {
 			})
 			.each(function(link){
 				if(link.getSource()==d){
-					if(!link.getTarget().isSelected()) 
+					if(!link.getTarget().isSelected())
 						_MyThisGraphNode.selection(link.getTarget(), panel);
 				}
 				else{
-					if(!link.getSource().isSelected()) 
+					if(!link.getSource().isSelected())
 						_MyThisGraphNode.selection(link.getSource(), panel);
 				}
 			});
+	},
+
+
+	/*******************************************
+    * Permit to highlight a node : Select, Fix & grow up
+    * @param {} d : a node
+    */
+	selectNeighbours : function(d, panel) {
+		_MyThisGraphNode.selection(d, panel);
+        // if(!d.isLocked())
+		d.fixed = true;
+
 	},
 
 
