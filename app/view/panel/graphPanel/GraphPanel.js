@@ -224,26 +224,26 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
 
            },
            {
-              layout:{
-                 type:'border',
-                 align:'stretch'
-             },
-              xtype : 'panel',
-              width:'100%', 
-              margins:'0 0 0 0',
-              closable: false,
-              region:'south', 
-              flex:1,     
-              items: [{   
-                  title: 'Network Manager',
-                  id:'comparisonSidePanel',
-                  xtype : 'comparisonSidePanel'  
+                layout:{
+                    type:'border',
+                    align:'stretch'
+                },
+                xtype : 'panel',
+                width:'100%',
+                margins:'0 0 0 0',
+                closable: false,
+                region:'south',
+                flex:1,
+                items: [{
+                    title: 'Network Manager',
+                    id:'comparisonSidePanel',
+                    xtype : 'comparisonSidePanel'
                 },
                 {
                     id : 'viz',
                     xtype : 'viz'
                 }
-              ]
+]
            }
            ,{   
               title: 'Comparative Network',
