@@ -14,12 +14,12 @@ metExploreD3.Features = {
             "layouts":
             {
                 description: "layouts",
-                enabledTo: ["Clement Frainay", "Chazalviel", "Jourdan"]
+                enabledTo: [""]
             },
 			"algorithm":
 			{
 				description: "layouts",
-				enabledTo: ["Clement Frainay", "Chazalviel", "Jourdan"]
+				enabledTo: [""]
 			}
 	},
 
