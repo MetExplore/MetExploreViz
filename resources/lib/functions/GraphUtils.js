@@ -612,12 +612,6 @@ metExploreD3.GraphUtils = {
 					}
 					);	
 
-				d3Clone.selectAll("#tooltip2")
-					.each(function(){
-						this.parentNode.removeChild(this);
-					}
-					);
-
 				var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 				var component = s_GeneralStyle.isDisplayedCaption();
 				
