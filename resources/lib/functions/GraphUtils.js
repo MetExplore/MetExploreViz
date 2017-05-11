@@ -489,6 +489,10 @@ metExploreD3.GraphUtils = {
 		if(whiteBlack!=null)  
 		  whiteBlack.style("display", "inline");
 
+		var buttonRescale = d3.selectAll("#buttonRescale");
+		if(buttonRescale!=null)
+            buttonRescale.style("display", "inline");
+
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  
 		  buttonZoomOut.style("display", "inline");
@@ -551,9 +555,13 @@ metExploreD3.GraphUtils = {
 				if(invertColor!=null) 
 					invertColor.parentNode.removeChild(invertColor);
 
-				var whiteBlack = clone.getElementById("whiteBlack");
-				if(whiteBlack!=null) 
-					whiteBlack.parentNode.removeChild(whiteBlack);
+                var whiteBlack = clone.getElementById("whiteBlack");
+                if(whiteBlack!=null)
+                    whiteBlack.parentNode.removeChild(whiteBlack);
+
+                var buttonRescale = clone.getElementById("buttonRescale");
+                if(buttonRescale!=null)
+                    buttonRescale.parentNode.removeChild(buttonRescale);
 
 				// var tooltip = clone.getElementById("tooltip");
 				// tooltip.parentNode.removeChild(tooltip);
@@ -1085,7 +1093,8 @@ metExploreD3.GraphUtils = {
 			        			if(child.getAttribute!=undefined){
 						            if(child.getAttribute("href")!="resources/icons/pause.svg" 
 						                && child.getAttribute("href")!="resources/icons/whiteBlack.png" 
-						                && child.getAttribute("href")!="resources/icons/invertColor.svg" 
+						                && child.getAttribute("href")!="resources/icons/rescale.png"
+						                && child.getAttribute("href")!="resources/icons/invertColor.svg"
 						                && child.getAttribute("href")!="resources/icons/link.svg" 
 						                && child.getAttribute("href")!="resources/icons/unlink.svg")
 						            {
