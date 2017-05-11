@@ -780,19 +780,7 @@ metExploreD3.GraphNetwork = {
 			);
 		var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
 		var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
-		
-		// Options div
-		d3.select("#"+panel)
-			.select("#D3viz")
-			.append("foreignObject")	
-			.attr('x', w-300)
-			.attr('y', 100)
-			.attr("width", "500")
-			.attr("height", "500")
-			.append("xhtml:div")
-			.attr("id","tooltip2")
-			.classed("tooltip2", true)
-			.classed("hide", true);
+
 
 		// Define zoomListener
 		vis.svg = d3.select("#"+panel).select("#D3viz")
@@ -1751,55 +1739,7 @@ metExploreD3.GraphNetwork = {
 						}
 
 						return map[idReaction].link.fill;
-					})
-					.on("mouseover", function(d)
-					 {		
-						var reaction, metabolite, source, target;
-						if(d.getSource().getBiologicalType()=="reaction"){
-							reaction=d.getSource();
-							metabolite=d.getTarget();
-						}
-						else
-						{
-							reaction=d.getTarget();
-							metabolite=d.getSource();
-						}
-						
-						source = d.getSource();
-						target = d.getTarget();
-						
-						var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
-						var mapping = _metExploreViz.getMappingByName(mappingName);
-						var conditions = mapping.getConditions();	
-						var mapNode = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
-						if(mapNode != null){
-							var flux = mapNode.getMapValue();
-							if(flux<0){
-								target = d.getSource();
-								source = d.getTarget();
-							}
-						}
-						
-						if(!document.getElementById("tooltip2").classList.contains("fixed"))
-						{
-							var content = 
-							"Name: " + d.id 
-							+"<br/><b>Source:</b> " + source.getName() 
-							+"<br/><b>Target:</b> " + target.getName() +
-							((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
-						
-							content+='<br/>';
-
-					   		document.getElementById("tooltip2").innerHTML = content;
-					   		document.getElementById("tooltip2").classList.remove("hide");
-						}
-					 })
-					.on("mouseout", function(d)
-					 {
-						 document.getElementById("tooltip2").classList.add("hide");
-					 });
-			
-
+					});
 			
 				d3.select(this)
 					.filter(function(link){
@@ -1843,53 +1783,7 @@ metExploreD3.GraphNetwork = {
 							idReaction = target.getId();
 						}
 						return map[idReaction].linkRev.fill;
-					})
-					.on("mouseover", function(d)
-					 {		
-						var reaction, metabolite, source, target;
-						if(d.getSource().getBiologicalType()=="reaction"){
-							reaction=d.getSource();
-							metabolite=d.getTarget();
-						}
-						else
-						{
-							reaction=d.getTarget();
-							metabolite=d.getSource();
-						}
-						
-						source = d.getSource();
-						target = d.getTarget();
-
-						var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
-						var mapping = _metExploreViz.getMappingByName(mappingName);
-						var conditions = mapping.getConditions();	
-						var mapNode = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
-						if(mapNode != null){
-							var flux = mapNode.getMapValue();
-							if(flux<0){
-								target = d.getSource();
-								source = d.getTarget();
-							}
-						}
-							
-						if(!document.getElementById("tooltip2").classList.contains("fixed"))
-						{
-							var content = 
-							"Name: " + d.id 
-							+"<br/><b>Source: </b>" + source.getName() 
-							+"<br/><b>Target: </b>" + target.getName() +
-							((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
-						
-							content+='<br/>';
-
-					   		document.getElementById("tooltip2").innerHTML = content;
-					   		document.getElementById("tooltip2").classList.remove("hide");
-						}
-					})
-					.on("mouseout", function(d)
-					{
-						document.getElementById("tooltip2").classList.add("hide");
-					});	
+					});
 			
 			});
 		}
@@ -2074,31 +1968,7 @@ metExploreD3.GraphNetwork = {
 				var xScale=scale.getXScale();
 				var yScale=scale.getYScale();
 				
-				if(!document.getElementById("tooltip2").classList.contains("fixed"))
-				{
-					var content = 
-						"<b>Name:</b> " + d.getName() 
-						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
-						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
-						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
-						((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
-						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
-						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
-						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
 
-	    			d.getMappingDatas().forEach(function(map){
-	    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
-	    			});
-
-	    			content+="</table>";
-	    			
-	    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
-	    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
-	    			}
-
-			   		document.getElementById("tooltip2").innerHTML = content;
-			   		document.getElementById("tooltip2").classList.remove("hide");
-				}
 
 			})
 	        .on("mouseleave", function(d) {  
@@ -2114,8 +1984,6 @@ metExploreD3.GraphNetwork = {
 					.classed('hide', true);
 
 				var linkStyle = metExploreD3.getLinkStyle();  
-
-		   		document.getElementById("tooltip2").classList.add("hide");
 
 	    		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 					.selectAll("path.link")
@@ -3986,11 +3854,7 @@ setTimeout(
 		
 		metExploreD3.GraphLink.loadLink(panel, session, linkStyle, metaboliteStyle);
 		metExploreD3.GraphNode.loadNode(panel);
-		
-		var iDiv = document.createElement('div');
-		iDiv.id = 'tooltip2';
-		iDiv.className = 'tooltip2';
-		
+
 		
 		metExploreD3.GraphNetwork.looksLinked();
 		if(session.isLinked()){
@@ -4554,10 +4418,6 @@ setTimeout(
 		
 		metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
 		metExploreD3.GraphNode.refreshNode(panel);
-		var iDiv = document.createElement('div');
-		iDiv.id = 'tooltip2';
-		iDiv.className = 'tooltip2';
-		document.getElementById("viz").appendChild(iDiv);  
 
 		var linked = d3.select(that).attr("isLink");
 		d3.select(that).select("image").remove();

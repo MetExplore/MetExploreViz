@@ -1538,65 +1538,6 @@ metExploreD3.GraphLink = {
 				.attr("fill-rule", "evenodd")
 				.style("stroke",linkStyle.getStrokeColor())
 				.style("stroke-width",0.5)
-				.on("mouseover", function(d)
-				 {		
-					var reaction, metabolite, source, target;
-					if(d.getSource().getBiologicalType()=="reaction"){
-						reaction=d.getSource();
-						metabolite=d.getTarget();
-					}
-					else
-					{
-						reaction=d.getTarget();
-						metabolite=d.getSource();
-					}
-					
-					source = d.getSource();
-					target = d.getTarget();
-
-					var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
-					var mapping = _metExploreViz.getMappingByName(mappingName);
-					var conditions = mapping.getConditions();	
-					var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
-					var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
-					var map = map1;
-			    	if(conditions[1]==conditionName)
-			    		map = map2;
-
-					if(map==null)
-						var flux = 0;
-					else
-					{
-						if(isNaN(map.getMapValue()))
-							var flux = 0;
-    					else
-							var flux = map.getMapValue();
-
-						if(flux<0){
-							target = d.getSource();
-							source = d.getTarget();
-						}
-		            }
-					
-					
-					if(!document.getElementById("tooltip2").classList.contains("fixed"))
-					{
-						var content = 
-						"Name: " + d.id 
-						+"<br/><b>Source:</b> " + source.getName() 
-						+"<br/><b>Target:</b> " + target.getName() +
-						((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
-					
-						content+='<br/>';
-
-				   		document.getElementById("tooltip2").innerHTML = content;
-				   		document.getElementById("tooltip2").classList.remove("hide");
-					}
-				 })
-				.on("mouseout", function(d)
-				 {
-					 document.getElementById("tooltip2").classList.add("hide");
-				 });
 
 			d3.select(this)
 				.append("svg:path")
@@ -1606,67 +1547,8 @@ metExploreD3.GraphLink = {
 				.attr("class", "link")
 				.attr("fill-rule", "evenodd")
 				.style("stroke",linkStyle.getStrokeColor())
-				.style("stroke-width",0.5)
-				.on("mouseover", function(d)
-				 {		
-					var reaction, metabolite, source, target;
-					if(d.getSource().getBiologicalType()=="reaction"){
-						reaction=d.getSource();
-						metabolite=d.getTarget();
-					}
-					else
-					{
-						reaction=d.getTarget();
-						metabolite=d.getSource();
-					}
-					
-					source = d.getSource();
-					target = d.getTarget();
+				.style("stroke-width",0.5);
 
-					var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
-					var mapping = _metExploreViz.getMappingByName(mappingName);
-					var conditions = mapping.getConditions();	
-					
-					var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
-					var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
-					var map = map2;
-			    	if(conditions[0]==conditionName)
-			    		map = map1;
-
-					if(map==null)
-						var flux = 0;
-					else
-					{
-						if(isNaN(map.getMapValue()))
-							var flux = 0;
-    					else
-							var flux = map.getMapValue();
-
-						if(flux<0){
-							target = d.getSource();
-							source = d.getTarget();
-						}
-		            }
-					
-						
-					if(!document.getElementById("tooltip2").classList.contains("fixed"))
-					{
-						var content = 
-						"Name: " + d.id 
-						+"<br/><b>Source: </b>" + source.getName() 
-						+"<br/><b>Target: </b>" + target.getName() +
-						((flux!=undefined) ? "<br/>Flux: " + Math.abs(flux) : "" );
-					
-						content+='<br/>';
-
-				   		document.getElementById("tooltip2").innerHTML = content;
-				   		document.getElementById("tooltip2").classList.remove("hide");
-					}
-				 })
-				.on("mouseout", function(d)
-				 {
-					document.getElementById("tooltip2").classList.add("hide");
-				 });	
 		});
 
 		if(showValues){
