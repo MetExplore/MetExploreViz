@@ -614,14 +614,14 @@ metExploreD3.GraphUtils = {
 				var component = s_GeneralStyle.isDisplayedCaption();
 				
 				if(component=="Pathways"){
-					
+
 					d3Clone.selectAll("path.convexhull")
-					    .filter(function(conv){
-					    	var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
-					    	return component.hidden();
-					    })
-					    .each(function(){
-							this.parentNode.removeChild(this);
+					    .classed(function(conv){
+                                console.log(conv);
+                                var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
+                                if(component.hidden())
+                                    this.parentNode.removeChild(this);
+                                return "";
 						}
 						);
 
@@ -634,14 +634,14 @@ metExploreD3.GraphUtils = {
 				else
 				{
 			    	d3Clone.selectAll("path.convexhull")
-					    .filter(function(conv){
-					    	var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
-					    	return component.hidden();
-					    })
-					    .each(function(){
-							this.parentNode.removeChild(this);
-						}
-						);
+                        .classed(function(conv){
+                                console.log(conv);
+                                var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
+                                if(component.hidden())
+                                    this.parentNode.removeChild(this);
+                                return "";
+                            }
+                        );
 
 					d3Clone.select('#captionPathway')
 						.each(function(){
