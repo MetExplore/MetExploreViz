@@ -685,11 +685,6 @@ metExploreD3.GraphNode = {
 			content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
 		}
 
-   		document.getElementById("tooltip2").innerHTML = content;
-   		document.getElementById("tooltip2").classList.remove("hide");
-		// Fix the tooltip of node
-		document.getElementById("tooltip2").classList.add("fixed");
-
 		// Fix the node
 		// Add  node in the list of selected nodes
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
@@ -1067,37 +1062,6 @@ metExploreD3.GraphNode = {
 								return "resources/icons/unlock_font_awesome.svg";
 						});
 				}
-
-				var xScale=scale.getXScale();
-				var yScale=scale.getYScale();
-				
-				if(!document.getElementById("tooltip2").classList.contains("fixed"))
-				{
-					var content = 
-						"<b>Name:</b> " + d.getName() 
-						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
-						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
-						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
-						((d.getEC()!=undefined) ? "<br/><b>EC number: </b>" + d.getEC() : "" )+
-						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
-						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
-						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
-
-	    			d.getMappingDatas().forEach(function(map){
-	    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
-	    			});
-
-	    			content+="</table>";
-	    			
-	    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
-	    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
-	    			}
-
-			   		document.getElementById("tooltip2").innerHTML = content;
-			   		document.getElementById("tooltip2").classList.remove("hide");
-				}
-
-				// d3.select("#"+parent).select("#D3viz").select('#tooltip')
 		    })
 	        .on("mouseleave", function(d) { 
 
@@ -1117,11 +1081,8 @@ metExploreD3.GraphNode = {
 
 				if(!d.isLocked())
 					d.fixed = false;
-				var linkStyle = metExploreD3.getLinkStyle();  
+				var linkStyle = metExploreD3.getLinkStyle();
 
-		   		document.getElementById("tooltip2").classList.add("hide");
-		    	// d3.select("#"+parent).select("#D3viz").select('#tooltip')
-		    	// 	.classed("hide", true); 
 	    		d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 					.selectAll("path.link")
 					.filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
@@ -1252,36 +1213,6 @@ metExploreD3.GraphNode = {
 						.filter(function(link){return d.getId()==link.getTarget().getId();})
 						.style("stroke", "green"); 
 				}
-				 
-				var xScale=scale.getXScale();
-				var yScale=scale.getYScale();
-				
-				if(!document.getElementById("tooltip2").classList.contains("fixed"))
-				{
-					var content = 
-						"<b>Name:</b> " + d.getName() 
-						+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
-						((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
-						((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
-						((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
-						((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
-						((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
-						((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
-
-	    			d.getMappingDatas().forEach(function(map){
-	    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
-	    			});
-
-	    			content+="</table>";
-	    			
-	    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
-	    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
-	    			}
-
-			   		document.getElementById("tooltip2").innerHTML = content;
-			   		document.getElementById("tooltip2").classList.remove("hide");
-				}
-
 			})
 		    // .on("mouseout", function(d) {   
 		    // 	d3.select("#"+parent).select("#D3viz").select('#tooltip')
@@ -1307,9 +1238,7 @@ metExploreD3.GraphNode = {
 					d.fixed = false;
 				var linkStyle = metExploreD3.getLinkStyle();  
 
-		   		document.getElementById("tooltip2").classList.add("hide");
-		    	// d3.select("#"+parent).select("#D3viz").select('#tooltip')
-		    	// 	.classed("hide", true); 
+
 	    		d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 					.selectAll("path.link")
 					.filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
@@ -1767,9 +1696,7 @@ metExploreD3.GraphNode = {
 
 	unselectIfDBClick : function() { 
 		var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-		if(d3.event.target==d3.select("#D3viz")[0][0])
-			document.getElementById("tooltip2").classList.remove("fixed");
-		
+
 		if(_MyThisGraphNode.dblClickable && d3.event.button==0){
 			_MyThisGraphNode.activePanel = this.parentNode.id;
          	d3.select(this).select("#graphComponent")
@@ -2037,36 +1964,6 @@ metExploreD3.GraphNode = {
 										return "resources/icons/unlock_font_awesome.svg";
 							});
 					}
-
-					var xScale=scale.getXScale();
-					var yScale=scale.getYScale();
-					
-					if(!document.getElementById("tooltip2").classList.contains("fixed"))
-					{
-						var content = 
-							"<b>Name:</b> " + d.getName() 
-							+"<br/><b>Biological type:</b> " + d.getBiologicalType() +
-							((d.getCompartment()!=undefined) ? "<br/><b>Compartment:</b> " + d.getCompartment(): "" )+
-							((d.getDbIdentifier()!=undefined) ? "<br/><b>Database identifier:</b> " + d.getDbIdentifier() : "" )+
-							((d.getEC()!=undefined) ? "<br/><b>EC number:</b> " + d.getEC() : "" )+
-							((d.getReactionReversibility()!=undefined) ? "<br/><b>Reaction reversibility:</b> " + d.getReactionReversibility() : "" )+
-							((d.getIsSideCompound()!=undefined) ? "<br/><b>SideCompound:</b> " + d.getIsSideCompound() : "" )+
-							((d.getMappingDatasLength()!=0) ? ((d.getMappingDatasLength()==1) ? "<br/><b>Mapping:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>" : "<br/><b>Mappings:</b><br/><table style='width:100%; margin-left: 30px; padding-right: 30px;'>"): "");
-
-		    			d.getMappingDatas().forEach(function(map){
-		    				content+="<tr><td>" + map.getMappingName() +"</td><td>"+ map.getConditionName() +"</td><td>"+ map.getMapValue() +"</td></tr>";
-		    			});
-
-		    			content+="</table>";
-		    			
-		    			if(d.getSvg()!=undefined  && d.getSvg()!="undefined" && d.getSvg()!=""){
-		    				content+='<br/><img src="resources/images/structure_metabolite/'+d.getSvg()+'"/>';
-		    			}
-
-				   		document.getElementById("tooltip2").innerHTML = content;
-				   		document.getElementById("tooltip2").classList.remove("hide");
-					}
-
 			    })
 		        .on("mouseleave", function(d) { 
 		        	var transform = d3.select(this).attr("transform");
@@ -2087,9 +1984,6 @@ metExploreD3.GraphNode = {
 						d.fixed = false;
 					var linkStyle = metExploreD3.getLinkStyle();  
 
-			   		document.getElementById("tooltip2").classList.add("hide");
-			    	// d3.select("#"+parent).select("#D3viz").select('#tooltip')
-			    	// 	.classed("hide", true); 
 		    		d3.select("#"+parent).select("#D3viz").select("#graphComponent")
 						.selectAll("path.link")
 						.filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
