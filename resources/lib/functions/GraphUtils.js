@@ -1495,7 +1495,7 @@ metExploreD3.GraphUtils = {
 				    networkJSON+="\n\"resizable\":" + _metExploreViz.getSessionById(key).isResizable();
 
 			    	networkJSON+="}";
-			    	if(nbSession < sessions.length-1)
+			    	if(nbSession < Object.keys(sessions).length-1)
 			    		networkJSON+=",";
 			    	nbSession++;
 				}
