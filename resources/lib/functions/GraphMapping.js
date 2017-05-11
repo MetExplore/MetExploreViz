@@ -1094,13 +1094,18 @@ metExploreD3.GraphMapping = {
 			var session = _metExploreViz.getSessionById('viz');
 			metExploreD3.GraphMapping.parseFluxValues(mappingName);
 			metExploreD3.GraphLink.loadLinksForFlux("viz", session.getD3Data(), metExploreD3.getLinkStyle(), metExploreD3.getMetaboliteStyle(), showValues, conditionName);
-			
-			if(fluxType=='Compare')
-				metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac);
-			else
-				metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac);
 
-			
+			if(fluxType=='Compare') {
+                metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac, function() {
+                    metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
+                });
+            }
+			else {
+                metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac, function(){
+                    metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
+                });
+            }
+
 		});
  	},
 
