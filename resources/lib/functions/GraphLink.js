@@ -1520,9 +1520,6 @@ metExploreD3.GraphLink = {
                 var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
                 var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
                 var map = map1;
-                console.log(conditionName);
-                console.log(conditions[1] == conditionName);
-                console.log(conditions[1]);
                 if (conditions[1] == conditionName | conditions[1] == conditionName[0])
                     map = map2;
 
