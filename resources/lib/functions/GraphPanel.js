@@ -616,10 +616,8 @@ metExploreD3.GraphPanel = {
 			        		}
 			        	];
 
-                        console.log(accord);
 						accord.add(item);
 						accord.expand();
-                        console.log(key);
                         metExploreD3.fireEventArg("comparePanel", 'initiateviz', key);
 						//metExploreD3.GraphNetwork.refreshSvg(panelId);
 					}	

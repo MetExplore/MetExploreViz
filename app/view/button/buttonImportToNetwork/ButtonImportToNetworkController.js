@@ -16,6 +16,14 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
 
 		view.lookupReference('importNetwork').on({
 			change: function () {
+                var sessions = _metExploreViz.getSessionsSet();
+                var accord = Ext.getCmp("comparePanel");
+                for (var key in sessions) {
+                    if (key != 'viz') {
+                        var id = key.replace("-body", "");
+                        accord.remove(Ext.getCmp(id));
+                    }
+                }
 				metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importNetwork').fileInputEl.dom, metExploreD3.GraphPanel.refreshPanel);
             },
             scope : me
@@ -40,7 +48,7 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
 				comboMapping.clearValue();
 	            //take an array to store the object that we will get from the ajax response
 				var records = [];
-				console.log(bool);
+				
 				// comboMapping.bindStore(store);
 				if(bool){
 
