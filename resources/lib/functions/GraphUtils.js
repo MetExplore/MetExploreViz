@@ -619,7 +619,6 @@ metExploreD3.GraphUtils = {
 
 					d3Clone.selectAll("path.convexhull")
 					    .classed(function(conv){
-                                console.log(conv);
                                 var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
                                 if(component.hidden())
                                     this.parentNode.removeChild(this);
@@ -637,7 +636,6 @@ metExploreD3.GraphUtils = {
 				{
 			    	d3Clone.selectAll("path.convexhull")
                         .classed(function(conv){
-                                console.log(conv);
                                 var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
                                 if(component.hidden())
                                     this.parentNode.removeChild(this);
@@ -1495,7 +1493,7 @@ metExploreD3.GraphUtils = {
 				    networkJSON+="\n\"resizable\":" + _metExploreViz.getSessionById(key).isResizable();
 
 			    	networkJSON+="}";
-			    	if(nbSession < sessions.length-1)
+			    	if(nbSession < Object.keys(sessions).length-1)
 			    		networkJSON+=",";
 			    	nbSession++;
 				}
