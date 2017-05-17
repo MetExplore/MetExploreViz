@@ -57,7 +57,7 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 		else
 		{
 			// Type ERROR
-			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. See <a href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#import">MetExploreViz documentation</a>.');
+			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. See <a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#import">MetExploreViz documentation</a>.');
 		}
 	}
 });

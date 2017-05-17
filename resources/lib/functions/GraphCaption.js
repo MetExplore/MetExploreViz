@@ -289,7 +289,9 @@ metExploreD3.GraphCaption = {
 			d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
 			    .classed("hide", function(conv){
 			    	var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
-			    	return component.hidden();
+			    	if(component)
+			    		return component.hidden();
+			    	return true;
 			    })
 
 			d3.select("#viz").select("#D3viz")
@@ -637,8 +639,7 @@ metExploreD3.GraphCaption = {
 			blue  = Math.sin(frequency*i+4+phase) * width + center;
 	 
 			var pathway = pathways[i].key;
-
-			var captionPathway = caption.append("svg:g")
+            var captionPathway = caption.append("svg:g")
 				.attr('id',"pathway"+ pathway.getId());
 
             var classImage = 'captionimage'+pathway.getId();

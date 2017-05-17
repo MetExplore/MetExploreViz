@@ -214,5 +214,9 @@ NodeData.prototype = {
     addPathway : function(pathw){
         if(this.pathways.indexOf(pathw)==-1)
             this.pathways.push(pathw);
+    },
+    removePathway : function(pathw){
+        if(this.pathways.indexOf(pathw)!=-1)
+            this.pathways.splice(pathw, 1);
     }
 };
