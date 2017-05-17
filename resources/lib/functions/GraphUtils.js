@@ -1362,7 +1362,8 @@ metExploreD3.GraphUtils = {
 	            
 	            
 				var networkJSON ="{";
-				networkJSON+="\n\"linkStyle\":"+JSON.stringify(metExploreD3.getLinkStyle());
+				networkJSON+="\n\"versionMetExploreViz\":"+JSON.stringify(Ext.manifest.version);
+				networkJSON+=",\n\"linkStyle\":"+JSON.stringify(metExploreD3.getLinkStyle());
 				networkJSON+=",\n\"reactionStyle\":"+JSON.stringify(metExploreD3.getReactionStyle());
 				networkJSON+=",\n\"biosource\":"+JSON.stringify(_metExploreViz.getBiosource());
 				networkJSON+=",\n\"generalStyle\":"+JSON.stringify(metExploreD3.getGeneralStyle());

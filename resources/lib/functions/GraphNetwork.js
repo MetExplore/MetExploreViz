@@ -1283,15 +1283,15 @@ metExploreD3.GraphNetwork = {
 		}
 		else
 		{
-			networkData.getPathways().forEach(function(pathway){
+            networkData.getPathways().forEach(function(pathway){
 				components.push({"id":pathway.identifier,x:2,y:2});
 			});
 
 			var links = [];
-
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
+            d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
 				.each(function(node){
 					node.getPathways().forEach(function(pathway){
+
 						node.getPathways().forEach(function(pathway2){
 							if(pathway!=pathway2){
 								var sourceIndex = components.findIndex(function(path){
@@ -2996,7 +2996,7 @@ setTimeout(
 			.transition().duration(1000)
 			.style("opacity", 0)
 			.remove();
-		
+
 		setTimeout(
 			function() {
 				
@@ -3013,42 +3013,7 @@ setTimeout(
 				// 		linksToRemove.push(d);
 				// }
 					
-				// Remove the node from group to draw convex hulls  
-				session.groups.forEach(function(group){
-					if(group.key==theNode.getCompartment()){
-						
-						var index = group.values.indexOf(theNode);
-						if(index!=-1)
-							group.values.splice(index, 1);
-						
-						if(group.values.length==0){
-						 	index = session.groups.indexOf(group);
-							if(index!=-1){
-								session.groups.splice(index, 1);
-								d3.select("#"+panel).select("#D3viz")
-									.select("path#"+group.key)
-									.remove();
-							}
-						}
-					}
-					theNode.getPathways().forEach(function(pathway){
-						if(group.key==pathway){
-							var index = group.values.indexOf(theNode);
-							if(index!=-1)
-								group.values.splice(index, 1);
-							
-							if(group.values.length==0){
-							 	index = session.groups.indexOf(group);
-								if(index!=-1){
-									session.groups.splice(index, 1);
-									d3.select("#"+panel).select("#D3viz")
-										.select("path#"+group.key)
-										.remove();
-								}
-							}
-						}
-					}) 
-				});
+				metExploreD3.GraphNetwork.removeNodeFromConvexHull(theNode, panel);
 
 				var index = force.nodes().indexOf(theNode);
 				if(index!=-1)
@@ -3066,7 +3031,86 @@ setTimeout(
 		, 1);
 		// metExploreD3.GraphNetwork.tick('viz');
 	},
-	
+
+	/*******************************************
+    * Remove a node from convex hull (pathway or compartment)
+    * @param {} theNode : The node to remove
+    * @param {} panel : The panel
+    */
+    removeNodeFromConvexHull : function(theNode, panel) {
+		var session = _metExploreViz.getSessionById(panel);
+        // Remove the node from group to draw convex hulls
+
+        session.groups.forEach(function(group){
+
+
+            var nodeToRemove = group.values.find(function (node) {
+                return theNode.getId() == node.getId();
+            });
+            if(nodeToRemove!=null){
+                var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
+
+				var index = group.values.indexOf(nodeToRemove);
+				group.values.splice(index, 1);
+                if(componentDisplayed=="Compartments") {
+
+
+                    var metabolitesInCompartment = group.values.filter(function getMetabolite(node) {
+                        return node.getBiologicalType() == "metabolite";
+                    })
+
+                    if (metabolitesInCompartment.length == 0) {
+                        index = session.groups.indexOf(group);
+                        if (index != -1) {
+                            d3.select("#" + panel).select("#D3viz")
+                                .selectAll("path.convexhull")
+                                .filter(function (conv) {
+                                    return conv.key == group.key;
+                                })
+                                .remove();
+                        }
+                        var compartment = session.getD3Data().getCompartmentByName(group.key);
+                        if (compartment != null)
+                            session.getD3Data().removeCompartment(session.getD3Data().getCompartmentByName(group.key));
+
+                        group.values = [];
+                        session.removeAGroup(group);
+                    }
+                }
+                else {
+
+                    var reactionsInPathway = group.values.filter(function getReaction(node) {
+                        return node.getBiologicalType() == "reaction";
+                    })
+
+                    if (reactionsInPathway.length == 0) {
+                        index = session.groups.indexOf(group);
+                        if (index != -1) {
+                            d3.select("#" + panel).select("#D3viz")
+                                .selectAll("path.convexhull")
+                                .filter(function (conv) {
+                                    return conv.key == group.key;
+                                })
+                                .remove();
+                        }
+                        var pathway = session.getD3Data().getPathwayByName(group.key);
+                        if (pathway != null)
+                            session.getD3Data().removePathway(session.getD3Data().getPathwayByName(group.key));
+
+                        group.values.forEach(function (metabolite) {
+                            var theMeta = session.getD3Data().getNodeById(metabolite.getId());
+                            theMeta.removePathway(group.key);
+                            metabolite.removePathway(group.key);
+                        })
+                        group.values = [];
+                        session.removeAGroup(group);
+                    }
+                }
+            }
+
+        });
+	},
+
 		/*******************************************
     * Remove node which is Isolated
     * @param {} panel : The panel
@@ -3200,61 +3244,23 @@ setTimeout(
 
 		setTimeout(
 			function() {
-				
-				for (i = 0; i < nodesToRemove.length; i++) {
-					var node = nodesToRemove[i];
-					
-					// Remove the node from group to draw convex hulls  
-					session.groups.forEach(function(group){
-						if(group.key==node.getCompartment()){
-							
-							var index = group.values.indexOf(node);
-							if(index!=-1)
-								group.values.splice(index, 1);
-							
-							if(group.values.length==0){
-							 	index = session.groups.indexOf(group);
-								if(index!=-1){
-									session.groups.splice(index, 1);
-									d3.select("#"+panel).select("#D3viz")
-										.select("path#"+group.key)
-										.remove();
-								}
-							}
-						}
-						node.getPathways().forEach(function(pathway){
-							if(group.key==pathway){
-								var index = group.values.indexOf(node);
-								if(index!=-1)
-									group.values.splice(index, 1);
-								
-								if(group.values.length==0){
-								 	index = session.groups.indexOf(group);
-									if(index!=-1){
-										session.groups.splice(index, 1);
-										d3.select("#"+panel).select("#D3viz")
-											.select("path#"+group.key)
-											.remove();
-									}
-								}
-							}
-						}) 
-					});
+                nodesToRemove.forEach(function(node){
+                    // Remove the node from group to draw convex hulls
+                    metExploreD3.GraphNetwork.removeNodeFromConvexHull(node, panel);
 
-					var index = force.nodes().indexOf(
+                    var index = force.nodes().indexOf(
 							node);
 					if(index!=-1)
 						force.nodes().splice(index, 1);
-				}
+				})
 
-				for (i = 0; i < nodesToRemove.length; i++) {
-					var node = nodesToRemove[i];
+                nodesToRemove.forEach(function(node){
 					var index = force.nodes().indexOf(
 							node);
 					
 					if(index!=-1)
 						force.nodes().splice(index, 1);
-				}				
+				})
 			}
 		, 10);
 	},

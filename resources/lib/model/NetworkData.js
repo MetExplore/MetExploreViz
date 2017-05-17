@@ -173,7 +173,25 @@ NetworkData.prototype = {
         return null;
         
     },
-    
+    removePathway : function (path){
+        for(k=0;k<this.pathways.length;k++)
+        {
+            if(path.id == this.pathways[k].id)
+            {
+                this.pathways.splice(k, 1);
+            }
+        }
+    },
+    removeCompartment : function (comp){
+        for(k=0;k<this.compartments.length;k++)
+        {
+            if(comp.id == this.compartments[k].id)
+            {
+                this.compartments.splice(k, 1);
+            }
+        }
+    },
+
     sortPathways:function()
     {
         this.pathways.sort(function (a, b) {
@@ -355,13 +373,13 @@ NetworkData.prototype = {
 			 	{this.links.splice(k, 1);}
 			}
     },
-    
+
     //remove node function
     removeNode : function (node){
     	//first, remove all the link adjacent to this node
     	//for(i=0;i if(s==this[i]) this.splice(i, 1);
     	var adjLink=this.getAdjLink(node);
-    	
+
     	if(adjLink.length!=0)
     	{
     		for(var i=0;i<adjLink.length;i++)
@@ -372,7 +390,7 @@ NetworkData.prototype = {
     			this.removeLink(link2remove);
     			//for(j=0;j<adjLink.length;j++){console.log('-'+adjLink[j].id);}
     		}
-    		
+
     	}
     	for(var k=0;k<this.nodes.length;k++)
 		{

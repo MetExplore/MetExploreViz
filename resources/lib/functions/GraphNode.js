@@ -2384,6 +2384,7 @@ metExploreD3.GraphNode = {
 		// d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("graphComponent").selectAll("path")
 		// 	.enter().insert("path", "g.node")
 
+
 		d3.select("#"+parent).select("#D3viz").selectAll("path.convexhull")
 		    .data(session.groups)
 		    .enter()
