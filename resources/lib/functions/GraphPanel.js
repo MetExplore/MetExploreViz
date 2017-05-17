@@ -32,10 +32,14 @@ metExploreD3.GraphPanel = {
 			d3.select("#"+panel).select("#D3viz").attr('width', $("#"+panel).width()); //max width
 	        d3.select("#"+panel).select("#D3viz").attr('height', $("#"+panel).height()); //max height
 
-			d3.select("#"+panel)
-				.select("#D3viz")
-				.select("#foreignObject")
-				.attr("transform", "translate("+($("#"+panel).width()-300)+",100) scale(1)")
+            var y=d3.select("#viz").select("#D3viz")
+                .select("#captionPathway").attr("y");
+
+            d3.select("#"+panel)
+                .select("#D3viz")
+                .selectAll(".foreignObjectCaptionContainer")
+                .selectAll(".captionContainer")
+                .style("height", ($("#"+panel).height()-y-15)+"px");
 
 			// Redefine Zoom and brush
 			var scaleZ = scale.getZoomScale();
@@ -295,10 +299,14 @@ metExploreD3.GraphPanel = {
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
 
-		d3.select("#"+panel)
+        var y=d3.select("#viz").select("#D3viz")
+            .select("#captionPathway").attr("y");
+
+        d3.select("#"+panel)
 			.select("#D3viz")
-			.select("foreignObject")
-			.attr("x", w-300);
+			.selectAll(".foreignObjectCaptionContainer")
+            .selectAll(".captionContainer")
+			.style("height", (h-y-15)+"px");
 
 		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0][0]!=null
 			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut")[0][0]!=null

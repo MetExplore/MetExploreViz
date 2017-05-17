@@ -47,6 +47,12 @@ NetworkVizSession.prototype = {
         }
         return group; 
     },
+    removeAGroup:function (group) {
+        var index = this.groups.indexOf(group);
+        if(index!=-1)
+            this.groups.slice(index,1);
+
+    },
     getActiveMapping:function()
     {
        return this.activeMapping;
