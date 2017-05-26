@@ -3396,7 +3396,6 @@ setTimeout(
 					}
 				});
 		
-		
 			scale.add({
 				'graphName' : panel,
 				'xScale' : xScale,
