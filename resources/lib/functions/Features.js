@@ -11,16 +11,16 @@ metExploreD3.Features = {
 				description: "highlightSubnetwork",
 				enabledTo: ["Cottret", "Poupin", "Chazalviel", "Jourdan"]
 			},
-            "layouts":
+        	"layouts":
             {
                 description: "layouts",
-                enabledTo: [""]
+                enabledTo: ["nobodyhasacces"]
             },
-			"algorithm":
-			{
-				description: "layouts",
-				enabledTo: [""]
-			}
+       		"algorithm":
+            {
+                description: "layouts",
+                enabledTo: ["nobodyhasacces"]
+            }
 	},
 
     isEnabled : function(feature, currentUser) {
