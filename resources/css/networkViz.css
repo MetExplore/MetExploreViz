@@ -101,9 +101,9 @@ text.reaction{
 }
 
 .captionContainer{
-    border-style: solid;
-    border-width: 0px 5px 0px 0px;
-    border-color: #5fa2dd;
+    /*border-style: solid;*/
+    /*border-width: 0px 5px 0px 0px;*/
+    /*border-color: #5fa2dd;*/
     height: 300px;
     width: 300px;
     overflow: auto;
