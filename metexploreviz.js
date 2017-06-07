@@ -1,5 +1,3 @@
-
-
 var MetExploreViz = {
     initFrame:function(panel){
 		var iframe = document.createElement('iframe');
