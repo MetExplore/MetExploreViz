@@ -173,7 +173,6 @@ describe('Color nodes' ,function() {
     }
 
 });
-
 // ToDo 
 // Nombre de noeuds créés 
 // Nombre de liens créés 
