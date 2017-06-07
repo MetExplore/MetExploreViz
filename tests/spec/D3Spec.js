@@ -22,7 +22,6 @@ describe('Test svg after refresh network', function() {
     }    
 });
 
-
 // ToDo 
 // Number of created nodes 
 // Number of created links 
