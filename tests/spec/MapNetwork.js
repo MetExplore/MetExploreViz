@@ -153,12 +153,12 @@ describe('Color nodes' ,function() {
 		metExploreViz=undefined;
     	jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
-//By default jasmine will wait for 5 seconds for an asynchronous spec to finish before causing a timeout failure. 
-//If the timeout expires before done is called, the current spec will be marked as failed and suite execution will continue as if done was called.
+	//By default jasmine will wait for 5 seconds for an asynchronous spec to finish before causing a timeout failure. 
+	//If the timeout expires before done is called, the current spec will be marked as failed and suite execution will continue as if done was called.
 
-//If specific specs should fail faster or need more time this can be adjusted by setting jasmine.DEFAULT_TIMEOUT_INTERVAL around them.
+	//If specific specs should fail faster or need more time this can be adjusted by setting jasmine.DEFAULT_TIMEOUT_INTERVAL around them.
 
-//If the entire suite should have a different timeout, jasmine.DEFAULT_TIMEOUT_INTERVAL can be set globally, outside of any given describe.
+	//If the entire suite should have a different timeout, jasmine.DEFAULT_TIMEOUT_INTERVAL can be set globally, outside of any given describe.
 	
 	function getSession() {
 		var session = metExploreViz.getGlobals().getSessionById('viz');
