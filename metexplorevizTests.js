@@ -3,7 +3,6 @@
 var MetExploreViz = {
     initFrame:function(panel){
 		var iframe = document.createElement('iframe');
-		// iframe.rel = "external",
 		iframe.id = "iFrameMetExploreViz",
 		iframe.height = '100%',
 		iframe.width = '100%',
