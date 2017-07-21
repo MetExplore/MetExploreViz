@@ -35,6 +35,16 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                 hidden:true
              },
              {
+                text: 'Align', 
+                scale: 'large',
+                menu:{id:'vizIdAlignMenu',xtype: 'vizAlignMenu'},
+                id:'vizAlignMenuID',
+                reference:'vizAlignMenuID',
+                padding:'0 0 0 0',
+                iconCls:'horizontalalign',
+                hidden:true
+             },
+             {
                  text: 'Duplicate side compounds',
                  reference:'duplicateSideCompounds',
                  tooltip:'Duplicate metabolites annotated as side compounds',

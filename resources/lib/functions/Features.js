@@ -16,10 +16,15 @@ metExploreD3.Features = {
                 description: "layouts",
                 enabledTo: ["nobodyhasacces"]
             },
-       		"algorithm":
+            "algorithm":
             {
                 description: "layouts",
                 enabledTo: ["nobodyhasacces"]
+            },
+            "align":
+            {
+                description: "align",
+                enabledTo: ["Cottret", "Poupin", "Chazalviel", "Jourdan", "Frainay"]
             }
 	},
 

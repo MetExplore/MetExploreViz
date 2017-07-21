@@ -221,6 +221,18 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.verticalalign {
+     background-image: url(../icons/verticalalign.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.horizontalalign {
+     background-image: url(../icons/horizontalalign.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .blackWhite {
      background-image: url(../icons/blackWhite.png);
     background-size: 100% 100%;

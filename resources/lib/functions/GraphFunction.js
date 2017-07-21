@@ -36,6 +36,70 @@ metExploreD3.GraphFunction = {
 		return graph;          
 	},
 
+	horizontalAlign : function() {
+		var nodes = _metExploreViz.getSessionById('viz').getSelectedNodes();
+		
+		var yRef = _metExploreViz.getSessionById('viz').getD3Data().getNodeById(nodes[0]).y;
+		var arrayNode = [];
+		
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+			.filter(function(node){
+				return nodes.indexOf(node.getId())!=-1;
+			})
+			.each(function(node){
+				arrayNode.push(node);
+				node.py = yRef ;
+				node.y = yRef ;
+			});
+
+		arrayNode.sort(function(node1, node2){
+		   return d3.ascending(node1.x, node2.x);
+		});
+
+		arrayNode.forEach(function(node, i){
+			if(i!=0){
+				if((node.x-arrayNode[i-1].x)<30){
+					node.px = arrayNode[i-1].x+30 ;
+					node.x = arrayNode[i-1].x+30  ;
+				}
+			}
+		})
+    
+     	metExploreD3.GraphNetwork.tick("viz");
+	},
+
+	verticalAlign : function() {
+		var nodes = _metExploreViz.getSessionById('viz').getSelectedNodes();
+		
+		var xRef = _metExploreViz.getSessionById('viz').getD3Data().getNodeById(nodes[0]).x;
+		
+		var arrayNode = [];
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+			.filter(function(node){
+				return nodes.indexOf(node.getId())!=-1;
+			})
+			.each(function(node){
+				arrayNode.push(node);
+				node.px = xRef ;
+				node.x = xRef ;
+			});
+		
+		arrayNode.sort(function(node1, node2){
+		   return d3.ascending(node1.y, node2.y);
+		});
+
+		arrayNode.forEach(function(node, i){
+			if(i!=0){
+				if((node.y-arrayNode[i-1].y)<30){
+					node.py = arrayNode[i-1].y+30 ;
+					node.y = arrayNode[i-1].y+30  ;
+				}
+			}
+		})
+    
+     	metExploreD3.GraphNetwork.tick("viz");
+	},
+
     colorDistanceOnNode : function(graph, func){
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();
 		var maxDistance = 0; 
