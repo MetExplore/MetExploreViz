@@ -62,7 +62,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								iconCls:"lock_font_awesome",
 								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
 							},{
-								text : 'Side compounds (duplicate)',
+								text : 'Selected nodes as side compounds (duplicate)',
 								hidden : false,
 								iconCls:"duplicate-sideCompounds",
 								handler : function(){ 
@@ -71,7 +71,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								}
 							}
 							,{
-								text : 'Select nodes in table',
+								text : 'Select selected nodes in table',
 								hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
 								iconCls:"search",
 								handler : function() {
@@ -124,11 +124,24 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							 	metExploreD3.GraphNetwork.removeOnlyClickedNode(theNode, "viz"); 
 							}	
 						},{
+							text : 'Remove selected nodes',
+							hidden : false,
+							iconCls:"removeNode",
+							handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
+						},{
 							text : 'Side compound (duplicate)',
 							hidden : !isMetabolite,
 							iconCls:"duplicate-sideCompounds",
 							handler : function(){ 
 								metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz"); 
+							}
+						},{
+							text : 'Duplicate selected nodes as side compounds',
+							hidden : false,
+							iconCls:"duplicate-sideCompounds",
+							handler : function(){ 
+								var sessio = _metExploreViz.getSessionById('viz');
+								metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); 
 							}
 						},{
 							text : 'Change name',
@@ -160,6 +173,27 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							handler : function() {
 								metExploreD3.fireEventParentWebSite("selectNodesInTable", [theNode]);
 							}
+						},{
+							text : 'Select selected nodes in table',
+							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+							iconCls:"search",
+							handler : function() {
+								var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
+								var selectedNodesObj = [];
+								networkData = networkVizSessionStore.getD3Data();
+								
+								selectedNodesIds.forEach(function(id){
+									var node = networkData.getNodeById(id);
+									if(node)
+										selectedNodesObj.push(node);
+								})
+								metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
+							}
+						},{
+							text : 'Fix selected nodes',
+							hidden : false,
+							iconCls:"lock_font_awesome",
+							handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
 						}
 						]
 					});
