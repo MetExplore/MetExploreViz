@@ -40,6 +40,7 @@ var metExploreD3 = {
     },
 
     featureFlipping:function(){
+        metExploreD3.fireEvent('vizAlignMenuID', "setUser");
         metExploreD3.fireEvent('vizLayoutMenuID', "setUser");
         metExploreD3.fireEvent('vizAlgorithmMenuID', "setUser");
         metExploreD3.fireEvent('highlightSubnetwork', "setUser");

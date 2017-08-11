@@ -45,6 +45,19 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			scope : me
 		});
 
+		view.lookupReference('vizAlignMenuID').on({
+			setUser : function(){
+				if(metExploreD3.Features.isEnabled('align', metExploreD3.getUser())){
+					view.lookupReference('vizAlignMenuID').setHidden(false);
+				}
+				else
+				{
+					view.lookupReference('vizAlignMenuID').setHidden(true);
+				}
+			},
+			scope : me
+		});
+
 		view.lookupReference('makeClusters').on({
 			click : me.makeClusters,
 			scope : me
