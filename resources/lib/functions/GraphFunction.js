@@ -37,6 +37,7 @@ metExploreD3.GraphFunction = {
 	},
 
 	horizontalAlign : function() {
+		metExploreD3.GraphNode.fixSelectedNode();
 		var nodes = _metExploreViz.getSessionById('viz').getSelectedNodes();
 		
 		var yRef = _metExploreViz.getSessionById('viz').getD3Data().getNodeById(nodes[0]).y;
@@ -69,6 +70,7 @@ metExploreD3.GraphFunction = {
 	},
 
 	verticalAlign : function() {
+		metExploreD3.GraphNode.fixSelectedNode();
 		var nodes = _metExploreViz.getSessionById('viz').getSelectedNodes();
 		
 		var xRef = _metExploreViz.getSessionById('viz').getD3Data().getNodeById(nodes[0]).x;

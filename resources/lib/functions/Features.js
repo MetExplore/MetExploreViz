@@ -24,7 +24,7 @@ metExploreD3.Features = {
             "align":
             {
                 description: "align",
-                enabledTo: ["Cottret", "Poupin", "Chazalviel", "Jourdan", "Frainay"]
+                enabledTo: ["all"]
             }
 	},
 
