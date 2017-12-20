@@ -320,7 +320,7 @@ metExploreD3.GraphMapping = {
 																				+ ")")
 														.style("opacity", '0.5')
 														.style("fill", 'red');
-													session.addSelectedNode(d.getId());
+													session.addMappedNode(d.getId());
 
 												}
 											}
@@ -348,7 +348,7 @@ metExploreD3.GraphMapping = {
 																					+ ")")
 															.style("opacity", '0.5')
 															.style("fill", 'red');
-														session.addSelectedNode(d.getId());
+														session.addMappedNode(d.getId());
 													}
 												}
 											}
@@ -379,7 +379,7 @@ metExploreD3.GraphMapping = {
 																					+ ")")
 															.style("opacity", '0.5')
 															.style("fill", 'red');
-														session.addSelectedNode(d.getId());
+														session.addMappedNode(d.getId());
 
 														return true;
 													}
@@ -411,7 +411,7 @@ metExploreD3.GraphMapping = {
 																						+ ")")
 																.style("opacity", '0.5')
 																.style("fill", 'red');
-															session.addSelectedNode(d.getId());
+															session.addMappedNode(d.getId());
 															return true;
 														}
 														else
@@ -603,7 +603,7 @@ metExploreD3.GraphMapping = {
 											.transition().duration(2000)
 											.style("opacity", opacity(scaleValue(parseFloat(mapVal))));
  
-										session.addSelectedNode(d.getId());    	
+										session.addMappedNode(d.getId());
 									}
 					            }
 					        }); 	
@@ -889,7 +889,7 @@ metExploreD3.GraphMapping = {
 													.transition().duration(2000)
 													.style("opacity", opacity(scaleValue(parseFloat(map.getMapValue()))));
 
-												session.addSelectedNode(d.getId());    	
+												session.addMappedNode(d.getId());
 							                }
 										}
 									}
@@ -1379,7 +1379,7 @@ metExploreD3.GraphMapping = {
 									
 									var reactionStyle = metExploreD3.getReactionStyle();
 									_MyThisGraphNode.addText(d, 'viz', reactionStyle);
-									session.addSelectedNode(d.getId());
+									session.addMappedNode(d.getId());
 									return true;
 								}
 								else
@@ -1407,7 +1407,7 @@ metExploreD3.GraphMapping = {
 									
 										var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 										_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
-										session.addSelectedNode(d.getId());
+										session.addMappedNode(d.getId());
 										return true;
 									}
 									else
@@ -1565,7 +1565,7 @@ metExploreD3.GraphMapping = {
 							      //                     .attr("mapped", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")")
 							      //                     .style("fill", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")");
  
-													session.addSelectedNode(d.getId());    	
+													session.addMappedNode(d.getId());
 								                }
 											}
 										}
@@ -1582,7 +1582,7 @@ metExploreD3.GraphMapping = {
 															.transition().duration(2000)
 															.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
 															.style("fill", colorScale(parseFloat(map.getMapValue())));
-														session.addSelectedNode(d.getId());
+														session.addMappedNode(d.getId());
 								        //                 var colorNorm = (parseFloat(map.getMapValue()-minValue)*255.0)/(maxValue-minValue);
 
 								        //                 d3.select(this)
@@ -2072,10 +2072,7 @@ metExploreD3.GraphMapping = {
 	generateMapping: function(mapping, nodeMappingByCondition){
 		var session = _metExploreViz.getSessionById('viz');
 		var networkData = session.getD3Data();
-		console.log(nodeMappingByCondition);
-		console.log(nodeMappingByCondition.length==1);
-		console.log(nodeMappingByCondition[0].name=="undefined");
-		console.log(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"));
+
 		switch (mapping.getTargetLabel()) {
             case "reactionDBIdentifier":
             	if(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"))

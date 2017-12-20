@@ -35,13 +35,16 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
                  tooltip:'Highlight sub-network based on node selection or mapped nodes',
                  iconCls:'highlightSubnetwork',
                  hidden:true
-             },
-              {
-                 text: 'Extract Subnetwork',
-                 reference:'keepOnlySubnetwork',
-                 tooltip:'Extract sub-network based on node selection',
-                 iconCls:'subnetwork'
-              }
+             },{
+                text: 'Extract Subnetwork',
+                scale: 'large',
+                menu:{id:'vizIdExtractSubNetworkMenu',xtype: 'vizExtractSubNetworkMenu'},
+                id:'vizExtractSubNetworkID',
+                reference:'vizExtractSubNetworkID',
+                padding:'0 0 0 0',
+                iconCls:'subnetwork',
+                tooltip:'Extract sub-network based on node selection or node mapping'
+            }
             //  {
             //     text: 'Extract Subnetwork',action:'subnetwork',tooltip:'Extract sub-network based on node selection',iconCls:'subnetwork',
             //  },

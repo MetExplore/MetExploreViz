@@ -594,7 +594,7 @@ metExploreD3.GraphFunction = {
 	 * where nodes have a subnet attribute telling wether they
 	 * are in subnet or not
 	 */
-	extractSubNetwork : function(graph) {
+	extractSubNetwork : function(graph, nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
 		// Should be a parameter
 		var nodeSelection = [];
@@ -605,7 +605,7 @@ metExploreD3.GraphFunction = {
 		if (session.getVizEngine() == 'D3') {
 			// console.log("Subnetwork extraction using D3");
 			var vis = d3.select("#viz").select("#D3viz");
-			nodeSelection = session.getSelectedNodes();
+			nodeSelection = nodeToLink;
 						
 			if (nodeSelection.length < 2){
 				metExploreD3.displayMessage("Warning", "At least two nodes have to be selected or mapped.");
@@ -877,9 +877,11 @@ metExploreD3.GraphFunction = {
 	/**
 	 * Hihglight nodes and edges belonging to a subnetwork
 	 */
-	keepOnlySubnetwork : function() {
+	keepOnlySubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
-		//console.log("------keep only sub-network------")
+		//console.log("------keep only sub-network------"
+		// )
+
 		var force = session.getForce();
 		var networkData = session.getD3Data();
 		
@@ -898,7 +900,7 @@ metExploreD3.GraphFunction = {
 
 			}
 		}
-		console.log(graphSession);
+
 		if(graphSession.edges.length>15000)
 		{
 			Ext.Msg.show({
@@ -922,13 +924,13 @@ metExploreD3.GraphFunction = {
 
 				metExploreD3.showMask(myMask);
 				metExploreD3.deferFunction(function() {
-					var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession);
+					var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession, nodeToLink);
 					console.log("graph after extraction ",graph);
 					if(graph!=null)
 					{
 						var subEmpty = true;
-						for ( var i in session.getSelectedNodes()) {
-							var nodeID = session.getSelectedNodes()[i];
+						for ( var i in nodeToLink) {
+							var nodeID = nodeToLink[i];
 							if (graph.nodes[nodeID].inSubNet)
 								subEmpty = false;
 						}
@@ -981,7 +983,7 @@ metExploreD3.GraphFunction = {
 	/**
 	 * Hihglight nodes and edges belonging to a subnetwork
 	 */
-	highlightSubnetwork : function() {
+	highlightSubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
 		var myMask = metExploreD3.createLoadMask("Highlight Subnetwork...", 'viz');
 		if(myMask!= undefined){
@@ -1006,16 +1008,14 @@ metExploreD3.GraphFunction = {
 		
 				var graphSession = metExploreD3.GraphFunction.getGraph();
 
-				var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession);
+				var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession, nodeToLink);
 				
 				console.log("graph after extraction in highlight subnetwork ",graph);
 				if(graph!=null)
 				{
 					var subEmpty = true;
-					for ( var i in session
-							.getSelectedNodes()) {
-						var nodeID = session
-								.getSelectedNodes()[i];
+					for ( var i in nodeToLink) {
+						var nodeID = nodeToLink[i];
 						if (graph.nodes[nodeID].inSubNet)
 							subEmpty = false;
 					}
