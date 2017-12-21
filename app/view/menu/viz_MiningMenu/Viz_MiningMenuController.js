@@ -17,11 +17,6 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenuController', {
 	  		scope:me
      	});
 
-	    
-		view.lookupReference('highlightSubnetwork').on({
-			click : me.highlightSubnetwork,
-			scope : me
-		});
 
 
 		view.lookupReference('vizAlgorithmMenuID').on({
@@ -49,18 +44,9 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenuController', {
 			},
 			scope : me
 		});
-		
-		view.lookupReference('keepOnlySubnetwork').on({
-			click : me.keepOnlySubnetwork,
-			scope : me
-		});
+
 	},
 	highlightSubnetwork : function(){
 		metExploreD3.GraphFunction.highlightSubnetwork();
 	},
-	keepOnlySubnetwork : function(){
-		console.time( 'keepOnlySubnetwork' );
-		metExploreD3.GraphFunction.keepOnlySubnetwork();
-		console.timeEnd( 'keepOnlySubnetwork' );
-	}
 });
