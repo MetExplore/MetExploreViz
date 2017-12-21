@@ -59,7 +59,8 @@ NetworkVizSession.prototype = {
     },    
     setActiveMapping:function(activeMapping)
     {
-       this.activeMapping = activeMapping;
+        this.nodesMap = [];
+        this.activeMapping = activeMapping;
     },
 
     // ColorMapping
@@ -88,6 +89,11 @@ NetworkVizSession.prototype = {
         if(this.selectedNodes==undefined)
             this.selectedNodes = [];
         this.selectedNodes.push(nodeId);
+    },
+    addMappedNode : function(nodeId){
+        if(this.nodesMap==undefined)
+            this.nodesMap = [];
+        this.nodesMap.push(nodeId);
     },
 
     addDuplicatedNode : function(nodeId){
@@ -263,7 +269,7 @@ NetworkVizSession.prototype = {
 
     getNodesMap : function(){
         if (this.nodesMap==undefined)
-            this.nodesMap = new Object();
+            this.nodesMap = [];
         return this.nodesMap;
     },        
 

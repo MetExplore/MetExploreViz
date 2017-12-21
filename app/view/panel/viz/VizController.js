@@ -78,7 +78,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 									var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
 									var selectedNodesObj = [];
 									networkData = networkVizSessionStore.getD3Data();
-									
+
 									selectedNodesIds.forEach(function(id){
 										var node = networkData.getNodeById(id);
 										if(node)
@@ -113,22 +113,60 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
 					var theNode = metExploreD3.GraphNode.selectNodeData(e.target);
 					var isMetabolite = (theNode.getBiologicalType()=="metabolite");
-					
+
+                    viz.selectMenu = new Ext.menu.Menu({
+                        items : [{
+                            text : 'Only this node',
+                            hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+                            iconCls:"search",
+                            handler : function() {
+                                var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
+                                var selectedNodesObj = [theNode];
+                                metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
+                            }
+                        },
+                            {
+                                text : 'All selected nodes',
+                                hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+                                iconCls:"search",
+                                handler : function() {
+                                    var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
+                                    var selectedNodesObj = [];
+                                    networkData = networkVizSessionStore.getD3Data();
+
+                                    selectedNodesIds.forEach(function(id){
+                                        var node = networkData.getNodeById(id);
+                                        if(node)
+                                            selectedNodesObj.push(node);
+                                    })
+                                    metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
+                                }
+                            }]
+                    });
+
+                    viz.removeMenu = new Ext.menu.Menu({
+                        items : [{
+                            text : 'Remove the node',
+                            hidden : false,
+                            iconCls:"removeNode",
+                            handler : function(){
+                                metExploreD3.GraphNetwork.removeOnlyClickedNode(theNode, "viz");
+                            }
+                        },{
+                            text : 'Remove selected nodes',
+                            hidden : false,
+                            iconCls:"removeNode",
+                            handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
+                        }]
+                    });
 					viz.CtxMenu = new Ext.menu.Menu({
-						items : [
-						{
-							text : 'Remove the node',
-							hidden : false,
-							iconCls:"removeNode",
-							handler : function(){
-							 	metExploreD3.GraphNetwork.removeOnlyClickedNode(theNode, "viz"); 
-							}	
-						},{
-							text : 'Remove selected nodes',
-							hidden : false,
-							iconCls:"removeNode",
-							handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
-						},{
+						items : [{
+                            text : 'Remove selected nodes',
+                            hidden : false,
+                            iconCls:"removeNode",
+                            menu : viz.removeMenu
+							}
+                            ,{
 							text : 'Side compound (duplicate)',
 							hidden : !isMetabolite,
 							iconCls:"duplicate-sideCompounds",
@@ -157,39 +195,19 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							handler : function(){ 
 								metExploreD3.GraphNode.selectNeighbours(theNode, "viz"); 
 							}
-						}
-						,{
+						},{
 							text : 'See more information',
 							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
 							iconCls:"info",
 							handler : function() {
 								metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
 							}
-						}
-						,{
-							text : 'Select node in table',
-							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-							iconCls:"search",
-							handler : function() {
-								metExploreD3.fireEventParentWebSite("selectNodesInTable", [theNode]);
-							}
 						},{
-							text : 'Select selected nodes in table',
-							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-							iconCls:"search",
-							handler : function() {
-								var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
-								var selectedNodesObj = [];
-								networkData = networkVizSessionStore.getD3Data();
-								
-								selectedNodesIds.forEach(function(id){
-									var node = networkData.getNodeById(id);
-									if(node)
-										selectedNodesObj.push(node);
-								})
-								metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
-							}
-						},{
+                            text : 'Select node in table',
+                            hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+                            iconCls:"search",
+                            menu:viz.selectMenu
+                        },{
 							text : 'Fix selected nodes',
 							hidden : false,
 							iconCls:"lock_font_awesome",

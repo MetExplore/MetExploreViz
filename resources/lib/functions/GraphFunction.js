@@ -594,7 +594,7 @@ metExploreD3.GraphFunction = {
 	 * where nodes have a subnet attribute telling wether they
 	 * are in subnet or not
 	 */
-	extractSubNetwork : function(graph) {
+	extractSubNetwork : function(graph, nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
 		// Should be a parameter
 		var nodeSelection = [];
@@ -605,7 +605,7 @@ metExploreD3.GraphFunction = {
 		if (session.getVizEngine() == 'D3') {
 			// console.log("Subnetwork extraction using D3");
 			var vis = d3.select("#viz").select("#D3viz");
-			nodeSelection = session.getSelectedNodes();
+			nodeSelection = nodeToLink;
 						
 			if (nodeSelection.length < 2){
 				metExploreD3.displayMessage("Warning", "At least two nodes have to be selected or mapped.");
@@ -877,96 +877,113 @@ metExploreD3.GraphFunction = {
 	/**
 	 * Hihglight nodes and edges belonging to a subnetwork
 	 */
-	keepOnlySubnetwork : function() {
+	keepOnlySubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
-		//console.log("------keep only sub-network------")
+		//console.log("------keep only sub-network------"
+		// )
+
 		var force = session.getForce();
 		var networkData = session.getD3Data();
 		
 		var graphSession = metExploreD3.GraphFunction.getGraph();
 
-		var myMask = metExploreD3.createLoadMask("Remove elements not in path...", 'viz');
-		if(myMask!= undefined){
+		var vis = d3.select("#"+'viz').select("#D3viz");
 
-			metExploreD3.showMask(myMask);
-			metExploreD3.deferFunction(function() {			         
-				
-		        
-	        	var vis = d3.select("#"+'viz').select("#D3viz");
-				
-				if(session!=undefined) 
-				{
-					// We stop the previous animation
-					var force = session.getForce();
-					if(force!=undefined)  
+		if(session!=undefined)
+		{
+			// We stop the previous animation
+			var force = session.getForce();
+			if(force!=undefined)
+			{
+				if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
+					force.stop();
+
+			}
+		}
+
+		if(graphSession.edges.length>15000)
+		{
+			Ext.Msg.show({
+				title:'Are you sure?',
+				msg: 'Keep only subnetwork on big network (>15000 links) may take several minutes. <br />Would you like to do this?',
+				buttons: Ext.Msg.OKCANCEL,
+				fn: function(btn){
+					if(btn=="ok")
 					{
-						if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
-							force.stop();
-												
+						extract();
 					}
-				}
+				},
+				icon: Ext.Msg.QUESTION
+			});
+		}
+		else extract();
 
+		function extract(){
+			var myMask = metExploreD3.createLoadMask("Keep only subnetwork...", 'viz');
+			if(myMask!= undefined){
 
-				var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession);
-				console.log("graph after extraction ",graph);
-				if(graph!=null)
-				{
-					var subEmpty = true;
-					for ( var i in session.getSelectedNodes()) {
-						var nodeID = session.getSelectedNodes()[i];
-						if (graph.nodes[nodeID].inSubNet)
-							subEmpty = false;
-					}
+				metExploreD3.showMask(myMask);
+				metExploreD3.deferFunction(function() {
+					var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession, nodeToLink);
+					console.log("graph after extraction ",graph);
+					if(graph!=null)
+					{
+						var subEmpty = true;
+						for ( var i in nodeToLink) {
+							var nodeID = nodeToLink[i];
+							if (graph.nodes[nodeID].inSubNet)
+								subEmpty = false;
+						}
 
-					if (subEmpty)
-						metExploreD3.displayMessage("Warning", "There is no path between the selected nodes !!");
-					else {
-						var vis = d3.select("#viz").select("#D3viz");
+						if (subEmpty)
+							metExploreD3.displayMessage("Warning", "There is no path between the selected nodes !!");
+						else {
+							var vis = d3.select("#viz").select("#D3viz");
 
-						vis.selectAll("g.node")
-							.filter(function(d) {
-								if( d.getBiologicalType() == 'metabolite' )
-								{
-									var id = d.getId();
-									return !graph.nodes[id].inSubNet ;
-										
-								}
-								else
-								{
-									if(d.getBiologicalType() == 'reaction')
+							vis.selectAll("g.node")
+								.filter(function(d) {
+									if( d.getBiologicalType() == 'metabolite' )
 									{
 										var id = d.getId();
-										var backID = d.getId() + "_back";
-										if (graph.nodes[backID] == undefined)
-											return !graph.nodes[id].inSubNet
-										else
-											return !(graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
-									}
-								}
-							})
-							.each(function(node){
-								metExploreD3.GraphNetwork.removeANode(node,"viz");
-							});
-					}
-				}
+										return !graph.nodes[id].inSubNet ;
 
-				if(session!=undefined)  
-				{
-					if(force!=undefined)  
-					{		
-						if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-							force.start();
-					}	
-				}
-		    	metExploreD3.hideMask(myMask);
-	    	}, 10);
+									}
+									else
+									{
+										if(d.getBiologicalType() == 'reaction')
+										{
+											var id = d.getId();
+											var backID = d.getId() + "_back";
+											if (graph.nodes[backID] == undefined)
+												return !graph.nodes[id].inSubNet
+											else
+												return !(graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
+										}
+									}
+								})
+								.each(function(node){
+									metExploreD3.GraphNetwork.removeANode(node,"viz");
+								});
+						}
+					}
+					if(session!=undefined)
+					{
+						if(force!=undefined)
+						{
+							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+								force.start();
+						}
+					}
+					metExploreD3.hideMask(myMask);
+				}, 10);
+			}
 	    }
 	},
 
 	/**
 	 * Hihglight nodes and edges belonging to a subnetwork
 	 */
-	highlightSubnetwork : function() {
+	highlightSubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
 		var myMask = metExploreD3.createLoadMask("Highlight Subnetwork...", 'viz');
 		if(myMask!= undefined){
@@ -991,16 +1008,14 @@ metExploreD3.GraphFunction = {
 		
 				var graphSession = metExploreD3.GraphFunction.getGraph();
 
-				var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession);
+				var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession, nodeToLink);
 				
 				console.log("graph after extraction in highlight subnetwork ",graph);
 				if(graph!=null)
 				{
 					var subEmpty = true;
-					for ( var i in session
-							.getSelectedNodes()) {
-						var nodeID = session
-								.getSelectedNodes()[i];
+					for ( var i in nodeToLink) {
+						var nodeID = nodeToLink[i];
 						if (graph.nodes[nodeID].inSubNet)
 							subEmpty = false;
 					}
