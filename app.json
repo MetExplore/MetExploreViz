@@ -239,13 +239,6 @@
             "path": "resources/lib/jquery-3.0.0.min.js"
         },
         {
-            "path": "resources/lib/jscolor/jscolor.min.js"
-        },
-        {
-            "path": "resources/lib/jscolor/jscolor.js",
-            "bundle": true
-        },
-        {
             "path": "resources/lib/metExploreViz.js",
             "bundle": true
         },

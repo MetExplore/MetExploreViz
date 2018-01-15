@@ -2290,7 +2290,7 @@ metExploreD3.GraphNode = {
 	*/
 	loadPath : function(parent, component) {
 		var session = _metExploreViz.getSessionById(parent);
-		
+
 		if(component=="Compartments"){
 			var metabolites = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(d) { return d.getBiologicalType() == 'metabolite'; });
 		
@@ -2340,43 +2340,21 @@ metExploreD3.GraphNode = {
 			}
 		};
 
-		metExploreD3.GraphNode.groupFill = function(d, i) { 
+		metExploreD3.GraphNode.groupFill = function(d, i) {
 
 			// Sort compartiments store
-			// metExploreD3.sortCompartmentInBiosource();
-	 		var color;
-	 		// Change reactions stroke color by compartment
-	 		if(component=="Compartments"){
-				// Change reactions stroke color by compartment
-		 		for(var j=0 ; j<metExploreD3.getCompartmentInBiosourceLength() ; j++){
-		 			if(d.key==metExploreD3.getCompartmentInBiosourceSet()[j].getName()) 
-		 				color = metExploreD3.getCompartmentInBiosourceSet()[j].getColor();
-		 		}
-		        return color;
-			}
+			if(component=="Pathways")
+                var components = metExploreD3.getPathwaysSet();
 			else
-			{
-
-				var phase = metExploreD3.getPathwaysLength();
-		        if (phase == undefined) phase = 0;
-		        center = 128;
-		        width = 127;
-		        frequency = Math.PI*2*0.95/phase;
+                var components = metExploreD3.getCompartmentInBiosourceSet();
 
 
-				var red   = Math.sin(frequency*i+2+phase) * width + center;
-				var green = Math.sin(frequency*i+0+phase) * width + center;
-				var blue  = Math.sin(frequency*i+4+phase) * width + center;
-		 
-				var color = metExploreD3.GraphUtils.RGB2Color(red,green,blue);
-				d.color = color;
-				return color;
-				/*var color = d3.scale.linear()
-				    .domain([0, metExploreD3.getPathwaysLength()/2, metExploreD3.getPathwaysLength()-1])
-				    .range(["red", "black", "green"]);
-		        return color(i);*/
-			}
+			var acomponent = components.find(function(c){
+				return c.getName()==d.key;
+			});
+			return acomponent.getColor();
 		};
+            // Change reactions stroke color by compartment
 
 		var pathTab = "M0,0L10,10Z";
 
@@ -2399,7 +2377,7 @@ metExploreD3.GraphNode = {
 				.style("stroke-width", 40)
 				.style("stroke-linejoin", "round")
 				.style("opacity", .15)
-				
+
 	},
 	
 	/*******************************************

@@ -12,10 +12,7 @@ Ext.define('metExploreViz.view.menu.viz_ColorMenu.Viz_ColorMenuController', {
 		
 		view.on({
 			setGeneralStyle : function(){
-				console.log("vizColorMenusetGeneralStyle", view.lookupReference('highlightCompartments'));
 				var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-				console.log(s_GeneralStyle.isDisplayedConvexhulls());
-				console.log(s_GeneralStyle.useClusters());
 				if(s_GeneralStyle.isDisplayedConvexhulls()=="Compartments"){
 					view.lookupReference('highlightCompartments').setChecked(true);  
 					metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");

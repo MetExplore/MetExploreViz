@@ -1962,7 +1962,6 @@ metExploreD3.GraphLink = {
         var isDisplay = generalStyle.isDisplayedConvexhulls();
 
         if(!isDisplay){
-
             convexHullPath.remove();
         }
         else

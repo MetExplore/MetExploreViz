@@ -825,6 +825,7 @@ var metExploreViz = function(panel, webSite){
     this.biosource = undefined; 
     this.comparedPanels = [];
     this.mappings = [];
+    this.components = [];
     this.bioSourceControl = false;
     this.newBioSource = false;
     this.linkedByTypeOfMetabolite = false;
@@ -1204,7 +1205,27 @@ metExploreViz.prototype = {
         });
         return themapping;
     },
-
+    getComponentByName : function(name){
+        var theComponent = null;
+        this.components.forEach(function(aComponent){
+            if(aComponent.name==name)
+                theComponent = aComponent;
+        });
+        return theComponent;
+    },
+    getComponentsLength : function(){
+        return this.components.length;
+    },
+    addComponent : function(aComponent){
+        if(aComponent.name==undefined){
+            aComponent.name = "IdComponentMetExploreViz"+this.components.length;
+        }
+        if(this.getComponentByName(aComponent.name())==null)
+            this.components.push(aComponent);
+    },
+    getComponentsLength : function(){
+        return this.components.length;
+    },
     isLinkedByTypeOfMetabolite : function(){
         return this.linkedByTypeOfMetabolite;
     },
