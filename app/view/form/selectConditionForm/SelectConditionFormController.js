@@ -411,15 +411,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				var colorStore = networkVizSession.getColorMappingsSet();
 				var that = this;
 
-				// // Call of jscolor library
-				var e = document.createElement('script'); 
-				e.setAttribute('src', document.location.href.split("index.html")[0] + 'resources/lib/jscolor/jscolor.js'); 
-				document.body.appendChild(e); 	
-
 				// For each value we add corresponding color caption
 				var i = 0;
 				colorStore.forEach(function(color){
-			    	
+
 			    	var colorName = color.getName();
 			    	var value = colorName;
 			    	if(type=="flux")
@@ -469,8 +464,11 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 							            border:false,
 							            margin: '0 10 0 0',
 							            width: "40%",
-							            // Object to change color var field= Ext.ComponentQuery.query('#theField')[0];
-							            html: '<input size="5" onchange="Ext.getCmp(\'selectConditionForm\').down(\'#hidden'+newId+'\').fireEvent(\'change\', \'#\'+this.color.valueElement.value, \''+color.getValue()+'\');" value=\''+color.getValue()+';\'" class="color {pickerFaceColor:\'#5FA2DD\',pickerPosition:\'right\',pickerFace:5}">'
+                                        html: '<input ' +
+                                        'type="color" ' +
+										'onchange="Ext.getCmp(\'selectConditionForm\').down(\'#hidden'+newId+'\').fireEvent(\'change\',this, \''+color.getValue()+'\');" ' +
+										'value=\''+color.getValue()+';\'' +
+										'\'style="width:85%;">'
 							        }
 						        ]
 						    }
@@ -600,7 +598,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				    }
 				});
 			    newConditionPanel.add(refreshColorButton);
-
 
 				// Add mapping caption to selectConditionForm panel
 			    var selectConditionForm = Ext.getCmp('selectConditionForm');

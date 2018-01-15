@@ -175,17 +175,16 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 				beforerender : function(){
 					var reactionStyle = metExploreD3.getReactionStyle();
 
-					// // Call of jscolor library
-					var e = document.createElement('script'); 
-					e.setAttribute('src', document.location.href.split("index.html")[0] + 'resources/lib/jscolor/jscolor.js'); 
-					e.setAttribute('src', document.location.href.split("SpecRunner.html")[0] + 'resources/lib/jscolor/jscolor.js'); 
-					document.body.appendChild(e); 
 
 				 	var picker = new Ext.Panel({
 				 		id:'chooseStrokeColorReactionPicker',
 			            border:false,
-						html: '<input size="5" onchange="Ext.getCmp(\'reactionStyleForm\').down(\'#hiddenColor\').fireEvent(\'change\', \'#\'+this.color.valueElement.value, \''+reactionStyle.getStrokeColor()+'\');" value=\''+reactionStyle.getStrokeColor().split("#")[1]+'\'" class="color {pickerFaceColor:\'#5FA2DD\',pickerPosition:\'right\', pickerFace:5}" style="border:1px solid #606060; border-radius: 2px;">'
-			      	});
+                        html: '<input ' +
+                        'type="color" ' +
+                        'onchange="Ext.getCmp(\'reactionStyleForm\').down(\'#hiddenColor\').fireEvent(\'change\',this, \''+reactionStyle.getStrokeColor()+'\');" ' +
+                        'value=\''+reactionStyle.getStrokeColor().split("#")[1]+';\'' +
+                        '\'style="width:85%;">'
+				 	});
 	      			Ext.getCmp('chooseStrokeColorReaction').add(picker);	
 
 

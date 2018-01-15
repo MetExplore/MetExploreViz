@@ -9,6 +9,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.form.selectConditionForm.SelectConditionForm",
+        "metExploreViz.view.form.captionForm.CaptionForm",
         'metExploreViz.view.form.updateStyleForm.UpdateStyleForm'
     ],
  	controller: "panel-comparisonSidePanel-comparisonSidePanel",
@@ -41,6 +42,18 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	//   align:'stretch'
 	//  }
 	// }
+	,
+	{
+		title:'Pathways',
+		id:'captionFormPathways',
+		xtype:'captionForm'
+	}
+	,
+	{
+		title:'Compartments',
+		id:'captionFormCompartments',
+		xtype:'captionForm'
+	}
 	,
 	{
 	   title:'Style',

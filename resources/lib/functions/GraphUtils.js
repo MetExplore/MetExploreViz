@@ -625,12 +625,6 @@ metExploreD3.GraphUtils = {
                                 return "";
 						}
 						);
-
-					d3Clone.select('#captionComparment')
-							.each(function(){
-							this.parentNode.removeChild(this);
-						}
-						);
 				}
 				else
 				{
@@ -643,11 +637,6 @@ metExploreD3.GraphUtils = {
                             }
                         );
 
-					d3Clone.select('#captionPathway')
-						.each(function(){
-							this.parentNode.removeChild(this);
-						}
-						);
 				}
 
 				var nbNodes = d3Clone.select("#graphComponent").selectAll("g.node").data().length;

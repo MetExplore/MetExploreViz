@@ -1967,6 +1967,7 @@ metExploreD3.GraphLink = {
         }
         else
         {
+            console.log(isDisplay);
             if(convexHullPath[0].length==0)
                 metExploreD3.GraphNode.loadPath(panel, isDisplay);
 

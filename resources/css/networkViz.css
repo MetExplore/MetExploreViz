@@ -99,10 +99,3 @@ text.reaction{
     float:left;
     margin : 5px 5px 5px 15px;
 }
-
-.captionContainer{
-    height: 300px;
-    width: 300px;
-    overflow: auto;
-
-}
