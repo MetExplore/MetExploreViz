@@ -32,14 +32,7 @@ metExploreD3.GraphPanel = {
 			d3.select("#"+panel).select("#D3viz").attr('width', $("#"+panel).width()); //max width
 	        d3.select("#"+panel).select("#D3viz").attr('height', $("#"+panel).height()); //max height
 
-            var y=d3.select("#viz").select("#D3viz")
-                .select("#captionPathway").attr("y");
 
-            d3.select("#"+panel)
-                .select("#D3viz")
-                .selectAll(".foreignObjectCaptionContainer")
-                .selectAll(".captionContainer")
-                .style("height", ($("#"+panel).height()-y-15)+"px");
 
 			// Redefine Zoom and brush
 			var scaleZ = scale.getZoomScale();
@@ -299,14 +292,6 @@ metExploreD3.GraphPanel = {
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
 
-        var y=d3.select("#viz").select("#D3viz")
-            .select("#captionPathway").attr("y");
-
-        d3.select("#"+panel)
-			.select("#D3viz")
-			.selectAll(".foreignObjectCaptionContainer")
-            .selectAll(".captionContainer")
-			.style("height", (h-y-15)+"px");
 
 		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0][0]!=null
 			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut")[0][0]!=null
@@ -476,6 +461,7 @@ metExploreD3.GraphPanel = {
 							metExploreD3.fireEvent('graphPanel', 'afterrefresh');*/
 							function end(){
 								metExploreD3.hideMask(myMask);
+
 								metExploreD3.fireEvent('graphPanel', 'afterrefresh');
 								if(metExploreD3.isNewBioSource()){
 									metExploreD3.hideInitialMask();
@@ -494,13 +480,13 @@ metExploreD3.GraphPanel = {
 	*/
 	refreshPanel : function(json, func) {
 		var me = this;
-
 		metExploreD3.hideInitialMask();
 
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed.nodes || jsonParsed.sessions){
 			if(metExploreD3.isNewBioSource() || !_metExploreViz.isLaunched() || metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
-				metExploreD3.GraphPanel.refreshJSON(json);
+
+                metExploreD3.GraphPanel.refreshJSON(json);
 				if(typeof func==='function') func();
 			}
 			else
@@ -654,14 +640,14 @@ metExploreD3.GraphPanel = {
 						{
 							if(networkData.getCompartmentByName(node.getCompartment())==null)
 								networkData.addCompartment(node.getCompartment());
-						}
+                            }
 						else
 						{
 							node.getPathways().forEach(function(pathway){
-								if(networkData.getPathwayByName(pathway)==null)
-									networkData.addPathway(pathway);
-							});
-						}
+									if(networkData.getPathwayByName(pathway)==null)
+										networkData.addPathway(pathway);
+								});
+                            }
 
 						if(node.getMappingDatasLength()>0)
 						{
@@ -674,8 +660,11 @@ metExploreD3.GraphPanel = {
 							});
 						}
 					});
-					
-					networkData.setId(key);
+					if(networkData.getPathwaysLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Pathways", data:networkData.getPathways()});
+
+                    if(networkData.getCompartmentsLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Compartments", data:networkData.getCompartments()});
+
+                    networkData.setId(key);
 
 					if(key=='viz') _metExploreViz.setInitialData(_metExploreViz.cloneNetworkData(networkData));
 					networkVizSession.setD3Data(networkData);
@@ -795,6 +784,7 @@ metExploreD3.GraphPanel = {
 				{
 					if(networkData.getCompartmentByName(node.getCompartment())==null)
 						networkData.addCompartment(node.getCompartment());
+                    if(networkData.getCompartmentsLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Compartments", data:networkData.getCompartments()});
 				}
 				else
 				{
@@ -802,6 +792,7 @@ metExploreD3.GraphPanel = {
 						if(networkData.getPathwayByName(pathway)==null)
 							networkData.addPathway(pathway);
 					});
+					if(networkData.getPathwaysLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Pathways", data:networkData.getPathways()});
 				}
 
 			});

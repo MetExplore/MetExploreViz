@@ -73,22 +73,41 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		});
 	},
 	checkHandler: function (item, checked){
+        var checkboxC=Ext.getCmp('highlightCheckboxCompartments');
+        var checkboxP=Ext.getCmp('highlightCheckboxPathways');
         var me 		= this;
         if(item.checked){
-        	me.highlightComponents(item.text);
-        	item.parentMenu.items.items
+            var checkbox = Ext.getCmp('highlightCheckbox'+item.text);
+			checkbox.suspendEvent('change');
+            checkbox.setValue(true);
+            checkbox.resumeEvent('change');
+            me.highlightComponents(item.text);
+
+            item.parentMenu.items.items
                 .filter(function(anItem){
                     return anItem!=item;
-                })  
+                })
                 .forEach(function(anItem){
                     anItem.setChecked(false);
+                    var checkboxf = Ext.getCmp('highlightCheckbox'+anItem.text);
+                    checkboxf.suspendEvent('change');
+                    checkboxf.setValue(false);
+                    checkboxf.resumeEvent('change');
                 }
             );       
         }
         else
         {
-        	me.hideComponents();
-        }
+            checkboxC.suspendEvent('change');
+            checkboxP.suspendEvent('change');
+            checkboxP.setValue(false);
+            checkboxC.setValue(false);
+            checkboxP.resumeEvent('change');
+            checkboxC.resumeEvent('change');
+            me.hideComponents();
+		}
+
+
     },
     highlightComponents : function(component){
 
@@ -110,6 +129,7 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		metExploreD3.GraphCaption.majCaption();
 		
 		metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
+		
 	},
     hideComponents : function(){
 

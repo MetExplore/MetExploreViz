@@ -4,3 +4,5 @@ sass/
 bootstrap.json
 
 cache\.appcache
+bootstrap.css
+bootstrap.js

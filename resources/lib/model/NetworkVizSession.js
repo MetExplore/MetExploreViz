@@ -6,6 +6,7 @@ var NetworkVizSession = function(){
     this.activeMapping = "";
     this.animated = false;
     this.colorMappings = [];
+    this.colorComponents = [];
     this.displayNodeName = "";
     this.duplicatedNodes = [];
     this.d3Data = new NetworkData();
@@ -83,6 +84,28 @@ NetworkVizSession.prototype = {
     },
     addColorMapping : function(n, c){
         this.colorMappings.push(new ColorMapping(n,c)); 
+    },
+
+    // ColorComponent
+    getColorComponentsSet : function(){
+        return this.colorComponents;
+    },
+    getColorComponentById : function(id){
+        var theColorComponent = null;
+        this.colorComponents.forEach(function(aColorComponent){
+            if(aColorComponent.getName()==id)
+                theColorComponent = aColorComponent;
+        });
+        return theColorComponent;
+    },
+    getColorComponentsSetLength : function(){
+        return this.colorComponents.length;
+    },
+    resetColorComponent : function(){
+        this.colorComponents = [];
+    },
+    addColorComponent : function(n, c){
+        this.colorComponents.push(new ColorComponent(n,c));
     },
 
     addSelectedNode : function(nodeId){

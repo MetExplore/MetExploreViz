@@ -58,15 +58,7 @@ metExploreD3.GraphCaption = {
 	* Draw caption
 	*/
 	drawCaption : function(){
-		d3.select("#viz").select("#D3viz")
-			.select('#captionComparment')
-			.remove();
-
-	    d3.select("#viz").select("#D3viz")
-			.select('#captionPathway')
-			.remove();
-
-	    d3.select("#viz")
+		d3.select("#viz")
 			.select("#D3viz")
 			.select(".logoViz")
 			.remove();
@@ -257,20 +249,7 @@ metExploreD3.GraphCaption = {
 			.attr('x', 20)
 			.attr('y',15)
 			.attr("transform","translate(30,140)");  
-	    	    
-		metExploreD3.GraphCaption.colorPathwayLegend(175);
 
-	    metExploreD3.GraphCaption.colorMetaboliteLegend(175);
-	    
-	    d3.select("#viz").select("#D3viz")
-			.select('#captionComparment')
-			.classed('hide', true);
-
-	    d3.select("#viz").select("#D3viz")
-			.select('#captionPathway')
-			.classed('hide', true);
-
-		metExploreD3.GraphCaption.majCaption();
 	},
 
 	/*****************************************************
@@ -293,14 +272,6 @@ metExploreD3.GraphCaption = {
 			    		return component.hidden();
 			    	return true;
 			    })
-
-			d3.select("#viz").select("#D3viz")
-				.select('#captionComparment')
-				.classed('hide', true);
-
-			d3.select("#viz").select("#D3viz")
-				.select('#captionPathway')
-				.classed('hide', false);
 		}
 		else
 		{
@@ -309,59 +280,57 @@ metExploreD3.GraphCaption = {
 			    	var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
 			    	return component.hidden();
 			    })
-
-			d3.select("#viz").select("#D3viz")
-				.select('#captionComparment')
-				.classed('hide', false);
-
-			d3.select("#viz").select("#D3viz")
-				.select('#captionPathway')
-				.classed('hide', true);
 		}
+	},
+
+	/*****************************************************
+	* Maj caption color
+	*/
+	majCaptionColor : function(components, selectedComponent){
+
+        var generalStyle = _metExploreViz.getGeneralStyle();
+        var isDisplay = generalStyle.isDisplayedConvexhulls();
+
+		if(selectedComponent == isDisplay){
+			d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+				.style("fill",
+					function(d){
+						var component = components.find(function(c){
+							return c.name==d.key;
+						});
+						return component.color;
+					}
+				)
+				.style("stroke", function(d){
+					var component = components.find(function(c){
+						return c.name==d.key;
+					});
+
+					return component.color;
+				});
+        }
+
+        switch(selectedComponent) {
+            case "Compartments":
+                metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+                break;
+            default:
+                // generalStyle.setDisplayCaption(false);
+                // metExploreD3.GraphCaption.majCaption();
+        }
+
 	},
 
 	/*****************************************************
 	* Draw caption of metabolic compartiments
     * @param {} top : top of the metabolite caption
 	*/
-	colorMetaboliteLegend : function(top){
-
-        var y=top;
-
-        var container = d3.select("#viz").select("#D3viz")
-            .append("svg")
-            .attr('id', 'captionComparment')
-            .attr('y', top)
-            .append("svg:g")
-            .attr("x1", 0)
-            .attr("y1", 0)
-            .attr("x2", 15)
-            .attr("y2", 0)
-            .append("foreignObject")
-            .classed('foreignObjectCaptionContainer', true)
-            .attr("height", ($("#viz").height()-y-15)+"px")
-            .attr("width", "200px")
-            .append("xhtml:div")
-            .classed('captionContainer', true);
-
-        var svgCaption = container.append("svg");
-
-        var caption = svgCaption.append("svg:g")
-            .attr("x1", 0)
-            .attr("y1", 0)
-            .attr("x2", 15)
-            .attr("y2", 0);
-
-        var networkData = _metExploreViz.getSessionById("viz").getD3Data();
-
+	colorMetaboliteLegend : function(){
     	// Load user's preferences
 		var reactionStyle = metExploreD3.getReactionStyle();
-		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
-		var xRea = 20/maxDimRea;
+
 		
 		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-		var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
-		var xMet = 20/maxDimMet;
 
 		metExploreD3.sortCompartmentInBiosource();
 
@@ -370,20 +339,9 @@ metExploreD3.GraphCaption = {
         center = 128;
         width = 127;
         frequency = Math.PI*2*0.95/phase;
-        var position = 0;
 
-		position+=20;
-        caption.append("svg:text")
-			.text("Compartments :")
-			.attr('x', 0)
-			.attr('y', 0)
-			.attr("transform","translate(15,"+position+")");
-
-		position+=20;
- 		var maxwidth=0;
         for (var i = 0; i < phase; i++)
         {
-
 			red   = Math.sin(frequency*i+2+phase) * width + center;
 			green = Math.sin(frequency*i+0+phase) * width + center;
 			blue  = Math.sin(frequency*i+4+phase) * width + center;
@@ -391,162 +349,16 @@ metExploreD3.GraphCaption = {
 			var compartment = metExploreD3.getCompartmentInBiosourceSet()[i];
 			compartment.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));
 
-			var captionCompartment = caption.append("svg:g")
-				.attr('id', "compartment"+compartment.getId());
-
-			var classImage = 'captionimage'+compartment.getId();
-			captionCompartment.append("svg:line")
-				.attr('class', 'metabolite')
-				.attr('class', classImage)
-				.attr("x1", 0)
-				.attr("y1", 0)
-				.attr("x2", 15)
-				.attr("y2", 0)
-				.style("stroke", compartment.getColor())
-				.style("stroke-width", 2)
-				.attr("transform","translate(38,"+position+")")
-				.attr("opacity", function(){
-					if(compartment.hidden())
-						return 0.3;
-					else
-						return 1;
-				});
-
-			position+=10;
-
-			var classText = 'captiontext'+compartment.getId();
-
-			captionCompartment.append("svg:text")
-				.html(compartment.getName())
-				.attr('class', classText)
-				.attr('id', "compartment"+compartment.getId())
-				.attr('x', 30)
-				.attr('y', -6)
-				.attr("transform","translate(30,"+position+")")
-				.attr("opacity", function(){
-					if(compartment.hidden())
-						return 0.3;
-					else
-						return 1;
-				});
-
-			classText = '.'+classText;
-		    var textNodeDOM = captionCompartment.select(classText).node();
-			var sizeTextNodeDOM =textNodeDOM.getComputedTextLength();
-
-			// button to disable compartement & pathway
-			var box = captionCompartment
-				.append("svg")
-				.attr("opacity", "0.8")
-				.attr(
-					"viewBox",
-					function(d) {
-								+ " " + 10; }
-				)
-				.attr("width", 40)
-				.attr("height",20)
-				.attr("rx", 10)
-				.attr("ry", 10)
-				.attr("preserveAspectRatio", "xMinYMin")
-				.attr("x", 3)
-				.attr("y", position-20)
-				.attr("id", "compartment"+compartment.getId())
-				.attr("class", 'hideComponent'+compartment.getId())
-				.classed('hide', false)
-				.attr("transform","translate(3,"+position+")")
-				.on("click", function(){
-					var compart = networkData.getCompartmentById(this.id.split("compartment",2)[1]);
-
-		        	compart.setHidden(!compart.hidden());
-
-		        	if(compart.hidden())
-		        	{
-			        	caption
-			        		.select('.captiontext'+compart.getId())
-							.attr("opacity", 0.5)
-			        	caption
-			        		.select('.captionimage'+compart.getId())
-							.attr("opacity", 0.3)
-		        	}
-		        	else
-		        	{
-		        		caption
-			        		.select('.captiontext'+compart.getId())
-							.attr("opacity", 1)
-		        		caption
-			        		.select('.captionimage'+compart.getId())
-							.attr("opacity", 1)
-		        	}
-
-					d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
-					    .classed("hide", function(conv){
-					    	var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
-					    	return component.hidden();
-					    })
-
-		        	d3.select(this)
-						.select('.iconHideComponent')
-						.attr(
-							"xlink:href",
-							function(d) {
-								if(compart.hidden())
-									return "resources/icons/square.jpg";
-								else
-									return "resources/icons/check-square.svg";
-						});
-				});
-
-			box.append("svg:rect")
-				.attr("class", "backgroundHideComponent")
-				.attr("height", 20)
-				.attr("width", 40)
-				.attr("rx", 5)
-				.attr("ry", 5)
-				.attr("opacity", "0");
-
-            box.append("image")
-				.attr("class", "iconHideComponent")
-				.attr("y",0)
-				.attr("x",0)
-				.attr("width", "100%")
-				.attr("height", "100%")
-				.attr(
-					"xlink:href",
-					function(d) {
-						if(compartment.hidden())
-							return "resources/icons/square.jpg";
-						else
-							return "resources/icons/check-square.svg";
-					}
-				);
-
-            position+=10;
-            if(maxwidth<$("#compartment"+compartment.getId()).width())
-                maxwidth=$("#compartment"+compartment.getId()).width();
         }
-
-        var y=d3.select("#viz").select("#D3viz")
-            .select("#captionComparment").attr("y");
-
-        d3.select("#viz")
-            .select("#D3viz")
-            .selectAll(".foreignObjectCaptionContainer")
-            .selectAll(".captionContainer")
-            .style("height", ($("#viz").height()-y-15)+"px");
-        svgCaption
-            .style("height", (20*(phase+2))+"px")
-            .style("width", (maxwidth+60)+"px");
+        metExploreD3.fireEvent("captionFormCompartments", "afterColorCalculating");
     },
 	/*****************************************************
 	* Draw caption of metabolic compartiments
     * @param {} top : top of the metabolite caption
 	*/
-	colorPathwayLegend : function(top){
-
+	colorPathwayLegend : function(){
 		var groups = metExploreD3.getPathwaysSet();
 		var pathways = [];
-
-		var networkData = _metExploreViz.getSessionById("viz").getD3Data();
 
 		groups.forEach(function(path){
 			pathways.push({"key":path});
@@ -558,7 +370,11 @@ metExploreD3.GraphCaption = {
         width = 127;
         frequency = Math.PI*2*0.95/phase;
 
-        var maxwidth=0;
+        pathways.sort(function(a,b){
+            if(a.key < b.key) return -1;
+            if(a.key > b.key) return 1;
+            return 0;
+        });
 
 		for (var i = 0; i < phase; i++)
         {
@@ -570,221 +386,7 @@ metExploreD3.GraphCaption = {
 			var pathway = pathways[i].key;
 			pathway.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));		
         }
-
-        var y=top;
-
-        var container = d3.select("#viz").select("#D3viz")
-            .append("svg")
-            .attr('id', 'captionPathway')
-            .attr('y', top)
-            .append("svg:g")
-            .attr("x1", 0)
-            .attr("y1", 0)
-            .attr("x2", 15)
-            .attr("y2", 0)
-            .append("foreignObject")
-            .classed('foreignObjectCaptionContainer', true)
-            .attr("height", ($("#viz").height()-y-15)+"px")
-            .attr("width", "200px")
-            .append("xhtml:div")
-            .classed('captionContainer', true);
-
-        var svgCaption = container.append("svg");
-
-		var caption = svgCaption.append("svg:g")
-            .attr("x1", 0)
-            .attr("y1", 0)
-            .attr("x2", 15)
-            .attr("y2", 0);
-
-    	// Load user's preferences
-		var reactionStyle = metExploreD3.getReactionStyle();
-		var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
-		var xRea = 20/maxDimRea;
-		
-		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-		var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
-		var xMet = 20/maxDimMet;
-		var session = _metExploreViz.getSessionById('viz');
-		pathways.sort(function(a,b){
-			if(a.key < b.key) return -1;
-		    if(a.key > b.key) return 1;
-		    return 0;
-		});
-
-
-		var phase = pathways.length;
-        if (phase == undefined) phase = 0;
-        center = 128;
-        width = 127;
-        frequency = Math.PI*2*0.95/phase;
-        var position = 0;
-
-		position+=20;
-        caption.append("svg:text")
-			.text("Pathways :")
-			.attr('x', 0)
-			.attr('y', 0)
-			.attr("transform","translate(15,"+position+")");
-
-		position+=20;
-
-		var maxwidth=0;
-
-        for (var i = 0; i < phase; i++)
-        {
-
-			red   = Math.sin(frequency*i+2+phase) * width + center;
-			green = Math.sin(frequency*i+0+phase) * width + center;
-			blue  = Math.sin(frequency*i+4+phase) * width + center;
-	 
-			var pathway = pathways[i].key;
-            var captionPathway = caption.append("svg:g")
-				.attr('id',"pathway"+ pathway.getId());
-
-            var classImage = 'captionimage'+pathway.getId();
-			captionPathway.append("svg:line")
-				.attr('class', 'metabolite')
-				.attr('class', classImage)
-				.attr("x1", 0)
-				.attr("y1", 0)
-				.attr("x2", 15)
-				.attr("y2", 0)
-				.style("stroke", pathway.getColor())
-				.style("stroke-width", 2)
-				.attr("transform","translate(38,"+position+")")
-				.attr("opacity", function(){
-					if(pathway.hidden())
-						return 0.3;
-					else
-						return 1;
-				});
-
-			position+=10;
-
-			var classText = 'captiontext'+pathway.getId();
-
-			captionPathway.append("svg:text")
-				.html(pathway.getName())
-				.attr('class', classText)
-				.attr('id', "pathway"+pathway.getId())
-				.attr('x', 30)
-				.attr('y', -6)
-				.attr("transform","translate(30,"+position+")")
-				.attr("opacity", function(){
-					if(pathway.hidden())
-						return 0.3;
-					else
-						return 1;
-				});
-
-			classText = '.'+classText;
-		    var textNodeDOM = captionPathway.select(classText).node();
-			var sizeTextNodeDOM =textNodeDOM.getComputedTextLength();
-			var xhideComponent = 50 + sizeTextNodeDOM;
-
-			// button to disable compartement & pathway
-			var box = captionPathway
-				.append("svg")
-				.attr("opacity", "0.8")
-				.attr(
-					"viewBox",
-					function(d) {
-								+ " " + 10; }
-				)
-				.attr("width", 40)
-				.attr("height",20)
-				.attr("rx", 10)
-				.attr("ry", 10)
-				.attr("preserveAspectRatio", "xMinYMin")
-				.attr("x", 3)
-				.attr("y", position-20)
-				.attr("id", "pathway"+pathway.getId())
-				.attr("class", 'hideComponent'+pathway.getId())
-				.classed('hide', false)
-				.attr("transform","translate(3,"+position+")")
-				.on("click", function(){
-                    var compart = networkData.getPathwayById(this.id.split("pathway",2)[1]);
-
-		        	compart.setHidden(!compart.hidden());
-
-		        	if(compart.hidden())
-		        	{
-			        	caption
-			        		.select('.captiontext'+compart.getId())
-							.attr("opacity", 0.5)
-			        	
-			        	caption
-			        		.select('.captionimage'+compart.getId())
-							.attr("opacity", 0.3)
-		        	}
-		        	else
-		        	{
-		        		caption
-			        		.select('.captiontext'+compart.getId())
-							.attr("opacity", 1)
-		        		caption
-			        		.select('.captionimage'+compart.getId())
-							.attr("opacity", 1)
-		        	}
-
-					d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
-					    .classed("hide", function(conv){
-					    	var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
-					    	return component.hidden();
-					    })
-
-		        	d3.select(this)
-						.select('.iconHideComponent')
-						.attr(
-							"xlink:href",
-							function(d) {
-								if(compart.hidden())
-									return "resources/icons/square.jpg";
-								else
-									return "resources/icons/check-square.svg";
-						});
-
-				});
-
-			box.append("svg:rect")
-				.attr("class", "backgroundHideComponent")
-				.attr("height", 20)
-				.attr("width", 40)
-				.attr("rx", 5)
-				.attr("ry", 5)
-				.attr("opacity", "0");
-			
-			box.append("image")
-				.attr("class", "iconHideComponent")
-				.attr("y",0)
-				.attr("x",0)
-				.attr("width", "100%")
-				.attr("height", "100%")
-                .attr(
-                    "xlink:href",
-                    function(d) {
-                        if(pathway.hidden())
-                            return "resources/icons/square.jpg";
-                        else
-                            return "resources/icons/check-square.svg";
-                    }
-                );
-
-			position+=10;
-            if(maxwidth<$("#pathway" + pathway.getId()).width())
-                maxwidth=$("#pathway" + pathway.getId()).width();
-        }
-        var y=d3.select("#viz").select("#D3viz")
-            .select("#captionPathway").attr("y");
-
-        d3.select("#viz")
-            .select("#D3viz")
-            .selectAll(".foreignObjectCaptionContainer")
-            .selectAll(".captionContainer")
-            .style("height", ($("#viz").height()-y-15)+"px");
-        svgCaption
-			.style("height", (20*(phase+2))+"px")
-			.style("width", (maxwidth+60)+"px");
-    }
+        metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
+	}
 }
+    

@@ -422,8 +422,7 @@ metExploreD3.GraphNetwork = {
     * Refresh the graph data, it generate graph visualization
     * @param {} panel : The panel to refresh
     */
-    refreshSvg : function(panel) {	
-
+    refreshSvg : function(panel) {
     	var networkData = _metExploreViz.getSessionById(panel).getD3Data();
     	var nodes = networkData.getNodes();
 
@@ -484,6 +483,12 @@ metExploreD3.GraphNetwork = {
 		if(panel=='viz')
 			metExploreD3.GraphCaption.drawCaption();
 
+
+        metExploreD3.GraphCaption.colorPathwayLegend();
+
+        metExploreD3.GraphCaption.colorMetaboliteLegend();
+
+        metExploreD3.GraphCaption.majCaption();
 
 		if(session.getScale()==undefined){
 		
@@ -3332,7 +3337,7 @@ setTimeout(
     * @param {} panel : The panel to load
     */
     loadSvg : function(sessionLoaded, panel) {
-
+		console.log("loadSvg");
     	// TROP LOURD
  		/*
  		console.log("sessionLoaded ", sessionLoaded);
@@ -3881,7 +3886,7 @@ setTimeout(
     * @param {} panel : The panel to refresh
     */
     loadSvgFromJSON : function(panel) {	
-
+	console.log('loadSvgFromJSON');
 		// Get height and witdh of panel		
 		var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
 		var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
