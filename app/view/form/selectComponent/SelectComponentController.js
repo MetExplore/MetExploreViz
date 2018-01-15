@@ -34,12 +34,7 @@ Ext.define('metExploreViz.view.form.selectComponent.SelectComponentController', 
 		});
 	},
 
-    setCaption:function(componentJSON){
-        console.log('set caption');
-    },
     changeCaption:function(component){
-        console.log('change selected component');
-
         switch(component) {
             case "Pathways":
                 Ext.getCmp("captionForm")

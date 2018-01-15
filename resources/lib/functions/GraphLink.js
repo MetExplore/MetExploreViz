@@ -1962,12 +1962,10 @@ metExploreD3.GraphLink = {
         var isDisplay = generalStyle.isDisplayedConvexhulls();
 
         if(!isDisplay){
-
             convexHullPath.remove();
         }
         else
         {
-            console.log(isDisplay);
             if(convexHullPath[0].length==0)
                 metExploreD3.GraphNode.loadPath(panel, isDisplay);
 

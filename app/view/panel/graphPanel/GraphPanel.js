@@ -200,7 +200,6 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                             };
                                             if(event.getKey() == event.ENTER){
                                                 var component = theButton;
-                                              console.log(component);
                                                     if(component!= undefined){
                                                         component.fireEvent("click");
                                                     }

@@ -14,8 +14,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
-					
-		me.regexpPanel=/\.| |=|\(|\)/g; 
+
+    	me.regexpPanel=/\.| |,|\/|=|\(|\)/g;
 		// Action to launch mapping on  the visualization
 		view.on({
 			afterDiscreteMapping : this.addMappingCaptionForm,
@@ -455,8 +455,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 							           	value: color.getValue(),
 										listeners: {
 											change: function(newValue, oldValue){
-												this.lastValue = newValue;
-
+												this.lastValue = newValue.value;
 										    }
 										}    
 						        	},
@@ -467,7 +466,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
                                         html: '<input ' +
                                         'type="color" ' +
 										'onchange="Ext.getCmp(\'selectConditionForm\').down(\'#hidden'+newId+'\').fireEvent(\'change\',this, \''+color.getValue()+'\');" ' +
-										'value=\''+color.getValue()+';\'' +
+										'value=\''+color.getValue()+'\'' +
 										'\'style="width:85%;">'
 							        }
 						        ]
@@ -547,6 +546,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 						{
 							colorStore.forEach(function(color){
 								var newId = color.getName().toString().replace(me.regexpPanel, "_");
+								
 								if(Ext.getCmp("selectConditionForm").down("#hidden"+newId)!=null){
 									if(color.getValue()!=Ext.getCmp("selectConditionForm").down("#hidden"+newId).lastValue){
 										// PERF: Must be changed to set only the color

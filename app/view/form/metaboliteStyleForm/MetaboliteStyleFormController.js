@@ -65,7 +65,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 					|| (newrx != s_MetaboliteStyle.getRX())
 					|| (newry != s_MetaboliteStyle.getRY())
 				){
-					console.log("ok");
 					isset=true;
 					s_MetaboliteStyle.setHeight(parseFloat(newHeight));
 					s_MetaboliteStyle.setWidth(parseFloat(newWidth));

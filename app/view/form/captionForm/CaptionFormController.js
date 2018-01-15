@@ -14,7 +14,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
         var me 		= this,
             viewModel   = me.getViewModel(),
             view      	= me.getView();
-        me.regexpPanel=/\.| |=|\(|\)/g;
+        me.regexpPanel=/\.| |,|\/|=|\(|\)/g;
 
         view.on({
             afterColorCalculating : this.addComponentCaptionForm,
@@ -92,8 +92,19 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                             value: component.getColor(),
                                             listeners: {
                                                 change: function (newValue, oldValue) {
-                                                    console.log(newValue.value);
                                                     this.lastValue = newValue.value;
+                                                    var component = mapp;
+
+                                                    components.forEach(function (color) {
+                                                        var newId = color.getName().toString().replace(me.regexpPanel, "_");
+                                                        if (captionForm.down("#hidden" + newId) != null) {
+                                                            if (color.getColor() != captionForm.down("#hidden" + newId).lastValue) {
+                                                                color.setColor(captionForm.down("#hidden" + newId).lastValue);
+                                                            }
+                                                        }
+                                                    });
+
+                                                    metExploreD3.GraphCaption.majCaptionColor(components, view.getTitle());
 
                                                 }
                                             }
@@ -129,71 +140,72 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                 layout: {
                     type: 'hbox',
                     align: 'stretch'
-                },
-                items: [{
-                    xtype: 'label',
-                    forId: 'condName',
-                    margin: '8 5 5 10',
-                    flex: 1
-                }]
+                }
+                // items: [{
+                //     xtype: 'checkbox',
+                //     tooltip: 'Display convex hull around each ' + view.getTitle(),
+                //     //formBind: true,
+                //     boxLabel: 'Highlight '+view.getTitle().toLowerCase(),
+                //     margin: '0 0 0 10',
+                //     id: 'highlightCheckbox' + view.getTitle(),
+                //     action: 'highlightCheckbox' + view.getTitle(),
+                //     check: function (that, newV, oldVV, e) {
+                //
+                //         //
+                //         // console.log(e);
+                //         // console.log(item);
+                //         // switch (view.getTitle()) {
+                //         //     case "Pathways":
+                //         //         Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways').setChecked(item.checked);
+                //         //         Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways')
+                //         //             .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways'));
+                //         //         break;
+                //         //     case "Compartments":
+                //         //         Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments').setChecked(item.checked);
+                //         //         Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments')
+                //         //             .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments'));
+                //         //
+                //         //         break;
+                //         //     default:
+                //         // }
+                //     }
+                // }]
             });
 
             // Create checkbox to display convex hull around each components
             var highlightCheckbox = Ext.create('Ext.form.field.Checkbox', {
                 tooltip: 'Display convex hull around each ' + view.getTitle(),
                 //formBind: true,
-                margin: '5 5 5 0',
-                id: 'highlightCheckbox' + view.getTitle().replace(me.regexpPanel, ""),
-                action: 'highlightCheckbox' + view.getTitle().replace(me.regexpPanel, ""),
-                handler: function (item) {
+                boxLabel: 'Highlight '+view.getTitle().toLowerCase(),
+                margin: '0 0 0 10',
+                id: 'highlightCheckbox' + view.getTitle()
+            });
+
+            highlightCheckbox.on({
+                change : function (that, newV, oldVV, e) {
 
                     switch (view.getTitle()) {
                         case "Pathways":
-                            Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways').setChecked(item.checked);
+                            Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways').setChecked(newV);
                             Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways')
                                 .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways'));
                             break;
                         case "Compartments":
-                            Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments').setChecked(item.checked);
+                            Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments').setChecked(newV);
                             Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments')
                                 .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments'));
 
                             break;
                         default:
                     }
-                }
+                },
+                scope:highlightCheckbox
             });
             newConditionPanel.add(highlightCheckbox);
 
             var mapp = view.getTitle();
 
-            // Add button to change colors
-            var refreshColorButton = Ext.create('Ext.Button', {
-                iconCls: 'refresh',
-                margin: '5 5 5 0',
-                id: 'refreshColor' + view.getTitle().replace(me.regexpPanel, ""),
-                action: 'refreshColor' + view.getTitle().replace(me.regexpPanel, ""),
-                handler: function () {
-                    var component = mapp;
-
-                    components.forEach(function (color) {
-                        var newId = color.getName().toString().replace(me.regexpPanel, "_");
-                        if (captionForm.down("#hidden" + newId) != null) {
-                            if (color.getColor() != captionForm.down("#hidden" + newId).lastValue) {
-                                color.setColor(captionForm.down("#hidden" + newId).lastValue);
-                            }
-                        }
-                    });
-
-                    metExploreD3.GraphCaption.majCaptionColor(components, view.getTitle());
-
-                }
-            });
-            newConditionPanel.add(refreshColorButton);
-
-
             // Add component caption to captionForm panel
-
             if (captionForm != undefined) {
                 captionForm.add(newConditionPanel);
                 listComponentCaptionForm.forEach(function (aComponentCaptionForm) {

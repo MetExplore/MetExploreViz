@@ -164,8 +164,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 
 		view.down('#hiddenColor').on({
 		    change: function(newValue, oldValue){
-		    	view.down('#hiddenColor').lastValue = newValue;
-		    	me.changeStrokeColor(newValue);
+		    	view.down('#hiddenColor').lastValue = newValue.value;
 			},
 			scope : me
 		});
@@ -182,7 +181,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
                         html: '<input ' +
                         'type="color" ' +
                         'onchange="Ext.getCmp(\'reactionStyleForm\').down(\'#hiddenColor\').fireEvent(\'change\',this, \''+reactionStyle.getStrokeColor()+'\');" ' +
-                        'value=\''+reactionStyle.getStrokeColor().split("#")[1]+';\'' +
+                        'value=\''+reactionStyle.getStrokeColor().split("#")[1]+'\'' +
                         '\'style="width:85%;">'
 				 	});
 	      			Ext.getCmp('chooseStrokeColorReaction').add(picker);	

@@ -1517,7 +1517,6 @@ metExploreD3.GraphMapping = {
 
 						var colorStore = session.getColorMappingsSet();
 				      	session.resetColorMapping();
-				      	
 				      	var colorScale = d3.scale.linear()
 						    .domain([parseFloat(minValue), parseFloat(maxValue)])
 						    .range([colorMin, colorMax]);
