@@ -21,7 +21,6 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             scope:me
         });
     },
-
     /*******************************************
      * Add the panel caption corresponding to shown component
      * @param {} type : component type (Pathway, Compartment)
@@ -44,6 +43,8 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             var components = metExploreD3.getCompartmentInBiosourceSet();
 
 
+        if(Ext.getCmp('panel' + view.getTitle().replace(me.regexpPanel, "")))
+            view.removeAll();
 
         if(captionForm !=undefined) {
 
