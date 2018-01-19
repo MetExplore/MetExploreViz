@@ -78,11 +78,12 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
         var me 		= this;
         if(item.checked){
             var checkbox = Ext.getCmp('highlightCheckbox'+item.text);
-			checkbox.suspendEvent('change');
+            checkbox.suspendEvent('change');
             checkbox.setValue(true);
             checkbox.resumeEvent('change');
             me.highlightComponents(item.text);
-
+            Ext.getCmp('comparisonSidePanel').expand();
+            Ext.getCmp('captionForm'+item.text).expand();
             item.parentMenu.items.items
                 .filter(function(anItem){
                     return anItem!=item;

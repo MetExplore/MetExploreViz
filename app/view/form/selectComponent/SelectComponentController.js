@@ -5,34 +5,31 @@
  */
 
 Ext.define('metExploreViz.view.form.selectComponent.SelectComponentController', {
-	extend: 'Ext.app.ViewController',
-	alias: 'controller.form-selectComponent-selectComponent',
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.form-selectComponent-selectComponent',
 
-	// config : {
-	// 	stores : [ 'S_ComponentInfo' ],
-	// 	views : [ 'view.form.SelectComponent']
-	// },
-	/**
- * Aplies event linsteners to the view
- */
-	init:function(){
-		var me 		= this,
-		viewModel   = me.getViewModel(),
-		view      	= me.getView();
+    // config : {
+    // 	stores : [ 'S_ComponentInfo' ],
+    // 	views : [ 'view.form.SelectComponent']
+    // },
+    /**
+     * Aplies event linsteners to the view
+     */
+    init:function(){
+        var me 		= this,
+            viewModel   = me.getViewModel(),
+            view      	= me.getView();
 
-		view.on({
-			jsoninit : function(componentJSON){
-				me.initCaption(componentJSON);
-			},
-			removecomponent : function(component){
-				me.removeCaption(component);
-			},
+        view.on({
+            jsoninit : function(componentJSON){
+                me.initCaption(componentJSON);
+            },
             change : function(that, newComponent, old){
                 me.changeCaption(newComponent);
             },
-			scope:me
-		});
-	},
+            scope:me
+        });
+    },
 
     changeCaption:function(component){
         switch(component) {
@@ -52,16 +49,16 @@ Ext.define('metExploreViz.view.form.selectComponent.SelectComponentController', 
     },
 
     initCaption:function(componentJSON){
-        
+
         console.log(componentJSON);
 
-		var comboComponent = Ext.getCmp('selectComponentVisu');
+        var comboComponent = Ext.getCmp('selectComponentVisu');
 
-		var store = comboComponent.getStore();
+        var store = comboComponent.getStore();
 
-		store.add(componentJSON);
+        store.add(componentJSON);
 
-		if(store.getCount()==1)
-			comboComponent.setDisabled(false);
+        if(store.getCount()==1)
+            comboComponent.setDisabled(false);
     }
 });
