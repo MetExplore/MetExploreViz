@@ -14,7 +14,8 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
         var me 		= this,
             viewModel   = me.getViewModel(),
             view      	= me.getView();
-        me.regexpPanel=/\.| |,|\/|=|\(|\)/g;
+
+        me.regexpPanel=/\.|>|<| |,|\/|=|\(|\)/g;
 
         view.on({
             afterColorCalculating : this.addComponentCaptionForm,
@@ -54,18 +55,19 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             var that = this;
 
             // For each value we add corresponding color caption
-
             components.forEach(function (component) {
                     var colorName = component.getName();
-                    var value = colorName;
 
+                    var parser = new DOMParser;
+                    var dom = parser.parseFromString(colorName, 'text/html');
+                    var value = dom.body.textContent;
                     var newId = colorName.toString().replace(me.regexpPanel, "_");
                     var that=me;
                     var newComponentCaptionForm = Ext.create('metExploreViz.view.form.ComponentCaptionForm', {
 
                         itemId: 'componentCaptionForm' + newId,
 
-                        margin: '0 0 0 0',
+                        margin: '0 0 10 0',
                         padding: '0 0 0 0',
                         border: false,
                         items:
@@ -79,6 +81,31 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                         align: 'stretch'
                                     },
                                     items: [
+                                        {
+                                            xtype: 'checkbox',
+                                            forId: 'componentCheckbox',
+                                            margin: '0 0 0 10',
+                                            checked: !component.hidden(),
+                                            listeners: {
+                                                change: function (that, newValue, oldValue) {
+                                                    if(view.getTitle()=="Pathways")
+                                                        var comp = metExploreD3.getPathwayByName(component.getName());
+                                                    else
+                                                        var comp = metExploreD3.getCompartmentByName(component.getName());
+
+                                                    comp.setHidden(!newValue);
+                                                    d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+                                                        .classed("hide", function(conv){
+                                                            if(view.getTitle()=="Pathways")
+                                                                var com = metExploreD3.getPathwayByName(conv.key);
+                                                            else
+                                                                var com = metExploreD3.getCompartmentByName(conv.key);
+                                                            return com.hidden();
+                                                        })
+
+                                                }
+                                            }
+                                        },
                                         {
                                             xtype: 'label',
                                             forId: 'color',

@@ -29,11 +29,10 @@ metExploreD3.GraphNode = {
 		activePanel = metExploreD3.GraphNode;
 	},
 
-
-	/*******************************************
-    * Permit to highlight a node
-    * @param {} d : a node
-    */
+    /*******************************************
+     * Permit to highlight a node : Select, Fix & grow up
+     * @param {} d : a node
+     */
     highlightANode : function(id) {
         d3.select("#viz").select("#D3viz")
             .selectAll("g.node")
@@ -61,7 +60,7 @@ metExploreD3.GraphNode = {
 					.attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal+")");
 
                 if(!d.isSelected())
-                    _MyThisGraphNode.selection(d, "viz")
+                    _MyThisGraphNode.selection(d, "viz");
             });
 	},
 
@@ -70,6 +69,7 @@ metExploreD3.GraphNode = {
     * @param {} d : a node
     */
 	selectNeighbours : function(d, panel) {
+
 		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("path.link")
 			.filter(function(link){
@@ -86,19 +86,6 @@ metExploreD3.GraphNode = {
 				}
 			});
 	},
-
-
-	/*******************************************
-    * Permit to highlight a node : Select, Fix & grow up
-    * @param {} d : a node
-    */
-	selectNeighbours : function(d, panel) {
-		_MyThisGraphNode.selection(d, panel);
-        // if(!d.isLocked())
-		d.fixed = true;
-
-	},
-
 
 	/*******************************************
     * Permit to set name of a node
