@@ -15,7 +15,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 
-    	me.regexpPanel=/\.| |,|\/|=|\(|\)/g;
+    	me.regexpPanel=/\.|>|<| |,|\/|=|\(|\)/g;
 		// Action to launch mapping on  the visualization
 		view.on({
 			afterDiscreteMapping : this.addMappingCaptionForm,

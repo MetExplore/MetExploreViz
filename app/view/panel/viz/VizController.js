@@ -62,11 +62,10 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								iconCls:"lock_font_awesome",
 								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
 							},{
-								text : 'Selected nodes as side compounds (duplicate)',
+								text : 'Duplicate selected nodes as side compounds',
 								hidden : false,
 								iconCls:"duplicate-sideCompounds",
-								handler : function(){ 
-									var sessio = _metExploreViz.getSessionById('viz');
+								handler : function(){
 									metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); 
 								}
 							}
@@ -146,41 +145,49 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
                     viz.removeMenu = new Ext.menu.Menu({
                         items : [{
-                            text : 'Remove the node',
+                            text : 'This node',
                             hidden : false,
                             iconCls:"removeNode",
                             handler : function(){
                                 metExploreD3.GraphNetwork.removeOnlyClickedNode(theNode, "viz");
                             }
                         },{
-                            text : 'Remove selected nodes',
+                            text : 'All selected nodes',
                             hidden : false,
                             iconCls:"removeNode",
                             handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
                         }]
                     });
+
+                    viz.duplicateMenu = new Ext.menu.Menu({
+                        items : [{
+                            text : 'This node',
+                            hidden : !isMetabolite,
+                            iconCls:"duplicate-sideCompounds",
+                            handler : function(){
+                                metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz");
+                            }
+                        },{
+                            text : 'All selected nodes',
+                            hidden : false,
+                            iconCls:"duplicate-sideCompounds",
+                            handler : function(){
+                                metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz");
+                            }
+                        }]
+                    });
+
 					viz.CtxMenu = new Ext.menu.Menu({
 						items : [{
-                            text : 'Remove selected nodes',
+                            text : 'Remove nodes',
                             hidden : false,
                             iconCls:"removeNode",
                             menu : viz.removeMenu
-							}
-                            ,{
-							text : 'Side compound (duplicate)',
-							hidden : !isMetabolite,
-							iconCls:"duplicate-sideCompounds",
-							handler : function(){ 
-								metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz"); 
-							}
 						},{
-							text : 'Duplicate selected nodes as side compounds',
-							hidden : false,
-							iconCls:"duplicate-sideCompounds",
-							handler : function(){ 
-								var sessio = _metExploreViz.getSessionById('viz');
-								metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); 
-							}
+                            text : 'Duplicate nodes as side compounds',
+                            hidden : false,
+                            iconCls:"duplicate-sideCompounds",
+                            menu : viz.duplicateMenu
 						},{
 							text : 'Change name',
 							hidden : false,
@@ -192,8 +199,8 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							text : 'Select neighbours (N+select)',
 							hidden : false,
 							iconCls:"neighbours",
-							handler : function(){ 
-								metExploreD3.GraphNode.selectNeighbours(theNode, "viz"); 
+							handler : function(){
+								metExploreD3.GraphNode.selectNeighbours(theNode, "viz");
 							}
 						},{
 							text : 'See more information',

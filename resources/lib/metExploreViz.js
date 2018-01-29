@@ -199,6 +199,9 @@ var metExploreD3 = {
     },
 
     // CompartmentInBioSource
+    getCompartmentByName : function(name){
+        return _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(name);
+    },
     getCompartmentInBiosourceSet : function(){
         return _metExploreViz.getSessionById("viz").getD3Data().getCompartments();
     },
@@ -301,6 +304,9 @@ var metExploreD3 = {
     // CompartmentInBioSource
     getPathwaysSet : function(){
         return _metExploreViz.getSessionById("viz").getD3Data().getPathways();
+    },
+    getPathwayByName : function(name){
+        return _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(name);
     },
     getPathwaysGroup : function(){
         var pathwayGroup = [];
