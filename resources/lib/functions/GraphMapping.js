@@ -1972,8 +1972,7 @@ metExploreD3.GraphMapping = {
     */
     removeMappingData : function(mappingObj) {
         this.onloadMapping(mappingObj.get('id'), function(mapping){
-	        metExploreD3.fireEventArg('	', "removeMapping", mapping);
-	        	// metExploreD3.fireEventArg('selectConditionForm', "closeMapping", null);	        
+	        metExploreD3.fireEventArg('selectConditionForm', "removeMapping", mapping);
     	});
      /*   var array = [];
         _metExploreViz.getMappingsSet().forEach(function(map){
