@@ -936,10 +936,8 @@ metExploreD3.GraphNode = {
 
 
 		var networkData=session.getD3Data();
-	    var h = parseInt(d3.select("#"+_MyThisGraphNode.panelParent).select("#D3viz")
-			.style("height"));
-	    var w = parseInt(d3.select("#"+_MyThisGraphNode.panelParent).select("#D3viz")
-			.style("width"));
+	    var h = parseInt(metExploreD3.GraphPanel.getHeight(_MyThisGraphNode.panelParent));
+	    var w = parseInt(metExploreD3.GraphPanel.getWidth(_MyThisGraphNode.panelParent));
 
 	    // Create function to manage double click
 	    d3.selectAll("#D3viz")

@@ -55,13 +55,13 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             var that = this;
 
             // For each value we add corresponding color caption
-            components.forEach(function (component) {
+            components.forEach(function (component, i) {
                     var colorName = component.getName();
 
                     var parser = new DOMParser;
                     var dom = parser.parseFromString(colorName, 'text/html');
                     var value = dom.body.textContent;
-                    var newId = colorName.toString().replace(me.regexpPanel, "_");
+                    var newId = i;
                     var that=me;
                     var newComponentCaptionForm = Ext.create('metExploreViz.view.form.ComponentCaptionForm', {
 
@@ -119,18 +119,10 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                             itemId: 'hidden' + newId,
                                             value: component.getColor(),
                                             listeners: {
-                                                change: function (newValue, oldValue) {
-                                                    this.lastValue = newValue.value;
-                                                    var component = mapp;
+                                                change: function (that) {
+                                                    this.lastValue = that.value;
 
-                                                    components.forEach(function (color) {
-                                                        var newId = color.getName().toString().replace(me.regexpPanel, "_");
-                                                        if (captionForm.down("#hidden" + newId) != null) {
-                                                            if (color.getColor() != captionForm.down("#hidden" + newId).lastValue) {
-                                                                color.setColor(captionForm.down("#hidden" + newId).lastValue);
-                                                            }
-                                                        }
-                                                    });
+                                                    component.setColor(that.value);
 
                                                     metExploreD3.GraphCaption.majCaptionColor(components, view.getTitle());
 
