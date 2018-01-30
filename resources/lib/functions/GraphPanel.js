@@ -9,7 +9,7 @@ metExploreD3.GraphPanel = {
     * @param {} panel : active panel
 	*/
 	getHeight : function(panel){
-		return d3.select("#"+panel).select("#D3viz").style("height");
+		return document.getElementById(panel).style.height;
 	},
 
     /*****************************************************
@@ -17,7 +17,7 @@ metExploreD3.GraphPanel = {
     * @param {} panel : active panel
 	*/
 	getWidth : function(panel){
-		return d3.select("#"+panel).select("#D3viz").style("width");
+        return document.getElementById(panel).style.width;
 	},
 
 	/*****************************************************
@@ -290,6 +290,8 @@ metExploreD3.GraphPanel = {
 		var sessionsStore = _metExploreViz.getSessionsSet();
 		var session = _metExploreViz.getSessionById(panel);
 		var h = $("#"+panel).height();
+		console.log($("#"+panel).height());
+		console.log(this.getHeight(panel));
 		var w = $("#"+panel).width();
 
 

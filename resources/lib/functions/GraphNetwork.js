@@ -59,10 +59,8 @@ metExploreD3.GraphNetwork = {
 				var vizRect = document.getElementById(panel).getBoundingClientRect();
 				var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
 				
-				var width = parseInt(d3.select("#"+panel).select("#D3viz")
-					.style("width"));
-				var height = parseInt(d3.select("#"+panel).select("#D3viz")
-					.style("height"));
+				var width = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+				var height = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 
 				if(vizRect.top>graphComponentRect.top 
 					|| vizRect.left>graphComponentRect.left 
