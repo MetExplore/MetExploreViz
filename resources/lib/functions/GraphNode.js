@@ -594,7 +594,7 @@ metExploreD3.GraphNode = {
 			// Chage the node statute
 			d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 				.selectAll("g.node")
-				.filter(function(node){return d.getId()==node.getId();})
+				.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
 				.each(function(node){node.setIsSelected(!node.isSelected())});
 			
 			// Change the node visualization
@@ -615,21 +615,21 @@ metExploreD3.GraphNode = {
 					var sessionsStore = _metExploreViz.getSessionsSet();
 
 					for (var key in sessionsStore) {
-						if(sessionsStore[key].isLinked() && panel!=sessionsStore[key].getId())
+						if(sessionsStore[key].isLinked() && panel!=sessionsStore[key].getDbIdentifier())
 						{
 							d3.select("#"+sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")
 								.selectAll("g.node")
-								.filter(function(node){return d.getId()==node.getId();})
+								.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
 								// .attr("selected", function(node){return node.selected=!node.selected;})
 								.each(function(node){node.setIsSelected(!node.isSelected())});
 
 							if(d.isSelected()) 
 							{ 
-								_MyThisGraphNode.selectNode(d, sessionsStore[key].getId());	
+								_MyThisGraphNode.selectNode(d, sessionsStore[key].getDbIdentifier());
 							}
 							else
 							{
-								_MyThisGraphNode.unSelectNode(d, sessionsStore[key].getId());
+								_MyThisGraphNode.unSelectNode(d, sessionsStore[key].getDbIdentifier());
 							}				
 						}
 					}
@@ -676,15 +676,15 @@ metExploreD3.GraphNode = {
 		// Add  node in the list of selected nodes
 	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("g.node")
-			.filter(function(node){return d.getId()==node.getId();})
+			.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
 			.each(function(node){  
-				session.addSelectedNode(node.getId()); 
+				session.addSelectedNode(node.getId());
 			});	
 		
 		// We define the text for a metabolie WITHOUT the coresponding SVG image 
 		var node = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("g.node")
-			.filter(function(node){return d.getId()==node.getId();})
+			.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
 			.select('.fontSelected').style("fill-opacity", '0.4');
 
 		_MyThisGraphNode.addText(d, panel);
@@ -703,12 +703,12 @@ metExploreD3.GraphNode = {
 
 		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("g.node")
-			.filter(function(node){return d.getId()==node.getId();})
+			.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
 			.select('.fontSelected').style("fill-opacity", '0');
 		
 		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.selectAll("g.node")
-			.filter(function(node){return d.getId()==node.getId();})
+			.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
 			.each(function(node){ 
 				session.removeSelectedNode(node.getId()); 
 			});
