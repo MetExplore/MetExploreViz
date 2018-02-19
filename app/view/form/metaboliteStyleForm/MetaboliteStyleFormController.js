@@ -13,7 +13,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 	 */
 	init : function() {
 		var me 		= this,
-		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 			
 		view.on({
@@ -58,12 +57,12 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 
 				var newLabel = view.lookupReference('selectDisplayMetaboliteLabel').getValue();
 
-				if(newLabel!=s_MetaboliteStyle.getLabel()
-					|| (newHeight != s_MetaboliteStyle.getHeight())
-					|| (newWidth != s_MetaboliteStyle.getWidth())
-					|| (newstrokewidth != s_MetaboliteStyle.getStrokeWidth())
-					|| (newrx != s_MetaboliteStyle.getRX())
-					|| (newry != s_MetaboliteStyle.getRY())
+				if(newLabel!==s_MetaboliteStyle.getLabel()
+					|| (newHeight !== s_MetaboliteStyle.getHeight())
+					|| (newWidth !== s_MetaboliteStyle.getWidth())
+					|| (newstrokewidth !== s_MetaboliteStyle.getStrokeWidth())
+					|| (newrx !== s_MetaboliteStyle.getRX())
+					|| (newry !== s_MetaboliteStyle.getRY())
 				){
 					isset=true;
 					s_MetaboliteStyle.setHeight(parseFloat(newHeight));
@@ -83,12 +82,12 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		});
 
 		view.lookupReference('chooseHeightMetabolite').on({
-			afterrender: function(me){
+			afterrender: function(){
 				var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
 				
 		        view.lookupReference('chooseHeightMetabolite').setValue(s_MetaboliteStyle.getHeight());   
 		    },
-		    change: function(thas, newValue, oldValue){
+		    change: function(thas, newValue){
 				if(!isNaN(newValue) && newValue>0 && newValue<200){
 		    		me.changeHeight(newValue);
 				}
@@ -97,12 +96,12 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		});
 
 		view.lookupReference('chooseWidthMetabolite').on({
-			afterrender: function(me){
+			afterrender: function(){
 				var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
 				
 		        view.lookupReference('chooseWidthMetabolite').setValue(s_MetaboliteStyle.getWidth());   
 		    },
-		    change: function(thas, newValue, oldValue){
+		    change: function(thas, newValue){
 				if(!isNaN(newValue) && newValue>0 && newValue<200){
 		    		me.changeWidth(newValue);
 				}
@@ -111,12 +110,12 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		});
 
 		view.lookupReference('chooseStrokeMetabolite').on({
-			afterrender: function(me){
+			afterrender: function(){
 				var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
 				
 		        view.lookupReference('chooseStrokeMetabolite').setValue(s_MetaboliteStyle.getStrokeWidth());   
 		    },
-		    change: function(thas, newValue, oldValue){
+		    change: function(that, newValue){
 				if(!isNaN(newValue) && newValue>0 && newValue<200){
 		    		me.changeStroke(newValue);
 				}
@@ -125,12 +124,12 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		});
 
 		view.lookupReference('chooseRxMetabolite').on({
-			afterrender: function(me){
+			afterrender: function(){
 				var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
 				
 		        view.lookupReference('chooseRxMetabolite').setValue(s_MetaboliteStyle.getRX());   
 		    },
-		    change: function(thas, newValue, oldValue){
+		    change: function(thas, newValue){
 				if(!isNaN(newValue) && newValue>=0 && newValue<200){
 		    		me.changeRx(newValue);
 				}
@@ -139,12 +138,12 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		});
 
 		view.lookupReference('chooseRyMetabolite').on({
-			afterrender: function(me){
+			afterrender: function(){
 				var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
 				
 		        view.lookupReference('chooseRyMetabolite').setValue(s_MetaboliteStyle.getRY());   
 		    },
-		    change: function(thas, newValue, oldValue){
+		    change: function(thas, newValue){
 				if(!isNaN(newValue) && newValue>=0 && newValue<200){
 		    		me.changeRy(newValue);
 				}
@@ -166,7 +165,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 					
 			        me.setValue(s_MetaboliteStyle.getLabel());   
 			    },
-				change : function(that, newLabel, old){
+				change : function(that, newLabel){
 					me.changeLabel(newLabel);
 				}
 			}
@@ -191,10 +190,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
 			vis.select("g.node").select("rect").attr("width", width);
-
-			/*vis.select("g.node")
-				.select("text")
-				.attr("y",height);*/
 		}
 	},
 
@@ -204,10 +199,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
 			vis.select("g.node").select("rect").style("stroke-width", stroke);
-
-			// vis.select("g.node")
-			// 	.select("text")
-			// 	.attr("y",height);
 		}
 	},
 
@@ -217,10 +208,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
 			vis.select("g.node").select("rect").attr("rx", rx);
-
-			// vis.select("g.node")
-			// 	.select("text")
-			// 	.attr("y",height);
 		}
 	},
 
@@ -230,16 +217,10 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
 			vis.select("g.node").select("rect").attr("ry", ry);
-
-			// vis.select("g.node")
-			// 	.select("text")
-			// 	.attr("y",height);
 		}
 	},
 
 	changeLabel : function(label) {
-		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-
 		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0]!=null){
 					
 			var vis = d3.select("#vizExempleMetabolite")
@@ -247,28 +228,25 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			vis.select("g.node").select('text').text(function(d) {
 
 				var text=$("<div/>").html(label).text();
-				if(text=="")
-					var text=$("<div/>").html(label).text();
+				if(text==="")
+					text=$("<div/>").html(label).text();
 				return text;
 			})
-
-			// vis.select("g.node")
-			// 	.select("text")
-			// 	.attr("y",height);
 		}
 	},
 
 	displayNode : function() {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0]!=null){
+        var vis;
+        if (d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0] != null) {
 
-			d3.select("#vizExempleMetabolite").select("#D3vizExemple")
-				.selectAll("*").remove();
-			var vis = d3.select("#vizExempleMetabolite")
-						.select("#D3vizExemple");
+            d3.select("#vizExempleMetabolite").select("#D3vizExemple")
+                .selectAll("*").remove();
+            vis = d3.select("#vizExempleMetabolite")
+                .select("#D3vizExemple");
 		}
 		else
 		{
-			var vis = d3.select("#vizExempleMetabolite")
+			vis = d3.select("#vizExempleMetabolite")
 				.append("svg")
 				.attr("width", "100%")
 				.attr("height", "100%")
@@ -285,13 +263,13 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			.scaleExtent([ 0.1, 20 ])
 			.on("zoom", function(e){
 				that.zoom();
-			})
+			});
 
 		vis = vis.call(zoomListener)
 			// Remove zoom on double click
 			.attr("pointer-events", "all")
 			.append('svg:g')
-			.attr("class","graphComponent").attr("id","graphComponent")
+			.attr("class","graphComponent").attr("id","graphComponent");
 
 		// Get height and witdh of viz panel
 		var h = parseInt(d3.select("#vizExempleMetabolite").style("height"));
@@ -322,7 +300,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 
 				var text=$("<div/>").html(metaboliteStyle.getLabel()).text();
 				if(text=="")
-					var text=$("<div/>").html(metaboliteStyle.getLabel()).text();
+					text=$("<div/>").html(metaboliteStyle.getLabel()).text();
 				return text;
 			})
 			.style("font-size",metaboliteStyle.getFontSize())
@@ -330,18 +308,12 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			.style("stroke-width", '1')
 			.style("stroke", "white")
 			.style("stroke-opacity", "0.7")
-			// 	function(d) {
-			// 		return Math.min(
-			// 			(minDim) / 2,
-			// 			((minDim - 3)/ this.getComputedTextLength() * 10) / 2
-			// 		)+ "px";
-			// })
 			.attr("dy", ".4em")
 			.style("font-weight", 'bold')
 			.attr("y",metaboliteStyle.getHeight());
 	},
 
-	zoom:function(panel) {
+	zoom:function() {
 		d3.select("#vizExempleMetabolite").select("#D3vizExemple").select("#graphComponent").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 	}
 	

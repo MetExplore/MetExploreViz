@@ -1,8 +1,7 @@
 /**
- * This class is the controller for the main view for the application. It is specified as
- * the "controller" of the Main view class.
- *
- * TODO - Replace this content of this view to suite the needs of your application.
+ * @author MC
+ * ButtonImportToNetworkController : Allows network import from a json file
+ * This class is the controller for the ButtonImportToNetwork view
  */
 Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetworkController', {
     extend: 'Ext.app.ViewController',
@@ -11,11 +10,12 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
    
     init: function() {
 		var me=this,
-		viewModel = me.getViewModel(),
-		view      = me.getView();		
+		view      = me.getView();
 
-		view.lookupReference('importNetwork').on({
+        // Listener which allows opening file manager of client side
+        view.lookupReference('importNetwork').on({
 			change: function () {
+                console.log(view.lookupReference('importNetwork'));
                 var sessions = _metExploreViz.getSessionsSet();
                 var accord = Ext.getCmp("comparePanel");
                 for (var key in sessions) {
@@ -24,8 +24,13 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
                         accord.remove(Ext.getCmp(id));
                     }
                 }
-				metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importNetwork').fileInputEl.dom, metExploreD3.GraphPanel.refreshPanel);
-            },
+                metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importNetwork').fileInputEl.dom, function(json){
+                	// Allows to reload the same file
+                	metExploreD3.GraphPanel.refreshPanel(json, view.lookupReference('importNetwork').reset());
+                });
+
+                console.log(view.lookupReference('importNetwork'));
+			},
             scope : me
 		});
 
@@ -35,8 +40,10 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
 		});
 	},
 
-	
-
+    /*****************************************************
+     * Close and reload  or not mapping
+     * @param bool : reload or not
+     */
 	reloadMapping : function(bool){
 	    if(_metExploreViz.getMappingsLength()!=0){
 	    	var component = Ext.getCmp('comparisonSidePanel');
@@ -85,17 +92,6 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
 				
 			comboCond.setDisabled(true);
 			selectConditionType.setDisabled(true);
-
 		}
-
-		var networkVizSession = _metExploreViz.getSessionById("viz");
-		var that = this;
-		// If the main network is already mapped we inform the user: OK/CANCEL
-		// if(networkVizSession.isMapped()!='false')	
-		// {
-	        	
-		// 	var newMapping ='true';
-		// 	me.closeMapping(newMapping);
-		// }
 	}
 });

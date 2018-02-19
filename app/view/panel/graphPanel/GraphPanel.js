@@ -60,13 +60,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 cls:"loadButton",
                                 iconAlign: 'left'
                           },
-                          // {
-                          //      xtype:'buttonImportToNetwork'/*,text: 'Refresh/Build network'*/,
-                          //      id:'buttonRefresh'                               
-                          //  },""
-                           //{text: 'Drawing', menu:{xtype: 'cytoscapeDrawingMenu'},id:'cytoscapeDrawingMenuID',hidden:false},
-                           //{text: 'Edit', menu:{xtype: 'cytoscapeEditMenu'},id:'cytoscapeEditMenuID',hidden:false},
-                           {
+                          {
                                 text: 'Mining', 
                                 scale: 'large',
                                 menu:{xtype: 'vizMiningMenu'},
@@ -151,7 +145,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 listeners: {
                                     click : function() {
                                       var component = Ext.getCmp('comparePanel');
-                                          if(component!= undefined){
+                                          if(component){
                                               component.fireEvent('copyNetwork');
                                           }
                                     }
@@ -181,26 +175,26 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                             var items = this.container.component.items.items;
                                             var theButton = undefined;
                                             for (var i = 0; i < items.length; i++) {
-                                              if(items[i].reference=='searchNodeButton')
+                                              if(items[i].reference==='searchNodeButton')
                                                 theButton=items[i];
                                             };
                                             
-                                            if(newValue.length>0 && oldValue.length==0)
+                                            if(newValue.length>0 && oldValue.length===0)
                                               theButton.setDisabled(false);
                                             else
-                                                if (oldValue.length>0 && newValue.length==0) 
+                                                if (oldValue.length>0 && newValue.length===0)
                                                     theButton.setDisabled(true);
                                         },
                                         specialkey : function(field, event){
                                             var items = this.container.component.items.items;
                                             var theButton = undefined;
                                             for (var i = 0; i < items.length; i++) {
-                                              if(items[i].reference=='searchNodeButton')
+                                              if(items[i].reference==='searchNodeButton')
                                                 theButton=items[i];
                                             };
-                                            if(event.getKey() == event.ENTER){
+                                            if(event.getKey() === event.ENTER){
                                                 var component = theButton;
-                                                    if(component!= undefined){
+                                                    if(component){
                                                         component.fireEvent("click");
                                                     }
                                             } 
@@ -209,7 +203,6 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                   },
                                   {
                                       xtype:'button',
-                                      // scale: 'large',
                                       reference:'searchNodeButton',
                                       iconCls:'search',
                                       scale: 'large',

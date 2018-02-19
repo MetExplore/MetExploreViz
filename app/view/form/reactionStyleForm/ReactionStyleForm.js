@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * @description GeneralStyleForm : Reaction style configs
  */
 Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
     extend: 'Ext.panel.Panel',  
@@ -43,7 +43,6 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
             border:false,
             xtype: 'hiddenfield',
             itemId: 'hiddenColor',
-            //id: 'hidden' + newId,
             value: 'init'    
         }
         ]
@@ -62,10 +61,9 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
         fieldLabel: "Stroke width:",
         displayField: 'stroke',
         editable:true,
-        width:'100%', 
-        width:'100%', 
+        width:'100%',
         listeners: {
-            change: function(newValue, oldValue){
+            change: function(newValue){
                 this.lastValue = newValue;
             }   
         }        
@@ -81,7 +79,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
         editable:true,
         width:'100%', 
         listeners: {
-            change: function(newValue, oldValue){
+            change: function(newValue){
                 this.lastValue = newValue;
             }   
         }        
@@ -96,7 +94,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
         editable:true,
         width:'100%', 
         listeners: {
-            change: function(newValue, oldValue){
+            change: function(newValue){
                 this.lastValue = newValue;
             }   
         }        
@@ -111,7 +109,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
         editable:true,
         width:'100%', 
         listeners: {
-            change: function(newValue, oldValue){
+            change: function(newValue){
                 this.lastValue = newValue;
             }   
         }        
@@ -126,7 +124,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
         editable:true,
         width:'100%', 
         listeners: {
-            change: function(newValue, oldValue){
+            change: function(newValue){
                 this.lastValue = newValue;
             }   
         }        

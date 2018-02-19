@@ -1,3 +1,7 @@
+/**
+ * @author MC
+ * ButtonImportToNetwork : Allows network import from a json file
+ */
 Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwork', {
     extend: 'Ext.form.Panel',
     alias:'widget.buttonImportToNetwork',
@@ -8,31 +12,17 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
     text: 'Import mapping from tab file',
             
     items: [{
+        // Allows opening file manager of client side
         xtype: 'filefield',
         name : 'fileData',
         buttonOnly: true,
-            // text: '',
         height:'100%',
-        width:'100px', 
-
-      //   buttonConfig: {
-      //       iconCls: 'importToRsx',
-    		// scale: 'large',                                
-      //       border: false
-      //   },
+        width:'100px',
         reference : 'importNetwork',
+        // Allows button GUI
         buttonConfig: {
             id : 'IDimportNetwork'
-    //     border: false,
-    //     iconCls: 'importToRsx',
-    //     text: 'Mapping',
-    //     height:'100%',
-    //     width:'100%', 
-    //     scale: 'large',                                
-    //     padding:'0 0 0 0'
         }
     }],
     hideLabel: true
-    //tooltip:'Choose a file to create the network',
-    
 });

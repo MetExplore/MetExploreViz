@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description class to control general styles or configs
+ * @description class to control settings or configs
  */
 
 Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleFormController', {
@@ -95,7 +95,6 @@ Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleFormController'
 		    },
 			scope : me
 		});
-		// });
 	}
 });
 

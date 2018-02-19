@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * @description  MetaboliteStyleForm : Display metabolites config
  */
 Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
     extend: 'Ext.panel.Panel',  
@@ -37,7 +37,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
         fieldLabel: "Stroke width:",
         displayField: 'stroke',
         editable:true,
-        margin:'5 5 5 5',
         width:'100%', 
         listeners: {
             change: function(newValue, oldValue){
@@ -54,7 +53,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
         fieldLabel: "Height :",
         displayField: 'height',
         editable:true,
-        margin:'5 5 5 5',
         width:'100%', 
         listeners: {
             change: function(newValue, oldValue){
@@ -70,7 +68,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
         fieldLabel: "Width :",
         displayField: 'width',
         editable:true,
-        margin:'5 5 5 5',
         width:'100%', 
         listeners: {
             change: function(newValue, oldValue){
@@ -86,7 +83,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
         fieldLabel: "Rx :",
         displayField: 'rx',
         editable:true,
-        margin:'5 5 5 5',
         width:'100%', 
         listeners: {
             change: function(newValue, oldValue){
@@ -102,7 +98,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
         fieldLabel: "Ry :",
         displayField: 'ry',
         editable:true,
-        margin:'5 5 5 5',
         width:'100%', 
         listeners: {
             change: function(newValue, oldValue){

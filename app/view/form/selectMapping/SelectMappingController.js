@@ -8,52 +8,43 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.form-selectMapping-selectMapping',
 
-	// config : {
-	// 	stores : [ 'S_MappingInfo' ],
-	// 	views : [ 'view.form.SelectMapping']
-	// },
 	/**
- * Aplies event linsteners to the view
- */
+	 * Aplies event linsteners to the view
+	 */
 	init:function(){
 		var me 		= this,
-		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 
 		view.on({
 			jsonmapping : function(mappingJSON){
 				me.initMapping(mappingJSON);
 			},
+			// When this event is fire it remove mapping from the combobox
 			removemapping : function(mapping){
 				me.removeMapping(mapping);
 			},
 			change : function(that, newMapping, old){
-				// if(view.getStore().getCount()>0){
-					var component = Ext.getCmp("selectConditionForm");
-					
-			        if(component!= undefined){
-			        	_metExploreViz.getSessionById('viz').setActiveMapping(newMapping);
-			            component.fireEvent("closeMapping", newMapping);
-						var mappings = _metExploreViz.getMappingsSet();
-						if (_metExploreViz.getMappingsLength()!=0) {
-							
-							var theMapping = _metExploreViz.getMappingByName(newMapping);
-							if(theMapping!=null)
-							{
-								var conds = theMapping.getConditions();
-								if(theMapping != undefined)
-									me.fillComboSelectCondition(that, theMapping, old);
-							}
+				var component = Ext.getCmp("selectConditionForm");
+
+				if(component){
+					_metExploreViz.getSessionById('viz').setActiveMapping(newMapping);
+					component.fireEvent("closeMapping", newMapping);
+					if (_metExploreViz.getMappingsLength()!==0) {
+
+						var theMapping = _metExploreViz.getMappingByName(newMapping);
+						if(theMapping)
+						{
+							if(theMapping)
+								me.fillComboSelectCondition(that, theMapping, old);
 						}
-			        }
-				// }	
+					}
+				}
 			},
-			collapse : function(field, eOpts){
-				var mappings = _metExploreViz.getMappingsSet();
-				if (_metExploreViz.getMappingsLength()!=0) {
+			collapse : function(field){
+				if (_metExploreViz.getMappingsLength()!==0) {
 					
 					var theMapping = _metExploreViz.getMappingByName(field.getValue());
-					if(theMapping != undefined)
+					if(theMapping)
 						metExploreD3.GraphMapping.mapNodes(theMapping.getName());
 				}
 			},
@@ -62,10 +53,9 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 	},
 
 	initMapping:function(mappingJSON){
-		if(_metExploreViz.getMappingsLength()!=0 ){
-	    	
+		if(_metExploreViz.getMappingsLength()!==0 ){
 	    	var component = Ext.getCmp('comparisonSidePanel');
-	        if(component!= undefined){
+	        if(component){
 	        	if(component.isHidden())
 	           		component.setHidden(false);
 				component.expand();
@@ -90,55 +80,59 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 				_metExploreViz.getSessionById('viz').setActiveMapping(mappingJSON.getName());
 				store.loadData(records, false);
                 
-                if(store.getCount()==1)
+                if(store.getCount()===1)
                 	comboMapping.setDisabled(false);
 	        }
 	    }
 	},
 
+    /**
+	 * Remove mapping from the combobox
+     * @param mapping : json
+     */
 	removeMapping:function(mapping){
-	    	var component = Ext.getCmp('comparisonSidePanel');
-	        if(component!= undefined){
-	        	if(component.isHidden())
-	           		component.setHidden(false);
-				component.expand();
-				var comboMapping = Ext.getCmp('selectMappingVisu');
-				var store = comboMapping.getStore();
-	            //take an array to store the object that we will get from the ajax response
-				var records = [];
+		var component = Ext.getCmp('comparisonSidePanel');
+		if(component!== undefined){
+			if(component.isHidden())
+				component.setHidden(false);
+			component.expand();
+			var comboMapping = Ext.getCmp('selectMappingVisu');
+			var store = comboMapping.getStore();
 
-				store.each(function(mappingName){
-					if(mappingName.getData().name!=mapping.getName()){
-						records.push(new Ext.data.Record({
-		                    name: mappingName.getData().name
-		                }));
-					}
-				});
+			//take an array to store the object that we will get from the ajax response
+			var records = [];
 
-				store.loadData(records, false);
-                
-				comboMapping.clearValue();
+			store.each(function(mappingName){
+				if(mappingName.getData().name!==mapping.getName()){
+					records.push(new Ext.data.Record({
+						name: mappingName.getData().name
+					}));
+				}
+			});
 
-                if(store.getCount()==0)
-                	comboMapping.setDisabled(true);
-	        }
+			store.loadData(records, false);
+
+			comboMapping.clearValue();
+
+			if(store.getCount()===0)
+				comboMapping.setDisabled(true);
+		}
 	},
 
 	/*******************************************
 	* Affect selected mapping conditions to the comboBox: SelectCondition 
-	* @param {} that 
-	* @param {} newMapping : id of new mapping
-	* @param {} old 
+	* @param that
+	* @param newMapping : id of new mappin
 	*/
-	fillComboSelectCondition : function(that, newMapping, old) {
+	fillComboSelectCondition : function(that, newMapping) {
 
-		_metExploreViz.getSessionById('viz').setMapped("false");
-			            
-		var mappingInfoStore = _metExploreViz.getMappingsSet();
-		var conditions = newMapping.getConditions();
-		var comboCond = Ext.getCmp('selectCondition');
+        _metExploreViz.getSessionById('viz').setMapped("false");
+
+        var conditions = newMapping.getConditions();
+        var comboCond = Ext.getCmp('selectCondition');
 		var storeCond = comboCond.getStore();
-        //take an array to store the object that we will get from the ajax response
+
+		//take an array to store the object that we will get from the ajax response
 		var record = [];
          	
 		for (var i = 0 ; i<conditions.length ; i++) {
@@ -155,10 +149,9 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 
 		var selectConditionType = Ext.getCmp('selectConditionType');
 		
-		if(selectCondition!=undefined && selectConditionType!=undefined){
+		if(selectCondition && selectConditionType){
 
-			if(nbCond<1  || (nbCond==1 && conditions[0]=="undefined")){
- 			
+			if(nbCond<1  || (nbCond===1 && conditions[0]==="undefined")){
  				comboCond.clearValue();
  				comboCond.setDisabled(true);
  				selectConditionType.setDisabled(true);
