@@ -1,3 +1,7 @@
+/**
+ * @author MC
+ * ButtonImportSideCompounds : Allows side compounds import from a tab file
+ */
 Ext.define('metExploreViz.view.button.buttonImportSideCompounds.ButtonImportSideCompounds', {
     extend: 'Ext.form.Panel',
     alias:'widget.buttonImportSideCompounds',
@@ -14,24 +18,6 @@ Ext.define('metExploreViz.view.button.buttonImportSideCompounds.ButtonImportSide
         reference : 'importSideCompoundsHidden',
         buttonConfig: {
             id : 'IDimportSideCompounds'
-    //     border: false,
-    //     iconCls: 'importToRsx',
-    //     text: 'SideCompounds',
-    //     height:'100%',
-    //     width:'100%', 
-    //     scale: 'large',                                
-    //     padding:'0 0 0 0'
         }
     }]
-
-    //tooltip:'Choose a file to create the network',
-    // buttonConfig: {
-    //     border: false,
-    //     iconCls: 'importToRsx',
-    //     text: 'SideCompounds',
-    //     height:'100%',
-    //     width:'100%', 
-    //     scale: 'large',                                
-    //     padding:'0 0 0 0'
-    // }
 });

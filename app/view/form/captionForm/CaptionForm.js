@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * @description CaptionForm : Display pathway and compartment caption
  */
 Ext.define('metExploreViz.view.form.captionForm.CaptionForm', {
     extend: 'Ext.panel.Panel',  
@@ -19,8 +19,6 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionForm', {
        type:'vbox',
        align:'stretch'
     },
-    // collapsible: true,
-    // collapsed:false,
     region:'north',
     width:'100%', 
     margins:'0 0 0 0',
@@ -28,5 +26,4 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionForm', {
     animation: true,
     autoScroll: true,
     autoHeight: true
-
 });

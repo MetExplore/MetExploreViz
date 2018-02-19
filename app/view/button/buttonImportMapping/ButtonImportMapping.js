@@ -1,3 +1,7 @@
+/**
+ * @author MC
+ * ButtonImportMapping : Allows mapping import from a tab file
+ */
 Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMapping', {
     extend: 'Ext.form.Panel',
     alias:'widget.buttonImportMapping',
@@ -7,31 +11,15 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMapping', 
     ],
     hideLabel: true,
     items: [{
+        // Allows opening file manager of client side
         xtype: 'filefield',
         name : 'fileData',
         buttonOnly: true,   
         id : 'IDimport',
         reference : 'importMappingHidden',
+        // Allows button GUI
         buttonConfig: {
             id : 'IDimportMapping'
-    //     border: false,
-    //     iconCls: 'importToRsx',
-    //     text: 'Mapping',
-    //     height:'100%',
-    //     width:'100%', 
-    //     scale: 'large',                                
-    //     padding:'0 0 0 0'
         }
     }]
-
-    //tooltip:'Choose a file to create the network',
-    // buttonConfig: {
-    //     border: false,
-    //     iconCls: 'importToRsx',
-    //     text: 'Mapping',
-    //     height:'100%',
-    //     width:'100%', 
-    //     scale: 'large',                                
-    //     padding:'0 0 0 0'
-    // }
 });

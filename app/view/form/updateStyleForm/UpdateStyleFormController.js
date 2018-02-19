@@ -17,13 +17,13 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleFormController', 
 				change : function(that, newValue, oldValue){
 	                // Control if the user wants save
 	                var newCombo = Ext.getCmp(newValue);
-	                if(newCombo!=undefined)
+	                if(newCombo)
 	                	newCombo.setVisible(true);
 	                
-	                if(oldValue!=undefined)
+	                if(oldValue)
 	                {
 	                	var oldCombo = Ext.getCmp(oldValue);
-    	                if(oldCombo!=undefined)
+    	                if(oldCombo)
     	                    oldCombo.setVisible(false);
     	            }
 	            }

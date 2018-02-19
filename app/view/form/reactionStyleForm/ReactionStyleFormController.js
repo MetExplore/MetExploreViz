@@ -13,7 +13,6 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 	 */
 	init : function() {
 		var me 		= this,
-		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 		
 		view.on({
@@ -32,7 +31,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 		    
 		    	view.down('#hiddenColor').lastValue = s_ReactionStyle.getStrokeColor();
 				
-				metExploreD3.fireEventArg("chooseStrokeColorReactionPicker", "change", s_ReactionStyle.getStrokeColor())
+				metExploreD3.fireEventArg("chooseStrokeColorReactionPicker", "change", s_ReactionStyle.getStrokeColor());
 
       			Ext.getCmp('selectDisplayReactionLabel').setValue(s_ReactionStyle.getLabel());   
 			},
@@ -49,7 +48,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 				var newHeight = ((!isNaN(height) && height>0 && height<200) ? height : s_ReactionStyle.getHeight());
 				
 				var color = view.down('#hiddenColor').lastValue;
-				var newColor = (color!='init' ? color : s_ReactionStyle.getStrokeColor());
+				var newColor = (color!=='init' ? color : s_ReactionStyle.getStrokeColor());
 				
 				var width = view.lookupReference('chooseWidthReaction').getValue();
 				var newWidth = (!isNaN(width) && width>0 && width<200) ? width : s_ReactionStyle.getWidth();
@@ -308,12 +307,12 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 
 					var text=$("<div/>").html(label).text();
 					if(text=="")
-						var text=$("<div/>").html(label).text();
+						text=$("<div/>").html(label).text();
 					return text;
 				})
 				.style(
 					"font-size",//reactionStyle.getFontSize())
-					 function(d) {
+					 function() {
 					 	return Math.min(2 * minDim,(2*minDim - 2)/ this.getComputedTextLength()* 10)+ "px";
 				})
 				.style("font-weight", 'bold')

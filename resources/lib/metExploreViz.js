@@ -13,23 +13,23 @@ var metExploreD3 = {
     Features:"",
     user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
-       
+
         var data={
                 token: token,
                 Content: inchis,
                 pathways: pathways
         };
-       
+
         Ext.Ajax.request({
             // Bien préciser qu'il faut envoyer les données en POST:
             method:'POST',
-            
+
             url: 'http://metexplore.toulouse.inra.fr:8080/metExploreWebService/mapping/launchtokenmapping/inchi/1363/filteredbypathways/',
-            
+
             // le json a envoyer en post:
             jsonData:data,
             success: function(response, opts) {
-                
+
                 var rep=Ext.decode(response.responseText);
                 func(rep);
             },
@@ -64,17 +64,17 @@ var metExploreD3 = {
                 Content: inchis
         };
 
-       
+
         Ext.Ajax.request({
             // Bien préciser qu'il faut envoyer les données en POST:
             method:'POST',
-            
+
             url: 'http://metexplore.toulouse.inra.fr:8080/metExploreWebService/mapping/launchtokenmapping/inchi/1363/aspathways/',
-            
+
             // le json a envoyer en post:
             jsonData:data,
             success: function(response, opts) {
-                
+
                 var rep=Ext.decode(response.responseText);
                 func(rep);
             },
@@ -101,17 +101,17 @@ var metExploreD3 = {
                 pathways: "("+pathways+")"
         };
 
-       
+
         Ext.Ajax.request({
             // Bien préciser qu'il faut envoyer les données en POST:
             method:'POST',
-            
+
             url: 'http://metexplore.toulouse.inra.fr:8080/metExploreWebService/mapping/launchtokenmapping/inchi/1363/filteredbypathways/',
-            
+
             // le json a envoyer en post:
             jsonData:data,
             success: function(response, opts) {
-                
+
                 var rep=Ext.decode(response.responseText);
                 func(rep);
             },
@@ -134,12 +134,12 @@ var metExploreD3 = {
         var component = Ext.getCmp('comparisonSidePanel');
         if(component!= undefined)
             component.collapse();
-              
+
 
             // If the main network is already mapped we inform the user: OK/CANCEL
-            // if(networkVizSession.isMapped()!='false')    
+            // if(networkVizSession.isMapped()!='false')
             // {
-                    
+
             //  var newMapping ='true';
             //  me.closeMapping(newMapping);
             // }
@@ -147,21 +147,21 @@ var metExploreD3 = {
             var mask = Ext.getCmp("maskInit");
             mask.show();
 
-            Ext.getCmp("buttonImportToNetworkFromWebsite").setDisabled(true); 
+            Ext.getCmp("buttonImportToNetworkFromWebsite").setDisabled(true);
         }
         var sessions = _metExploreViz.getSessionsSet();
-        for (var key in sessions) {   
-            if(sessions[key].getForce()!=undefined)                  
+        for (var key in sessions) {
+            if(sessions[key].getForce()!=undefined)
             {
                 sessions[key].getForce().on("end", null);
-                sessions[key].getForce().stop(); 
+                sessions[key].getForce().stop();
             }
             if(sessions[key].getId()!="viz"){
                if(Ext.getCmp(sessions[key].getId().replace("-body", ""))!=null)
                     Ext.getCmp(sessions[key].getId().replace("-body", "")).destroy()
-            }  
+            }
         }
-        
+
         d3.select("#viz").select("#D3viz").remove();
 
         _metExploreViz.sessions = {};
@@ -169,7 +169,7 @@ var metExploreD3 = {
         _metExploreViz.launched = false;
         _metExploreViz.dataFromWebSite = null;
          _metExploreViz.initialData = undefined;
-        
+
         _metExploreViz.comparedPanels = [];
         _metExploreViz.mappings = [];
         _metExploreViz.linkedByTypeOfMetabolite = false;
@@ -193,7 +193,7 @@ var metExploreD3 = {
     newNetworkData : function(panel){
         return new NetworkData(panel);
     },
-    
+
     newGeneralStyle : function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust, dispCaption){
         return new GeneralStyle(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust, dispCaption);
     },
@@ -215,7 +215,7 @@ var metExploreD3 = {
         var compartmentGroup = [];
 
         var sqrt = Math.ceil(Math.sqrt(metExploreD3.getCompartmentInBiosourceLength()));
-        
+
         var h = parseInt(metExploreD3.GraphPanel.getHeight("viz"));
         var w = parseInt(metExploreD3.GraphPanel.getWidth("viz"));
 
@@ -229,7 +229,7 @@ var metExploreD3 = {
 
         metExploreD3.getCompartmentInBiosourceSet()
             .forEach(function(compartment){
-                var mod = metExploreD3.getCompartmentInBiosourceSet().indexOf(compartment)%sqrt; 
+                var mod = metExploreD3.getCompartmentInBiosourceSet().indexOf(compartment)%sqrt;
                 if(mod==0)
                     alt++;
 
@@ -242,7 +242,7 @@ var metExploreD3 = {
 
         function addNodeInGroup(node, compartment){
             if(compartment!=undefined){
-               
+
                 if(compartment.values==undefined)
                         compartment.values=[];
 
@@ -256,9 +256,9 @@ var metExploreD3 = {
                 var target = d.target;
                 if(source.getBiologicalType()=="metabolite"){
 
-                   
+
                     addNodeInGroup(
-                        source, 
+                        source,
                         compartmentGroup
                             .find(function(compart)
                             {
@@ -267,7 +267,7 @@ var metExploreD3 = {
                         )
                     );
                     addNodeInGroup(
-                        target, 
+                        target,
                         compartmentGroup
                             .find(function(compart)
                             {
@@ -279,7 +279,7 @@ var metExploreD3 = {
                 else
                 {
                     addNodeInGroup(
-                        source, 
+                        source,
                         compartmentGroup
                             .find(function(compart)
                             {
@@ -288,7 +288,7 @@ var metExploreD3 = {
                         )
                     );
                     addNodeInGroup(
-                        target, 
+                        target,
                         compartmentGroup
                             .find(function(compart)
                             {
@@ -312,7 +312,7 @@ var metExploreD3 = {
         var pathwayGroup = [];
 
         var sqrt = Math.ceil(Math.sqrt(metExploreD3.getPathwaysLength()));
-        
+
         var h = parseInt(metExploreD3.GraphPanel.getHeight("viz"));
         var w = parseInt(metExploreD3.GraphPanel.getWidth("viz"));
 
@@ -326,7 +326,7 @@ var metExploreD3 = {
 
         metExploreD3.getPathwaysSet()
             .forEach(function(pathway){
-                var mod = metExploreD3.getPathwaysSet().indexOf(pathway)%sqrt; 
+                var mod = metExploreD3.getPathwaysSet().indexOf(pathway)%sqrt;
                 if(mod==0)
                     alt++;
 
@@ -355,7 +355,7 @@ var metExploreD3 = {
                         .forEach(function(pathway){
 
                             addNodeInGroup(
-                                source, 
+                                source,
                                 pathwayGroup
                                     .find(function(pathw)
                                     {
@@ -364,7 +364,7 @@ var metExploreD3 = {
                                 )
                             );
                             addNodeInGroup(
-                                target, 
+                                target,
                                 pathwayGroup
                                     .find(function(pathw)
                                     {
@@ -381,7 +381,7 @@ var metExploreD3 = {
                         .forEach(function(pathway){
 
                             addNodeInGroup(
-                                source, 
+                                source,
                                 pathwayGroup
                                     .find(function(pathw)
                                     {
@@ -390,7 +390,7 @@ var metExploreD3 = {
                                 )
                             );
                             addNodeInGroup(
-                                target, 
+                                target,
                                 pathwayGroup
                                     .find(function(pathw)
                                     {
@@ -402,7 +402,7 @@ var metExploreD3 = {
                     );
                 }
             });
-        
+
         return pathwayGroup;
     },
     sortPathways : function(){
@@ -419,7 +419,7 @@ var metExploreD3 = {
     getScaleById : function(panel){
         return _metExploreViz.getSessionById(panel).getScale();
     },
-    
+
 
     // Metabolite
     setMetabolitesSet : function(store){
@@ -431,7 +431,7 @@ var metExploreD3 = {
     getMetaboliteById : function(store, id){
         return store.getById(id);
     },
-    
+
 
     // Reaction
     setReactionsSet : function(store){
@@ -456,7 +456,7 @@ var metExploreD3 = {
 
     getGeneralStyle : function(){
         return _metExploreViz.generalStyle;
-    }, 
+    },
     setGeneralStyle : function(store){
         _metExploreViz.generalStyle = store;
         metExploreD3.fireEvent("generalStyleForm", "setGeneralStyle");
@@ -544,9 +544,9 @@ var metExploreD3 = {
     },
 
     // Other function 
-   
+
     /******************************************
-    * Display the mask with the loading GIF 
+    * Display the mask with the loading GIF
     * @param {} mask : The mask to show
     */
     showMask : function(mask){
@@ -560,7 +560,7 @@ var metExploreD3 = {
         mask.hide();
     },
     /******************************************
-    * Create a mask with the loading GIF 
+    * Create a mask with the loading GIF
     * @param {} label : The mask label
     * @param {} component : The panel where is displayed the mask
     */
@@ -572,8 +572,8 @@ var metExploreD3 = {
         if(panelComponent!= undefined){
 
             return new Ext.LoadMask({
-                    target: Ext.getCmp(panelComponent), 
-                    msg: label, 
+                    target: Ext.getCmp(panelComponent),
+                    msg: label,
                     msgCls:'msgClsCustomLoadMask'
                 });
         }
@@ -584,14 +584,14 @@ var metExploreD3 = {
 
 
     /******************************************
-    * Create a task 
+    * Create a task
     * @param {} func : The task function
     */
     createDelayedTask : function(func){
         return new Ext.util.DelayedTask(func);
     },
     /******************************************
-    * Fix a delay to task 
+    * Fix a delay to task
     * @param {} task : The task to delay
     * @param {} time : The delay
     */
@@ -599,7 +599,7 @@ var metExploreD3 = {
        task.delay(time);
     },
     /******************************************
-    * Stop task 
+    * Stop task
     * @param {} task : The task to stop
     */
     stopTask : function(task){
@@ -621,13 +621,13 @@ var metExploreD3 = {
 
     /******************************************
     * Fire event with argument
-    * @param {} cmp : View which received the event
-    * @param {} task : Name of the event
-    * @param {} arg : Argument for the event
+    * @param cmp : string ,View which received the event
+    * @param task : string ,Name of the event
+    * @param arg : string ,Argument for the event
     */
     fireEventArg : function(cmp, name, arg){
         var component = Ext.getCmp(cmp);
-        if(component!= undefined){
+        if(component){
             component.fireEvent(name, arg);
         }
     },
@@ -645,7 +645,7 @@ var metExploreD3 = {
     },
 
      /******************************************
-    * Fire Event 
+    * Fire Event
     * @param {} cmp : View which received the event
     * @param {} task : Name of the event
     */
@@ -658,7 +658,7 @@ var metExploreD3 = {
 
 
     /******************************************
-    * Fire Event 
+    * Fire Event
     * @param {} cmp : View which received the event
     * @param {} task : Name of the event
     */
@@ -670,7 +670,7 @@ var metExploreD3 = {
     },
 
     /******************************************
-    * Fire Event 
+    * Fire Event
     * @param {} cmp : View which received the event
     * @param {} task : Name of the event
     */
@@ -698,7 +698,7 @@ var metExploreD3 = {
     },
 
     /******************************************
-    * Display message 
+    * Display message
     * @param {} type : Message type
     * @param {} msg : Message to display
     */
@@ -707,7 +707,7 @@ var metExploreD3 = {
     },
 
     /******************************************
-    * Display message 
+    * Display message
     * @param {} type : Message type
     * @param {} msg : Message to display
     */
@@ -726,7 +726,7 @@ var metExploreD3 = {
     * @param {} msg : Message to display
     */
     displayMessageOK : function(msgTitle, msg, fct){
-       
+
         Ext.Msg.show({
            title:msgTitle,
            msg: msg,
@@ -742,7 +742,7 @@ var metExploreD3 = {
     * @param {} msg : Message to display
     */
     displayMessageYesNo : function(msgTitle, msg, fct){
-       
+
         Ext.Msg.confirm(msgTitle, msg, fct);
     },
 
@@ -755,7 +755,7 @@ var metExploreD3 = {
         Ext.MessageBox.prompt(msgTitle, msg, fct);
     },
     /******************************************
-    * Defer function 
+    * Defer function
     * @param {} func : The function to defer
     * @param {} time : The delay
     */

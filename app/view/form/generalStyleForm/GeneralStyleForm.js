@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * @description GeneralStyleForm : Display Settings
  */
 Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleForm', {
     extend: 'Ext.panel.Panel',  
@@ -26,8 +26,8 @@ Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleForm', {
     {   
         xtype: 'textfield',
         reference:'chooseMaxNodes',
-        margin:'5 5 5 5',
-        fieldLabel: "Threshold of reactions for optimization :",
+        fieldLabel: "Threshold of reactions displayed for optimization :",
+        tooltip: "When this Threshold is exceed link or name will be undisplayed",
         displayField: 'threshold',
         editable:true,
         margin:'5 5 5 5',
@@ -41,7 +41,7 @@ Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleForm', {
     ,  
     {
         xtype      : 'fieldcontainer',
-        fieldLabel : 'Remove on visualisation ',
+        fieldLabel : 'Remove from visualisation if reaction threeshold is exceed.',
         reference:'chooseDisplayForOpt',
         margin:'5 5 5 5',
         defaultType: 'checkboxfield',

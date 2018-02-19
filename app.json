@@ -243,6 +243,10 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/tulip-javascript/demos/tulip.js",
+            "remote": true
+        },
+        {
             "path": "resources/lib/model/NetworkVizSession.js",
             "bundle": true
         },

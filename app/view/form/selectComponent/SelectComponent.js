@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description selection panel
+ * @description selection of pathway or compartments
  * SelectComponent
  */
 Ext.define('metExploreViz.view.form.selectComponent.SelectComponent', {

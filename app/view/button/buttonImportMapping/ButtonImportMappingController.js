@@ -1,20 +1,19 @@
 /**
- * This class is the controller for the main view for the application. It is specified as
- * the "controller" of the Main view class.
- *
- * TODO - Replace this content of this view to suite the needs of your application.
+ * @author MC
+ * ButtonImportMappingController : Allows mapping import from a tab file
+ * This class is the controller for the ButtonImportMapping view
  */
 Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingController', {
     extend: 'Ext.app.ViewController',
 
     alias: 'controller.buttonImportMapping',
-   
+
     init: function() {
 		var me=this,
-		viewModel = me.getViewModel(),
-		view      = me.getView();	
+		view      = me.getView();
 
-		view.lookupReference('importMappingHidden').on({
+		// Listener which allows opening file manager of client side
+        view.lookupReference('importMappingHidden').on({
 			change:function(){
 				metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importMappingHidden').fileInputEl.dom, me.loadData);
 			},
@@ -30,8 +29,10 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 	},
 
 	/*****************************************************
-	* Update the network to fit the cart content
-	*/
+	 * Parse file and map data
+     * @param tabTxt : file content
+     * @param title : file title
+     */
 	loadData : function(tabTxt, title) {
 		var data = tabTxt;
 		tabTxt = tabTxt.replace(/\r/g, "");
@@ -39,7 +40,7 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 
 	    var firstLine = lines.splice(0, 1);
 	    firstLine = firstLine[0].split('\t');
-	   
+
 	    var targetName = firstLine.splice(0, 1);
 	    var array = [];
 
@@ -50,13 +51,15 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 
 		    for (var i = lines.length - 1; i >= 0; i--) {
 		    	lines[i] = lines[i].split('\t');
-		    };
+		    }
+
+		    // Launch mapping
 		    metExploreD3.GraphMapping.mapNodeData(mapping, lines);
 		    metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
 		}
 		else
 		{
-			// Type ERROR
+			// Warning for bad syntax file
 			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. See <a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#import">MetExploreViz documentation</a>.');
 		}
 	}

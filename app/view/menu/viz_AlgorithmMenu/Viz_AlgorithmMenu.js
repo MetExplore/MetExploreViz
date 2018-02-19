@@ -1,6 +1,6 @@
 /**
  * @author Maxime Chazalviel
- * @description Menu export network viz
+ * @description Menu with Tulip graph algorithms
  */
 
 Ext.define('metExploreViz.view.menu.viz_AlgorithmMenu.Viz_AlgorithmMenu', {
@@ -17,7 +17,6 @@ Ext.define('metExploreViz.view.menu.viz_AlgorithmMenu.Viz_AlgorithmMenu', {
             type: "menu-vizAlgorithmMenu-vizAlgorithmMenu"
         },
 
-           // <-- submenu by nested config object
         items: [
             {
                 text: 'Betweenness Centrality',

@@ -21,6 +21,7 @@ Ext.define('metExploreViz.view.form.selectCondition.SelectConditionController', 
 		});
 	},
 
+	// To choose directly a condition (pimp use it)
 	setConditionProgramaticaly:function(conditionName){
 		if(this.getView().getRawValue()==""){
 			this.getView().setValue(conditionName);

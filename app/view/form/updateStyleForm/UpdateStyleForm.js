@@ -34,7 +34,6 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleForm', {
         store: [
                 ['reactionStyleForm','Reaction'],
                 ['metaboliteStyleForm', 'Metabolite'],
-                // ['linkStyleForm', 'Link'], 
                 ['generalStyleForm', 'General']
         ]
     },{
@@ -51,12 +50,6 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleForm', {
         xtype:'metaboliteStyleForm',
         hidden:true
     }
-    // ,
-    // {   
-    //     id:'linkStyleForm',
-    //     xtype:'linkStyleForm',
-    //     hidden:true
-    // }
     ,{   
         id:'generalStyleForm',
         xtype:'generalStyleForm',

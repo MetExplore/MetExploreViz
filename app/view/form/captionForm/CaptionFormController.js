@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description class to control contion selection panel and to draw component in the component story
+ * @description CaptionFormController : Control displaying pathway and compartment caption
  */
 
 Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
@@ -15,6 +15,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             viewModel   = me.getViewModel(),
             view      	= me.getView();
 
+        // Regex to remove bad chars in dom ids
         me.regexpPanel=/\.|>|<| |,|\/|=|\(|\)/g;
 
         view.on({
@@ -33,16 +34,10 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
 
         // We add form corresponding to the component data type
         var captionForm = view;
-
-
-
-        var networkVizSession = _metExploreViz.getSessionById("viz");
-
         if(view.getTitle()=="Pathways")
             var components = metExploreD3.getPathwaysSet()
         else
             var components = metExploreD3.getCompartmentInBiosourceSet();
-
 
         if(Ext.getCmp('panel' + view.getTitle().replace(me.regexpPanel, "")))
             view.removeAll();
@@ -121,11 +116,8 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                             listeners: {
                                                 change: function (that) {
                                                     this.lastValue = that.value;
-
                                                     component.setColor(that.value);
-
                                                     metExploreD3.GraphCaption.majCaptionColor(components, view.getTitle());
-
                                                 }
                                             }
                                         },
@@ -133,7 +125,6 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                             border: false,
                                             margin: '0 10 0 0',
                                             width: "40%",
-                                            // Object to change color var field= Ext.ComponentQuery.query('#theField')[0];
                                             html: '<input ' +
                                             'type="color" ' +
                                             'id="html5colorpicker" ' +
@@ -161,41 +152,11 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                     type: 'hbox',
                     align: 'stretch'
                 }
-                // items: [{
-                //     xtype: 'checkbox',
-                //     tooltip: 'Display convex hull around each ' + view.getTitle(),
-                //     //formBind: true,
-                //     boxLabel: 'Highlight '+view.getTitle().toLowerCase(),
-                //     margin: '0 0 0 10',
-                //     id: 'highlightCheckbox' + view.getTitle(),
-                //     action: 'highlightCheckbox' + view.getTitle(),
-                //     check: function (that, newV, oldVV, e) {
-                //
-                //         //
-                //         // console.log(e);
-                //         // console.log(item);
-                //         // switch (view.getTitle()) {
-                //         //     case "Pathways":
-                //         //         Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways').setChecked(item.checked);
-                //         //         Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways')
-                //         //             .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways'));
-                //         //         break;
-                //         //     case "Compartments":
-                //         //         Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments').setChecked(item.checked);
-                //         //         Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments')
-                //         //             .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartments'));
-                //         //
-                //         //         break;
-                //         //     default:
-                //         // }
-                //     }
-                // }]
             });
 
             // Create checkbox to display convex hull around each components
             var highlightCheckbox = Ext.create('Ext.form.field.Checkbox', {
                 tooltip: 'Display convex hull around each ' + view.getTitle(),
-                //formBind: true,
                 boxLabel: 'Highlight '+view.getTitle().toLowerCase(),
                 margin: '0 0 0 10',
                 id: 'highlightCheckbox' + view.getTitle()
@@ -222,8 +183,6 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                 scope:highlightCheckbox
             });
             newConditionPanel.add(highlightCheckbox);
-
-            var mapp = view.getTitle();
 
             // Add component caption to captionForm panel
             if (captionForm != undefined) {

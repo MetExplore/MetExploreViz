@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description class to control contion selection panel
+ * @description class to control caption selection
  * C_SelectComponent
  */
 
@@ -8,23 +8,18 @@ Ext.define('metExploreViz.view.form.selectComponent.SelectComponentController', 
     extend: 'Ext.app.ViewController',
     alias: 'controller.form-selectComponent-selectComponent',
 
-    // config : {
-    // 	stores : [ 'S_ComponentInfo' ],
-    // 	views : [ 'view.form.SelectComponent']
-    // },
     /**
      * Aplies event linsteners to the view
      */
     init:function(){
         var me 		= this,
-            viewModel   = me.getViewModel(),
-            view      	= me.getView();
+            view   	= me.getView();
 
         view.on({
             jsoninit : function(componentJSON){
                 me.initCaption(componentJSON);
             },
-            change : function(that, newComponent, old){
+            change : function(that, newComponent){
                 me.changeCaption(newComponent);
             },
             scope:me
@@ -58,7 +53,7 @@ Ext.define('metExploreViz.view.form.selectComponent.SelectComponentController', 
 
         store.add(componentJSON);
 
-        if(store.getCount()==1)
+        if(store.getCount()===1)
             comboComponent.setDisabled(false);
     }
 });

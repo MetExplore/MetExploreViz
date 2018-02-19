@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description combobox to select type of condition
+ * @description combobox to select condition type
  */
 /**
  * selectConditionType
