@@ -25,7 +25,7 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
                 id:'vizAlgorithmMenuID',
                 reference:'vizAlgorithmMenuID',
                 padding:'0 0 0 0',
-                // iconCls:'drawhierarchicalalgorithm',
+                iconCls:'algorithm',
                 hidden:true
              },
              {
