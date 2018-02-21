@@ -221,6 +221,18 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.algorithm {
+     background-image: url(../icons/algorithm.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.betweennessCentrality {
+     background-image: url(../icons/networkCentrality.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .verticalalign {
      background-image: url(../icons/verticalalign.svg);
     background-size: 100% 100%;

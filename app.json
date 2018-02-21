@@ -7,7 +7,7 @@
     /**
      * The version of the application.
      */
-    "version": "1.2.7",
+    "version": "1.2.8",
 
     /**
      * The relative path to the application's markup file (html, jsp, asp, etc.).
@@ -241,10 +241,6 @@
         {
             "path": "resources/lib/metExploreViz.js",
             "bundle": true
-        },
-        {
-            "path": "resources/lib/tulip-javascript/demos/tulip.js",
-            "remote": true
         },
         {
             "path": "resources/lib/model/NetworkVizSession.js",
