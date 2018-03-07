@@ -106,7 +106,7 @@ metExploreD3.GraphNode = {
 						return node.getId() == n.getId();
 					})
 					.each(function(node){
-						node.setLabel(text);
+					    node.setLabel(text);
 						if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
 						{
 							d3.select(this)
@@ -405,6 +405,11 @@ metExploreD3.GraphNode = {
 			else
 				return linkStyle.getSize()+maxDim;
 		});
+	    //Ajout
+	    metabolites
+		.select("text")
+		.attr("opacity",metaboliteStyle.getLabelOpacity());
+	    //Fin Ajout
 		
 	},
 

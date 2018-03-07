@@ -15,6 +15,9 @@ var MetaboliteStyle = function(height, width, rx, ry, fontSize, strokeWidth, dis
     this.fontSize = fontSize;
     this.label = displayNodeName;
     this.strokeColor = strokeColor;
+    //Ajout
+    this.labelOpacity = 1.0;
+    //Fin Ajout
 };
 
 MetaboliteStyle.prototype = {
@@ -122,4 +125,16 @@ MetaboliteStyle.prototype = {
         
         return displayedLabel;
     }
+    //Ajout
+    ,
+    getLabelOpacity:function()
+    {
+	return this.labelOpacity;
+    },
+
+    setLabelOpacity:function(newData)
+    {
+	this.labelOpacity = newData;
+    }
+    //Fin Ajout
 };

@@ -29,6 +29,24 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
         reference:'selectDisplayMetaboliteLabel',
         xtype:'selectDisplayMetaboliteLabel'  
     }
+	//Ajout
+	,
+	{   
+            xtype:'fieldcontainer',
+	    margin:'5 5 5 5',
+	    fieldLabel:'Hide label',
+	    defaultType:'checkboxfield',
+	    items: [
+		{
+		    boxLabel:'Yes',
+		    name:'label',
+		    checked:false,
+		    id:'checkbox1',
+		    reference:'checkHideLabel'
+		}
+		]
+	}
+	//Fin Ajout
     , 
     {   
         xtype: 'textfield',
