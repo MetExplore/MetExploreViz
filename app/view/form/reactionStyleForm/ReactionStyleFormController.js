@@ -64,6 +64,11 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 
 				var newLabel = view.lookupReference('selectDisplayReactionLabel').getValue();
 
+                //Ajout
+                var labelOpacity = (view.lookupReference('checkHideLabel').getValue()) ? 0.0 : 1.0;
+                var newLabelOpacity = (!isNaN(labelOpacity) && labelOpacity>=0.0 && labelOpacity<=1.0) ? labelOpacity : s_ReactionStyle.getLabelOpacity();
+                //Fin Ajout
+
 				if(newLabel!=s_ReactionStyle.getLabel()
 					|| (newHeight != s_ReactionStyle.getHeight())
 					|| (newWidth != s_ReactionStyle.getWidth())
@@ -71,6 +76,9 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 					|| (newrx != s_ReactionStyle.getRX())
 					|| (newry != s_ReactionStyle.getRY())
 					|| (newColor != s_ReactionStyle.getStrokeColor())
+                    //Ajout
+                    || (newLabelOpacity !== s_ReactionStyle.getLabelOpacity())
+                	//Fin Ajout
 				){
 					isset=true;
 					s_ReactionStyle.setStrokeColor(newColor);
@@ -80,6 +88,9 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 					s_ReactionStyle.setRX(parseFloat(newrx));
 					s_ReactionStyle.setRY(parseFloat(newry));
 					s_ReactionStyle.setLabel(newLabel);
+                    //Ajout
+                    s_ReactionStyle.setLabelOpacity(newLabelOpacity);
+                    //Fin Ajout
 				}	
 
 				if(isset){

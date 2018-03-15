@@ -53,6 +53,24 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
         id:'selectDisplayReactionLabel',
         xtype:'selectDisplayReactionLabel'  
     }
+    //Ajout
+    ,
+    {
+        xtype:'fieldcontainer',
+        margin:'5 5 5 5',
+        fieldLabel:'Hide label',
+        defaultType:'checkboxfield',
+        items: [
+            {
+                boxLabel:'Yes',
+                name:'label',
+                checked:false,
+                id:'checkbox2',
+                reference:'checkHideLabel'
+            }
+        ]
+    }
+    //Fin Ajout
     , 
     {   
         xtype: 'textfield',

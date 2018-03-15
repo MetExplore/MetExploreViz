@@ -273,6 +273,12 @@ metExploreD3.GraphNode = {
 			})
 			.attr("width", "40%")
 			.attr("height", "40%");
+
+        //Ajout
+        reactions
+            .select("text")
+            .attr("opacity",reactionStyle.getLabelOpacity());
+        //Fin Ajout
 			
 
 	},

@@ -15,6 +15,9 @@ var ReactionStyle = function(height, width, rx, ry, displayNodeName, fontSize, s
     this.strokeColor = strokeColor;
     this.fontSize = fontSize;
     this.strokeWidth = strokeWidth;
+    //Ajout
+    this.labelOpacity = 1.0;
+    //Fin Ajout
 };
 
 ReactionStyle.prototype = {
@@ -122,4 +125,16 @@ ReactionStyle.prototype = {
         }
         return displayedLabel;
     }
+    //Ajout
+    ,
+    getLabelOpacity:function()
+    {
+        return this.labelOpacity;
+    },
+
+    setLabelOpacity:function(newData)
+    {
+        this.labelOpacity = newData;
+    }
+    //Fin Ajout
 };

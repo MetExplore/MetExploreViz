@@ -60,8 +60,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			    //Ajout
 			    var labelOpacity = (view.lookupReference('checkHideLabel').getValue()) ? 0.0 : 1.0;
 			    var newLabelOpacity = (!isNaN(labelOpacity) && labelOpacity>=0.0 && labelOpacity<=1.0) ? labelOpacity : s_MetaboliteStyle.getLabelOpacity();
-			    console.log(newLabelOpacity);
-			    console.log(s_MetaboliteStyle);
 			    //Fin Ajout
 			    
 				if(newLabel!==s_MetaboliteStyle.getLabel()
