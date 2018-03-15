@@ -65,7 +65,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
                 boxLabel:'Yes',
                 name:'label',
                 checked:false,
-                id:'checkbox2',
+                id:'checkboxHideReactionsLabel',
                 reference:'checkHideLabel'
             }
         ]

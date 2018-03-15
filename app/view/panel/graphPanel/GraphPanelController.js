@@ -95,6 +95,12 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			click : me.searchNode,
 			scope : me
 		});
+		//Ajout
+		view.lookupReference('enterEditMode').on({
+			click : me.enterEditMode,
+			scope : me
+		});
+		//Fin Ajout
 	},
 
 	changeoption : function(){
@@ -762,4 +768,10 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			}
 		});
 	}
+	//Ajout
+	,
+    enterEditMode: function () {
+		console.log('edit mode entered');
+    }
+	//Fin Ajout
 });

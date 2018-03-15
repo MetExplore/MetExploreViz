@@ -41,7 +41,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
 		    boxLabel:'Yes',
 		    name:'label',
 		    checked:false,
-		    id:'checkbox1',
+		    id:'checkboxHideMetabolitesLabel',
 		    reference:'checkHideLabel'
 		}
 		]
