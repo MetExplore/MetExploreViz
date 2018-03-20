@@ -95,7 +95,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			click : me.searchNode,
 			scope : me
 		});
-		//Ajout
+		///Ajout
 		view.lookupReference('enterEditMode').on({
 			click : me.enterEditMode,
 			scope : me
@@ -771,7 +771,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 	//Ajout
 	,
     enterEditMode: function () {
-		console.log('edit mode entered');
+        metExploreD3.GraphFunction.toggleEditMode();
     }
 	//Fin Ajout
 });

@@ -4,6 +4,10 @@
  */
     
 metExploreD3.GraphFunction = {
+	//Ajout
+	editMode: false,
+	//Fin Ajout
+
     bfs : function (node){
 	    var graph = metExploreD3.GraphFunction.getGraphNotDirected();
 
@@ -1474,7 +1478,35 @@ metExploreD3.GraphFunction = {
 			}
 		}
 		return T;
-	}	
+	}
+	//Ajout
+	,
+	toggleEditMode : function () {
+        if (metExploreD3.GraphFunction.editMode==false) {
+            metExploreD3.GraphFunction.editMode=true;
+            console.log('edit mode entered');
+            metExploreD3.GraphNode.node
+                .each(function(node) {
+                    node.setLocked(true);
+                    node.fixed = node.isLocked();
+                });
+            metExploreD3.GraphNetwork.animationButtonOff('viz');
+            var force = _metExploreViz.getSessionById("viz").getForce();
+            force.stop();
+            d3.select("#viz").select("#buttonAnim").select("image").remove();
+        }
+        else {
+            metExploreD3.GraphFunction.editMode=false;
+            console.log('edit mode exited');
+            metExploreD3.GraphNode.node
+                .each(function(node) {
+                    node.setLocked(false);
+                    node.fixed = node.isLocked();
+                });
+            metExploreD3.GraphNetwork.animationButtonOff('viz');
+        }
+    }
+	//Fin Ajout
 
 	/**
 	 * SUBNETWORK EXTRACTION Path-finding algorithm Dijkstra
