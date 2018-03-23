@@ -1494,6 +1494,7 @@ metExploreD3.GraphFunction = {
             var force = _metExploreViz.getSessionById("viz").getForce();
             force.stop();
             d3.select("#viz").select("#buttonAnim").select("image").remove();
+            metExploreD3.GraphFunction.startDragLabel();
         }
         else {
             metExploreD3.GraphFunction.editMode=false;
@@ -1504,7 +1505,349 @@ metExploreD3.GraphFunction = {
                     node.fixed = node.isLocked();
                 });
             metExploreD3.GraphNetwork.animationButtonOff('viz');
+            metExploreD3.GraphFunction.endDragLabel();
+            metExploreD3.GraphFunction.applyEventHandler();
+            //metExploreD3.GraphNode.refreshNode('viz');
         }
+    }
+    ,
+	startDragLabel : function () {
+		var labelDrag = d3.behavior.drag()
+			.on ("dragstart", function (d,i) {
+				d3.event.sourceEvent.stopPropagation();
+                d3.select(this).attr("x",d3.mouse(this)[0]);
+                d3.select(this).attr("y",d3.mouse(this)[1]);
+            })
+			.on("drag", function (d,i) {
+				console.log("dragged");
+				console.log(d);
+				console.log(i);
+                d3.select(this).attr("transform","translate(" + d3.event.x + ", " + d3.event.y +")");
+                d3.select(this).attr("x",d3.mouse(this)[0]);
+                d3.select(this).attr("y",d3.mouse(this)[1]);
+        	})
+    		.on("dragend", function (d,i) {
+    		        console.log(this);
+        	});
+        if (metExploreD3.GraphFunction.editMode){
+            metExploreD3.GraphNode.node.selectAll("text").style("pointer-events", "auto");
+            //console.log(metExploreD3.GraphNode.node[0].getAttribute("onmouseenter"));
+            metExploreD3.GraphNode.node.on("mouseover", null).on("mouseenter", null).on("mouseleave", null).on("mousedown", null).on("touchstart", null);
+            //.on("mouseover", null).on("mouseenter", null).on("mouseleave", null)
+            metExploreD3.GraphNode.node.selectAll("text").call(labelDrag);
+            /*metExploreD3.GraphNode.node.on("click", function (d, i) {
+				console.log("dragged");
+                console.log(d);
+                console.log(i);
+            })*/
+            console.log(metExploreD3.GraphNode.node.selectAll("g.node"));
+            //metExploreD3.GraphNode.node.selectAll("text").call(labelDrag);
+            //d3.selectAll("#D3viz")
+              //  .style("cursor", "move");
+        }
+    },
+	endDragLabel : function () {
+        if (!metExploreD3.GraphFunction.editMode) {
+            metExploreD3.GraphNode.node.selectAll("text").style("pointer-events", "none");
+
+        }
+    },
+    applyEventHandler : function () {
+		var parent='viz';
+        var reactionStyle = metExploreD3.getReactionStyle();
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var generalStyle = metExploreD3.getGeneralStyle();
+        var session = _metExploreViz.getSessionById(parent);
+        var sessionMain = _metExploreViz.getSessionById('viz');
+        metExploreD3.GraphNode.node
+            .filter(function(d){ return !d.isDuplicated(); })
+            .on("mouseenter", function(d) {
+
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
+
+                var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+                if(d.getBiologicalType()=="reaction"){
+
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5")
+
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+                }
+                else
+                {
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+                }
+            })
+            .on("mouseover", function(d) {
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+
+                d3.select(this)
+                    .each(function(node){
+                        var last = nodes[0][nodes.size()-1];
+                        this.parentNode.insertBefore(this, last);
+                    });
+
+                d.fixed = true;
+                if(parent=="viz")
+                {
+                    d3.select("#"+parent)
+                        .selectAll('g.node')
+                        .filter(function(node){return node==d})
+                        .select('.locker')
+                        //Ajout et Modif
+                        .classed('hide', metExploreD3.GraphFunction.editMode)
+                        //.classed('hide', false)
+                        //Fin Ajout
+                        .select('.iconlocker')
+                        .attr(
+                            "xlink:href",
+                            function(d) {
+                                if(d.isLocked())
+                                    return "resources/icons/lock_font_awesome.svg";
+                                else
+                                    return "resources/icons/unlock_font_awesome.svg";
+                            });
+                }
+            })
+            .on("mouseleave", function(d) {
+
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                metExploreD3.GraphNode.node
+                    .filter(function(node){return node==d})
+                    .select('.locker')
+                    .classed('hide', true);
+
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
+
+                if(!d.isLocked())
+                    d.fixed = false;
+                var linkStyle = metExploreD3.getLinkStyle();
+
+                d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                    .selectAll("path.link")
+                    .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
+                    .style("stroke",linkStyle.getStrokeColor())
+                    .style("stroke-width", "0.5");
+
+                if(d.getBiologicalType()=="reaction"){
+                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", reactionStyle.getWidth())
+                        .attr("height", reactionStyle.getHeight())
+                        .attr( "transform", "translate(-" + reactionStyle.getWidth() / 2 + ",-" + reactionStyle.getHeight() / 2 + ")");
+                }
+                else
+                {
+
+                    d3.select(this).selectAll("rect").selectAll(".metabolite, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", metaboliteStyle.getWidth())
+                        .attr("height", metaboliteStyle.getHeight())
+                        .attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
+                            + metaboliteStyle.getHeight() / 2
+                            + ")");
+                }
+            });
+
+        metExploreD3.GraphNode.node
+            .filter(function(d){ return d.isDuplicated(); })
+            .on("mouseenter", function(d) {
+
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
+
+                var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+                if(d.getBiologicalType()=="reaction"){
+
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5")
+
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+                }
+                else
+                {
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+                }
+            })
+            .on("mouseover", function(d) {
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this)
+                    .each(function(node){
+                        var last = nodes[0][nodes.size()-1];
+                        this.parentNode.insertBefore(this, last);
+                    });
+
+                d.fixed = true;
+                if(parent=="viz")
+                {
+                    d3.select("#"+parent)
+                        .selectAll('g.node')
+                        .filter(function(node){return node==d})
+                        .select('.locker')
+                        //Ajout et Modif
+                        .classed('hide', metExploreD3.GraphFunction.editMode)
+                        //.classed('hide', false)
+                        //Fin Ajout
+                        .select('.iconlocker')
+                        .attr(
+                            "xlink:href",
+                            function(d) {
+                                if(d.isLocked())
+                                    return "resources/icons/lock_font_awesome.svg";
+                                else
+                                    return "resources/icons/unlock_font_awesome.svg";
+                            });
+                }
+
+                if(d.getBiologicalType()=="reaction"){
+                    d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "green");
+
+                    d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "red");
+                }
+                else
+                {
+                    d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "red");
+
+                    d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "green");
+                }
+            })
+            // .on("mouseout", function(d) {
+            // 	d3.select("#"+parent).select("#D3viz").select('#tooltip')
+            // 		.classed("hide", true);
+            //    })
+            .on("mouseleave", function(d) {
+
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                metExploreD3.GraphNode.node
+                    .filter(function(node){return node==d})
+                    .select('.locker')
+                    .classed('hide', true);
+
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
+
+                if(!d.isLocked())
+                    d.fixed = false;
+                var linkStyle = metExploreD3.getLinkStyle();
+
+
+                d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                    .selectAll("path.link")
+                    .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
+                    .style("stroke",linkStyle.getStrokeColor())
+                    .style("stroke-width", "0.5");
+
+                if(d.getBiologicalType()=="reaction"){
+                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", reactionStyle.getWidth())
+                        .attr("height", reactionStyle.getHeight())
+                        .attr( "transform", "translate(-" + reactionStyle.getWidth() / 2 + ",-" + reactionStyle.getHeight() / 2 + ")");
+                }
+                else
+                {
+
+                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", metaboliteStyle.getWidth())
+                        .attr("height", metaboliteStyle.getHeight())
+                        .attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
+                            + metaboliteStyle.getHeight() / 2
+                            + ")");
+                }
+            });
     }
 	//Fin Ajout
 

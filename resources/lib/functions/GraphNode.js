@@ -434,7 +434,7 @@ metExploreD3.GraphNode = {
 					return d.getId()==node.getId();
 			})
 			.each(function(node){
-				
+
 					node.px += d3.event.dx;
 					node.py += d3.event.dy;
 					node.x += d3.event.dx;
@@ -1566,7 +1566,7 @@ metExploreD3.GraphNode = {
 				var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
 				return color;
 			});
-
+		
 		// Sort compartiments store
 		/*	
 		metExploreD3.sortCompartmentInBiosource();
