@@ -250,6 +250,14 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                     id : 'viz',
                     xtype : 'viz'
                 }
+                //Ajout
+                    /*,
+                    {
+                        title: 'Network Manager',
+                        id:'editModePanel',
+                        xtype : 'editModePanel'
+                    }*/
+                    //Fin Ajout
 ]
            }
            ,{   

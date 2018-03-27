@@ -10,6 +10,10 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanel', {
         'metExploreViz.view.panel.networkPanel.NetworkPanelController',
         "metExploreViz.view.panel.graphPanel.GraphPanel",
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel"
+        //Ajout
+        // ,
+        //"metExploreViz.view.panel.editModePanel.EditModePanel"
+        //Fin Ajout
     ],
     controller: "panel-networkPanel-networkPanel",
     id:"NetworkPanel",

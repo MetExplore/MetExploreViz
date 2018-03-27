@@ -177,51 +177,74 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                         }]
                     });
 
-					viz.CtxMenu = new Ext.menu.Menu({
-						items : [{
-                            text : 'Remove nodes',
-                            hidden : false,
-                            iconCls:"removeNode",
-                            menu : viz.removeMenu
-						},{
-                            text : 'Duplicate nodes as side compounds',
-                            hidden : false,
-                            iconCls:"duplicate-sideCompounds",
-                            menu : viz.duplicateMenu
-						},{
-							text : 'Change name',
-							hidden : false,
-							iconCls:"edit",
-							handler : function(){ 
-								metExploreD3.GraphNode.changeName(theNode); 
-							}
-						},{
-							text : 'Select neighbours (N+select)',
-							hidden : false,
-							iconCls:"neighbours",
-							handler : function(){
-								metExploreD3.GraphNode.selectNeighbours(theNode, "viz");
-							}
-						},{
-							text : 'See more information',
-							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-							iconCls:"info",
-							handler : function() {
-								metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
-							}
-						},{
-                            text : 'Select node in table',
-                            hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-                            iconCls:"search",
-                            menu:viz.selectMenu
-                        },{
-							text : 'Fix selected nodes',
-							hidden : false,
-							iconCls:"lock_font_awesome",
-							handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
-						}
-						]
-					});
+                    //Ajout et Modif
+					if (metExploreD3.GraphFunction.editMode==false) {
+                        viz.CtxMenu = new Ext.menu.Menu({
+                            items: [{
+                                text: 'Remove nodes',
+                                hidden: false,
+                                iconCls: "removeNode",
+                                menu: viz.removeMenu
+                            }, {
+                                text: 'Duplicate nodes as side compounds',
+                                hidden: false,
+                                iconCls: "duplicate-sideCompounds",
+                                menu: viz.duplicateMenu
+                            }, {
+                                text: 'Change name',
+                                hidden: false,
+                                iconCls: "edit",
+                                handler: function () {
+                                    metExploreD3.GraphNode.changeName(theNode);
+                                }
+                            }, {
+                                text: 'Select neighbours (N+select)',
+                                hidden: false,
+                                iconCls: "neighbours",
+                                handler: function () {
+                                    metExploreD3.GraphNode.selectNeighbours(theNode, "viz");
+                                }
+                            }, {
+                                text: 'See more information',
+                                hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+                                iconCls: "info",
+                                handler: function () {
+                                    metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
+                                }
+                            }, {
+                                text: 'Select node in table',
+                                hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+                                iconCls: "search",
+                                menu: viz.selectMenu
+                            }, {
+                                text: 'Fix selected nodes',
+                                hidden: false,
+                                iconCls: "lock_font_awesome",
+                                handler: function () {
+                                    metExploreD3.GraphNode.fixSelectedNode("viz")
+                                }
+                            }
+                            ]
+                        });
+                    }
+                    else {
+                        viz.CtxMenu = new Ext.menu.Menu({
+							items: [{
+                                text: 'Change font',
+                                hidden: false,
+								handler: function () {
+									metExploreD3.GraphFunction.changeFontStyle(theNode)
+                                }
+							},{
+                                text: 'Change font size',
+                                hidden: false,
+                                handler: function () {
+                                    metExploreD3.GraphFunction.changeFontSize(theNode)
+                                }
+                            }]
+						});
+					}
+					//Fin Ajout
 				}
 			}
 			

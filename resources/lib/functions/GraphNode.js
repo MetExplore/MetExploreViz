@@ -109,11 +109,13 @@ metExploreD3.GraphNode = {
 					    node.setLabel(text);
 						if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
 						{
+							var transform = d3.select(this).select("text").attr("transform");
 							d3.select(this)
 								.select("text")
 								.remove();
 
 							metExploreD3.GraphNode.addText(node, "viz");
+                            d3.select(this).select("text").attr("transform", transform);
 						}
 					});
 		    }
@@ -985,6 +987,9 @@ metExploreD3.GraphNode = {
 				// 	}
 				// );
 
+		//Ajout et Modif
+        metExploreD3.GraphNode.applyEventOnNode(parent);
+		/*
 		metExploreD3.GraphNode.node
 			.filter(function(d){ return !d.isDuplicated(); })
 			.on("mouseenter", function(d) { 
@@ -1273,7 +1278,8 @@ metExploreD3.GraphNode = {
 												+ metaboliteStyle.getHeight() / 2
 												+ ")");
 				}
-	        });
+	        });*/
+		//Fin Modif
 
 		// d3.selection.prototype.test = function() {
 		//     this.append("rect")
@@ -1566,7 +1572,7 @@ metExploreD3.GraphNode = {
 				var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
 				return color;
 			});
-		
+
 		// Sort compartiments store
 		/*	
 		metExploreD3.sortCompartmentInBiosource();
@@ -1882,7 +1888,7 @@ metExploreD3.GraphNode = {
 					} else {
 						return "grey";
 					}
-				})
+				});
 				// Here it's the position by default for the beginning of force algorithm
 				// .on("click", selection)
 				// .style(
@@ -1894,6 +1900,9 @@ metExploreD3.GraphNode = {
 				// 		}
 				// 	}
 				// )
+			//Ajout et Modif
+		metExploreD3.GraphNode.applyEventOnNode(parent);
+			/*
 				.on("mouseenter", function(d) { 
 
 		        	var transform = d3.select(this).attr("transform");
@@ -2017,7 +2026,9 @@ metExploreD3.GraphNode = {
 													+ metaboliteStyle.getHeight() / 2
 													+ ")");
 					}
-		        })
+		        })*/
+			metExploreD3.GraphNode.node
+			//Fin Ajout
 		        .filter(function(node){
 		        	return node.getMappingDatasLength()>0 && session.getActiveMapping()!=""; 
 		        })
@@ -2400,5 +2411,302 @@ metExploreD3.GraphNode = {
 				node.fixed=node.isLocked();
 			})		
 	}
+	//Ajout
+	,
+	applyEventOnNode : function (parent) {
+        var reactionStyle = metExploreD3.getReactionStyle();
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        metExploreD3.GraphNode.node
+            .filter(function(d){ return !d.isDuplicated(); })
+            .on("mouseenter", function(d) {
+
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
+
+                var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+                if(d.getBiologicalType()=="reaction"){
+
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5")
+
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+                }
+                else
+                {
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+                }
+            })
+            .on("mouseover", function(d) {
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+
+                d3.select(this)
+                    .each(function(node){
+                        var last = nodes[0][nodes.size()-1];
+                        this.parentNode.insertBefore(this, last);
+                    });
+
+                d.fixed = true;
+                if(parent=="viz")
+                {
+                    d3.select("#"+parent)
+                        .selectAll('g.node')
+                        .filter(function(node){return node==d})
+                        .select('.locker')
+                        //Ajout et Modif
+                        .classed('hide', metExploreD3.GraphFunction.editMode)
+                        //.classed('hide', false)
+                        //Fin Ajout
+                        .select('.iconlocker')
+                        .attr(
+                            "xlink:href",
+                            function(d) {
+                                if(d.isLocked())
+                                    return "resources/icons/lock_font_awesome.svg";
+                                else
+                                    return "resources/icons/unlock_font_awesome.svg";
+                            });
+                }
+            })
+            .on("mouseleave", function(d) {
+
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                metExploreD3.GraphNode.node
+                    .filter(function(node){return node==d})
+                    .select('.locker')
+                    .classed('hide', true);
+
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
+
+                if(!d.isLocked())
+                    d.fixed = false;
+                var linkStyle = metExploreD3.getLinkStyle();
+
+                d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                    .selectAll("path.link")
+                    .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
+                    .style("stroke",linkStyle.getStrokeColor())
+                    .style("stroke-width", "0.5");
+
+                if(d.getBiologicalType()=="reaction"){
+                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", reactionStyle.getWidth())
+                        .attr("height", reactionStyle.getHeight())
+                        .attr( "transform", "translate(-" + reactionStyle.getWidth() / 2 + ",-" + reactionStyle.getHeight() / 2 + ")");
+                }
+                else
+                {
+
+                    d3.select(this).selectAll("rect").selectAll(".metabolite, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", metaboliteStyle.getWidth())
+                        .attr("height", metaboliteStyle.getHeight())
+                        .attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
+                            + metaboliteStyle.getHeight() / 2
+                            + ")");
+                }
+            });
+
+        metExploreD3.GraphNode.node
+            .filter(function(d){ return d.isDuplicated(); })
+            .on("mouseenter", function(d) {
+
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
+
+                var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+                if(d.getBiologicalType()=="reaction"){
+
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5")
+
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+                }
+                else
+                {
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5")
+                    // .each(function(link){
+                    // 	var last = links[0][links.size()-1];
+                    // 	this.parentNode.insertBefore(this, last);
+                    // });
+                }
+            })
+            .on("mouseover", function(d) {
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this)
+                    .each(function(node){
+                        var last = nodes[0][nodes.size()-1];
+                        this.parentNode.insertBefore(this, last);
+                    });
+
+                d.fixed = true;
+                if(parent=="viz")
+                {
+                    d3.select("#"+parent)
+                        .selectAll('g.node')
+                        .filter(function(node){return node==d})
+                        .select('.locker')
+                        //Ajout et Modif
+                        .classed('hide', metExploreD3.GraphFunction.editMode)
+                        //.classed('hide', false)
+                        //Fin Ajout
+                        .select('.iconlocker')
+                        .attr(
+                            "xlink:href",
+                            function(d) {
+                                if(d.isLocked())
+                                    return "resources/icons/lock_font_awesome.svg";
+                                else
+                                    return "resources/icons/unlock_font_awesome.svg";
+                            });
+                }
+
+                if(d.getBiologicalType()=="reaction"){
+                    d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "green");
+
+                    d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "red");
+                }
+                else
+                {
+                    d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "red");
+
+                    d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "green");
+                }
+            })
+            // .on("mouseout", function(d) {
+            // 	d3.select("#"+parent).select("#D3viz").select('#tooltip')
+            // 		.classed("hide", true);
+            //    })
+            .on("mouseleave", function(d) {
+
+                var transform = d3.select(this).attr("transform");
+                var scale=transform.substring(transform.indexOf("scale"),transform.length);
+                var scaleVal=scale.substring(6, scale.indexOf(')'));
+                if(isNaN(scaleVal))
+                    scaleVal=1;
+
+                metExploreD3.GraphNode.node
+                    .filter(function(node){return node==d})
+                    .select('.locker')
+                    .classed('hide', true);
+
+                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
+
+                if(!d.isLocked())
+                    d.fixed = false;
+                var linkStyle = metExploreD3.getLinkStyle();
+
+
+                d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                    .selectAll("path.link")
+                    .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
+                    .style("stroke",linkStyle.getStrokeColor())
+                    .style("stroke-width", "0.5");
+
+                if(d.getBiologicalType()=="reaction"){
+                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", reactionStyle.getWidth())
+                        .attr("height", reactionStyle.getHeight())
+                        .attr( "transform", "translate(-" + reactionStyle.getWidth() / 2 + ",-" + reactionStyle.getHeight() / 2 + ")");
+                }
+                else
+                {
+
+                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", metaboliteStyle.getWidth())
+                        .attr("height", metaboliteStyle.getHeight())
+                        .attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
+                            + metaboliteStyle.getHeight() / 2
+                            + ")");
+                }
+            });
+
+    }
+	//Fin AJout
 
 }
