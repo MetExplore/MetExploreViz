@@ -772,6 +772,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 	,
     enterEditMode: function () {
         metExploreD3.GraphFunction.toggleEditMode();
+        (metExploreD3.GraphFunction.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
     }
 	//Fin Ajout
 });
