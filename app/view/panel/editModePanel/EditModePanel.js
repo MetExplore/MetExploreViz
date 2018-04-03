@@ -3,7 +3,11 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
     alias: 'widget.editModePanel',
     requires: [
         "metExploreViz.view.panel.editModePanel.EditModePanelController",
+<<<<<<< HEAD
         "metExploreViz.view.form.captionForm.CaptionForm"
+=======
+        "metExploreViz.view.form.captionForm.CaptionForm",
+>>>>>>> EditLabel_Test
     ],
     controller: "panel-editModePanel-editModePanel",
     /*requires: ['MetExplore.view.form.V_SelectConditionForm',
@@ -16,6 +20,7 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
     height: '100%',
     margins:'0 0 2 0',
     split:true,
+<<<<<<< HEAD
     //layout:'accordion',
     closable: false,
     region: 'east',
@@ -141,6 +146,17 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
 
                 }
             ]
+=======
+    layout:'accordion',
+    closable: false,
+    region: 'east',
+    // hidden:true,
+    items: [
+        {
+            title:'Pathways',
+            id:'captionFormPathways',
+            xtype:'captionForm'
+>>>>>>> EditLabel_Test
         }
     ]
 });
