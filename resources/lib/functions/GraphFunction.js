@@ -1591,9 +1591,17 @@ metExploreD3.GraphFunction = {
             }
         });
     },
-    changeAllFontSize : function (text) {
+    changeAllFontSize : function (text, targets = 0) {
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
+            .filter(function(node){
+            	if (targets == 0){
+            		return true;
+				}
+				else {
+                    return node.getBiologicalType() == targets;
+                }
+            })
 			.select("text")
 			.style("font-size",text+"px");
     },
@@ -1604,9 +1612,17 @@ metExploreD3.GraphFunction = {
             .select("text")
             .style("font-family",text);
     },
-    changeAllFontType : function (text) {
+    changeAllFontType : function (text, targets = 0) {
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
+            .filter(function(node){
+                if (targets == 0){
+                    return true;
+                }
+                else {
+                    return node.getBiologicalType() == targets;
+                }
+            })
             .select("text")
             .style("font-family",text);
     },
@@ -1622,10 +1638,18 @@ metExploreD3.GraphFunction = {
             nodeLabel.style("font-weight", "normal");
 		}
     },
-	changeAllFontBold : function (bool) {
+	changeAllFontBold : function (bool, targets = 0) {
 		var boldOrNot = (bool) ? "bold" : "normal";
 		d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
+            .filter(function(node){
+                if (targets == 0){
+                    return true;
+                }
+                else {
+                    return node.getBiologicalType() == targets;
+                }
+            })
             .select("text")
 			.style("font-weight", boldOrNot);
     },
@@ -1641,10 +1665,18 @@ metExploreD3.GraphFunction = {
             nodeLabel.style("font-style", "normal");
         }
     },
-    changeAllFontItalic : function (bool) {
+    changeAllFontItalic : function (bool, targets = 0) {
         var italicOrNot = (bool) ? "italic" : "normal";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
+            .filter(function(node){
+                if (targets == 0){
+                    return true;
+                }
+                else {
+                    return node.getBiologicalType() == targets;
+                }
+            })
             .select("text")
             .style("font-style", italicOrNot);
     },
@@ -1660,13 +1692,142 @@ metExploreD3.GraphFunction = {
             nodeLabel.style("text-decoration-line", "none");
         }
     },
-    changeAllFontUnderline : function (bool) {
+    changeAllFontUnderline : function (bool, targets = 0) {
         var underlineOrNot = (bool) ? "underline" : "none";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
+            .filter(function(node){
+                if (targets == 0){
+                    return true;
+                }
+                else {
+                    return node.getBiologicalType() == targets;
+                }
+            })
             .select("text")
             .style("text-decoration-line", underlineOrNot);
+    },
+    bundleLinks : function () {
+        var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(node){
+                //console.log(node);
+                //console.log(this);
+            	return node.getBiologicalType()=="reaction";
+            })
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+		reactions.each(function (node) {
+
+            // For each node, compute the centroid of the source nodes of the arcs entering that node
+            var sourceX = 0;
+            var sourceY = 0;
+            var countEnter = 0;
+            var enteringLinks = links.filter(function (link) {
+                return node.id==link.getTarget().getId();
+            })
+            enteringLinks.each(function (link) {
+                countEnter +=1;
+                sourceX += link.getSource().x;
+                sourceY += link.getSource().y;
+            })
+            var centroidSourceX = sourceX / countEnter;
+            var centroidSourceY = sourceY / countEnter;
+
+            // For each node, compute the centroid of the target nodes of the arcs exiting that node
+			var targetX = 0;
+			var targetY = 0;
+			var countExit = 0;
+			var exitingLinks = links.filter(function (link) {
+				return node.id==link.getSource().getId();
+            })
+            exitingLinks.each(function (link) {
+				countExit +=1;
+				targetX += link.getTarget().x;
+				targetY += link.getTarget().y;
+            })
+			var centroidTargetX = targetX / countExit;
+            var centroidTargetY = targetY / countExit;
+
+			// For each node, check which is the closest point to that node between the centroid of the source nodes of the arcs entering that node and the centroid of the target nodes of the arcs exiting that node
+			// Then check whether that closest point is closer to the axe parallel to the x-axis or the one parallel to the y-axis passing through that node
+			// From those test, attribute the coordinate for the entry and exit points of that node
+			var distanceSource = Math.sqrt(Math.pow(centroidSourceX - node.x, 2) + Math.pow(centroidSourceY - node.y, 2));
+            var distanceTarget = Math.sqrt(Math.pow(centroidTargetX - node.x, 2) + Math.pow(centroidTargetY - node.y, 2));
+            var enteringX = node.x;
+            var enteringY = node.y;
+            /*// First method for computing enteringX and enteringY
+            if (distanceSource < distanceTarget) {
+            	if (Math.abs(centroidSourceX - node.x) < Math.abs(centroidSourceY - node.y)){
+                    (centroidSourceY > node.y) ? enteringY += 10 : enteringY -= 10;
+				}
+				else {
+                    (centroidSourceX > node.x) ? enteringX += 10 : enteringX -= 10;
+				}
+			}
+            else {
+                if (Math.abs(centroidTargetX - node.x) < Math.abs(centroidTargetY - node.y)){
+                    (centroidTargetY > node.y) ? enteringY -= 10 : enteringY += 10;
+                }
+                else {
+                    (centroidTargetX > node.x) ? enteringX -= 10 : enteringX += 10;
+                }
+            }*/
+            // Second method
+			if (Math.abs(centroidSourceX - centroidTargetX) > Math.abs(centroidSourceY - centroidTargetY)){
+				if (centroidSourceX < centroidTargetX){
+					enteringX -= 10;
+				}
+				else {
+                    enteringX += 10;
+                }
+			}
+			else {
+                if (centroidSourceY < centroidTargetY){
+                    enteringY -= 10;
+                }
+                else {
+                    enteringY += 10;
+                }
+			}
+
+
+            var exitingX = node.x - (enteringX - node.x);
+            var exitingY = node.y - (enteringY - node.y);
+
+            // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
+			var controlSourceX = (enteringX == node.x) ? node.x : (centroidSourceX + node.x) / 2;
+            var controlSourceY = (enteringY == node.y) ? node.y : (centroidSourceY + node.y) / 2;
+            var controlTargetX = (enteringX == node.x) ? node.x : (centroidTargetX + node.x) / 2;
+            var controlTargetY = (enteringY == node.y) ? node.y : (centroidTargetY + node.y) / 2;
+
+            exitingLinks.each(function (link) {
+                var path =  "M" + node.x + "," + node.y +
+                    "L" + exitingX + "," + exitingY +
+                    "T" + controlTargetX + "," + controlTargetY +
+                    "T" + link.getTarget().x + "," + link.getTarget().y;
+				d3.select(this).attr("d", path)
+					.attr("fill", "none")
+					.style("stroke", 'black')
+					.style("stroke-width", 0.5)
+					.style("opacity", 1);
+				//console.log(this);
+				//console.log(link);
+            })
+
+            enteringLinks.each(function (link) {
+                var path = "M" + node.x + "," + node.y +
+                    "L" + enteringX + "," + enteringY +
+                    "T" + controlSourceX + "," + controlSourceY +
+                    "T" + link.getSource().x + "," + link.getSource().y;
+                d3.select(this).attr("d", path)
+                    .attr("fill", "none")
+                    .style("stroke", 'black')
+                    .style("stroke-width", 0.5)
+                    .style("opacity", 1);
+            })
+		})
     }
+
 	//Fin Ajout
 
 	/**
