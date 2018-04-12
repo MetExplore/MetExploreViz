@@ -97,7 +97,6 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                                 var com = metExploreD3.getCompartmentByName(conv.key);
                                                             return com.hidden();
                                                         })
-
                                                 }
                                             }
                                         },
@@ -184,9 +183,48 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             });
             newConditionPanel.add(highlightCheckbox);
 
+
+
             // Add component caption to captionForm panel
             if (captionForm != undefined) {
                 captionForm.add(newConditionPanel);
+                // Create checkbox to display convex hull around each components
+                var line = Ext.create('Ext.Component', {
+                    hidden: false,
+                    autoEl: {
+                        tag: 'hr'
+                    }
+                });
+                captionForm.add(line);
+
+                // Create checkbox to display convex hull around each components
+                var selectAllButton = Ext.create('Ext.button.Button', {
+                    tooltip: 'selectAllButton',
+                    text: 'Select/Unselect all',
+                    margin: '10 10 10 10',
+                    id: 'selectAllButton' + view.getTitle()
+                });
+
+                selectAllButton.on({
+                    click : function (that, newV, oldVV, e) {
+                        var arrayCheckBox = Ext.getCmp("captionFormPathways").query('checkbox[forId=componentCheckbox]');
+                        var allIsSelected = arrayCheckBox.every(function(checkbox){return checkbox.checked});
+                        if(allIsSelected){
+                            arrayCheckBox.forEach(function (checkBox) {
+                                checkBox.setValue(false);
+                            })
+                        }
+                        else {
+                            arrayCheckBox.forEach(function (checkBox) {
+                                checkBox.setValue(true);
+                            })
+                        }
+
+                    },
+                    scope:selectAllButton
+                });
+
+                captionForm.add(selectAllButton);
                 listComponentCaptionForm.forEach(function (aComponentCaptionForm) {
                     captionForm.add(aComponentCaptionForm);
                 });
