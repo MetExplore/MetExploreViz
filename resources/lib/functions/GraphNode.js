@@ -594,9 +594,15 @@ metExploreD3.GraphNode = {
 			// Chage the node statute
 			d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 				.selectAll("g.node")
-				.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
+				.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier() && !node.getIsSideCompound();})
 				.each(function(node){node.setIsSelected(!node.isSelected())});
-			
+
+			// Chage the node statute
+			d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+				.selectAll("g.node")
+				.filter(function(node){return d.getId()==node.getId() && node.getIsSideCompound();})
+				.each(function(node){node.setIsSelected(!node.isSelected())});
+
 			// Change the node visualization
 			if(d.isSelected()) 
 			{ 
@@ -617,13 +623,21 @@ metExploreD3.GraphNode = {
 					for (var key in sessionsStore) {
 						if(sessionsStore[key].isLinked() && panel!=sessionsStore[key].getDbIdentifier())
 						{
-							d3.select("#"+sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")
-								.selectAll("g.node")
-								.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
-								// .attr("selected", function(node){return node.selected=!node.selected;})
-								.each(function(node){node.setIsSelected(!node.isSelected())});
 
-							if(d.isSelected()) 
+							// Chage the node statute
+                            var nodesComp = d3.select("#"+sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")
+                                .selectAll("g.node");
+
+                            nodesComp
+								.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier() && !node.getIsSideCompound();})
+                                .each(function(node){node.setIsSelected(!node.isSelected())});
+
+                            // Chage the node statute
+                            nodesComp
+                                .filter(function(node){return d.getId()==node.getId() && node.getIsSideCompound();})
+                                .each(function(node){node.setIsSelected(!node.isSelected())});
+
+                            if(d.isSelected())
 							{ 
 								_MyThisGraphNode.selectNode(d, sessionsStore[key].getDbIdentifier());
 							}
@@ -674,18 +688,24 @@ metExploreD3.GraphNode = {
 
 		// Fix the node
 		// Add  node in the list of selected nodes
-	  	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-			.selectAll("g.node")
-			.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
-			.each(function(node){  
-				session.addSelectedNode(node.getId());
-			});	
-		
+        // Chage the node statute
+        var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+            .selectAll("g.node");
+
+        var nodenotsc = nodes
+            .filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier() && !node.getIsSideCompound();});
+
+        var nodeissc = nodes
+            .filter(function(node){return d.getId()==node.getId() && node.getIsSideCompound();});
+
+        // Chage the node state
+        nodenotsc.each(function(node){session.addSelectedNode(node.getId());});
+        nodeissc.each(function(node){session.addSelectedNode(node.getId());});
+
+
 		// We define the text for a metabolie WITHOUT the coresponding SVG image 
-		var node = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-			.selectAll("g.node")
-			.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
-			.select('.fontSelected').style("fill-opacity", '0.4');
+        nodenotsc.select('.fontSelected').style("fill-opacity", '0.4');
+        nodeissc.select('.fontSelected').style("fill-opacity", '0.4');
 
 		_MyThisGraphNode.addText(d, panel);
 	},
@@ -697,20 +717,25 @@ metExploreD3.GraphNode = {
 	*/
 	unSelectNode : function(d, panel){
 		var session = _metExploreViz.getSessionById(panel);
-	
-		var metabolite_Store = metExploreD3.getMetabolitesSet();
-		var reaction_Store = metExploreD3.getReactionsSet();
 
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-			.selectAll("g.node")
-			.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
-			.select('.fontSelected').style("fill-opacity", '0');
-		
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-			.selectAll("g.node")
-			.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
-			.each(function(node){ 
+        var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+            .selectAll("g.node");
+
+        var nodenotsc = nodes
+            .filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier() && !node.getIsSideCompound();});
+
+        var nodeissc = nodes
+            .filter(function(node){return d.getId()==node.getId() && node.getIsSideCompound();});
+
+        // Chage the node state
+        nodenotsc.select('.fontSelected').style("fill-opacity", '0');
+        nodeissc.select('.fontSelected').style("fill-opacity", '0');
+
+        nodeissc.each(function(node){
 				session.removeSelectedNode(node.getId()); 
+			});
+        nodenotsc.each(function(node){
+				session.removeSelectedNode(node.getId());
 			});
 	},
 
