@@ -230,51 +230,133 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                     else {
                         viz.CtxMenu = new Ext.menu.Menu({
 							items: [{
-                                text: 'Change font',
-                                hidden: false,
-								handler: function () {
-                                    console.log("Ok");
-                                    //var windowFont = new Ext.window.Window(
-                                    Ext.create('Ext.window.Window', {
-                                        title: 'Choose font',
-                                        //height: 150,
-                                        width: 400,
-                                        layout: 'fit',
-                                        items: [{
-                                            xtype: 'combo',
-                                            id : 'fontStyleWindow',
-                                            reference: 'chooseFontType',
-                                            fieldLabel: 'Font type:',
-                                            width:'95%',
-                                            margin:'5 5 5 5',
-                                            emptyText:'-- Choose a font --',
-                                            store: [
-                                                ['sans-serif', 'sans-serif'],
-                                                ['Times', 'Times'],
-                                                ['Helvetica', 'Helvetica']
-                                            ],
-                                            editable: false
-                                        }],
-                                        buttons: [
-                                            {
-                                                text: 'Ok',
-                                                handler: function () {
-                                                    var fontType = Ext.getCmp('fontStyleWindow').getValue();
-                                                    metExploreD3.GraphFunction.changeFontType(theNode, fontType);
+							    text: 'Change font',
+                                menu: [{
+                                    text: 'This node',
+                                    handler: function () {
+                                        Ext.create('Ext.window.Window', {
+                                            title: 'Choose font',
+                                            width: 400,
+                                            layout: 'fit',
+                                            items: [{
+                                                xtype: 'combo',
+                                                id : 'fontStyleWindow',
+                                                fieldLabel: 'Font type:',
+                                                width:'95%',
+                                                margin:'5 5 5 5',
+                                                emptyText:'-- Choose a font --',
+                                                store: [
+                                                    ['Open Sans', 'Open Sans'],
+                                                    ['Arial', 'Arial'],
+                                                    ['Helvetica', 'Helvetica'],
+                                                    ['Times', 'Times'],
+                                                    ['Verdana', 'Verdana']
+                                                ],
+                                                editable: false
+                                            }],
+                                            buttons: [
+                                                {
+                                                    text: 'Ok',
+                                                    handler: function () {
+                                                        var fontType = Ext.getCmp('fontStyleWindow').getValue();
+                                                        metExploreD3.GraphFunction.changeFontType(theNode, fontType);
+                                                    }
                                                 }
-                                            }
-                                        ]
-                                    }).show();
-                                    //windowFont.show();
-									//metExploreD3.GraphFunction.changeFontType(theNode)
-                                }
-							},{
-                                text: 'Change font size',
-                                hidden: false,
-                                handler: function () {
-                                    metExploreD3.GraphFunction.changeFontSize(theNode)
-                                }
+                                            ]
+                                        }).show();
+                                    }
+                                },{
+                                    text: 'All selected nodes',
+                                    handler: function () {
+                                        Ext.create('Ext.window.Window', {
+                                            title: 'Choose font',
+                                            width: 400,
+                                            layout: 'fit',
+                                            items: [{
+                                                xtype: 'combo',
+                                                id : 'fontStyleSelectedWindow',
+                                                fieldLabel: 'Font type:',
+                                                width:'95%',
+                                                margin:'5 5 5 5',
+                                                emptyText:'-- Choose a font --',
+                                                store: [
+                                                    ['Open Sans', 'Open Sans'],
+                                                    ['Arial', 'Arial'],
+                                                    ['Helvetica', 'Helvetica'],
+                                                    ['Times', 'Times'],
+                                                    ['Verdana', 'Verdana']
+                                                ],
+                                                editable: false
+                                            }],
+                                            buttons: [
+                                                {
+                                                    text: 'Ok',
+                                                    handler: function () {
+                                                        var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
+                                                        metExploreD3.GraphFunction.changeAllFontType(fontType ,"selection");
+                                                    }
+                                                }
+                                            ]
+                                        }).show();
+                                    }
+                                }]
                             },{
+                                text: 'Change font size',
+                                menu: [{
+                                    text: 'This node',
+                                    handler: function () {
+                                        metExploreD3.GraphFunction.changeFontSize(theNode)
+                                    }
+                                },{
+                                    text: 'All selected nodes',
+                                    handler: function () {
+                                        metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
+                                            if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
+                                                metExploreD3.GraphFunction.changeAllFontSize(text, "selection");
+                                            }
+                                        })
+                                    }
+                                }]
+                            },{
+							    text: 'Change font style',
+                                menu: [{
+                                    text: 'This node',
+                                    menu: [{
+                                        text: 'Bold',
+                                        handler: function () {
+                                            metExploreD3.GraphFunction.changeFontBold(theNode)
+                                        }
+                                    },{
+                                        text: 'Italic',
+                                        handler: function () {
+                                            metExploreD3.GraphFunction.changeFontItalic(theNode)
+                                        }
+                                    },{
+                                        text: 'Underline',
+                                        handler: function () {
+                                            metExploreD3.GraphFunction.changeFontUnderline(theNode)
+                                        }
+                                    }]
+                                },{
+                                    text: 'All selected nodes',
+                                    menu: [{
+                                        text: 'Bold',
+                                        handler: function () {
+                                            metExploreD3.GraphFunction.changeAllFontBold(true, "selection")
+                                        }
+                                    },{
+                                        text: 'Italic',
+                                        handler: function () {
+                                            metExploreD3.GraphFunction.changeAllFontItalic(true, "selection")
+                                        }
+                                    },{
+                                        text: 'Underline',
+                                        handler: function () {
+                                            metExploreD3.GraphFunction.changeAllFontUnderline(true, "selection")
+                                        }
+                                    }]
+                                }]
+                            }/*,{
                                 text: 'Change font style',
                                 hidden: false,
                                 menu: [{
@@ -285,7 +367,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 },{
                                     text: 'Italic',
                                     handler: function () {
-                                        console.log("ok");
                                         metExploreD3.GraphFunction.changeFontItalic(theNode)
                                     }
                                 },{
@@ -294,7 +375,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         metExploreD3.GraphFunction.changeFontUnderline(theNode)
                                     }
                                 }]
-                            }]
+                            }*/]
 						});
 					}
 					//Fin Ajout

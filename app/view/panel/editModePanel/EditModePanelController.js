@@ -36,6 +36,23 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
             scope : me
         });
 
+        view.lookupReference('refreshLabelStyleSelection').on({
+            click : function()
+            {
+                var fontType = view.lookupReference('chooseFontTypeSelection').getValue();
+                var fontSize = view.lookupReference('chooseFontSizeSelection').getValue();
+                var fontBold = view.lookupReference('checkBoldFontSelection').getValue();
+                var fontItalic = view.lookupReference('checkItalicFontSelection').getValue();
+                var fontUnderline = view.lookupReference('checkUnderlineFontSelection').getValue();
+                metExploreD3.GraphFunction.changeAllFontType(fontType, "selection");
+                (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphFunction.changeAllFontSize(fontSize, "selection") : null;
+                metExploreD3.GraphFunction.changeAllFontBold(fontBold, "selection");
+                metExploreD3.GraphFunction.changeAllFontItalic(fontItalic, "selection");
+                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline, "selection");
+            },
+            scope : me
+        });
+
         view.lookupReference('refreshLabelStyleMetabolite').on({
             click : function()
             {
@@ -75,7 +92,12 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
             {
                 var curveBundling = view.lookupReference('EdgeBundling').getValue();
                 if (curveBundling == true) {
+                    metExploreD3.GraphFunction.curvedPath = true;
                     metExploreD3.GraphFunction.bundleLinks();
+                }
+                else {
+                    metExploreD3.GraphFunction.curvedPath = false;
+                    metExploreD3.GraphLink.tick("viz");
                 }
             },
             scope : me

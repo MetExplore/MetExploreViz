@@ -450,50 +450,42 @@ metExploreD3.GraphNode = {
 	*/
 	dragmove : function(d, i) {
 
-		//Ajout et Modif
-		if (!metExploreD3.GraphFunction.editMode){
-	
-			if(!d.isSelected() && !(d3.event.sourceEvent.target.classList.contains("backgroundlocker") || d3.event.sourceEvent.target.classList.contains("iconlocker"))){
-				_MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
+        if(!d.isSelected() && !(d3.event.sourceEvent.target.classList.contains("backgroundlocker") || d3.event.sourceEvent.target.classList.contains("iconlocker"))){
+            _MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
 
-				// 78 = N like neighbour
-				if(_MyThisGraphNode.charKey==78 && d.isSelected())
-					_MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
-			}
+            // 78 = N like neighbour
+            if(_MyThisGraphNode.charKey==78 && d.isSelected())
+                _MyThisGraphNode.selectNeighbours(d, _MyThisGraphNode.activePanel);
+        }
 
-			// with updating both px,py,x,y on d !
-			_MyThisGraphNode.moveNode(d,_MyThisGraphNode.activePanel);
+        // with updating both px,py,x,y on d !
+        _MyThisGraphNode.moveNode(d,_MyThisGraphNode.activePanel);
 
-			_MyThisGraphNode.tick(_MyThisGraphNode.activePanel); // this is the key to make it work together
+        _MyThisGraphNode.tick(_MyThisGraphNode.activePanel); // this is the key to make it work together
 
-			var scaleactivePanel = metExploreD3.getScaleById(_MyThisGraphNode.activePanel);
+        var scaleactivePanel = metExploreD3.getScaleById(_MyThisGraphNode.activePanel);
 
-			metExploreD3.GraphLink.tick(_MyThisGraphNode.activePanel, scaleactivePanel);
+        metExploreD3.GraphLink.tick(_MyThisGraphNode.activePanel, scaleactivePanel);
 
-			var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+        var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
-			// If graphs are linked we move the same nodes
-			if(session.isLinked()){
+        // If graphs are linked we move the same nodes
+        if(session.isLinked()){
 
-				var sessionsStore = _metExploreViz.getSessionsSet();
+            var sessionsStore = _metExploreViz.getSessionsSet();
 
-				for (var key in sessionsStore) {
-					if(sessionsStore[key].isLinked()  && _MyThisGraphNode.activePanel!=sessionsStore[key].getId())
-					{
-						var scalesess = metExploreD3.getScaleById(sessionsStore[key].getId());
+            for (var key in sessionsStore) {
+                if(sessionsStore[key].isLinked()  && _MyThisGraphNode.activePanel!=sessionsStore[key].getId())
+                {
+                    var scalesess = metExploreD3.getScaleById(sessionsStore[key].getId());
 
-						_MyThisGraphNode.moveNode(d,sessionsStore[key].getId());
-						_MyThisGraphNode.tick(sessionsStore[key].getId()); // this is the key to make it work together
-						// with updating both px,py,x,y on d !
-						metExploreD3.GraphLink.tick(sessionsStore[key].getId(), scalesess);
-					}
-				}
-			}
-		}
-		else{
-			null;
-		}
-        //Fin Ajout
+                    _MyThisGraphNode.moveNode(d,sessionsStore[key].getId());
+                    _MyThisGraphNode.tick(sessionsStore[key].getId()); // this is the key to make it work together
+                    // with updating both px,py,x,y on d !
+                    metExploreD3.GraphLink.tick(sessionsStore[key].getId(), scalesess);
+                }
+            }
+        }
 	},
 
 	/*******************************************

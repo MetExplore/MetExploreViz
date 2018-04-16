@@ -1934,21 +1934,28 @@ metExploreD3.GraphLink = {
      * @param {} scale = Ext.getStore('S_Scale').getStoreByGraphName(panel);
      */
     tick : function(panel, scale) {
-        var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
-        if(flux)
-            funcPath = metExploreD3.GraphLink.funcPathForFlux;
-        else
-            funcPath = metExploreD3.GraphLink.funcPath3;
+        //Ajout
+        if (metExploreD3.GraphFunction.curvedPath == true && panel == "viz"){
+            metExploreD3.GraphFunction.bundleLinks();
+        }
+        else {
+            var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
+            if(flux)
+                funcPath = metExploreD3.GraphLink.funcPathForFlux;
+            else
+                funcPath = metExploreD3.GraphLink.funcPath3;
 
-        // If you want to use selection on compartments path
-        d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
-            .attr("d", metExploreD3.GraphNode.groupPath)
-            .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
+            // If you want to use selection on compartments path
+            d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
+                .attr("d", metExploreD3.GraphNode.groupPath)
+                .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
 
-        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-            .selectAll("path.link")
-            .attr("d", function(link){  return funcPath(link, panel, this.id);})
-            .style("stroke-linejoin", "bevel");
+            d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                .selectAll("path.link")
+                .attr("d", function(link){  return funcPath(link, panel, this.id);})
+                .style("stroke-linejoin", "bevel");
+        }
+        // Fin Ajout
     },
 
     displayConvexhulls : function(panel){

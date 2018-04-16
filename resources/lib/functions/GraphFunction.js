@@ -6,6 +6,7 @@
 metExploreD3.GraphFunction = {
 	//Ajout
 	editMode: false,
+	curvedPath: false,
 	//Fin Ajout
 
     bfs : function (node){
@@ -1491,40 +1492,12 @@ metExploreD3.GraphFunction = {
                     node.setLocked(true);
                     node.fixed = node.isLocked();
                 });
-            /*metExploreD3.GraphNode.node
-                .each(function(node) {
-                    node.setLocked(true);
-                    node.fixed = node.isLocked();
-                });*/
             metExploreD3.GraphNetwork.animationButtonOff('viz');
             var force = _metExploreViz.getSessionById("viz").getForce();
             force.stop();
             d3.select("#viz").select("#buttonAnim").select("image").remove();
             metExploreD3.GraphFunction.startDragLabel();
             console.log(metExploreD3.GraphNode.node.selectAll('text'));
-            GraphNodes.selectAll('text')
-                .on("mouseenter", function(d) {
-                    /*if (d3.select(this).attr("transform")) {
-                        var transform = d3.transform(d3.select(this).attr("transform")).translate;
-                        d3.select(this).attr("transform", "translate("+transform[0]+", "+transform[1]+") scale(2)");
-                    }
-                    else {
-                        d3.select(this).attr("transform", "scale(2)");
-					}*/
-                })
-                .on("mouseleave", function(d) {
-                    /*if (d3.select(this).attr("transform")) {
-                        if (d3.select(this).attr("transform")) {
-                            var transform = d3.transform(d3.select(this).attr("transform")).translate;
-                            d3.select(this).attr("transform", "translate("+transform[0]+", "+transform[1]+") scale(1)");
-                        }
-                        else {
-                            d3.select(this).attr("transform", "scale(1)");
-                        }
-                    }*/
-                    //d3.select(this).attr("transform", "scale(1)");
-                    //d3.select(this).attr("transform", "translate("+d3.mouse(this)[0]+", "+d3.mouse(this)[1]+") scale(1)");
-                });
             var component = Ext.getCmp('editModePanel');
         }
         else {
@@ -1598,6 +1571,9 @@ metExploreD3.GraphFunction = {
             	if (targets == 0){
             		return true;
 				}
+				else if (targets == "selection"){
+                    return node.isSelected();
+				}
 				else {
                     return node.getBiologicalType() == targets;
                 }
@@ -1618,6 +1594,9 @@ metExploreD3.GraphFunction = {
             .filter(function(node){
                 if (targets == 0){
                     return true;
+                }
+                else if (targets == "selection"){
+                    return node.isSelected();
                 }
                 else {
                     return node.getBiologicalType() == targets;
@@ -1646,6 +1625,9 @@ metExploreD3.GraphFunction = {
                 if (targets == 0){
                     return true;
                 }
+                else if (targets == "selection"){
+                    return node.isSelected();
+                }
                 else {
                     return node.getBiologicalType() == targets;
                 }
@@ -1672,6 +1654,9 @@ metExploreD3.GraphFunction = {
             .filter(function(node){
                 if (targets == 0){
                     return true;
+                }
+                else if (targets == "selection"){
+                    return node.isSelected();
                 }
                 else {
                     return node.getBiologicalType() == targets;
@@ -1700,6 +1685,9 @@ metExploreD3.GraphFunction = {
                 if (targets == 0){
                     return true;
                 }
+                else if (targets == "selection"){
+                    return node.isSelected();
+                }
                 else {
                     return node.getBiologicalType() == targets;
                 }
@@ -1717,36 +1705,18 @@ metExploreD3.GraphFunction = {
             })
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
 		reactions.each(function (node) {
-
-            // For each node, compute the centroid of the source nodes of the arcs entering that node
-            var sourceX = 0;
-            var sourceY = 0;
-            var countEnter = 0;
             var enteringLinks = links.filter(function (link) {
                 return node.id==link.getTarget().getId();
             })
-            enteringLinks.each(function (link) {
-                countEnter +=1;
-                sourceX += link.getSource().x;
-                sourceY += link.getSource().y;
+            var exitingLinks = links.filter(function (link) {
+                return node.id==link.getSource().getId();
             })
-            var centroidSourceX = sourceX / countEnter;
-            var centroidSourceY = sourceY / countEnter;
-
-            // For each node, compute the centroid of the target nodes of the arcs exiting that node
-			var targetX = 0;
-			var targetY = 0;
-			var countExit = 0;
-			var exitingLinks = links.filter(function (link) {
-				return node.id==link.getSource().getId();
-            })
-            exitingLinks.each(function (link) {
-				countExit +=1;
-				targetX += link.getTarget().x;
-				targetY += link.getTarget().y;
-            })
-			var centroidTargetX = targetX / countExit;
-            var centroidTargetY = targetY / countExit;
+            // For each node, compute the centroid of the source nodes of the arcs entering that node and the centroid of the target ,odes of the arc exiting that node;
+            var resultComputeCentroid = metExploreD3.GraphFunction.computeCentroid(node, enteringLinks, exitingLinks);
+            var centroidSourceX = resultComputeCentroid[0];
+            var centroidSourceY = resultComputeCentroid[1];
+            var centroidTargetX = resultComputeCentroid[2];
+            var centroidTargetY = resultComputeCentroid[3];
 
 			// For each node, check which is the closest point to that node between the centroid of the source nodes of the arcs entering that node and the centroid of the target nodes of the arcs exiting that node
 			// Then check whether that closest point is closer to the axe parallel to the x-axis or the one parallel to the y-axis passing through that node
@@ -1755,70 +1725,53 @@ metExploreD3.GraphFunction = {
             var distanceTarget = Math.sqrt(Math.pow(centroidTargetX - node.x, 2) + Math.pow(centroidTargetY - node.y, 2));
             var enteringX = node.x;
             var enteringY = node.y;
-            /*// First method for computing enteringX and enteringY
-            if (distanceSource < distanceTarget) {
-            	if (Math.abs(centroidSourceX - node.x) < Math.abs(centroidSourceY - node.y)){
-                    (centroidSourceY > node.y) ? enteringY += 10 : enteringY -= 10;
-				}
-				else {
-                    (centroidSourceX > node.x) ? enteringX += 10 : enteringX -= 10;
-				}
-			}
-            else {
-                if (Math.abs(centroidTargetX - node.x) < Math.abs(centroidTargetY - node.y)){
-                    (centroidTargetY > node.y) ? enteringY -= 10 : enteringY += 10;
-                }
-                else {
-                    (centroidTargetX > node.x) ? enteringX -= 10 : enteringX += 10;
-                }
-            }*/
-            // Second method
 			if (Math.abs(centroidSourceX - centroidTargetX) > Math.abs(centroidSourceY - centroidTargetY)){
 				if (centroidSourceX < centroidTargetX){
-					enteringX -= 10;
+					enteringX -= 15;
 				}
 				else {
-                    enteringX += 10;
+                    enteringX += 15;
                 }
 			}
 			else {
                 if (centroidSourceY < centroidTargetY){
-                    enteringY -= 10;
+                    enteringY -= 15;
                 }
                 else {
-                    enteringY += 10;
+                    enteringY += 15;
                 }
 			}
-
-
             var exitingX = node.x - (enteringX - node.x);
             var exitingY = node.y - (enteringY - node.y);
 
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
-			var controlSourceX = (enteringX == node.x) ? node.x : (centroidSourceX + node.x) / 2;
-            var controlSourceY = (enteringY == node.y) ? node.y : (centroidSourceY + node.y) / 2;
-            var controlTargetX = (enteringX == node.x) ? node.x : (centroidTargetX + node.x) / 2;
-            var controlTargetY = (enteringY == node.y) ? node.y : (centroidTargetY + node.y) / 2;
-
-            exitingLinks.each(function (link) {
-                var path =  "M" + node.x + "," + node.y +
-                    "L" + exitingX + "," + exitingY +
-                    "T" + controlTargetX + "," + controlTargetY +
-                    "T" + link.getTarget().x + "," + link.getTarget().y;
-				d3.select(this).attr("d", path)
-					.attr("fill", "none")
-					.style("stroke", 'black')
-					.style("stroke-width", 0.5)
-					.style("opacity", 1);
-				//console.log(this);
-				//console.log(link);
-            })
-
             enteringLinks.each(function (link) {
-                var path = "M" + node.x + "," + node.y +
-                    "L" + enteringX + "," + enteringY +
-                    "T" + controlSourceX + "," + controlSourceY +
-                    "T" + link.getSource().x + "," + link.getSource().y;
+                //var path = metExploreD3.GraphFunction.computePath(node, enteringX, enteringY, link, link.getSource());
+				var path;
+				if (enteringY == node.y){
+                    path = metExploreD3.GraphFunction.computePathHorizontal(node, enteringX, enteringY, link, link.getSource());
+
+				}
+				else {
+                    path = metExploreD3.GraphFunction.computePath(node, enteringX, enteringY, link, link.getSource());
+                    //path = metExploreD3.GraphFunction.computePathHorizontal(node, enteringY, -enteringX, link, link.getSource());
+				}
+                d3.select(this).attr("d", path)
+                    .attr("fill", "none")
+                    .style("stroke", 'black')
+                    .style("stroke-width", 0.5)
+                    .style("opacity", 1);
+			})
+            exitingLinks.each(function (link) {
+                //var path = metExploreD3.GraphFunction.computePath(node, exitingX, exitingY, link, link.getTarget());
+                var path;
+                if (exitingY == node.y){
+                    path = metExploreD3.GraphFunction.computePathHorizontal(node, exitingX, exitingY, link, link.getTarget());
+
+                }
+                else {
+                    path = metExploreD3.GraphFunction.computePath(node, exitingX, exitingY, link, link.getTarget());
+                }
                 d3.select(this).attr("d", path)
                     .attr("fill", "none")
                     .style("stroke", 'black')
@@ -1826,7 +1779,246 @@ metExploreD3.GraphFunction = {
                     .style("opacity", 1);
             })
 		})
-    }
+        //Append arrowhead to the arcs
+        d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
+            .attr("id", "marker")
+            .attr("viewBox", "0 -10 20 20")
+            //.attr("refX", 25)
+            //.attr("refY", 2)
+            .attr("markerWidth", 30)
+            .attr("markerHeight", 20)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5");
+        	//.attr("d", "M2,2 L2,13 L8,7 L2,2");
+        links
+            .attr("marker-end", "url(#marker)");
+    },
+    computePath : function (startNode, firstPointX, firstPointY, link, endNode) {
+		// Trying to stop arc at periphery of node
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var d = Math.sqrt(Math.pow(endNode.x - startNode.x, 2) + Math.pow(endNode.y - startNode.y, 2));
+        var dX = (endNode.x - startNode.x);
+        var dY = (endNode.y - startNode.y);
+        var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
+        var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
+        var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
+        var xTarget = startNode.x + dX * ((d - largeurNoeudT) / d);
+        var yTarget = startNode.y + dY * ((d - largeurNoeudT) / d);
+		//
+		var lastPointX = endNode.x;
+		var lastPointY = endNode.y;
+		if (firstPointX == startNode.x){
+			if (Math.abs(endNode.x - startNode.x) < 15){
+				if (firstPointY < startNode.y){
+                    lastPointY += metaboliteStyle.getHeight() / 2 + 5;
+                }
+                else {
+                    lastPointY -= metaboliteStyle.getHeight() / 2 + 5;
+				}
+			}
+			else {
+                if (endNode.x < startNode.x){
+                    lastPointX += metaboliteStyle.getWidth() / 2 + 5;
+                }
+                else {
+                    lastPointX -= metaboliteStyle.getWidth() / 2 + 5;
+                }
+			}
+		}
+		else if (firstPointY == startNode.y){
+            if (Math.abs(endNode.y - startNode.y) < 15){
+                if (firstPointX < startNode.x){
+                    lastPointX += metaboliteStyle.getWidth() / 2 + 5;
+                }
+                else {
+                    lastPointX -= metaboliteStyle.getWidth() / 2 + 5;
+                }
+            }
+            else {
+                if (endNode.y < startNode.y){
+                    lastPointY += metaboliteStyle.getHeight() / 2 + 5;
+                }
+                else {
+                    lastPointY -= metaboliteStyle.getHeight() / 2 + 5;
+                }
+            }
+		}
+		//
+		// Compute the value of the control points used for drawing the path
+		var controlX = (firstPointX == startNode.x) ? startNode.x : endNode.x;
+		var controlY = (firstPointY == startNode.y) ? startNode.y : endNode.y;
+		var control2X = endNode.x;
+		var control2Y = endNode.y;
+		var control3X = endNode.x;
+		var control3Y = endNode.y;
+		var path;
+		if (firstPointX < startNode.x && controlX > firstPointX){
+            controlX = firstPointX - 15;
+			control2X = controlX;
+			control3X = firstPointX;
+		}
+		if (firstPointX > startNode.x && controlX < firstPointX){
+            controlX = firstPointX + 15;
+			control2X = controlX;
+			control3X = firstPointX;
+		}
+		if (firstPointY < startNode.y && controlY > firstPointY){
+            controlY = firstPointY - 15;
+			control2Y = controlY;
+			control3Y = firstPointY;
+		}
+		if (firstPointY > startNode.y && controlY < firstPointY){
+            controlY = firstPointY + 15;
+			control2Y = controlY;
+			control3Y = firstPointY;
+		}
+
+		if (control2X == endNode.x && control2Y == endNode.y){
+			if ((firstPointX == startNode.x) && (Math.abs(endNode.x - startNode.x) < 15) || (firstPointY == startNode.y) && (Math.abs(endNode.y - startNode.y) < 15)){
+				var middlePointX = (firstPointX + lastPointX) / 2;
+                var middlePointY = (firstPointY + lastPointY) / 2;
+                var firstSidePointX = middlePointX;
+                var firstSidePointY = middlePointY;
+                var secondSidePointX = middlePointX;
+                var secondSidePointY = middlePointY;
+				if (firstPointX == startNode.x){
+					firstSidePointX = firstPointX;
+					secondSidePointX = lastPointX;
+				}
+				else {
+                    firstSidePointY = firstPointY;
+                    secondSidePointY = lastPointY;
+				}
+                path = "M" + startNode.x + "," + startNode.y +
+                    "L" + firstPointX + "," + firstPointY +
+                    //"Q" + controlX + "," + controlY + "," + endNode.x + "," + endNode.y;
+                    "Q" + firstSidePointX + "," + firstSidePointY + "," + middlePointX + "," + middlePointY +
+					"Q" + secondSidePointX + "," + secondSidePointY + "," + lastPointX + "," + lastPointY;
+			}
+			else {
+				path = "M" + startNode.x + "," + startNode.y +
+					"L" + firstPointX + "," + firstPointY +
+					//"Q" + controlX + "," + controlY + "," + endNode.x + "," + endNode.y;
+					"Q" + controlX + "," + controlY + "," + lastPointX + "," + lastPointY;
+			}
+		}
+		else {
+			path = "M" + startNode.x + "," + startNode.y +
+				"L" + firstPointX + "," + firstPointY +
+				"C" + controlX + "," + controlY + "," + control2X + "," + control2Y + "," + control3X + "," + control3Y +
+				"L" + endNode.x + "," + endNode.y;
+		}
+
+		return path;
+    },
+	computePathHorizontal : function (startNode, firstPointX, firstPointY, link, endNode) {
+
+        // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var lastPointX = endNode.x;
+        var lastPointY = endNode.y;
+		if (Math.abs(endNode.y - startNode.y) < 15){
+			if (firstPointX < startNode.x){
+				lastPointX += metaboliteStyle.getWidth() / 2 + 5;
+			}
+			else {
+				lastPointX -= metaboliteStyle.getWidth() / 2 + 5;
+			}
+		}
+		else {
+			if (endNode.y < startNode.y){
+				lastPointY += metaboliteStyle.getHeight() / 2 + 5;
+			}
+			else {
+				lastPointY -= metaboliteStyle.getHeight() / 2 + 5;
+			}
+		}
+
+        // Compute the coordinates of the control point used for drawing the path (corresponding to the convergence point of all the links entering or exiting the starting nodes)
+        var controlX = endNode.x;
+        var controlY = startNode.y;
+        var path;
+        if (firstPointX < startNode.x && controlX > firstPointX){
+            controlX = firstPointX - 15;
+        }
+        if (firstPointX > startNode.x && controlX < firstPointX){
+            controlX = firstPointX + 15;
+        }
+
+        // Compute the path of the link for 3 different cases
+        if (controlX == endNode.x){
+        	// 1st case: The end node is on the correct side of the starting node, and is close to the axe of the the reaction
+            if (Math.abs(endNode.y - startNode.y) < 15){
+                var middlePointX = (firstPointX + lastPointX) / 2;
+                var middlePointY = (firstPointY + lastPointY) / 2;
+                var firstSidePointX = middlePointX;
+                var firstSidePointY = middlePointY;
+                var secondSidePointX = middlePointX;
+                var secondSidePointY = middlePointY;
+                if (firstPointX == startNode.x){
+                    firstSidePointX = firstPointX;
+                    secondSidePointX = lastPointX;
+                }
+                else {
+                    firstSidePointY = firstPointY;
+                    secondSidePointY = lastPointY;
+                }
+                path = "M" + startNode.x + "," + startNode.y +
+                    "L" + firstPointX + "," + firstPointY +
+                    "Q" + firstSidePointX + "," + firstSidePointY + "," + middlePointX + "," + middlePointY +
+                    "Q" + secondSidePointX + "," + secondSidePointY + "," + lastPointX + "," + lastPointY;
+            }
+            // 2nd case: The end node is on the correct side of the starting node, and is not close to the axe of the the reaction
+            else {
+                path = "M" + startNode.x + "," + startNode.y +
+                    "L" + firstPointX + "," + firstPointY +
+                    "Q" + controlX + "," + controlY + "," + lastPointX + "," + lastPointY;
+            }
+        }
+        // 3rd case: The end node is not on the correct side of the reaction
+        else {
+            var control2X = controlX;
+            var control2Y = endNode.y;
+            var control3X = firstPointX;
+            var control3Y = endNode.y;
+            path = "M" + startNode.x + "," + startNode.y +
+                "L" + firstPointX + "," + firstPointY +
+                "C" + controlX + "," + controlY + "," + control2X + "," + control2Y + "," + control3X + "," + control3Y +
+                "L" + endNode.x + "," + endNode.y;
+        }
+
+        return path;
+    },
+    computeCentroid : function (node, enteringLinks, exitingLinks) {
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+        // For each node, compute the centroid of the source nodes of the arcs entering that node
+        var sourceX = 0;
+        var sourceY = 0;
+        var countEnter = 0;
+        enteringLinks.each(function (link) {
+            countEnter +=1;
+            sourceX += link.getSource().x;
+            sourceY += link.getSource().y;
+        })
+        var centroidSourceX = sourceX / countEnter;
+        var centroidSourceY = sourceY / countEnter;
+
+        // For each node, compute the centroid of the target nodes of the arcs exiting that node
+        var targetX = 0;
+        var targetY = 0;
+        var countExit = 0;
+        exitingLinks.each(function (link) {
+            countExit +=1;
+            targetX += link.getTarget().x;
+            targetY += link.getTarget().y;
+        })
+        var centroidTargetX = targetX / countExit;
+        var centroidTargetY = targetY / countExit;
+
+        return [centroidSourceX, centroidSourceY, centroidTargetX, centroidTargetY];
+    },
 
 	//Fin Ajout
 
