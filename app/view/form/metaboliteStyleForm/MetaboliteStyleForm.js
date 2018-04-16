@@ -29,8 +29,15 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
         reference:'selectDisplayMetaboliteLabel',
         xtype:'selectDisplayMetaboliteLabel'  
     }
-    , 
-    {   
+    ,
+    {
+        xtype: 'checkboxfield',
+        boxLabel  : 'Uses aliases',
+        margin:'5 5 5 5',
+        checked   : false,
+        reference:'checkboxAlias'
+    },
+     {
         xtype: 'textfield',
         reference:'chooseStrokeMetabolite',
         margin:'5 5 5 5',

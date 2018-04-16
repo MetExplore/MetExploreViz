@@ -92,6 +92,7 @@ metExploreD3.GraphNode = {
     * @param {} d : a node
     */
 	changeName : function(node) {
+		var me = this;
 		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 		var reactionStyle = metExploreD3.getReactionStyle();
 		var generalStyle = metExploreD3.getGeneralStyle();
@@ -278,7 +279,7 @@ metExploreD3.GraphNode = {
 	},
 
 	/*******************************************
-	* Change the style of reaction 
+	* Change the style of Metabolite  
 	*/
 	refreshStyleOfMetabolite : function(){
 		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -737,6 +738,19 @@ metExploreD3.GraphNode = {
         nodenotsc.each(function(node){
 				session.removeSelectedNode(node.getId());
 			});
+	},
+
+	/*******************************************
+	* To remove text on node in visualization
+	* @param {} d : The node to move
+	* @param {} parent : The panel where the action is launched
+	*/
+	removeText : function(d, panel){
+		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+			.selectAll("g.node")
+			.filter(function(node){return d.getId()==node.getId();})
+			.select("text")
+			.remove();
 	},
 
 	/*******************************************
@@ -1309,7 +1323,27 @@ metExploreD3.GraphNode = {
 				return d.isDuplicated(); })
 			.style("stroke-opacity",0.5)
 			.each(function(node){
-				var clone = new NodeData(node.getName(), node.getCompartment(), node.getDbIdentifier(), node.getEC(), node.getIdentifier(), node.getReactionReversibility(), node.getIsSideCompound(), node.getBiologicalType(), node.isSelected(), node.getLabelVisible(), node.getSvg(), node.getSvgWidth(), node.getSvgHeight(), undefined, node.isDuplicated(), node.getIdentifier(), node.getPathways(), node.isLocked(), node.getLabel());
+				var clone = new NodeData(
+					node.getName(), 
+					node.getCompartment(), 
+					node.getDbIdentifier(), 
+					node.getEC(), 
+					node.getIdentifier(), 
+					node.getReactionReversibility(), 
+					node.getIsSideCompound(), 
+					node.getBiologicalType(), 
+					node.isSelected(), 
+					node.getLabelVisible(), 
+					node.getSvg(), 
+					node.getSvgWidth(), 
+					node.getSvgHeight(), 
+					undefined, 
+					node.isDuplicated(), 
+					node.getIdentifier(), 
+					node.getPathways(), 
+					node.isLocked(), 
+					node.getAlias(), 
+					node.getLabel());
 
 				metExploreD3.fireEventParentWebSite("sideCompound", clone);	
 			})
@@ -2264,6 +2298,90 @@ metExploreD3.GraphNode = {
 	        .forEach(function(node){
 	        	node.isSideCompound=true;
 	        });
+	    _metExploreViz.setDataFromWebSite(JSON.stringify(network));
+    },
+
+	/*******************************************
+	* To load alias in visualization
+	* @param {} dbId : The dbId of element
+	* @param {} alias : The alias value
+	*/
+	setAliasByDBId : function(dbId, alias) { 
+		var me = this;
+        var networkData = _metExploreViz.getSessionById("viz").getD3Data();
+		var nodes = networkData.getNodes();
+       	if(nodes!=undefined)
+        {
+            var node=networkData.getNodeByDbIdentifier(dbId);
+            if(node!=undefined)
+                node.setAlias(alias);
+            
+            var sessions =  _metExploreViz.getSessionsSet();
+            for (var key in sessions) {                     
+                if(sessions[key].getId()!='viz')
+                {
+                    var nodeLinked = sessions[key].getD3Data().getNodeByDbIdentifier(dbId)
+                    nodeLinked.setAlias(alias);
+                    if(nodeLinked!=undefined)
+                        nodeLinked.setAlias(alias);
+                }
+            }    
+        }
+
+        var network = JSON.parse(_metExploreViz.getDataFromWebSite());
+
+        network.nodes
+	        .filter(function(node){
+	        	return node.dbIdentifier==dbId;
+	        })
+	        .forEach(function(node){
+	        	node.alias=alias;
+	        });
+
+		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+		var reactionStyle = metExploreD3.getReactionStyle();
+
+       	var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent")
+			.selectAll("g.node") 
+
+	    if(metaboliteStyle.isUseAlias()){
+				nodes
+					.filter(function(n){
+						return node.getId() == n.getId();
+					})
+					.filter(function(n){
+						return node.getBiologicalType() == 'metabolite';
+					})
+					.each(function(node){
+						node.setLabel(text);
+						if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
+						{
+							d3.select(this)
+								.select("text")
+								.remove();
+
+							metExploreD3.GraphNode.addText(node, "viz");
+						}
+					});
+	    }
+
+	    if(reactionStyle.isUseAlias()){
+				nodes
+					.filter(function(n){
+						return node.getId() == n.getId();
+					})
+					.filter(function(n){
+						return node.getBiologicalType() == 'reac';
+					})
+					.each(function(node){
+						node.setLabel(text);
+						if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
+						{
+							metExploreD3.GraphNode.removeText(node, "viz");
+							metExploreD3.GraphNode.addText(node, "viz");
+						}
+					});
+	    }
 	    _metExploreViz.setDataFromWebSite(JSON.stringify(network));
     },
 

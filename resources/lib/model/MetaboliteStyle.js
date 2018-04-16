@@ -5,7 +5,7 @@
  /**
  * draw a Metabolite
  */
-var MetaboliteStyle = function(height, width, rx, ry, fontSize, strokeWidth, displayNodeName, strokeColor){
+var MetaboliteStyle = function(height, width, rx, ry, fontSize, strokeWidth, displayNodeName, strokeColor, useAlias){
 
     this.height = height;
     this.width = width;
@@ -15,6 +15,7 @@ var MetaboliteStyle = function(height, width, rx, ry, fontSize, strokeWidth, dis
     this.fontSize = fontSize;
     this.label = displayNodeName;
     this.strokeColor = strokeColor;
+    this.useAlias = useAlias;
 };
 
 MetaboliteStyle.prototype = {
@@ -90,6 +91,16 @@ MetaboliteStyle.prototype = {
     },
 
 
+    isUseAlias:function()
+    {
+      return this.useAlias;
+    },
+
+    setUseAlias:function(newData)
+    {
+      this.useAlias = newData;
+    },
+
     getLabel:function()
     {
       return this.label;
@@ -100,26 +111,43 @@ MetaboliteStyle.prototype = {
       this.label = newData;
     },
 
-    getDisplayLabel:function(node, label)
+    getDisplayLabel:function(node, label, useAlias)
     {
+        console.log(node, label, useAlias);
         var displayedLabel;
-        if (node.getLabel()!=undefined) displayedLabel = node.getLabel();
+        if (node.getLabel()!==undefined) displayedLabel = node.getLabel();
         else
         {
-            switch(label) {
-                case "name":
-                    displayedLabel = node.getName();
-                    break;
-                case "dbIdentifier":
-                    displayedLabel = node.getDbIdentifier();
-                    break;
-                default:
-                    displayedLabel = node.getName();
+            if(useAlias){
+                displayedLabel = node.getAlias();
+                if(displayedLabel === undefined)
+                    displayedLabel = this.labelToDisplay(node, label);
             }
-            if(displayedLabel == undefined)
-                displayedLabel = node.getName();
+            else
+            {
+                displayedLabel = this.labelToDisplay(node, label);
+            }
         }
         
+        return displayedLabel;
+    },
+
+    labelToDisplay:function(node, label){
+        var displayedLabel = undefined;
+        switch(label) {
+            case "name":
+                displayedLabel = node.getName();
+                break;
+            case "dbIdentifier":
+                displayedLabel = node.getDbIdentifier();
+                break;
+            default:
+                displayedLabel = node.getName();
+        }
+
+        if(displayedLabel === undefined)
+            displayedLabel = node.getName();
+
         return displayedLabel;
     }
 };

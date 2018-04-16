@@ -349,7 +349,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 							undefined, reactiondbIdentifier,
 							reactionID, reactionReversibility,
 							'reaction', false, true, undefined,
-							undefined, undefined,undefined,ec);
+							undefined, undefined,undefined,reaction.get('alias'), ec);
 					// Add node in the graph
 					graph.addNode(reactionID);
 
@@ -442,8 +442,10 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 
 							var metabolite = storeM
 									.getById(metaboliteID);
-							metaboliteName = metabolite
-									.get('name');
+                            metaboliteName = metabolite
+                                .get('name');
+                            var alias = metabolite
+                                .get('alias');
 							compartment = metabolite
 									.get('compartment');
 							dbMetabolite = metabolite
@@ -462,7 +464,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 									metaboliteID, undefined,
 									'metabolite', false, true,
 									metaboliteSVG.svg,
-									svgWidth, svgHeight,isSsideCompoud,undefined);
+									svgWidth, svgHeight,isSsideCompoud,undefined,undefined,undefined,undefined,undefined,undefined,alias);
 
 							metaboliteMapIndex = ListIdMetabolites
 									.indexOf(metaboliteID);

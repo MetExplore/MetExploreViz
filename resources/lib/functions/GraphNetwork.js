@@ -1864,6 +1864,7 @@ metExploreD3.GraphNetwork = {
 			theNodeId,
 			networkData.getNodeById(reactionId).getPathways(),
 			false,
+			theNode.getAlias(),
 			theNode.getLabel());
 
 		//newNode.index = networkData.getNodes().indexOf(newNode);
@@ -2294,7 +2295,7 @@ metExploreD3.GraphNetwork = {
 	}, 	
 	
 
-	/*******************************************
+	/************************************
     * Duplicate side compounds
     * @param {} panel : The panel where the SC must be duplicated
     */

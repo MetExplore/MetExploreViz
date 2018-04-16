@@ -329,11 +329,51 @@ NetworkData.prototype = {
          this.nodes.push(node);
     },
    
-    addNode:function(name,compartment,dbIdentifier,id,reactionReversibility,biologicalType,selected,labelVisible,svg,svgWidth,svgHeight,isSideCompound,ec,isDuplicated, identifier, pathway, locked, label){
+    addNode:function(
+            name,
+            compartment,
+            dbIdentifier,
+            id,
+            reactionReversibility,
+            biologicalType,
+            selected,
+            labelVisible,
+            svg,
+            svgWidth,
+            svgHeight,
+            isSideCompound,
+            ec,
+            isDuplicated, 
+            identifier, 
+            pathway, 
+            locked, 
+            alias, 
+            label
+        ){
         if(this.nodes == undefined)
             this.nodes = [];
 
-        var object = new NodeData(name, compartment, dbIdentifier, ec, id, reactionReversibility, isSideCompound, biologicalType, selected, labelVisible, svg, svgWidth, svgHeight, undefined, isDuplicated, identifier, pathway, locked, label);
+        var object = new NodeData(
+            name, 
+            compartment, 
+            dbIdentifier, 
+            ec, 
+            id, 
+            reactionReversibility, 
+            isSideCompound, 
+            biologicalType, 
+            selected, 
+            labelVisible, 
+            svg, 
+            svgWidth, 
+            svgHeight, 
+            undefined, 
+            isDuplicated, 
+            identifier, 
+            pathway, 
+            locked, 
+            alias, 
+            label);
         //console.log('ec '+ec);
         //console.log('ec '+object.getEC());
         this.nodes.push(object);
@@ -415,22 +455,52 @@ NetworkData.prototype = {
 
             obj.nodes.forEach(function(node){
                 if(node.biologicalType=="reaction"){
-
-                
-                    that.addNode(node.name,
-                        undefined, node.dbIdentifier,
-                        node.id, node.reactionReversibility,
-                        'reaction', false, true, undefined,
-                        undefined, undefined,undefined,node.ec, false, undefined, node.pathways, node.locked, node.label);
+               
+                    that.addNode(
+                        node.name,
+                        undefined, 
+                        node.dbIdentifier,
+                        node.id, 
+                        node.reactionReversibility,
+                        'reaction', 
+                        false, 
+                        true,
+                        undefined,
+                        undefined, 
+                        undefined,
+                        undefined,
+                        node.ec, 
+                        false, 
+                        undefined, 
+                        node.pathways, 
+                        node.locked, 
+                        node.alias,
+                        node.label
+                        );
                 }
                 else
                 {
                 
-                    that.addNode(node.name,
-                        node.compartment, node.dbIdentifier,
-                        node.id, undefined,
-                        'metabolite', false, true, node.svg,
-                        node.svgWidth, node.svgHeight,node.isSideCompound,undefined, node.duplicated, node.identifier, node.pathways, node.locked, node.label);
+                    that.addNode(
+                        node.name,
+                        node.compartment, 
+                        node.dbIdentifier,
+                        node.id, 
+                        undefined,
+                        'metabolite', 
+                        false, 
+                        true, 
+                        node.svg,
+                        node.svgWidth, 
+                        node.svgHeight,
+                        node.isSideCompound,
+                        undefined, 
+                        node.duplicated, 
+                        node.identifier, 
+                        node.pathways, 
+                        node.locked, 
+                        node.alias, 
+                        node.label);
                 }
                 if(node.mappingDatas!=undefined){
                     if(node.mappingDatas.length>0){
