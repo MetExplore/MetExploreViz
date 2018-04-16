@@ -731,13 +731,13 @@ metExploreD3.GraphPanel = {
 					
 				if(jsonParsed.metaboliteStyle)
 				{
-					var style = new MetaboliteStyle(jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.label, jsonParsed.metaboliteStyle.strokeColor);
+					var style = new MetaboliteStyle(jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.label, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.useAlias);
 					metExploreD3.setMetaboliteStyle(style);
 				}
 
 				if(jsonParsed.reactionStyle)
 				{
-					var style = new ReactionStyle(jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.label, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth);
+					var style = new ReactionStyle(jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.label, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth, jsonParsed.metaboliteStyle.useAlias);
 					metExploreD3.setReactionStyle(style);
 				}
 

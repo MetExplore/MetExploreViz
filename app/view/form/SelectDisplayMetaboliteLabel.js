@@ -16,8 +16,8 @@ Ext.define('metExploreViz.view.form.SelectDisplayMetaboliteLabel', {
         store: {
                 fields: ['name','value'],
                 data: [
-                       {'name':'Database identifier', 'value':'dbIdentifier'},
-                       {'name':'Name', 'value':'name'}
+                    {'name':'Database identifier', 'value':'dbIdentifier'},
+                    {'name':'Name', 'value':'name'}
                        ]
         },
         emptyText:'-- Select Display Metabolite Label --'

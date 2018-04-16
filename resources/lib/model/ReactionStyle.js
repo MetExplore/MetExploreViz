@@ -6,7 +6,7 @@
  * draw a reaction
  */
  
-var ReactionStyle = function(height, width, rx, ry, displayNodeName, fontSize, strokeColor, strokeWidth){
+var ReactionStyle = function(height, width, rx, ry, displayNodeName, fontSize, strokeColor, strokeWidth, useAlias){
     this.height = height;
     this.width = width;
     this.rx = rx;
@@ -15,6 +15,7 @@ var ReactionStyle = function(height, width, rx, ry, displayNodeName, fontSize, s
     this.strokeColor = strokeColor;
     this.fontSize = fontSize;
     this.strokeWidth = strokeWidth;
+    this.useAlias = useAlias;
 };
 
 ReactionStyle.prototype = {
@@ -98,28 +99,55 @@ ReactionStyle.prototype = {
       this.label = newData;
     },
 
-    getDisplayLabel:function(node, label)
+
+    isUseAlias:function()
+    {
+      return this.useAlias;
+    },
+
+    setUseAlias:function(newData)
+    {
+      this.useAlias = newData;
+    },
+
+    getDisplayLabel:function(node, label, useAlias)
     {
         var displayedLabel;
         if (node.getLabel()!=undefined) displayedLabel = node.getLabel();
         else
         {
-            switch(label) {
-                case "ec":
-                    displayedLabel = node.getEC();
-                    break;
-                case "name":
-                    displayedLabel = node.getName();
-                    break;
-                case "dbIdentifier":
-                    displayedLabel = node.getDbIdentifier();
-                    break;
-                default:
-                    displayedLabel = node.getName();
+           if(useAlias){
+                displayedLabel = node.getAlias();
+                if(displayedLabel === undefined)
+                    displayedLabel = this.labelToDisplay(node, label);
             }
-            if(displayedLabel == undefined)
+            else
+            {
+                displayedLabel = this.labelToDisplay(node, label);
+            } 
+        }
+        return displayedLabel;
+    },
+
+    labelToDisplay:function(node, label){
+        var displayedLabel = undefined;
+        switch(label) {
+            case "ec":
+                displayedLabel = node.getEC();
+                break;
+            case "name":
+                displayedLabel = node.getName();
+                break;
+            case "dbIdentifier":
+                displayedLabel = node.getDbIdentifier();
+                break;
+            default:
                 displayedLabel = node.getName();
         }
+
+        if(displayedLabel == undefined)
+            displayedLabel = node.getName();
+
         return displayedLabel;
     }
 };
