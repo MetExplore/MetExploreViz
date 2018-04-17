@@ -1718,15 +1718,15 @@ metExploreD3.GraphFunction = {
             .attr("d", "M0,-5L10,0L0,5");*/
         d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
             .attr("id", "marker")
-            .attr("viewBox", "-10 -10 20 20")
+            .attr("viewBox", "-10 -5 20 20")
             .attr("refX", 9)
-            .attr("refY", 3)
+            .attr("refY", 6)
             .attr("markerWidth", 30)
             .attr("markerHeight", 20)
             .attr("orient", "auto")
             .append("path")
-            .attr("d", "M0,0L0,6L9,3");
-			//.attr("d", "M0,0L0,6L9,3");
+            .attr("d", "M0,6L-5,12L9,6L-5,0");
+            //.attr("d", "M0,0L0,10L9,5");
 		reactions.each(function (node) {
             var enteringLinks = links.filter(function (link) {
                 return node.id==link.getTarget().getId();
@@ -1773,7 +1773,6 @@ metExploreD3.GraphFunction = {
 				var path;
 				if (enteringY == node.y){
                     path = metExploreD3.GraphFunction.computePathHorizontal(node, enteringX, enteringY, link.getSource());
-
 				}
 				else {
                     path = metExploreD3.GraphFunction.computePathVertical(node, enteringX, enteringY, link.getSource());
@@ -1783,7 +1782,10 @@ metExploreD3.GraphFunction = {
                     .style("stroke", 'black')
                     .style("stroke-width", 0.5)
                     .style("opacity", 1);
-			})
+				//console.log(link.getTarget());
+			}).filter(function (link) {
+				return link.getTarget().getReactionReversibility();
+			}).attr("marker-end", "url(#marker)");
             exitingLinks.each(function (link) {
                 //var path = metExploreD3.GraphFunction.computePath(node, exitingX, exitingY, link, link.getTarget());
                 var path;
@@ -1801,12 +1803,9 @@ metExploreD3.GraphFunction = {
                     .style("opacity", 1);
             }).attr("marker-end", "url(#marker)");
 		})
-
-        //links
-			//.attr("marker-end", "url(#marker)");
+		//
     },
 	computePathHorizontal : function (startNode, firstPointX, firstPointY, endNode) {
-		// TO DO : determine unidirectional from bidirectional reaction
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         // Compute the coordinates of the control point used for drawing the path (it is the point where all the arc entering or all the arc exiting the starting node converge)
@@ -1829,11 +1828,11 @@ metExploreD3.GraphFunction = {
             if (Math.abs(endNode.y - startNode.y) < 15){
                 if (firstPointX < startNode.x){
                     lastPointX += metaboliteStyle.getWidth() / 2;
-                    //beforeLastPointX = lastPointX + 5;
+                    beforeLastPointX = lastPointX + 5;
                 }
                 else {
                     lastPointX -= metaboliteStyle.getWidth() / 2;
-                    //beforeLastPointY = lastPointY - 5;
+                    beforeLastPointX = lastPointX - 5;
                 }
                 var middlePointX = (firstPointX + lastPointX) / 2;
                 var middlePointY = (firstPointY + lastPointY) / 2;
@@ -1852,37 +1851,41 @@ metExploreD3.GraphFunction = {
                 path = "M" + startNode.x + "," + startNode.y +
                     "L" + firstPointX + "," + firstPointY +
                     "Q" + firstSidePointX + "," + firstSidePointY + "," + middlePointX + "," + middlePointY +
-                    "Q" + secondSidePointX + "," + secondSidePointY + "," + lastPointX + "," + lastPointY
-					//"L" + endNode.x + "," + endNode.y;
+                    "Q" + secondSidePointX + "," + secondSidePointY + "," + beforeLastPointX + "," + beforeLastPointY +
+					"L" + lastPointX + "," + lastPointY;
             }
             // 2nd case: The end node is on the correct side of the starting node, and is not close to the axe of the the reaction
             else {
                 if (endNode.y < startNode.y){
-                    lastPointY += metaboliteStyle.getHeight() / 2 + 5;
+                    lastPointY += metaboliteStyle.getHeight() / 2;
+                    beforeLastPointY = lastPointY + 5;
                 }
                 else {
-                    lastPointY -= metaboliteStyle.getHeight() / 2 + 5;
+                    lastPointY -= metaboliteStyle.getHeight() / 2;
+                    beforeLastPointY = lastPointY - 5;
                 }
                 path = "M" + startNode.x + "," + startNode.y +
                     "L" + firstPointX + "," + firstPointY +
-                    "Q" + controlX + "," + controlY + "," + lastPointX + "," + lastPointY
-                    //"L" + endNode.x + "," + endNode.y;
+                    "Q" + controlX + "," + controlY + "," + beforeLastPointX + "," + beforeLastPointY +
+                    "L" + lastPointX + "," + lastPointY;
             }
         }
         // 3rd case: The end node is not on the correct side of the reaction
         else {
         	if (firstPointX < startNode.x){
-                lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2 + 5);
+                lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                beforeLastPointX = lastPointX - 5;
 			}
 			else {
-                lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2 + 5);
+                lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                beforeLastPointX = lastPointX + 5;
 			}
             var control2X = controlX;
             var control2Y = endNode.y;
             path = "M" + startNode.x + "," + startNode.y +
                 "L" + firstPointX + "," + firstPointY +
-                "C" + controlX + "," + controlY + "," + control2X + "," + control2Y + "," + lastPointX + "," + lastPointY
-                //"L" + endNode.x + "," + endNode.y;
+                "C" + controlX + "," + controlY + "," + control2X + "," + control2Y + "," + beforeLastPointX + "," + beforeLastPointY +
+                "L" + lastPointX + "," + lastPointY;
         }
         return path;
     },
@@ -1902,14 +1905,18 @@ metExploreD3.GraphFunction = {
         var path;
         var lastPointX = endNode.x;
         var lastPointY = endNode.y;
+        var beforeLastPointX = lastPointX;
+        var beforeLastPointY = lastPointY;
         if (controlY == endNode.y){
             // 1st case: The end node is on the correct side of the starting node, and is close to the axe of the the reaction
             if (Math.abs(endNode.x - startNode.x) < 15){
                 if (firstPointY < startNode.y){
-                    lastPointY += metaboliteStyle.getHeight() / 2 + 5;
+                    lastPointY += metaboliteStyle.getHeight() / 2;
+                    beforeLastPointY = lastPointY + 5;
                 }
                 else {
-                    lastPointY -= metaboliteStyle.getHeight() / 2 + 5;
+                    lastPointY -= metaboliteStyle.getHeight() / 2;
+                    beforeLastPointY = lastPointY - 5;
                 }
                 var middlePointX = (firstPointX + lastPointX) / 2;
                 var middlePointY = (firstPointY + lastPointY) / 2;
@@ -1928,37 +1935,41 @@ metExploreD3.GraphFunction = {
                 path = "M" + startNode.x + "," + startNode.y +
                     "L" + firstPointX + "," + firstPointY +
                     "Q" + firstSidePointX + "," + firstSidePointY + "," + middlePointX + "," + middlePointY +
-                    "Q" + secondSidePointX + "," + secondSidePointY + "," + lastPointX + "," + lastPointY
-                    //"L" + endNode.x + "," + endNode.y;
+                    "Q" + secondSidePointX + "," + secondSidePointY + "," + beforeLastPointX + "," + beforeLastPointY +
+                    "L" + lastPointX + "," + lastPointY;
             }
             // 2nd case: The end node is on the correct side of the starting node, and is not close to the axe of the the reaction
             else {
                 if (endNode.x < startNode.x){
-                    lastPointX += metaboliteStyle.getWidth() / 2 + 5;
+                    lastPointX += metaboliteStyle.getWidth() / 2;
+                    beforeLastPointX = lastPointX + 5;
                 }
                 else {
-                    lastPointX -= metaboliteStyle.getWidth() / 2 + 5;
+                    lastPointX -= metaboliteStyle.getWidth() / 2;
+                    beforeLastPointX = lastPointX - 5;
                 }
                 path = "M" + startNode.x + "," + startNode.y +
                     "L" + firstPointX + "," + firstPointY +
-                    "Q" + controlX + "," + controlY + "," + lastPointX + "," + lastPointY
-                    //"L" + endNode.x + "," + endNode.y;
+                    "Q" + controlX + "," + controlY + "," + beforeLastPointX + "," + beforeLastPointY +
+                    "L" + lastPointX + "," + lastPointY;
             }
         }
         // 3rd case: The end node is not on the correct side of the reaction
         else {
             if (firstPointY < startNode.y){
-                lastPointY = endNode.y - (metaboliteStyle.getWidth() / 2 + 5);
+                lastPointY = endNode.y - (metaboliteStyle.getWidth() / 2);
+                beforeLastPointY = lastPointY - 5;
             }
             else {
-                lastPointY = endNode.y + (metaboliteStyle.getWidth() / 2 + 5);
+                lastPointY = endNode.y + (metaboliteStyle.getWidth() / 2);
+                beforeLastPointY = lastPointY + 5;
             }
             var control2X = endNode.x;
             var control2Y = controlY;
             path = "M" + startNode.x + "," + startNode.y +
                 "L" + firstPointX + "," + firstPointY +
-                "C" + controlX + "," + controlY + "," + control2X + "," + control2Y + "," + lastPointX + "," + lastPointY
-                //"L" + endNode.x + "," + endNode.y;
+                "C" + controlX + "," + controlY + "," + control2X + "," + control2Y + "," + beforeLastPointX + "," + beforeLastPointY +
+                "L" + lastPointX + "," + lastPointY;
         }
         return path;
     },
