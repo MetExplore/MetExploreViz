@@ -2325,64 +2325,66 @@ metExploreD3.GraphNode = {
                     if(nodeLinked!=undefined)
                         nodeLinked.setAlias(alias);
                 }
-            }    
+            } 
+            
+			var network = JSON.parse(_metExploreViz.getDataFromWebSite());
+
+			network.nodes
+				.filter(function(node){
+					return node.dbIdentifier==dbId;
+				})
+				.forEach(function(node){
+					node.alias=alias;
+				});
+
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			var generalStyle = metExploreD3.getGeneralStyle();
+
+			var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent")
+				.selectAll("g.node") 
+
+			if(metaboliteStyle.isUseAlias()){
+					nodes
+						.filter(function(n){
+							return node.getId() == n.getId();
+						})
+						.filter(function(n){
+							return node.getBiologicalType() == 'metabolite';
+						})
+						.each(function(node){
+							node.setLabel(alias);
+							if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
+							{
+								d3.select(this)
+									.select("text")
+									.remove();
+
+								metExploreD3.GraphNode.addText(node, "viz");
+							}
+						});
+			}
+
+			if(reactionStyle.isUseAlias()){
+					nodes
+						.filter(function(n){
+							return node.getId() == n.getId();
+						})
+						.filter(function(n){
+							return node.getBiologicalType() == 'reac';
+						})
+						.each(function(node){
+							node.setLabel(alias);
+							if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
+							{
+								metExploreD3.GraphNode.removeText(node, "viz");
+								metExploreD3.GraphNode.addText(node, "viz");
+							}
+						});
+			}
+			_metExploreViz.setDataFromWebSite(JSON.stringify(network));   
         }
 
-        var network = JSON.parse(_metExploreViz.getDataFromWebSite());
-
-        network.nodes
-	        .filter(function(node){
-	        	return node.dbIdentifier==dbId;
-	        })
-	        .forEach(function(node){
-	        	node.alias=alias;
-	        });
-
-		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-		var reactionStyle = metExploreD3.getReactionStyle();
-
-       	var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent")
-			.selectAll("g.node") 
-
-	    if(metaboliteStyle.isUseAlias()){
-				nodes
-					.filter(function(n){
-						return node.getId() == n.getId();
-					})
-					.filter(function(n){
-						return node.getBiologicalType() == 'metabolite';
-					})
-					.each(function(node){
-						node.setLabel(text);
-						if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
-						{
-							d3.select(this)
-								.select("text")
-								.remove();
-
-							metExploreD3.GraphNode.addText(node, "viz");
-						}
-					});
-	    }
-
-	    if(reactionStyle.isUseAlias()){
-				nodes
-					.filter(function(n){
-						return node.getId() == n.getId();
-					})
-					.filter(function(n){
-						return node.getBiologicalType() == 'reac';
-					})
-					.each(function(node){
-						node.setLabel(text);
-						if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
-						{
-							metExploreD3.GraphNode.removeText(node, "viz");
-							metExploreD3.GraphNode.addText(node, "viz");
-						}
-					});
-	    }
-	    _metExploreViz.setDataFromWebSite(JSON.stringify(network));
     },
 
 	/*******************************************
