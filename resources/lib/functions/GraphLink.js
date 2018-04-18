@@ -1935,8 +1935,10 @@ metExploreD3.GraphLink = {
      */
     tick : function(panel, scale) {
         //Ajout
-        if (metExploreD3.GraphFunction.curvedPath == true && panel == "viz"){
-            metExploreD3.GraphFunction.bundleLinks();
+        //if (metExploreD3.GraphFunction.curvedPath == true && panel == "viz"){
+        if (metExploreD3.GraphStyleEdition.curvedPath == true && panel == "viz"){
+            //metExploreD3.GraphFunction.bundleLinks();
+            metExploreD3.GraphStyleEdition.bundleLinks();
         }
         else {
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";

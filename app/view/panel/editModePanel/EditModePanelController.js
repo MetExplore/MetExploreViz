@@ -27,11 +27,16 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
                 var fontBold = view.lookupReference('checkBoldFont').getValue();
                 var fontItalic = view.lookupReference('checkItalicFont').getValue();
                 var fontUnderline = view.lookupReference('checkUnderlineFont').getValue();
-                metExploreD3.GraphFunction.changeAllFontType(fontType);
+                /*metExploreD3.GraphFunction.changeAllFontType(fontType);
                 (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphFunction.changeAllFontSize(fontSize) : null;
                 metExploreD3.GraphFunction.changeAllFontBold(fontBold);
                 metExploreD3.GraphFunction.changeAllFontItalic(fontItalic);
-                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline);
+                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline);*/
+                metExploreD3.GraphStyleEdition.changeAllFontType(fontType);
+                (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphStyleEdition.changeAllFontSize(fontSize) : null;
+                metExploreD3.GraphStyleEdition.changeAllFontBold(fontBold);
+                metExploreD3.GraphStyleEdition.changeAllFontItalic(fontItalic);
+                metExploreD3.GraphStyleEdition.changeAllFontUnderline(fontUnderline);
             },
             scope : me
         });
@@ -44,11 +49,16 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
                 var fontBold = view.lookupReference('checkBoldFontSelection').getValue();
                 var fontItalic = view.lookupReference('checkItalicFontSelection').getValue();
                 var fontUnderline = view.lookupReference('checkUnderlineFontSelection').getValue();
-                metExploreD3.GraphFunction.changeAllFontType(fontType, "selection");
+                /*metExploreD3.GraphFunction.changeAllFontType(fontType, "selection");
                 (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphFunction.changeAllFontSize(fontSize, "selection") : null;
                 metExploreD3.GraphFunction.changeAllFontBold(fontBold, "selection");
                 metExploreD3.GraphFunction.changeAllFontItalic(fontItalic, "selection");
-                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline, "selection");
+                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline, "selection");*/
+                metExploreD3.GraphStyleEdition.changeAllFontType(fontType, "selection");
+                (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphStyleEdition.changeAllFontSize(fontSize, "selection") : null;
+                metExploreD3.GraphStyleEdition.changeAllFontBold(fontBold, "selection");
+                metExploreD3.GraphStyleEdition.changeAllFontItalic(fontItalic, "selection");
+                metExploreD3.GraphStyleEdition.changeAllFontUnderline(fontUnderline, "selection");
             },
             scope : me
         });
@@ -61,11 +71,16 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
                 var fontBold = view.lookupReference('checkBoldFontMetabolite').getValue();
                 var fontItalic = view.lookupReference('checkItalicFontMetabolite').getValue();
                 var fontUnderline = view.lookupReference('checkUnderlineFontMetabolite').getValue();
-                metExploreD3.GraphFunction.changeAllFontType(fontType, "metabolite");
+                /*metExploreD3.GraphFunction.changeAllFontType(fontType, "metabolite");
                 (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphFunction.changeAllFontSize(fontSize, "metabolite") : null;
                 metExploreD3.GraphFunction.changeAllFontBold(fontBold, "metabolite");
                 metExploreD3.GraphFunction.changeAllFontItalic(fontItalic, "metabolite");
-                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline, "metabolite");
+                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline, "metabolite");*/
+                metExploreD3.GraphStyleEdition.changeAllFontType(fontType, "metabolite");
+                (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphStyleEdition.changeAllFontSize(fontSize, "metabolite") : null;
+                metExploreD3.GraphStyleEdition.changeAllFontBold(fontBold, "metabolite");
+                metExploreD3.GraphStyleEdition.changeAllFontItalic(fontItalic, "metabolite");
+                metExploreD3.GraphStyleEdition.changeAllFontUnderline(fontUnderline, "metabolite");
             },
             scope : me
         });
@@ -78,11 +93,16 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
                 var fontBold = view.lookupReference('checkBoldFontReaction').getValue();
                 var fontItalic = view.lookupReference('checkItalicFontReaction').getValue();
                 var fontUnderline = view.lookupReference('checkUnderlineFontReaction').getValue();
-                metExploreD3.GraphFunction.changeAllFontType(fontType, "reaction");
+                /*metExploreD3.GraphFunction.changeAllFontType(fontType, "reaction");
                 (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphFunction.changeAllFontSize(fontSize, "reaction") : null;
                 metExploreD3.GraphFunction.changeAllFontBold(fontBold, "reaction");
                 metExploreD3.GraphFunction.changeAllFontItalic(fontItalic, "reaction");
-                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline, "reaction");
+                metExploreD3.GraphFunction.changeAllFontUnderline(fontUnderline, "reaction");*/
+                metExploreD3.GraphStyleEdition.changeAllFontType(fontType, "reaction");
+                (!isNaN(fontSize) && fontSize>0 && fontSize<40) ? metExploreD3.GraphStyleEdition.changeAllFontSize(fontSize, "reaction") : null;
+                metExploreD3.GraphStyleEdition.changeAllFontBold(fontBold, "reaction");
+                metExploreD3.GraphStyleEdition.changeAllFontItalic(fontItalic, "reaction");
+                metExploreD3.GraphStyleEdition.changeAllFontUnderline(fontUnderline, "reaction");
             },
             scope : me
         });
@@ -91,12 +111,20 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
             click : function()
             {
                 var curveBundling = view.lookupReference('EdgeBundling').getValue();
-                if (curveBundling == true) {
+                /*if (curveBundling == true) {
                     metExploreD3.GraphFunction.curvedPath = true;
                     metExploreD3.GraphFunction.bundleLinks();
                 }
                 else {
                     metExploreD3.GraphFunction.curvedPath = false;
+                    metExploreD3.GraphLink.tick("viz");
+                }*/
+                if (curveBundling == true) {
+                    metExploreD3.GraphStyleEdition.curvedPath = true;
+                    metExploreD3.GraphStyleEdition.bundleLinks();
+                }
+                else {
+                    metExploreD3.GraphStyleEdition.curvedPath = false;
                     metExploreD3.GraphLink.tick("viz");
                 }
             },

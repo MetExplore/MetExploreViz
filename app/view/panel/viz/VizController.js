@@ -178,7 +178,8 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                     });
 
                     //Ajout et Modif
-					if (metExploreD3.GraphFunction.editMode==false) {
+					//if (metExploreD3.GraphFunction.editMode==false) {
+                    if (metExploreD3.GraphStyleEdition.editMode==false) {
                         viz.CtxMenu = new Ext.menu.Menu({
                             items: [{
                                 text: 'Remove nodes',

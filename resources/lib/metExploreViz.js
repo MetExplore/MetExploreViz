@@ -11,7 +11,7 @@ var metExploreD3 = {
     GraphPath:"",
     GraphNode:"",
     //Ajout
-    NewFunction:"",
+    GraphStyleEdition:"",
     //Fin Ajout
     Features:"",
     user:"",

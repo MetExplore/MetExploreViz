@@ -5,8 +5,8 @@
     
 metExploreD3.GraphFunction = {
 	//Ajout
-	editMode: false,
-	curvedPath: false,
+	//editMode: false,
+	//curvedPath: false,
 	//Fin Ajout
 
     bfs : function (node){
@@ -1480,7 +1480,7 @@ metExploreD3.GraphFunction = {
 		}
 		return T;
 	}
-	//Ajout
+	/*//Ajout
 	,
 	toggleEditMode : function () {
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
@@ -1564,7 +1564,8 @@ metExploreD3.GraphFunction = {
             }
         });
     },
-    changeAllFontSize : function (text, targets = 0) {
+    changeAllFontSize : function (text, targets) {
+		targets = (typeof targets !== 'undefined') ? targets : 0;
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
@@ -1588,7 +1589,8 @@ metExploreD3.GraphFunction = {
             .select("text")
             .style("font-family",text);
     },
-    changeAllFontType : function (text, targets = 0) {
+    changeAllFontType : function (text, targets) {
+        targets = (typeof targets !== 'undefined') ? targets : 0;
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
@@ -1617,7 +1619,8 @@ metExploreD3.GraphFunction = {
             nodeLabel.style("font-weight", "normal");
 		}
     },
-	changeAllFontBold : function (bool, targets = 0) {
+	changeAllFontBold : function (bool, targets) {
+        targets = (typeof targets !== 'undefined') ? targets : 0;
 		var boldOrNot = (bool) ? "bold" : "normal";
 		d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -1647,7 +1650,8 @@ metExploreD3.GraphFunction = {
             nodeLabel.style("font-style", "normal");
         }
     },
-    changeAllFontItalic : function (bool, targets = 0) {
+    changeAllFontItalic : function (bool, targets) {
+        targets = (typeof targets !== 'undefined') ? targets : 0;
         var italicOrNot = (bool) ? "italic" : "normal";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -1677,7 +1681,8 @@ metExploreD3.GraphFunction = {
             nodeLabel.style("text-decoration-line", "none");
         }
     },
-    changeAllFontUnderline : function (bool, targets = 0) {
+    changeAllFontUnderline : function (bool, targets) {
+        targets = (typeof targets !== 'undefined') ? targets : 0;
         var underlineOrNot = (bool) ? "underline" : "none";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -1706,16 +1711,6 @@ metExploreD3.GraphFunction = {
             })
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
         // Create arrowhead marker
-        /*d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
-            .attr("id", "marker")
-            .attr("viewBox", "0 -10 20 20")
-            //.attr("refX", 25)
-            //.attr("refY", 2)
-            .attr("markerWidth", 30)
-            .attr("markerHeight", 20)
-            .attr("orient", "auto")
-            .append("path")
-            .attr("d", "M0,-5L10,0L0,5");*/
         d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
             .attr("id", "marker")
             .attr("viewBox", "-10 -5 20 20")
@@ -2003,7 +1998,7 @@ metExploreD3.GraphFunction = {
         return [centroidSourceX, centroidSourceY, centroidTargetX, centroidTargetY];
     },
 
-	//Fin Ajout
+	*///Fin Ajout
 
 	/**
 	 * SUBNETWORK EXTRACTION Path-finding algorithm Dijkstra
