@@ -277,8 +277,8 @@ metExploreD3.GraphFunction = {
     	var algo = "Sugiyama (OGDF)";
 		var params = [];
 		params.push({"name":"node spacing", "value":50});
-		params.push({"name":"node distance", "value":50});
 		params.push({"name":"layer distance", "value":50});
+		params.push({"name":"node distance", "value":25});
 		metExploreD3.GraphFunction.applyTulipLayoutAlgorithmInWorker(algo, params);
     },
 
