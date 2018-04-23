@@ -1260,6 +1260,24 @@ metExploreD3.GraphLink = {
         var size = 20;
         // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
         var refY = linkStyle.getMarkerWidth() / 2;
+        // The x-axis coordinate of the reference point which is to be aligned exactly at the marker position.
+        // var refX = linkStyle.getMarkerHeight / 2;
+
+        // Adding arrow on links
+        // d3.select("#"+parent).select("#D3viz").select("#graphComponent").append("svg:defs").selectAll("marker")
+        // 	.data(["in", "out"])
+        // 	.enter().append("svg:marker")
+        // 	.attr("id", String)
+        // 	.attr("viewBox", "0 0 "+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight())
+        // 	.attr("refY", refY)
+        // 	.attr("markerWidth", linkStyle.getMarkerWidth())
+        // 	.attr("markerHeight", linkStyle.getMarkerHeight())
+        // 	.attr("orient", "auto")
+        // 	.append("svg:path")
+        // 	.attr("class", String)
+        // 	.attr("d", "M0,0L"+linkStyle.getMarkerWidth()+","+linkStyle.getMarkerHeight()/2+"L0,"+linkStyle.getMarkerWidth()+"Z")
+        // 	.style("visibility", "hidden");
+        // .attr("d", "M"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+" L"+linkStyle.getMarkerWidth()/2+" "+(3*linkStyle.getMarkerHeight()/4)+" A"+linkStyle.getMarkerHeight()+" "+linkStyle.getMarkerHeight()+" 0 0 0 "+linkStyle.getMarkerWidth()/2+" "+(1*linkStyle.getMarkerHeight()/4)+" L"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+"Z")
         // Append link on panel
         metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
             .data(networkData.getLinks())
