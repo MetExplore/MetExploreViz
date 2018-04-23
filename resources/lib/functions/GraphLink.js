@@ -1935,9 +1935,11 @@ metExploreD3.GraphLink = {
      */
     tick : function(panel, scale) {
         //Ajout
-        //if (metExploreD3.GraphFunction.curvedPath == true && panel == "viz"){
+        // If you want to use selection on compartments path
+        d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
+            .attr("d", metExploreD3.GraphNode.groupPath)
+            .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
         if (metExploreD3.GraphStyleEdition.curvedPath == true && panel == "viz"){
-            //metExploreD3.GraphFunction.bundleLinks();
             metExploreD3.GraphStyleEdition.bundleLinks();
         }
         else {
@@ -1948,9 +1950,9 @@ metExploreD3.GraphLink = {
                 funcPath = metExploreD3.GraphLink.funcPath3;
 
             // If you want to use selection on compartments path
-            d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
+            /*d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
                 .attr("d", metExploreD3.GraphNode.groupPath)
-                .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
+                .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));*/
 
             d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                 .selectAll("path.link")

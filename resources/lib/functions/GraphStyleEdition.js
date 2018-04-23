@@ -19,7 +19,6 @@ metExploreD3.GraphStyleEdition = {
             force.stop();
             d3.select("#viz").select("#buttonAnim").select("image").remove();
             metExploreD3.GraphStyleEdition.startDragLabel();
-            console.log(metExploreD3.GraphNode.node.selectAll('text'));
             var component = Ext.getCmp('editModePanel');
         }
         else {
