@@ -73,6 +73,7 @@ metExploreD3.GraphStyleEdition = {
         if (!metExploreD3.GraphStyleEdition.editMode) {
             GraphNodes.selectAll("text").style("pointer-events", "none");
         }
+        //
     },
     changeFontSize : function (node) {
         metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
@@ -221,6 +222,23 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("text-decoration-line", underlineOrNot);
     },
+    setStartingStyle : function (node) {
+        //gestion undefined à prendre en compte
+        if (node.labelFont) {
+            var selection = d3.select("#viz").select("#D3viz").select("#graphComponent")
+                .selectAll("g.node")
+                .filter(function (d) {
+                    return d.getId() == node.getId();
+                })
+                .select("text");
+            if (node.labelFont.font) { selection.style("font-family", node.labelFont.font); }
+            if (node.labelFont.fontSize) { selection.style("font-size", node.labelFont.fontSize); }
+            if (node.labelFont.fontBold) { selection.style("font-weight", node.labelFont.fontBold); }
+            if (node.labelFont.fontItalic) { selection.style("font-style", node.labelFont.fontItalic); }
+            if (node.labelFont.fontUnderline) { selection.style("text-decoration-line", node.labelFont.fontUnderline); }
+            if (node.labelFont.fontOpacity) { selection.attr("opacity", node.labelFont.fontOpacity); }
+        }
+    },
     bundleLinks : function () {
         var reactionStyle = metExploreD3.getReactionStyle();
         var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -232,16 +250,6 @@ metExploreD3.GraphStyleEdition = {
             })
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
         // Create arrowhead marker
-        /*d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
-            .attr("id", "marker")
-            .attr("viewBox", "0 -10 20 20")
-            //.attr("refX", 25)
-            //.attr("refY", 2)
-            .attr("markerWidth", 30)
-            .attr("markerHeight", 20)
-            .attr("orient", "auto")
-            .append("path")
-            .attr("d", "M0,-5L10,0L0,5");*/
         d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
             .attr("id", "marker")
             .attr("viewBox", "-10 -5 20 20")
@@ -252,7 +260,6 @@ metExploreD3.GraphStyleEdition = {
             .attr("orient", "auto")
             .append("path")
             .attr("d", "M0,6L-5,12L9,6L-5,0");
-        //.attr("d", "M0,0L0,10L9,5");
         reactions.each(function (node) {
             var enteringLinks = links.filter(function (link) {
                 return node.id==link.getTarget().getId();
@@ -527,6 +534,21 @@ metExploreD3.GraphStyleEdition = {
         var centroidTargetY = targetY / countExit;
 
         return [centroidSourceX, centroidSourceY, centroidTargetX, centroidTargetY];
+    },
+    createLabelStyleObject : function (node) {
+        var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(d){return d.getId()==node.getId();})
+            .select("text");
+        var labelStyle = {
+            font : nodeLabel.style("font-family"),
+            fontSize : nodeLabel.style("font-size"),
+            fontBold : nodeLabel.style("font-weight"),
+            fontItalic : nodeLabel.style("font-style"),
+            fontUnderline : nodeLabel.style("text-decoration-line"),
+            fontOpacity : nodeLabel.attr("opacity")
+        };
+        return labelStyle;
     }
 
 }

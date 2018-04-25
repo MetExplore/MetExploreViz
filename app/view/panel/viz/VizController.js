@@ -260,7 +260,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                                     text: 'Ok',
                                                     handler: function () {
                                                         var fontType = Ext.getCmp('fontStyleWindow').getValue();
-                                                        metExploreD3.GraphFunction.changeFontType(theNode, fontType);
+                                                        metExploreD3.GraphStyleEdition.changeFontType(theNode, fontType);
                                                     }
                                                 }
                                             ]
@@ -294,7 +294,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                                     text: 'Ok',
                                                     handler: function () {
                                                         var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
-                                                        metExploreD3.GraphFunction.changeAllFontType(fontType ,"selection");
+                                                        metExploreD3.GraphStyleEdition.changeAllFontType(fontType ,"selection");
                                                     }
                                                 }
                                             ]
@@ -306,14 +306,14 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 menu: [{
                                     text: 'This node',
                                     handler: function () {
-                                        metExploreD3.GraphFunction.changeFontSize(theNode)
+                                        metExploreD3.GraphStyleEdition.changeFontSize(theNode)
                                     }
                                 },{
                                     text: 'All selected nodes',
                                     handler: function () {
                                         metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
                                             if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
-                                                metExploreD3.GraphFunction.changeAllFontSize(text, "selection");
+                                                metExploreD3.GraphStyleEdition.changeAllFontSize(text, "selection");
                                             }
                                         })
                                     }
@@ -325,17 +325,17 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     menu: [{
                                         text: 'Bold',
                                         handler: function () {
-                                            metExploreD3.GraphFunction.changeFontBold(theNode)
+                                            metExploreD3.GraphStyleEdition.changeFontBold(theNode)
                                         }
                                     },{
                                         text: 'Italic',
                                         handler: function () {
-                                            metExploreD3.GraphFunction.changeFontItalic(theNode)
+                                            metExploreD3.GraphStyleEdition.changeFontItalic(theNode)
                                         }
                                     },{
                                         text: 'Underline',
                                         handler: function () {
-                                            metExploreD3.GraphFunction.changeFontUnderline(theNode)
+                                            metExploreD3.GraphStyleEdition.changeFontUnderline(theNode)
                                         }
                                     }]
                                 },{
@@ -343,17 +343,17 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     menu: [{
                                         text: 'Bold',
                                         handler: function () {
-                                            metExploreD3.GraphFunction.changeAllFontBold(true, "selection")
+                                            metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection")
                                         }
                                     },{
                                         text: 'Italic',
                                         handler: function () {
-                                            metExploreD3.GraphFunction.changeAllFontItalic(true, "selection")
+                                            metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection")
                                         }
                                     },{
                                         text: 'Underline',
                                         handler: function () {
-                                            metExploreD3.GraphFunction.changeAllFontUnderline(true, "selection")
+                                            metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection")
                                         }
                                     }]
                                 }]
