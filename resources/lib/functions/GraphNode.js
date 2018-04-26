@@ -2422,6 +2422,7 @@ metExploreD3.GraphNode = {
                 var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 // Ajout
 				// Increase the size of the node during mouseover
+                // To improve
                 var labelElement = nodes.filter(function (element) {
 					return (d.getId() == element.getId());
                 }).select("text");
@@ -2429,9 +2430,14 @@ metExploreD3.GraphNode = {
                 var newX = labelElement.attr("x")/2;
                 var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
                 var labelScale = d3.transform(labelElement.attr("transform")).scale;
-                labelElement.attr("y",newY);
-                labelElement.attr("x",newX);
-                labelElement.attr("transform", "translate("+(labelTranslate[0]/2)+", "+labelTranslate[1]/2+") scale("+labelScale+")");
+                if (metExploreD3.GraphStyleEdition.editMode){
+                    labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                }
+                else {
+                    labelElement.attr("y", newY);
+                    labelElement.attr("x", newX);
+                    labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
+                }
                 // Fin Ajout
                 d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
 
@@ -2528,9 +2534,14 @@ metExploreD3.GraphNode = {
                 var newX = labelElement.attr("x")*2;
                 var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
                 var labelScale = d3.transform(labelElement.attr("transform")).scale;
-                labelElement.attr("y",newY);
-                labelElement.attr("x",newX);
-                labelElement.attr("transform", "translate("+(labelTranslate[0]*2)+", "+labelTranslate[1]*2+") scale("+labelScale+")");
+                if (metExploreD3.GraphStyleEdition.editMode) {
+                    labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                }
+                else {
+                    labelElement.attr("y", newY);
+                    labelElement.attr("x", newX);
+                    labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")");
+                }
 				// Fin Ajout
                 d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
 

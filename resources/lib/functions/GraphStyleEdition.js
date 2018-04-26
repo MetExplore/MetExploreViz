@@ -9,11 +9,11 @@ metExploreD3.GraphStyleEdition = {
         if (metExploreD3.GraphStyleEdition.editMode==false) {
             metExploreD3.GraphStyleEdition.editMode=true;
             console.log('edit mode entered');
-            GraphNodes
+            /*GraphNodes
                 .each(function(node) {
                     node.setLocked(true);
                     node.fixed = node.isLocked();
-                });
+                });*/
             metExploreD3.GraphNetwork.animationButtonOff('viz');
             var force = _metExploreViz.getSessionById("viz").getForce();
             force.stop();
@@ -24,11 +24,11 @@ metExploreD3.GraphStyleEdition = {
         else {
             metExploreD3.GraphStyleEdition.editMode=false;
             console.log('edit mode exited');
-            GraphNodes
+            /*GraphNodes
                 .each(function(node) {
                     node.setLocked(false);
                     node.fixed = node.isLocked();
-                });
+                });*/
             metExploreD3.GraphNetwork.animationButtonOff('viz');
             metExploreD3.GraphStyleEdition.endDragLabel();
             metExploreD3.GraphNode.applyEventOnNode('viz');
@@ -73,6 +73,7 @@ metExploreD3.GraphStyleEdition = {
         if (!metExploreD3.GraphStyleEdition.editMode) {
             GraphNodes.selectAll("text").style("pointer-events", "none");
         }
+        GraphNodes.selectAll("rect").on("mouseover", null).on("mouseenter", null).on("mouseleave", null).on("mousedown", null).on("touchstart", null);
         //
     },
     changeFontSize : function (node) {
