@@ -2411,8 +2411,6 @@ metExploreD3.GraphNode = {
         metExploreD3.GraphNode.node
             .filter(function(d){ return !d.isDuplicated(); })
             .on("mouseenter", function(d) {
-            	//console.log(d);
-                //console.log(this);
 
                 var transform = d3.select(this).attr("transform");
                 var scale=transform.substring(transform.indexOf("scale"),transform.length);
@@ -2423,15 +2421,17 @@ metExploreD3.GraphNode = {
 
                 var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 // Ajout
-				// TO DO Increase the size of the node during mouseover
-                /*var result = nodes.filter(function (z) {
-					return (d.getId() == z.getId());
-                });
-                console.log(result);
-				console.log(result.selectAll("rect"));
-                var symbolTranslate = d3.transform(result.selectAll("rect").attr("transform")).translate;
-                console.log(symbolTranslate);
-                result.selectAll("rect").attr("transform", "translate("+symbolTranslate[0]*2+", "+symbolTranslate[1]*2+") scale("+scaleVal*2+")");*/
+				// Increase the size of the node during mouseover
+                var labelElement = nodes.filter(function (element) {
+					return (d.getId() == element.getId());
+                }).select("text");
+                var newY = labelElement.attr("y")/2;
+                var newX = labelElement.attr("x")/2;
+                var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                labelElement.attr("y",newY);
+                labelElement.attr("x",newX);
+                labelElement.attr("transform", "translate("+(labelTranslate[0]/2)+", "+labelTranslate[1]/2+") scale("+labelScale+")");
                 // Fin Ajout
                 d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
 
@@ -2520,6 +2520,18 @@ metExploreD3.GraphNode = {
                     .classed('hide', true);
 
                 var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                // Ajout
+                var labelElement = nodes.filter(function (element) {
+                    return (d.getId() == element.getId());
+                }).select("text");
+                var newY = labelElement.attr("y")*2;
+                var newX = labelElement.attr("x")*2;
+                var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                labelElement.attr("y",newY);
+                labelElement.attr("x",newX);
+                labelElement.attr("transform", "translate("+(labelTranslate[0]*2)+", "+labelTranslate[1]*2+") scale("+labelScale+")");
+				// Fin Ajout
                 d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
 
                 if(!d.isLocked())
@@ -2564,6 +2576,19 @@ metExploreD3.GraphNode = {
                     scaleVal=1;
 
                 var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                // Ajout
+                // Increase the size of the node during mouseover
+                var labelElement = nodes.filter(function (element) {
+                    return (d.getId() == element.getId());
+                }).select("text");
+                var newY = labelElement.attr("y")/2;
+                var newX = labelElement.attr("x")/2;
+                var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                labelElement.attr("y",newY);
+                labelElement.attr("x",newX);
+                labelElement.attr("transform", "translate("+(labelTranslate[0]/2)+", "+labelTranslate[1]/2+") scale("+labelScale+")");
+                // Fin Ajout
                 d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
 
                 var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
@@ -2608,6 +2633,18 @@ metExploreD3.GraphNode = {
             })
             .on("mouseover", function(d) {
                 var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                // Ajout
+                var labelElement = nodes.filter(function (element) {
+                    return (d.getId() == element.getId());
+                }).select("text");
+                var newY = labelElement.attr("y")*2;
+                var newX = labelElement.attr("x")*2;
+                var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                labelElement.attr("y",newY);
+                labelElement.attr("x",newX);
+                labelElement.attr("transform", "translate("+(labelTranslate[0]*2)+", "+labelTranslate[1]*2+") scale("+labelScale+")");
+                // Fin Ajout
                 d3.select(this)
                     .each(function(node){
                         var last = nodes[0][nodes.size()-1];

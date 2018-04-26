@@ -64,7 +64,7 @@ metExploreD3.GraphStyleEdition = {
             });
         if (metExploreD3.GraphStyleEdition.editMode){
             GraphNodes.selectAll("text").style("pointer-events", "auto");
-            GraphNodes.on("mouseover", null).on("mouseenter", null).on("mouseleave", null).on("mousedown", null).on("touchstart", null);
+            //GraphNodes.on("mouseover", null).on("mouseenter", null).on("mouseleave", null).on("mousedown", null).on("touchstart", null);
             GraphNodes.selectAll("text").call(labelDrag);
         }
     },
