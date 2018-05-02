@@ -5,6 +5,7 @@ metExploreD3.GraphStyleEdition = {
 
 
     toggleEditMode : function () {
+        // Enter edition mode, revealing the editModePanel, stopping force layout, and initiating label dragging, or leave the edition Mode
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         if (metExploreD3.GraphStyleEdition.editMode==false) {
             metExploreD3.GraphStyleEdition.editMode=true;
@@ -36,6 +37,7 @@ metExploreD3.GraphStyleEdition = {
     }
     ,
     startDragLabel : function () {
+        // Apply drag event on node labels
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var labelDrag = d3.behavior.drag()
             .on ("dragstart", function (d,i) {
@@ -69,6 +71,7 @@ metExploreD3.GraphStyleEdition = {
         }
     },
     endDragLabel : function () {
+        // Remove drag event on node labels
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         if (!metExploreD3.GraphStyleEdition.editMode) {
             GraphNodes.selectAll("text").style("pointer-events", "none");
@@ -77,6 +80,7 @@ metExploreD3.GraphStyleEdition = {
         //
     },
     changeFontSize : function (node) {
+        // Change the font size of the node label
         metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
             if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
                 d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -88,6 +92,7 @@ metExploreD3.GraphStyleEdition = {
         });
     },
     changeAllFontSize : function (text, targets) {
+        // Change the font size of all the targeted nodes labels
         targets = (typeof targets !== 'undefined') ? targets : 0;
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -106,6 +111,7 @@ metExploreD3.GraphStyleEdition = {
             .style("font-size",text+"px");
     },
     changeFontType : function (node, text) {
+        // Change the font of the node label
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(d){return d.getId()==node.getId();})
@@ -113,6 +119,7 @@ metExploreD3.GraphStyleEdition = {
             .style("font-family",text);
     },
     changeAllFontType : function (text, targets) {
+        // Change the font of all the targeted nodes labels
         targets = (typeof targets !== 'undefined') ? targets : 0;
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -131,6 +138,7 @@ metExploreD3.GraphStyleEdition = {
             .style("font-family",text);
     },
     changeFontBold : function (node) {
+        // Change the font boldness of the node label
         var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(d){return d.getId()==node.getId();})
@@ -143,6 +151,7 @@ metExploreD3.GraphStyleEdition = {
         }
     },
     changeAllFontBold : function (bool, targets) {
+        // Change the font boldness of all the targeted nodes labels
         targets = (typeof targets !== 'undefined') ? targets : 0;
         var boldOrNot = (bool) ? "bold" : "normal";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -162,6 +171,7 @@ metExploreD3.GraphStyleEdition = {
             .style("font-weight", boldOrNot);
     },
     changeFontItalic : function (node) {
+        // Italicize the font of the node label or revert to normal
         var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(d){return d.getId()==node.getId();})
@@ -174,6 +184,7 @@ metExploreD3.GraphStyleEdition = {
         }
     },
     changeAllFontItalic : function (bool, targets) {
+        // Italicize the font of all the targeted nodes labels or revert to normal
         targets = (typeof targets !== 'undefined') ? targets : 0;
         var italicOrNot = (bool) ? "italic" : "normal";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -193,6 +204,7 @@ metExploreD3.GraphStyleEdition = {
             .style("font-style", italicOrNot);
     },
     changeFontUnderline : function (node) {
+        // Underline the font of the node label or revert to normal
         var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(d){return d.getId()==node.getId();})
@@ -205,6 +217,7 @@ metExploreD3.GraphStyleEdition = {
         }
     },
     changeAllFontUnderline : function (bool, targets) {
+        // Underline the font of all the targeted nodes labels or revert to normal
         targets = (typeof targets !== 'undefined') ? targets : 0;
         var underlineOrNot = (bool) ? "underline" : "none";
         d3.select("#viz").select("#D3viz").select("#graphComponent")

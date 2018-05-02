@@ -158,6 +158,18 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
             },
             scope : me
         });
+
+        /*view.lookupReference('loadTest').on({
+            click : function(){
+                var component = Ext.getCmp('IDimportImage');
+                console.log(component);
+                if(component!= undefined){
+                    component.fileInputEl.dom.click();
+                }
+            },
+            scope : me
+        });*/
+
     },
 
     drawCaption : function(){

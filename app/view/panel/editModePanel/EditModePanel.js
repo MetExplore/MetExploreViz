@@ -434,6 +434,68 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
 
                 }
             ]
+        },
+        /*{
+            title: 'upload',
+            xtype: 'panel',
+            collapsible: true,
+            collapsed:true,
+            items: [
+                {
+                    xtype:'menu',
+                    width: '100%',
+                    margin: '0 0 10 0',
+                    floating: false,
+                    items: [{
+                        text: 'Test loading',
+                        reference:'loadTest'
+                    }]
+                },
+                {
+                    xtype: 'fieldset',
+                    title: 'My Uploader',
+                    items: [
+                        {
+                            xtype: 'filefield',
+                            label: "MyPhoto:",
+                            name: 'photo',
+                            accept: 'image',
+                            multiple: true
+                        }
+                    ]
+                },
+                {
+                    xtype: 'filebutton',
+                    multiple: true
+                }
+            ]
+        },*/
+        {
+            xtype: 'panel',
+            //plugins: 'viewport',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'textfield',
+                fieldLabel: 'FileName',
+                name: 'fileNames',
+                readOnly: true,
+                labelAlign: 'top',
+                allowBlank: false,
+                anchor: '100%',
+                submitValue: false
+            }, {
+                xtype: 'buttonImportImage',
+                cls: 'browse-file-button',
+                name: 'file',
+                anchor: '100%',
+                multiple: true,
+                hideLabel: true,
+                buttonOnly: true,
+                buttonText: 'Choose files'
+            }]
         }
     ]
 });
