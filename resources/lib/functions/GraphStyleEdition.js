@@ -563,6 +563,41 @@ metExploreD3.GraphStyleEdition = {
             fontOpacity : nodeLabel.attr("opacity")
         };
         return labelStyle;
-    }
+    },
+    displayImageOnNode : function(fileList){
+        /*d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function (d) {
+                return (d.getBiologicalType() == "metabolite");
+            })
+            .each(function (d) {
+                console.log(d.id);
+            })*/
+        for (var i=0; i<fileList.length; i++){
+            console.log(i);
+            if (fileList[i].type === "image/png"){
+                var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
+                console.log(fileList[i]);
+                var urlImage = URL.createObjectURL(fileList[i]);//.replace(/\bblob:/, "");
+                console.log(urlImage);
+                console.log(typeof urlImage);
+                d3.select("#viz").select("#D3viz").select("#graphComponent")
+                    .selectAll("g.node")
+                    .filter(function (d) {
+                        return (d.id == nodeName);
+                    })
+                    .each(function (d) {
+                        console.log(d.id);
+                    })
+                    .append("image")
+                    //.attr("href", document.location.href.split("index.html")[0] + "resources/icons/handcursor.svg")
+                    .attr("href", urlImage)
+                    .attr("width", "50")
+                    .attr("height", "50");
+            }
+            console.log(document.location.href.split("index.html")[0]);
+            console.log(typeof document.location.href.split("index.html")[0]);
+        }
 
+    }
 }
