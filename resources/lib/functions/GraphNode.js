@@ -215,9 +215,11 @@ metExploreD3.GraphNode = {
 				return node.getBiologicalType()=="reaction";
 			});
 
-		reactions
+		// Ajout et Modif
+		/*reactions
 			.select("text")
-			.remove();
+			.remove();*/
+		// Fin ajout
 
 		reactions
 			.setNodeForm(
@@ -297,9 +299,11 @@ metExploreD3.GraphNode = {
 				return node.getBiologicalType()=="metabolite";
 			});
 
-		metabolites
+		// Ajout et Modif
+		/*metabolites
 			.select("text")
-			.remove();
+			.remove();*/
+		// Fin Ajout;
 
 		metabolites
 			.filter(function(d) {
@@ -604,7 +608,7 @@ metExploreD3.GraphNode = {
 		var session = _metExploreViz.getSessionById(panel);
 		if(session!=undefined)  
 		{
-			// Chage the node statute
+			// Change the node statute
 			d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 				.selectAll("g.node")
 				.filter(function(node){return d.getDbIdentifier()==node.getDbIdentifier();})
@@ -740,7 +744,7 @@ metExploreD3.GraphNode = {
 		if(d.getBiologicalType() =='metabolite'){
 			var minDim = Math.min(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
   		 	
-	 		// if there is no text we define it for a metabolie WITHOUT the coresponding SVG image 
+	 		// if there is no text we define it for a metabolite WITHOUT the corresponding SVG image
 			if(d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 				.selectAll("g.node")
 				.filter(function(node){return d.getId()==node.getId();}).select("text")=="")
@@ -752,6 +756,19 @@ metExploreD3.GraphNode = {
 
 
 			}
+			// Ajout
+			// set corresponding event handler
+            var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel())
+            metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
+            if (metExploreD3.GraphStyleEdition.editMode==true) {
+                metExploreD3.GraphStyleEdition.startDragLabel();
+            }
+            else {
+                metExploreD3.GraphStyleEdition.endDragLabel();
+                metExploreD3.GraphNode.applyEventOnNode('viz');
+			}
+
+			// Fin Ajout
 
   		 	if( d.getSvg()!="undefined" && d.getSvg()!=undefined && d.getSvg()!=""){ 
 	            if(d3.select("#"+panel).select("#D3viz").select("#graphComponent")
@@ -795,6 +812,18 @@ metExploreD3.GraphNode = {
 					.filter(function(node){return d.getId()==node.getId();})
 					.addNodeText(reactionStyle);
 			}
+            // Ajout
+            // set corresponding event handler
+            var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
+            metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
+            if (metExploreD3.GraphStyleEdition.editMode==true) {
+                metExploreD3.GraphStyleEdition.startDragLabel();
+            }
+            else {
+                metExploreD3.GraphStyleEdition.endDragLabel();
+                metExploreD3.GraphNode.applyEventOnNode('viz');
+            }
+            // Fin Ajout
 		} 
 	},
 
@@ -2588,7 +2617,7 @@ metExploreD3.GraphNode = {
 
                 var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 // Ajout
-                // Increase the size of the node during mouseover
+				// Keep the size the of node label when the node is highlighted
                 var labelElement = nodes.filter(function (element) {
                     return (d.getId() == element.getId());
                 }).select("text");

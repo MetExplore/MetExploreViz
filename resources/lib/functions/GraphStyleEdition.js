@@ -79,6 +79,42 @@ metExploreD3.GraphStyleEdition = {
         GraphNodes.selectAll("rect").on("mouseover", null).on("mouseenter", null).on("mouseleave", null).on("mousedown", null).on("touchstart", null);
         //
     },
+    changeNodeLabel: function (node, panel, text) {
+        // TO DO finish it
+        // Find why it is executed when selecting node
+        var nodeElement = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(d){return d.getId()==node.getId();});
+        var transform = nodeElement.select("text").attr("transform");
+        var style = nodeElement.select("text").attr("style");
+        var x = nodeElement.select("text").attr("x");
+        var y = nodeElement.select("text").attr("y");
+        var dy = nodeElement.select("text").attr("dy");
+        //console.log(nodeElement.select("text"));
+        nodeElement.select("text").remove();
+        nodeElement.append("svg:text")
+            .attr("fill", "black")
+            .attr("class", function(d) { return d.getBiologicalType(); })
+            .each(function(d) {
+                var el = d3.select(this);
+                text = text.split(' ');
+                el.text('');
+                for (var i = 0; i < text.length; i++) {
+                    var nameDOMFormat = $("<div/>").html(text[i]).text();
+                    var tspan = el.append('tspan').text(nameDOMFormat);
+                    if (i > 0)
+                        tspan.attr('x', 0).attr('dy', '10');
+                }
+            })
+            .attr("transform", transform)
+            .attr("style", style)
+            .attr("x", x)
+            .attr("y", y)
+            .attr("dy", dy);
+        //metExploreD3.GraphStyleEdition.toggleEditMode();
+        //metExploreD3.GraphStyleEdition.toggleEditMode();
+        //console.log(nodeElement);
+    },
     changeFontSize : function (node) {
         // Change the font size of the node label
         metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
@@ -598,6 +634,5 @@ metExploreD3.GraphStyleEdition = {
             console.log(document.location.href.split("index.html")[0]);
             console.log(typeof document.location.href.split("index.html")[0]);
         }
-
     }
 }
