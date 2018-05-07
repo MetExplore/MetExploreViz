@@ -1005,7 +1005,8 @@ metExploreD3.GraphNode = {
 				// 	}
 				// );
 
-		metExploreD3.GraphNode.node
+
+        metExploreD3.GraphNode.node
 			.filter(function(d){ return !d.isDuplicated(); })
 			.on("mouseenter", function(d) { 
 					

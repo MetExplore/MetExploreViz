@@ -1698,43 +1698,215 @@ metExploreD3.GraphMapping = {
 	* Mapping for MetExplore
 	*
 	*/
-	
-	/***********************************************
-	* Mapping to binary data 0 1
-	* This function will look at metabolites that have data
-	* maped and will color them in blue
-	* !!!!! Have to be modified in order to do some batch
-	* rendering
-	* @param {} conditionName : Condition choosed by the user
-	*/
-	graphMappingBinary : function(conditionName) {
-		var networkVizSessionStore = metExploreD3.getSessionsSet();
-		var session = metExploreD3.getSessionById(networkVizSessionStore, 'viz');
-		var force = session.getForce();
-		force.stop(); 
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
-		if(myMask!= undefined){
 
-			metExploreD3.showMask(myMask);
-        setTimeout(
-				function() {
-					metExploreD3.GraphMapping.fixMappingColorOnNode("#056da1", 1, conditionName);
-					
-					metExploreD3.hideMask(myMask);
-					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
-					if (anim=='true') {
-						var networkVizSessionStore = metExploreD3.getSessionsSet();	
-						var session = metExploreD3.getSessionById(networkVizSessionStore, 'viz');
-						var force = session.getForce();
-						
-						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-								force.resume();
-						}
+    /***********************************************
+     * Mapping to binary data 0 1
+     * This function will look at metabolites that have data
+     * maped and will color them in blue
+     * !!!!! Have to be modified in order to do some batch
+     * rendering
+     * @param {} conditionName : Condition choosed by the user
+     */
+    graphMappingBinary : function(conditionName) {
+        var networkVizSessionStore = metExploreD3.getSessionsSet();
+        var session = metExploreD3.getSessionById(networkVizSessionStore, 'viz');
+        var force = session.getForce();
+        force.stop();
+        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+        if(myMask!= undefined){
+
+            metExploreD3.showMask(myMask);
+            setTimeout(
+                function() {
+                    metExploreD3.GraphMapping.fixMappingColorOnNode("#056da1", 1, conditionName);
+
+                    metExploreD3.hideMask(myMask);
+                    var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+                    if (anim=='true') {
+                        var networkVizSessionStore = metExploreD3.getSessionsSet();
+                        var session = metExploreD3.getSessionById(networkVizSessionStore, 'viz');
+                        var force = session.getForce();
+
+                        if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+                            force.resume();
+                        }
+                    }
+                }, 1
+            );
+        }
+    },
+
+	/***********************************************
+     * Mapping to binary data 0 1
+     * This function will look at metabolites that have data
+     * maped and will color them in blue
+     * !!!!! Have to be modified in order to do some batch
+     * rendering
+     * @param {} conditionName : Condition choosed by the user
+     */
+    removeMappingSuggestion : function(conditionName) {
+
+        var session = _metExploreViz.getSessionById('viz');
+        var force = session.getForce();
+        force.stop();
+        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+        if(myMask!= undefined){
+
+            metExploreD3.showMask(myMask);
+            setTimeout(
+                function() {
+
+                // .filter(
+                //         function(d) {
+                //             if(d.getBiologicalType() == 'reaction')
+                //             {
+                //                 if (metExploreD3.getReactionById(reaction_Store, d.getId()).get(
+                //                         'mapped') == undefined)
+                //                     return false;
+                //                 else
+                //                 {
+                //                     if((metExploreD3.getReactionById(reaction_Store, d.getId()).get('mapped') != 0)
+                //                         && metExploreD3.getReactionById(reaction_Store, d.getId()).get(conditionName)==value){
+                //                         var sessionsStore = metExploreD3.getSessionsSet();
+                //                         var reactionStyle = metExploreD3.getReactionStyle();
+                //                         _MyThisGraphNode.addText(d, 'viz', reactionStyle, sessionsStore);
+                //                         return true;
+                //                     }
+                //                     else
+                //                     {
+                //                         return false;
+                //                     }
+                //                 }
+                //             }
+                //             else
+                //             {
+                //                 if(d.getBiologicalType() == 'metabolite'&& !d.isSideCompound())
+                //                 {
+                //                     if(metExploreD3.getMetaboliteById(metabolite_Store, d.getId())==null)
+                //                         return false;
+                //                     if (metExploreD3.getMetaboliteById(metabolite_Store, d.getId()).get(
+                //                             'mapped') == undefined)
+                //                         return false;
+                //                     else
+                //                     {
+                //                         if((metExploreD3.getMetaboliteById(metabolite_Store, d.getId()).get('mapped') != 0)
+                //                             && metExploreD3.getMetaboliteById(metabolite_Store, d.getId()).get(conditionName)==value){
+                //
+                //                             var sessionsStore = metExploreD3.getSessionsSet();
+                //                             var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+                //                             _MyThisGraphNode.addText(d, 'viz', metaboliteStyle, sessionsStore);
+                //                             return true;
+                //                         }
+                //                         else
+                //                         {
+                //                             return false;
+                //                         }
+                //                     }
+                //                 }
+                //             }
+                //
+                //         }
+                //     )
+                    metExploreD3.GraphNode.node
+                        .selectAll(".suggestion."+conditionName)
+                        .remove();
+
+					if(d3.selectAll('.suggestion')[0].length>0){
+						metExploreD3.GraphNode.node
+	            			.each(function(){
+	            				var  i = 0;
+	            				var suggestions = d3.select(this).selectAll('.suggestion')
+	            					.each(function(){
+			            				var position = 14*i;
+			            				d3.select(this)
+			                				.classed(conditionName, true)
+					                        .attr("height",20)
+					                        .attr("width",20)
+					                        .attr("x",7+position)
+					                        .attr("y",-20)
+										i++
+		            				});	
+	            			});
 					}
-		   		}, 1
-	   		);
-		}		
-	},
+					
+                    metExploreD3.hideMask(myMask);
+                    var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+                    if (anim=='true') {
+                        var session = _metExploreViz.getSessionById(networkVizSessionStore, 'viz');
+                        var force = session.getForce();
+
+                        if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+                            force.resume();
+                        }
+                    }
+                }, 1
+            );
+        }
+    },
+
+	/***********************************************
+     * Mapping to binary data 0 1
+     * This function will look at metabolites that have data
+     * maped and will color them in blue
+     * !!!!! Have to be modified in order to do some batch
+     * rendering
+     * @param {} conditionName : Condition choosed by the user
+     */
+    graphMappingSuggestion : function(conditionName, color) {
+
+        var session = _metExploreViz.getSessionById('viz');
+        var force = session.getForce();
+        force.stop();
+        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+        if(myMask!= undefined){
+
+            metExploreD3.showMask(myMask);
+            setTimeout(
+                function() {
+
+	                    if(!color) color="rgb(95, 162, 221)";	
+	                    
+                		metExploreD3.GraphNode.node
+                			.each(function(){
+                				var newSuggestion = d3.select(this)
+									.append("svg")
+			                        .classed("suggestion", true);
+
+                				var suggestions = d3.select(this).selectAll('.suggestion');
+                				console.log(suggestions[0].length);
+                				var position = 14*(suggestions[0].length-1);
+                				newSuggestion
+	                				.classed(conditionName, true)
+			                        .attr("height",20)
+			                        .attr("width",20)
+			                        .attr("x",7+position)
+			                        .attr("y",-20)
+			                        .append("polygon")
+			                        .attr("opacity", 0)
+									.attr("points","9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78")
+			                        .attr("transform", "translate(0, 0) scale(0.7)")
+			                        .style("fill", color)
+			                        // .style("stroke","black").style("stroke-width", 2)
+			                        .style("fill-rule","nonzero")
+			                        .transition().duration(2000)
+			                        .attr("opacity", 1);
+                			})
+	                        
+
+                    metExploreD3.hideMask(myMask);
+                    var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+                    if (anim=='true') {
+                        var session = _metExploreViz.getSessionById(networkVizSessionStore, 'viz');
+                        var force = session.getForce();
+
+                        if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+                            force.resume();
+                        }
+                    }
+                }, 1
+            );
+        }
+    },
 
 	/***********************************************
 	* Fill node with corresponding color
@@ -1801,7 +1973,7 @@ metExploreD3.GraphMapping = {
 			)
 			.transition().duration(4000)
 			.attr("mapped",color)
-			.style("fill", color)	
+			.style("fill", color);
 	},
 
 	/***********************************************
