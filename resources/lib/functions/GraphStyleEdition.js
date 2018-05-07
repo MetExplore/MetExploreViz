@@ -4,6 +4,9 @@ metExploreD3.GraphStyleEdition = {
     curvedPath: false,
 
 
+    /*******************************************
+     * Enter or exit style edition mode
+     */
     toggleEditMode : function () {
         // Enter edition mode, revealing the editModePanel, stopping force layout, and initiating label dragging, or leave the edition Mode
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
@@ -34,8 +37,11 @@ metExploreD3.GraphStyleEdition = {
             metExploreD3.GraphStyleEdition.endDragLabel();
             metExploreD3.GraphNode.applyEventOnNode('viz');
         }
-    }
-    ,
+    },
+
+    /*******************************************
+     * Allow moving of node label on drag
+     */
     startDragLabel : function () {
         // Apply drag event on node labels
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
@@ -70,6 +76,10 @@ metExploreD3.GraphStyleEdition = {
             GraphNodes.selectAll("text").call(labelDrag);
         }
     },
+
+    /*******************************************
+     * End moving of node label on drag
+     */
     endDragLabel : function () {
         // Remove drag event on node labels
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
@@ -79,6 +89,13 @@ metExploreD3.GraphStyleEdition = {
         GraphNodes.selectAll("rect").on("mouseover", null).on("mouseenter", null).on("mouseleave", null).on("mousedown", null).on("touchstart", null);
         //
     },
+
+    /*******************************************
+     * Change text of node label
+     * @param {} node : The node whose label will be modified
+     * @param {} panel : The panel where the action is launched
+     * @param {} text : The new text of the node label
+     */
     changeNodeLabel: function (node, panel, text) {
         // TO DO finish it
         // Find why it is executed when selecting node
@@ -115,6 +132,11 @@ metExploreD3.GraphStyleEdition = {
         //metExploreD3.GraphStyleEdition.toggleEditMode();
         //console.log(nodeElement);
     },
+
+    /*******************************************
+     * Change the font size of a node label
+     * @param {} node : The node whose label will be modified
+     */
     changeFontSize : function (node) {
         // Change the font size of the node label
         metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
@@ -127,6 +149,12 @@ metExploreD3.GraphStyleEdition = {
             }
         });
     },
+
+    /*******************************************
+     * Change the font size of multiple node labels
+     * @param {} text : The new font size of the node label
+     * @param {} targets : The nodes whose label will be modified
+     */
     changeAllFontSize : function (text, targets) {
         // Change the font size of all the targeted nodes labels
         targets = (typeof targets !== 'undefined') ? targets : 0;
@@ -146,6 +174,11 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("font-size",text+"px");
     },
+    /*******************************************
+     * Change the font of a node label
+     * @param {} node : The node whose label will be modified
+     * @param {} text : The new font of the node label
+     */
     changeFontType : function (node, text) {
         // Change the font of the node label
         d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -154,6 +187,12 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("font-family",text);
     },
+
+    /*******************************************
+     * Change the font family of multiple node labels
+     * @param {} text : The new font of the node label
+     * @param {} targets : The nodes whose label will be modified
+     */
     changeAllFontType : function (text, targets) {
         // Change the font of all the targeted nodes labels
         targets = (typeof targets !== 'undefined') ? targets : 0;
@@ -186,6 +225,12 @@ metExploreD3.GraphStyleEdition = {
             nodeLabel.style("font-weight", "normal");
         }
     },
+
+    /*******************************************
+     * Change whether the font of multiple node labels is bold or not
+     * @param {} bool : True to change the font to bold, false to change back to normal
+     * @param {} targets : The nodes whose label will be modified
+     */
     changeAllFontBold : function (bool, targets) {
         // Change the font boldness of all the targeted nodes labels
         targets = (typeof targets !== 'undefined') ? targets : 0;
@@ -219,6 +264,12 @@ metExploreD3.GraphStyleEdition = {
             nodeLabel.style("font-style", "normal");
         }
     },
+
+    /*******************************************
+     * Change whether the font of multiple node labels is italic or not
+     * @param {} bool : True to change the font to italic, false to change back to normal
+     * @param {} targets : The nodes whose label will be modified
+     */
     changeAllFontItalic : function (bool, targets) {
         // Italicize the font of all the targeted nodes labels or revert to normal
         targets = (typeof targets !== 'undefined') ? targets : 0;
@@ -252,6 +303,12 @@ metExploreD3.GraphStyleEdition = {
             nodeLabel.style("text-decoration-line", "none");
         }
     },
+
+    /*******************************************
+     * Add or remove underline to multiple node labels
+     * @param {} bool : True to add underline to the label, false to remove them
+     * @param {} targets : The nodes whose label will be modified
+     */
     changeAllFontUnderline : function (bool, targets) {
         // Underline the font of all the targeted nodes labels or revert to normal
         targets = (typeof targets !== 'undefined') ? targets : 0;
