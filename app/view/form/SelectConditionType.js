@@ -13,7 +13,8 @@ Ext.define('metExploreViz.view.form.SelectConditionType', {
         data : [
             {"name":"Continuous"},
             {"name":"Discrete"},
-            {"name":"Flux"}
+            {"name":"Flux"},
+            {"name":"Suggestion"}
         ]
     },
     listeners: {

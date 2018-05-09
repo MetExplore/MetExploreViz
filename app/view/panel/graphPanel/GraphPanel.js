@@ -131,21 +131,6 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 }
                             },
                            '-',
-                          {
-                                xtype:'button'/*,text: 'Copy network'*/,
-                                overflowText: 'MetExploreViz test',
-                                scale: 'large',
-                                reference:'test',
-                                tooltip:'Link to MetExploreViz website',
-                                border: true,
-                                padding:'0 0 0 0',
-                                listeners: {
-                                    click : function() {
-                                        metExploreD3.GraphMapping.graphMappingSuggestion('MetaboRank');
-                                    }
-                                }
-                            },
-                           '-',
                            {
                                 xtype:'button'/*,text: 'Copy network'*/,
                                 overflowText: 'Copy network',
