@@ -38,7 +38,7 @@ Ext.define('metExploreViz.view.button.buttonImportImage.ButtonImportImageControl
                 console.log(fileList);
                 console.log(this.fileInputEl.dom);
                 console.log(view.fileInputEl.dom.files);
-                metExploreD3.GraphStyleEdition.displayImageOnNode(fileList)
+                metExploreD3.GraphStyleEdition.mapImageToNode(fileList);
             }
         })
     }

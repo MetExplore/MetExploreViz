@@ -40,7 +40,26 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
             hidden:true,
             id:'buttonSide',   
             xtype:'buttonImportSideCompounds'/*,text: 'Refresh/Build network'*/
+        },
+        // Ajout
+        {
+            text: 'Image Mapping',
+            reference: 'importImageMapping',
+            tooltip: 'Import image for mapping'
+        },
+        {
+            xtype: 'buttonImportImage',
+            reference: 'importImageMappingHidden',
+            buttonConfig: {
+                text: 'Add logo',
+                width: '100%',
+                ui: 'default-toolbar'
+            },
+            buttonOnly: true,
+            multiple: true,
+            hidden: true
         }
+        // Fin Ajout
         // {
         //     text: 'Import saved network from JSON file',
         //     reference:'importSavedNetwork',

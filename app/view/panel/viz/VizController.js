@@ -111,6 +111,10 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
 
 					var theNode = metExploreD3.GraphNode.selectNodeData(e.target);
+					var mappedImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
+                        .selectAll("g.node")
+                        .filter(function(d){return d.getId()==theNode.getId();})
+                        .select(".mappingImage");
 					var isMetabolite = (theNode.getBiologicalType()=="metabolite");
 
                     viz.selectMenu = new Ext.menu.Menu({
@@ -357,26 +361,14 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         }
                                     }]
                                 }]
-                            }/*,{
-                                text: 'Change font style',
-                                hidden: false,
-                                menu: [{
-                                    text: 'Bold',
-                                    handler: function () {
-                                        metExploreD3.GraphFunction.changeFontBold(theNode)
-                                    }
-                                },{
-                                    text: 'Italic',
-                                    handler: function () {
-                                        metExploreD3.GraphFunction.changeFontItalic(theNode)
-                                    }
-                                },{
-                                    text: 'Underline',
-                                    handler: function () {
-                                        metExploreD3.GraphFunction.changeFontUnderline(theNode)
-                                    }
-                                }]
-                            }*/]
+                            },{
+							    text: 'Display/hide mappedImage',
+                                reference: 'displayMappedImage',
+                                hidden: (mappedImage.empty()) ? true : false,
+                                handler: function () {
+                                    metExploreD3.GraphStyleEdition.displayMappedImage(theNode);
+                                }
+                            }]
 						});
 					}
 					//Fin Ajout
