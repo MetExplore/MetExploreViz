@@ -275,12 +275,12 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
             var colors = session.getColorSuggestionsSet();
             colors.forEach(function (color) {
 
-                    var newId = color.getName().toString().replace(me.regexpPanel, "_");
-                    me.removeMappingSuggestion(newId);
-                    session.removeColorSuggestionById(newId);
+				var newId = color.getName().toString().replace(me.regexpPanel, "_");
+				me.removeMappingSuggestion(newId);
+				session.removeColorSuggestionById(newId);
 
-                    if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
-                        Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
+				if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
+					Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
             });
 
             if(Ext.getCmp("selectConditionForm").down("#undefined"))
