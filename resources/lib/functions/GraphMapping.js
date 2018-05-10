@@ -1748,7 +1748,7 @@ metExploreD3.GraphMapping = {
      */
     removeMappingSuggestion : function(conditionName) {
     	var regexpPanel=/[.>< ,\/=()]/g;
-		conditionName = conditionName.replace(regexpPanel, "")
+		conditionName = conditionName.replace(regexpPanel, "");
         var session = _metExploreViz.getSessionById('viz');
         var force = session.getForce();
         force.stop();
@@ -1822,16 +1822,15 @@ metExploreD3.GraphMapping = {
 	            					.each(function(){
 			            				var position = 14*i;
 			            				d3.select(this)
-			                				.classed(conditionName, true)
 					                        .attr("height",20)
 					                        .attr("width",20)
 					                        .attr("x",7+position)
-					                        .attr("y",-20)
+					                        .attr("y",-18)
 										i++
-		            				});	
+		            				});
 	            			});
 					}
-					
+
                     metExploreD3.hideMask(myMask);
                     var anim=metExploreD3.GraphNetwork.isAnimated("viz");
                     if (anim=='true') {
@@ -1858,7 +1857,8 @@ metExploreD3.GraphMapping = {
     graphMappingSuggestion : function(mappingName, conditionName, color, threshold,  func) {
 
 		var conditionNameUsed = mappingName + conditionName[0];
-
+        var regexpPanel=/[.>< ,\/=()]/g;
+        conditionNameUsed = conditionNameUsed.replace(regexpPanel, "");
 	    if(!color) color="rgb(95, 162, 221)";
 
 		metExploreD3.GraphNode.node
@@ -1883,7 +1883,7 @@ metExploreD3.GraphMapping = {
 					{
 						return false;
 					}
-				}			
+				}
 			})
 			.each(function(node){
 				var newSuggestion = d3.select(this)
@@ -1891,7 +1891,7 @@ metExploreD3.GraphMapping = {
 	                .classed("suggestion", true);
 
 				var suggestions = d3.select(this).selectAll('.suggestion');
-				
+
 				var position = 14*(suggestions[0].length-1);
 				newSuggestion
 					.classed(conditionNameUsed, true)
@@ -1935,7 +1935,7 @@ metExploreD3.GraphMapping = {
 
 		metExploreD3.GraphNode.node
 			.selectAll("."+conditionName)
-			.select("polygon")
+			.select("path")
             .style("fill", color);
     },
 
@@ -1984,13 +1984,13 @@ metExploreD3.GraphMapping = {
 				metExploreD3.showMask(myMask);
 		        setTimeout(
 					function() {
-						
+
 						var session = _metExploreViz.getSessionById('viz');
 						var force = session.getForce();
-						force.stop(); 
-						var conditions = mapping.getConditions();	
-						var nodes = session.getD3Data().getNodes(); 
-					  	
+						force.stop();
+						var conditions = mapping.getConditions();
+						var nodes = session.getD3Data().getNodes();
+
 						var values = [];
 
 						var regexpPanel=/[.>< ,\/=()]/g;
@@ -1999,7 +1999,7 @@ metExploreD3.GraphMapping = {
 						// var mappingInfoStore = metExploreD3.getMappingInfosSet();
 
 						// var theMapping = metExploreD3.findMappingInfo(mappingInfoStore, 'id', idMapping);
-					
+
 						// var ids = theMapping.get('idMapped');
 						// var idsTab = ids.split(",");
 						// var i;
@@ -2012,7 +2012,7 @@ metExploreD3.GraphMapping = {
 									if(mapNode != null){
 										var exist = false;
 										var mapVal = mapNode.getMapValue().valueOf();
-										
+
 										values.forEach(function(val){
 											if(val.valueOf()==mapVal.valueOf())
 												exist = true;
@@ -2027,9 +2027,9 @@ metExploreD3.GraphMapping = {
 								// 		if (metabolite.get('mapped') != undefined)
 								// 			if (metabolite.get('mapped') != 0)
 								// 				if(metabolite.get(condition.getCondInMetabolite())!=undefined){
-													
+
 								// 				}
-								// }		
+								// }
 							}
 						);
                         var idUsed = conditionNameUsed.replace(regexpPanel, "");
@@ -2047,7 +2047,14 @@ metExploreD3.GraphMapping = {
                             var colorStore = session.getColorSuggestionsSet();
 
                             var colors = ["#1E90FF", "#006838", "#ff6347", "#ffa500", "#7F00FF", "#00416a", "#FFFF00"];
-                            var color = colors[colorStore.length];
+                            var color = colors.find(function (color) {
+								var find = colorStore.find(function (aStore) {
+                                    return color === aStore.getValue();
+                                });
+
+                                return find===undefined;
+                            });
+
                             session.addColorSuggestion(idUsed, color);
 
                             metExploreD3.GraphMapping.graphMappingSuggestion(mappingName, conditionName, color, threshold);
