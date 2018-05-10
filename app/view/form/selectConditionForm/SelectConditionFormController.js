@@ -163,11 +163,39 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
      */
 	removeMapping:function(mapping){
 		var me = this;
+		var view = me.getView();
 		var session = _metExploreViz.getSessionById('viz');
 		var component = Ext.getCmp("selectConditionForm");
+		if(component){
 
-        if(component){
-           // Remove mapping caption
+        	// Remove mapping caption
+            mapping.getConditions().forEach(function (cond) {
+				var color = session.getColorSuggestionById(mapping.getName()+cond);
+
+				if(color!=null){
+
+                    var newId = color.getName().toString().replace(me.regexpPanel, "_");
+                    me.removeMappingSuggestion(newId);
+                    session.removeColorSuggestionById(newId);
+                    var newId = color.getName().toString().replace(me.regexpPanel, "_");
+
+                    if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
+                        Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
+				}
+            });
+
+            if(Ext.getCmp("selectConditionForm").down("#undefined"))
+                Ext.getCmp("selectConditionForm").down("#undefined").close();
+
+            if(session.getColorSuggestionsSetLength()==0){
+                var container = Ext.getCmp('suggestions');
+
+                if(container){
+                    container.close();
+                }
+        	}
+
+
             var activeMapping = session.getActiveMapping();
 	        if(activeMapping === mapping.getName()){
 				var storeCond = Ext.getStore('S_Condition');
@@ -208,17 +236,24 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				session.setMapped('false');
 
 				var comboCond = Ext.getCmp('selectCondition');
+				var thresholdField = view.lookupReference('threshold');
+				var opacity = view.lookupReference('opacity');
+				var valueonarrow = view.lookupReference('valueonarrow');
+
 				var storeCond = comboCond.getStore();
 		        //take an array to store the object that we will get from the ajax response
 				var record = [];
 		        storeCond.loadData(record, false);
 
 				var selectConditionType = Ext.getCmp('selectConditionType');
-				
+
 				comboCond.clearValue();
 				comboCond.setDisabled(true);
 				selectConditionType.setDisabled(true);
-		 			
+                selectConditionType.clearValue();
+                thresholdField.hide();
+                valueonarrow.hide();
+                opacity.hide();
 	        }
         	metExploreD3.fireEventArg('selectMappingVisu', "removemapping", mapping);
         	_metExploreViz.removeMapping(mapping.getId());
@@ -234,8 +269,29 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		var component = Ext.getCmp("selectConditionForm");
 
 		var me = this;
+        var view = me.getView();
 
         if(component){
+            var colors = session.getColorSuggestionsSet();
+            colors.forEach(function (color) {
+
+                    var newId = color.getName().toString().replace(me.regexpPanel, "_");
+                    me.removeMappingSuggestion(newId);
+                    session.removeColorSuggestionById(newId);
+
+                    if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
+                        Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
+            });
+
+            if(Ext.getCmp("selectConditionForm").down("#undefined"))
+                Ext.getCmp("selectConditionForm").down("#undefined").close();
+
+			var container = Ext.getCmp('suggestions');
+
+			if(container){
+				container.close();
+			}
+
            // Remove mapping caption
 			var oldMapping = session.isMapped();
 
@@ -292,6 +348,14 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			store.loadData(records, false);
             comboMapping.clearValue();
             comboMapping.setDisabled(true);
+
+            var thresholdField = view.lookupReference('threshold');
+            var opacity = view.lookupReference('opacity');
+            var valueonarrow = view.lookupReference('valueonarrow');
+
+            thresholdField.hide();
+            valueonarrow.hide();
+            opacity.hide();
         }
 
 	},
@@ -304,9 +368,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 		var me = this;
 		var session = _metExploreViz.getSessionById('viz');
-		console.log(mappingToRemove);
-		console.log(type);
-		console.log(session.isMapped());
         var container;
         var colorStore;
 
@@ -319,8 +380,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
                 colorStore.push(color);
             });
             colorStore.forEach(function(color){
-                console.log(color);
-                console.log(color.getName());
                 var newId = color.getName().toString().replace(me.regexpPanel, "_");
                 me.removeMappingSuggestion(newId);
                 session.removeColorSuggestionById(newId);
@@ -343,17 +402,12 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
             }
 		}
 
-        console.log(container);
 		if(container){
 			container.close();
 
-            console.log(colorStore);
 			colorStore.forEach(function(color){
-                console.log(color);
-                console.log(color.getName());
                 var newId = color.getName().toString().replace(me.regexpPanel, "_");
 
-                console.log(newId);
 				if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
 					Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
 			});
@@ -445,7 +499,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		var selectedMapping = selectMapping.getValue();
 
 		var networkVizSession = _metExploreViz.getSessionById("viz");
-        console.log(type);
         var colorStore;
         if(type!=="suggestion"){
             networkVizSession.setMapped(selectedCondition);
@@ -608,8 +661,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		            id: 'delCondition'+panelID,
 		            action: 'delCondition'+panelID,
 				    handler: function() {
-
-                        console.log(panelID);
 						that.closeMapping(panelID, type);
 				    }
 				});
@@ -625,16 +676,12 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		            action: 'refreshColor'+panelID,
 				    handler: function() {
                         var colorStore;
-                        console.log(type );
                         if (type === "discrete") {
                             colorStore = networkVizSession.getColorMappingsSet();
                             colorStore.forEach(function (color) {
                                 var newId = color.getName().toString().replace(me.regexpPanel, "_");
                                 if (Ext.getCmp("selectConditionForm").down("#hidden" + newId)) {
                                     if (color.getValue() !== Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue) {
-                                        console.log(color.getName());
-                                        console.log(selectedCondition);
-                                        console.log(mapp);
                                         // PERF: Must be changed to set only the color
                                         metExploreD3.GraphMapping.setDiscreteMappingColor(Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue, color.getName(), selectedCondition, mapp);
                                     }

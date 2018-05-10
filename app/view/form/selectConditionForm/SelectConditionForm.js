@@ -79,20 +79,23 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
         ]
     },
     {
-
-        margin:'10 0 0 5',
         xtype      : 'fieldcontainer',
         defaultType: 'checkboxfield',
         label: 'Threshold',
         hidden : true,
-        reference : 'threshold', 
+        reference : 'threshold',
+        layout:{
+            type:'hbox',
+            align:'stretch'
+        },
+        margin:'0 5 0 5',
         items: [
             {
                 xtype: 'numberfield',
-                label: 'Threshold',
+                fieldLabel: 'Threshold',
                 minValue: 0,
                 name: 'threshold',
-                id: 'threshold' 
+                id: 'threshold'
             }
         ]
     },

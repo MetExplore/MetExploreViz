@@ -1869,7 +1869,6 @@ metExploreD3.GraphMapping = {
 				{
 					var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
 					if(map!=null){
-						console.log(threshold);
 						if(map.getMapValue()>=threshold){
 							var session = _metExploreViz.getSessionById('viz');
 							session.addMappedNode(d.getId());
@@ -1887,7 +1886,6 @@ metExploreD3.GraphMapping = {
 				}			
 			})
 			.each(function(node){
-				console.log(node);
 				var newSuggestion = d3.select(this)
 					.append("svg")
 	                .classed("suggestion", true);
@@ -1942,9 +1940,6 @@ metExploreD3.GraphMapping = {
      * @param {} conditionName : Condition choosed by the user
      */
     setSuggestionColor : function(color, conditionName){
-        console.log(color);
-        console.log(conditionName);
-
         var session = _metExploreViz.getSessionById('viz');
         var force = session.getForce();
         force.stop();
@@ -2045,7 +2040,7 @@ metExploreD3.GraphMapping = {
 						{
                             var colorStore = session.getColorSuggestionsSet();
 
-                            var colors = ["#1E90FF", "#54ff9f", "#ff6347", "#ffa500", "#7F00FF", "#00416a", "#FFFF00"];
+                            var colors = ["#1E90FF", "#006838", "#ff6347", "#ffa500", "#7F00FF", "#00416a", "#FFFF00"];
                             var color = colors[colorStore.length];
                             session.addColorSuggestion(idUsed, color);
 
