@@ -113,7 +113,6 @@ MetaboliteStyle.prototype = {
 
     getDisplayLabel:function(node, label, useAlias)
     {
-        console.log(node, label, useAlias);
         var displayedLabel;
         if (node.getLabel()!==undefined) displayedLabel = node.getLabel();
         else
