@@ -212,6 +212,11 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("font-family",text);
     },
+
+    /*******************************************
+     * Change whether the font of a node label is bold or not
+     * @param {} node : The node whose label will be modified
+     */
     changeFontBold : function (node) {
         // Change the font boldness of the node label
         var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -251,6 +256,11 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("font-weight", boldOrNot);
     },
+
+    /*******************************************
+     * Change whether the font of a node label is italic or not
+     * @param {} node : The node whose label will be modified
+     */
     changeFontItalic : function (node) {
         // Italicize the font of the node label or revert to normal
         var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -290,6 +300,11 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("font-style", italicOrNot);
     },
+
+    /*******************************************
+     * Change whether a node label is underlined or not
+     * @param {} node : The node whose label will be modified
+     */
     changeFontUnderline : function (node) {
         // Underline the font of the node label or revert to normal
         var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -329,6 +344,11 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("text-decoration-line", underlineOrNot);
     },
+
+    /*******************************************
+     * Apply label style if style data are associated to the node
+     * @param {} node : The node whose label will be modified
+     */
     setStartingStyle : function (node) {
         //gestion undefined à prendre en compte
         if (node.labelFont) {
@@ -346,6 +366,9 @@ metExploreD3.GraphStyleEdition = {
             if (node.labelFont.fontOpacity) { selection.attr("opacity", node.labelFont.fontOpacity); }
         }
     },
+    /*******************************************
+     * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction
+     */
     bundleLinks : function () {
         var reactionStyle = metExploreD3.getReactionStyle();
         var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -659,21 +682,28 @@ metExploreD3.GraphStyleEdition = {
     },
     mapImageToNode : function(fileList){
         for (var i=0; i<fileList.length; i++){
-            console.log(i);
-            if (fileList[i].type === "image/png"){
+            console.log(fileList[i]);
+            if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "application/pdf"){
                 var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
                 var urlImage = URL.createObjectURL(fileList[i]);
-                d3.select("#viz").select("#D3viz").select("#graphComponent")
+                var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
                     .selectAll("g.node")
                     .filter(function (d) {
                         return (d.id == nodeName);
-                    })
-                    .append("image")
+                    });
+                if (!node.select(".mappingImage").empty()){
+                    node.select(".mappingImage").remove();
+                    // TO DO resize image
+                }
+                node.append("image")
                     .attr("href", urlImage)
-                    .attr("width", "50")
-                    .attr("height", "50")
+                    .attr("x", "-50")
+                    .attr("y", "0")
+                    .attr("width", "100")
+                    .attr("height", "100")
                     .attr("class", "mappingImage")
                     .attr("opacity", 1);
+                metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".mappingImage"));
             }
         }
     },
@@ -688,5 +718,14 @@ metExploreD3.GraphStyleEdition = {
         else {
             mappedImage.attr("opacity", 0);
         }
+    },
+    applyEventOnImage : function (image) {
+        image.on("mouseenter", function () {
+            var evt = new MouseEvent("mouseleave")
+            this.parentNode.dispatchEvent(evt);
+        }).on("mouseleave", function () {
+            var evt = new MouseEvent("mouseenter")
+            this.parentNode.dispatchEvent(evt);
+        })
     }
 }
