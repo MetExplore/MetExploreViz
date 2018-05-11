@@ -689,7 +689,8 @@ metExploreD3.GraphStyleEdition = {
                 var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
                     .selectAll("g.node")
                     .filter(function (d) {
-                        return (d.id == nodeName);
+                        //return (d.id == nodeName);
+                        return (d.name == nodeName);
                     });
                 if (!node.select(".mappingImage").empty()){
                     node.select(".mappingImage").remove();
