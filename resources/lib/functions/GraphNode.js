@@ -1739,16 +1739,21 @@ metExploreD3.GraphNode = {
         }
 	},
 
-	unselectIfDBClick : function() { 
+	unselectAll : function(me) {
+        var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+        d3.select(me).select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(d) {  return d.isSelected(); })
+            .each(function(d) { _MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel); });
+        session.removeAllSelectedNodes();
+	},
+
+	unselectIfDBClick : function() {
 		var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
 		if(_MyThisGraphNode.dblClickable && d3.event.button==0){
 			_MyThisGraphNode.activePanel = this.parentNode.id;
-         	d3.select(this).select("#graphComponent")
-				.selectAll("g.node")
-		        .filter(function(d) {  return d.isSelected(); })
-		        .each(function(d) { _MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel); });
-		        session.removeAllSelectedNodes();
+            _MyThisGraphNode.unselectAll(this);
 		}
 		else
 		{
