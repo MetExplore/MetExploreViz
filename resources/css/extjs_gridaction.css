@@ -215,6 +215,18 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.exportCoordinates {
+     background-image: url(../icons/exportCoordinates.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.importCoordinates {
+     background-image: url(../icons/importCoordinates.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .cancel {
      background-image: url(../icons/cancel.svg);
     background-size: 100% 100%;
