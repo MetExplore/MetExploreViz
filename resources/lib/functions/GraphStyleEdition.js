@@ -1,3 +1,8 @@
+/**
+ * @author Adrien Rohan
+ * (a)description : Style Edition
+ */
+
 metExploreD3.GraphStyleEdition = {
 
     editMode: false,
@@ -683,7 +688,7 @@ metExploreD3.GraphStyleEdition = {
     mapImageToNode : function(fileList){
         for (var i=0; i<fileList.length; i++){
             console.log(fileList[i]);
-            if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "application/pdf"){
+            if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg"){
                 var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
                 var urlImage = URL.createObjectURL(fileList[i]);
                 var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -704,6 +709,35 @@ metExploreD3.GraphStyleEdition = {
                     .attr("height", "100")
                     .attr("class", "mappingImage")
                     .attr("opacity", 1);
+                metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".mappingImage"));
+            }
+            if (fileList[i].type === "application/pdf"){
+                console.log("this is a pdf");
+                var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
+                var urlImage = URL.createObjectURL(fileList[i]);
+                var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
+                    .selectAll("g.node")
+                    .filter(function (d) {
+                        //return (d.id == nodeName);
+                        return (d.name == nodeName);
+                    });
+                console.log(urlImage);
+                console.log(node);
+                if (!node.select(".mappingImage").empty()){
+                    node.select(".mappingImage").remove();
+                    // TO DO resize image
+                }
+                node.append("embed")
+                    .attr("href", urlImage)
+                    .attr("width", 14)
+                    .attr("height", 14);
+                    /*.attr("href", urlImage)
+                    .attr("x", "-50")
+                    .attr("y", "0")
+                    .attr("width", "100")
+                    .attr("height", "100")
+                    .attr("class", "mappingImage")
+                    .attr("opacity", 1);*/
                 metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".mappingImage"));
             }
         }

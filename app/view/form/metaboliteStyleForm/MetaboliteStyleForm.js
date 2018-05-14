@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description  MetaboliteStyleForm : Display metabolites config
+ * (a)description  MetaboliteStyleForm : Display metabolites config
  */
 Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
     extend: 'Ext.panel.Panel',  

@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : Drawing links
+ * (a)description : Drawing links
  */
 metExploreD3.GraphLink = {
 

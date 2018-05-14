@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : Basic functions
+ * (a)description : Basic functions
  */
 metExploreD3.GraphUtils = {
     decodeJSON : function(json){

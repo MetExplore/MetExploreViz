@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description class to control reaction styles or configs
+ * (a)description class to control reaction styles or configs
  */
 
 Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormController', {

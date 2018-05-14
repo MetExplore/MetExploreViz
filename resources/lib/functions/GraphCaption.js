@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : Drawing caption
+ * (a)description : Drawing caption
  */
 metExploreD3.GraphCaption = {
 

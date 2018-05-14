@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
  /**
  * draw a Metabolite

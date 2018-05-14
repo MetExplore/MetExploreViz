@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : To manage the panel where is the graph
+ * (a)description : To manage the panel where is the graph
  */
 metExploreD3.GraphPanel = {
 	

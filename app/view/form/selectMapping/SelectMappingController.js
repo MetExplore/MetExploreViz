@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description class to control contion selection panel
+ * (a)description class to control contion selection panel
  * C_SelectMapping
  */
 

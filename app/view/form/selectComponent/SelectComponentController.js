@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description class to control caption selection
+ * (a)description class to control caption selection
  * C_SelectComponent
  */
 

@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description : Tu manage the metabolic network
+ * (a)description : Tu manage the metabolic network
  */
 
     	

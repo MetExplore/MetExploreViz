@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : Fonctions to map data on metabolic networks
+ * (a)description : Fonctions to map data on metabolic networks
  */
 metExploreD3.GraphMapping = {
 
