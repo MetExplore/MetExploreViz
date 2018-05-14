@@ -3,7 +3,7 @@
  * For now, only contains the id
  */
 var NodeData = function(
-          name, 
+        name,
         compart, 
         dbIdentifier, 
         ec, 

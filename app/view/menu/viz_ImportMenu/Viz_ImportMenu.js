@@ -40,6 +40,16 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
             hidden:true,
             id:'buttonSide',   
             xtype:'buttonImportSideCompounds'/*,text: 'Refresh/Build network'*/
+        },
+        {
+            text: 'Import coordinates',
+            reference:'importCoordinates',
+            iconCls:'importCoordinates'
+        },
+        {
+            hidden:true,
+            id:'buttonImportCoords',
+            xtype:'buttonImportCoordinates'/*,text: 'Refresh/Build network'*/
         }
         // {
         //     text: 'Import saved network from JSON file',

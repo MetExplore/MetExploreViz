@@ -22,6 +22,11 @@ Ext.define('metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenuController', {
 			scope : me
 		});
 
+		view.lookupReference('exportCoordinates').on({
+			click : me.exportCoordinates,
+			scope : me
+		});
+
 		view.lookupReference('exportDOT').on({
 			click : me.exportDOT,
 			scope : me
@@ -31,6 +36,9 @@ Ext.define('metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenuController', {
 			click : me.exportGML,
 			scope : me
 		});
+	},
+    exportCoordinates : function(){
+		metExploreD3.GraphUtils.saveNetworkCoordinates();
 	},
 	exportDOT : function(){
 		metExploreD3.GraphUtils.saveNetworkDot();

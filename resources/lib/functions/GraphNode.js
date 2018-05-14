@@ -1774,7 +1774,7 @@ metExploreD3.GraphNode = {
          	d3.select(this).select("#graphComponent")
 				.selectAll("g.node")
 		        .filter(function(d) { return d.isLocked(); })
-		        .each(function(d) { d.fixed=false; });
+		        .each(function(d) { d.fixed=false; d.setLocked(false); });
 		}
 		else
 		{

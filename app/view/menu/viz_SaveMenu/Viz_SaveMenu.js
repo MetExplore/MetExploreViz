@@ -37,6 +37,11 @@ Ext.define('metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenu', {
                  iconCls:'exportGml'
                 },
                 {
+                 text: 'Save nodes coordinates',
+                 reference:'exportCoordinates',
+                 iconCls:'exportCoordinates'
+                },
+                {
                  text: 'Save Viz as XGMML',
                  hidden:true,
                  reference:'exportXGMML',

@@ -40,6 +40,18 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 			},
 			scope : me
 		});
+
+		view.lookupReference('importCoordinates').on({
+			click : function(){
+				// console.log(Ext.getCmp("IDimport"));
+				// console.log(Ext.getCmp("buttonMap"));
+				var component = Ext.getCmp("IDimportCoordinates");
+		        if(component!= undefined){
+					component.fileInputEl.dom.click();
+		        }
+			},
+			scope : me
+		});
 	},
 
 	importMapping : function(){
