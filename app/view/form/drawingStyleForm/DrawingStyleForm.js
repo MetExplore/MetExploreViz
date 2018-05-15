@@ -43,11 +43,11 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 maxValue: -50,
                 listeners: {
                     changecomplete: function(slider, newValue){
-                        metExploreViz.getGlobals().sessions['viz'].getForce().charge(newValue);
                         var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
+                        force.charge(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            var force = session.getForce();
                             force.start();
                         }
                         this.lastValue = newValue;
@@ -66,11 +66,11 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 maxValue: 100,
                 listeners: {
                     changecomplete: function(slider, newValue){
-                        metExploreViz.getGlobals().sessions['viz'].getForce().gravity(newValue/100);
                         var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
+                        force.gravity(newValue/100);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            var force = session.getForce();
                             force.start();
                         }
                         this.lastValue = newValue;
@@ -99,7 +99,8 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
                         var maxDim = Math.max(maxDimRea, maxDimMet);
                         // Initiate the D3 force drawing algorithm
-                        var force = metExploreViz.getGlobals().sessions['viz'].getForce();
+                        var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
 
                         force.linkDistance(function(link){
                             if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
@@ -111,7 +112,6 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var session = _metExploreViz.getSessionById('viz');
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            var force = session.getForce();
                             force.start();
                         }
                         this.lastValue = newValue;
@@ -131,14 +131,14 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 maxValue: 1000,
                 listeners: {
                     changecomplete: function(slider, newValue){
-                        var force = metExploreViz.getGlobals().sessions['viz'].getForce();
+                        var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
 
                         force.linkStrength(newValue/100);
 
                         var session = _metExploreViz.getSessionById('viz');
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            var force = session.getForce();
                             force.start();
                         }
                         this.lastValue = newValue;
