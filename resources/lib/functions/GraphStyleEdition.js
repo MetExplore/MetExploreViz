@@ -128,8 +128,8 @@ metExploreD3.GraphStyleEdition = {
 
     applyResizeHandle : function (image) {
         console.log(image);
-        image.append("circle").attr("r", 3).attr("fill", "green").attr("x", 0).attr("y", 0);
-        console.log(image);
+        //image.append("circle").attr("r", 3).attr("fill", "green").attr("x", 0).attr("y", 0);
+        //console.log(image);
     },
 
     /*******************************************
