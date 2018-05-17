@@ -50,7 +50,8 @@ metExploreD3.GraphStyleEdition = {
     startDragLabel : function () {
         // Apply drag event on node labels
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
-        var labelDrag = d3.behavior.drag()
+        // TO DO verify that function createDragBehavior() can replace this block of code
+        /*var labelDrag = d3.behavior.drag()
             .on ("dragstart", function (d,i) {
                 d3.event.sourceEvent.stopPropagation();
                 d3.select(this).attr("x",d3.mouse(this)[0]);
@@ -72,9 +73,8 @@ metExploreD3.GraphStyleEdition = {
             .on("dragend", function (d,i) {
                 d3.selectAll("#D3viz")
                     .style("cursor", "default");
-                //console.log(d);
-                //console.log(this);
-            });
+            });*/
+        var labelDrag = metExploreD3.GraphStyleEdition.createDragBehavior();
         if (metExploreD3.GraphStyleEdition.editMode){
             GraphNodes.selectAll("text").style("pointer-events", "auto");
             //GraphNodes.on("mouseover", null).on("mouseenter", null).on("mouseleave", null).on("mousedown", null).on("touchstart", null);
@@ -93,6 +93,43 @@ metExploreD3.GraphStyleEdition = {
         }
         GraphNodes.selectAll("rect").on("mouseover", null).on("mouseenter", null).on("mouseleave", null).on("mousedown", null).on("touchstart", null);
         //
+    },
+
+    createDragBehavior : function () {
+        var deltaX;
+        var deltaY;
+        var drag = d3.behavior.drag()
+            .on ("dragstart", function (d,i) {
+                d3.event.sourceEvent.stopPropagation();
+                var cX = d3.select(this).attr("x");
+                var cY = d3.select(this).attr("y");
+                deltaX = cX - d3.mouse(this)[0];
+                deltaY = cY - d3.mouse(this)[1];
+                d3.selectAll("#D3viz")
+                    .style("cursor", "move");
+            })
+            .on("drag", function (d,i) {
+                if (d3.select(this).attr("transform")) {
+                    var transformScale = d3.transform(d3.select(this).attr("transform")).scale;
+                    d3.select(this).attr("transform", "translate(" + (d3.event.x + deltaX) + ", " + (d3.event.y + deltaY) + ") scale(" + transformScale[0] + ", " + transformScale[1] + ")");
+                }
+                else{
+                    d3.select(this).attr("transform", "translate(" + (d3.event.x + deltaX) + ", " + (d3.event.y + deltaY) +")");
+                }
+                d3.select(this).attr("x",d3.mouse(this)[0] + deltaX);
+                d3.select(this).attr("y",d3.mouse(this)[1] + deltaY);
+            })
+            .on("dragend", function (d,i) {
+                d3.selectAll("#D3viz")
+                    .style("cursor", "default");
+            });
+        return drag;
+    },
+
+    applyResizeHandle : function (image) {
+        console.log(image);
+        image.append("circle").attr("r", 3).attr("fill", "green").attr("x", 0).attr("y", 0);
+        console.log(image);
     },
 
     /*******************************************
@@ -369,8 +406,12 @@ metExploreD3.GraphStyleEdition = {
             if (node.labelFont.fontItalic) { selection.style("font-style", node.labelFont.fontItalic); }
             if (node.labelFont.fontUnderline) { selection.style("text-decoration-line", node.labelFont.fontUnderline); }
             if (node.labelFont.fontOpacity) { selection.attr("opacity", node.labelFont.fontOpacity); }
+            if (node.labelFont.fontX) { selection.attr("x", node.labelFont.fontX); }
+            if (node.labelFont.fontY) { selection.attr("y", node.labelFont.fontY); }
+            if (node.labelFont.fontTransform) { selection.attr("transform", node.labelFont.fontTransform); }
         }
     },
+
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction
      */
@@ -681,14 +722,17 @@ metExploreD3.GraphStyleEdition = {
             fontBold : nodeLabel.style("font-weight"),
             fontItalic : nodeLabel.style("font-style"),
             fontUnderline : nodeLabel.style("text-decoration-line"),
-            fontOpacity : nodeLabel.attr("opacity")
+            fontOpacity : nodeLabel.attr("opacity"),
+            fontX : nodeLabel.attr("x"),
+            fontY : nodeLabel.attr("y"),
+            fontTransform : nodeLabel.attr("transform")
         };
         return labelStyle;
     },
     mapImageToNode : function(fileList){
         for (var i=0; i<fileList.length; i++){
             console.log(fileList[i]);
-            if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg"){
+            if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "image/svg+xml"){
                 var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
                 var urlImage = URL.createObjectURL(fileList[i]);
                 var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -699,19 +743,41 @@ metExploreD3.GraphStyleEdition = {
                     });
                 if (!node.select(".mappingImage").empty()){
                     node.select(".mappingImage").remove();
-                    // TO DO resize image
                 }
-                node.append("image")
+                // TO DO add a new div
+                /*node.append("image")
                     .attr("href", urlImage)
                     .attr("x", "-50")
                     .attr("y", "0")
                     .attr("width", "100")
                     .attr("height", "100")
                     .attr("class", "mappingImage")
+                    .attr("opacity", 1);*/
+                //metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".mappingImage"));
+                node.append("g")
+                    .attr("class", "imageNode")
+                    .attr("x", "0")
+                    .attr("y", "0")
+                    .attr("width", "100")
+                    .attr("height", "100")
                     .attr("opacity", 1);
-                metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".mappingImage"));
+                var test = node.selectAll(".imageNode");
+                test.append("image")
+                    .attr("href", urlImage)
+                    .attr("x", "-50")
+                    //.attr("y", "0")
+                    .attr("width", "100")
+                    .attr("height", "100")
+                    .attr("class", "mappingImage")
+                    .attr("opacity", 1);
+                //test.append("circle").attr("r",15);
+                console.log(test);
+                //metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode").select(".mappingImage"));
+                metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode"));
+                //
             }
-            if (fileList[i].type === "application/pdf"){
+            // TO DO display pdf
+            /*if (fileList[i].type === "application/pdf"){
                 console.log("this is a pdf");
                 var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
                 var urlImage = URL.createObjectURL(fileList[i]);
@@ -731,23 +797,16 @@ metExploreD3.GraphStyleEdition = {
                     .attr("href", urlImage)
                     .attr("width", 14)
                     .attr("height", 14);
-                    /*.attr("href", urlImage)
-                    .attr("x", "-50")
-                    .attr("y", "0")
-                    .attr("width", "100")
-                    .attr("height", "100")
-                    .attr("class", "mappingImage")
-                    .attr("opacity", 1);*/
                 metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".mappingImage"));
-            }
+            }*/
         }
     },
     displayMappedImage: function (node) {
         var mappedImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
+            .filter(function(d){return d.getId() === node.getId();})
             .select(".mappingImage");
-        if (mappedImage.attr("opacity") == 0){
+        if (mappedImage.attr("opacity") === 0){
             mappedImage.attr("opacity", 1);
         }
         else {
@@ -756,11 +815,16 @@ metExploreD3.GraphStyleEdition = {
     },
     applyEventOnImage : function (image) {
         image.on("mouseenter", function () {
-            var evt = new MouseEvent("mouseleave")
+            var evt = new MouseEvent("mouseleave");
             this.parentNode.dispatchEvent(evt);
         }).on("mouseleave", function () {
-            var evt = new MouseEvent("mouseenter")
+            var evt = new MouseEvent("mouseenter");
             this.parentNode.dispatchEvent(evt);
-        })
+        });
+        var drag = metExploreD3.GraphStyleEdition.createDragBehavior();
+        image.call(drag);
+        metExploreD3.GraphStyleEdition.applyResizeHandle(image);
+
     }
+
 }
