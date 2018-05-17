@@ -22,6 +22,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
         'metExploreViz.view.button.buttonImportMapping.ButtonImportMapping',
         'metExploreViz.view.button.buttonImportSideCompounds.ButtonImportSideCompounds',
         'metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwork',
+        'metExploreViz.view.button.buttonImportImage.ButtonImportImage',
         'metExploreViz.view.panel.viz.Viz'
     ],
     /*requires: [
@@ -115,6 +116,19 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 hidden:false,
                                 padding:'0 0 0 0'
                           },
+                           //Ajout
+                           {
+                               xtype:'button',
+                               text:'Edit mode',
+                               tooltip:'Enter edit mode',
+                               scale:'large',
+                               id:'enterEditMode',
+                               reference:'enterEditMode',
+                               //disabled:true,
+                               hidden:false,
+                               padding:'0 0 0 0'
+                           },
+                           //Fin Ajout
                           {
                                 xtype:'button'/*,text: 'Copy network'*/,
                                 overflowText: 'MetExploreViz documentation',
@@ -237,6 +251,14 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                     id : 'viz',
                     xtype : 'viz'
                 }
+                //Ajout
+                    ,
+                    {
+                        title: 'Style Edition',
+                        id:'editModePanel',
+                        xtype : 'editModePanel'
+                    }
+                    //Fin Ajout
 ]
            }
            ,{   

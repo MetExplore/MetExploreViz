@@ -40,6 +40,16 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 			},
 			scope : me
 		});
+
+		// Ajout
+		view.lookupReference('importImageMapping').on({
+			click : function(){
+				var component = this.lookupReference('importImageMappingHidden');
+				component.fileInputEl.dom.click();
+			},
+			scope : me
+		});
+		// Fin Ajout
 	},
 
 	importMapping : function(){

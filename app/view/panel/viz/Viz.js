@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
  Ext.define('metExploreViz.view.panel.viz.Viz', {
     extend: 'Ext.panel.Panel', 

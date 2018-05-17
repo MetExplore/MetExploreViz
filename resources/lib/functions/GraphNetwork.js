@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description : Tu manage the metabolic network
+ * (a)description : Tu manage the metabolic network
  */
 
     	
@@ -1914,7 +1914,8 @@ metExploreD3.GraphNetwork = {
 
 		node.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
 			.filter(function(d) { return d.getId() == identifier; })
-			.on("mouseenter", function(d) { 
+			.on("mouseenter", function(d) {
+				console.log("enter");
 					var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
 					d3.select(this)
 						.each(function(node){
@@ -1922,6 +1923,22 @@ metExploreD3.GraphNetwork = {
 							this.parentNode.insertBefore(this, last);
 						})
 						.attr("transform", "translate("+d.x+", "+d.y+") scale(2)");
+					// Ajout
+				// Prevent label moving when node is highlighted or label increasing in size when drag possible
+                var labelElement = d3.select(this).select("text");
+                var newY = labelElement.attr("y")/2;
+                var newX = labelElement.attr("x")/2;
+                var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                if (metExploreD3.GraphStyleEdition.editMode){
+                    labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                }
+                else {
+                    labelElement.attr("y", newY);
+                    labelElement.attr("x", newX);
+                    labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
+                }
+				// Fin Ajout
 			})
 			.on("mouseover", function(d) { 
 
@@ -1977,6 +1994,22 @@ metExploreD3.GraphNetwork = {
 	        .on("mouseleave", function(d) {  
 				d3.select(this)
 					.attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
+				// Ajout
+				// Resize label proportionnaly to the node symbol when not highlighted
+                var labelElement = d3.select(this).select("text");
+                var newY = labelElement.attr("y")*2;
+                var newX = labelElement.attr("x")*2;
+                var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                if (metExploreD3.GraphStyleEdition.editMode) {
+                    labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                }
+                else {
+                    labelElement.attr("y", newY);
+                    labelElement.attr("x", newX);
+                    labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")");
+                }
+				// Fin Ajout
 				
 				if(!d.isLocked())
 					d.fixed = false;

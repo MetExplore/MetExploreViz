@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : Basic functions
+ * (a)description : Basic functions
  */
 metExploreD3.GraphUtils = {
     decodeJSON : function(json){
@@ -1437,6 +1437,11 @@ metExploreD3.GraphUtils = {
 					    	networkJSON+="\"svgWidth\":"+JSON.stringify(node.getSvgWidth())+",";
 					    	networkJSON+="\"svgHeight\":"+JSON.stringify(node.getSvgHeight())+",";
 					   	}
+
+					   	// Ajout
+						//console.log(node);
+				    	networkJSON+="\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node))+",";
+						// Fin Ajout
 					   	
 					   	if(node.x!=undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
 					   	if(node.y!=undefined) networkJSON+="\"y\":"+JSON.stringify(node.y)+",";

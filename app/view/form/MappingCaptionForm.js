@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description Basic panel used to contain mapping caption
+ * (a)description Basic panel used to contain mapping caption
  */
 Ext.define('metExploreViz.view.form.MappingCaptionForm', {
     extend: 'Ext.panel.Panel',  

@@ -2,7 +2,7 @@
  * NodeData class
  * For now, only contains the id
  */
-var NodeData = function(name, compart, dbIdentifier, ec, id, reactionReversibility, isSideCompound, biologicalType, isSelected, labelVisible, svg, svgWidth, svgHeight, mappings, isDuplicated, identifier, pathW, lock, label) {
+var NodeData = function(name, compart, dbIdentifier, ec, id, reactionReversibility, isSideCompound, biologicalType, isSelected, labelVisible, svg, svgWidth, svgHeight, mappings, isDuplicated, identifier, pathW, lock, label, labelFont) {
         this.name=name;
         this.dbIdentifier = dbIdentifier ;
         this.ec = ec;
@@ -35,6 +35,7 @@ var NodeData = function(name, compart, dbIdentifier, ec, id, reactionReversibili
             lock=false;
         this.locked = lock;
         this.label= label;
+        this.labelFont = labelFont;
 };
 
 

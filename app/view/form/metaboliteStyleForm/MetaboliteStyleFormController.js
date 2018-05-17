@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description class to control metabolite styles or configs
+ * (a)description class to control metabolite styles or configs
  */
 
 Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormController', {
@@ -57,12 +57,20 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 
 				var newLabel = view.lookupReference('selectDisplayMetaboliteLabel').getValue();
 
+			    //Ajout
+			    var labelOpacity = (view.lookupReference('checkHideLabel').getValue()) ? 0.0 : 1.0;
+			    var newLabelOpacity = (!isNaN(labelOpacity) && labelOpacity>=0.0 && labelOpacity<=1.0) ? labelOpacity : s_MetaboliteStyle.getLabelOpacity();
+			    //Fin Ajout
+			    
 				if(newLabel!==s_MetaboliteStyle.getLabel()
 					|| (newHeight !== s_MetaboliteStyle.getHeight())
 					|| (newWidth !== s_MetaboliteStyle.getWidth())
 					|| (newstrokewidth !== s_MetaboliteStyle.getStrokeWidth())
 					|| (newrx !== s_MetaboliteStyle.getRX())
 					|| (newry !== s_MetaboliteStyle.getRY())
+				   //Ajout
+					|| (newLabelOpacity !== s_MetaboliteStyle.getLabelOpacity())
+				   //Fin Ajout
 				){
 					isset=true;
 					s_MetaboliteStyle.setHeight(parseFloat(newHeight));
@@ -70,7 +78,10 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 					s_MetaboliteStyle.setStrokeWidth(parseFloat(newstrokewidth));
 					s_MetaboliteStyle.setRX(parseFloat(newrx));
 					s_MetaboliteStyle.setRY(parseFloat(newry));
-					s_MetaboliteStyle.setLabel(newLabel);
+				        s_MetaboliteStyle.setLabel(newLabel);
+				    //Ajout
+				    s_MetaboliteStyle.setLabelOpacity(newLabelOpacity);
+				    //Fin Ajout
 				}		
 
 				if(isset){

@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description GeneralStyleForm : Display Settings
+ * (a)description GeneralStyleForm : Display Settings
  */
 Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleForm', {
     extend: 'Ext.panel.Panel',  

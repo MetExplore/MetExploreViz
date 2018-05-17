@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
 Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	extend: 'Ext.panel.Panel',	

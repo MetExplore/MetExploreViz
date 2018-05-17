@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description class to control Style panel
+ * (a)description class to control Style panel
  */
 
 Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleFormController', {

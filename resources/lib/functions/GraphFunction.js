@@ -1,9 +1,14 @@
 /**
  * @author MC
- * @description : Basic functions
+ * (a)description : Basic functions
  */
     
 metExploreD3.GraphFunction = {
+	//Ajout
+	//editMode: false,
+	//curvedPath: false,
+	//Fin Ajout
+
     bfs : function (node){
 	    var graph = metExploreD3.GraphFunction.getGraphNotDirected();
 
@@ -272,8 +277,8 @@ metExploreD3.GraphFunction = {
     	var algo = "Sugiyama (OGDF)";
 		var params = [];
 		params.push({"name":"node spacing", "value":50});
-		params.push({"name":"node distance", "value":50});
 		params.push({"name":"layer distance", "value":50});
+		params.push({"name":"node distance", "value":25});
 		metExploreD3.GraphFunction.applyTulipLayoutAlgorithmInWorker(algo, params);
     },
 
@@ -1474,7 +1479,7 @@ metExploreD3.GraphFunction = {
 			}
 		}
 		return T;
-	}	
+	}
 
 	/**
 	 * SUBNETWORK EXTRACTION Path-finding algorithm Dijkstra

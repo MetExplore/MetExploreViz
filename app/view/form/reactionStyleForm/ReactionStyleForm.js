@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description GeneralStyleForm : Reaction style configs
+ * (a)description GeneralStyleForm : Reaction style configs
  */
 Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
     extend: 'Ext.panel.Panel',  
@@ -53,6 +53,24 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
         id:'selectDisplayReactionLabel',
         xtype:'selectDisplayReactionLabel'  
     }
+    //Ajout
+    ,
+    {
+        xtype:'fieldcontainer',
+        margin:'5 5 5 5',
+        fieldLabel:'Hide label',
+        defaultType:'checkboxfield',
+        items: [
+            {
+                boxLabel:'Yes',
+                name:'label',
+                checked:false,
+                id:'checkboxHideReactionsLabel',
+                reference:'checkHideLabel'
+            }
+        ]
+    }
+    //Fin Ajout
     , 
     {   
         xtype: 'textfield',
