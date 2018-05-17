@@ -95,6 +95,12 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			click : me.searchNode,
 			scope : me
 		});
+		///Ajout
+		view.lookupReference('enterEditMode').on({
+			click : me.enterEditMode,
+			scope : me
+		});
+		//Fin Ajout
 	},
 
 	changeoption : function(){
@@ -764,4 +770,13 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			}
 		});
 	}
+	//Ajout
+	,
+    enterEditMode: function () {
+        //metExploreD3.GraphFunction.toggleEditMode();
+        metExploreD3.GraphStyleEdition.toggleEditMode();
+        //(metExploreD3.GraphFunction.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
+        (metExploreD3.GraphStyleEdition.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
+    }
+	//Fin Ajout
 });

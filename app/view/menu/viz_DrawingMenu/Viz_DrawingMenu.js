@@ -1,6 +1,6 @@
 /**
  * @author Fabien Jourdan
- * @description Menu to call mapping functions on cytoscape view
+ * (a)description Menu to call mapping functions on cytoscape view
  */
 
 Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {

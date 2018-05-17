@@ -6,3 +6,17 @@ bootstrap.json
 cache\.appcache
 bootstrap.css
 bootstrap.js
+docs/*.*
+docs/extjs/
+
+docs/member-icons/
+
+docs/output/
+
+docs/resources/css/
+
+docs/resources/images/
+
+docs/resources/prettify/
+
+docs/source/

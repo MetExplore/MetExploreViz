@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
 Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
     extend: 'Ext.panel.Panel',  

@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : To manage the panel where is the graph
+ * (a)description : To manage the panel where is the graph
  */
 metExploreD3.GraphPanel = {
 	
@@ -828,6 +828,15 @@ metExploreD3.GraphPanel = {
 				for (var key in sessions) {
 					metExploreD3.GraphNetwork.refreshSvg(key);	
 			    }
+                // Ajout
+                // TO DO set style of previous session from JSON
+                var networkDataViz = new NetworkData('viz');
+				networkDataViz.cloneObject(sessions['viz'].d3Data);
+                var nodesData = networkDataViz.getNodes();
+				nodesData.forEach(function(node) {
+					metExploreD3.GraphStyleEdition.setStartingStyle(node);
+				})
+                // Fin Ajout
 				endFunc();
 			}
 		}
@@ -928,6 +937,15 @@ metExploreD3.GraphPanel = {
 								.selectAll("g.node")
 						        .filter(function(d) { return selected.indexOf(d.id)!=-1; })
 						        .each(function(d) { _MyThisGraphNode.selection(d, "viz"); });
+
+				            // Ajout
+                            /*d3.selectAll("g.node")
+                                .filter(function(d) { return selected.indexOf(d.id)!=-1; })
+                                .select("text")
+                                .each(function(d) {
+
+                                });*/
+							// Fin Ajout
 						 
 		                }
 		          	});

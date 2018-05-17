@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description
  */
  /**
 * NetworkData class
@@ -328,7 +328,7 @@ NetworkData.prototype = {
     addNodeCopy:function(node){
          this.nodes.push(node);
     },
-   
+
     addNode:function(
             name,
             compartment,
@@ -348,7 +348,8 @@ NetworkData.prototype = {
             pathway, 
             locked, 
             alias, 
-            label
+            label,
+            labelFont
         ){
         if(this.nodes == undefined)
             this.nodes = [];
@@ -373,7 +374,8 @@ NetworkData.prototype = {
             pathway, 
             locked, 
             alias, 
-            label);
+            label,
+            labelFont);
         //console.log('ec '+ec);
         //console.log('ec '+object.getEC());
         this.nodes.push(object);
@@ -475,12 +477,14 @@ NetworkData.prototype = {
                         node.pathways, 
                         node.locked, 
                         node.alias,
-                        node.label
+                        node.label,
+                        node.labelFont
                         );
+
                 }
                 else
                 {
-                
+
                     that.addNode(
                         node.name,
                         node.compartment, 
@@ -500,7 +504,8 @@ NetworkData.prototype = {
                         node.pathways, 
                         node.locked, 
                         node.alias, 
-                        node.label);
+                        node.label,
+                        node.labelFont);
                 }
                 if(node.mappingDatas!=undefined){
                     if(node.mappingDatas.length>0){

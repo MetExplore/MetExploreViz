@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description  MetaboliteStyleForm : Display metabolites config
+ * (a)description  MetaboliteStyleForm : Display metabolites config
  */
 Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
     extend: 'Ext.panel.Panel',  
@@ -37,7 +37,25 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
         checked   : false,
         reference:'checkboxAlias'
     },
-     {
+	//Ajout
+	{   
+            xtype:'fieldcontainer',
+	    margin:'5 5 5 5',
+	    fieldLabel:'Hide label',
+	    defaultType:'checkboxfield',
+	    items: [
+		{
+		    boxLabel:'Yes',
+		    name:'label',
+		    checked:false,
+		    id:'checkboxHideMetabolitesLabel',
+		    reference:'checkHideLabel'
+		}
+		]
+	}
+	//Fin Ajout
+    , 
+    {   
         xtype: 'textfield',
         reference:'chooseStrokeMetabolite',
         margin:'5 5 5 5',

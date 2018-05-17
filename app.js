@@ -1,6 +1,6 @@
 /**
 * @author MC
-* @description : Interface with other developments
+* (a)description : Interface with other developments
 */
 Ext.require('metExploreViz.view.panel.networkPanel.NetworkPanel');
 
