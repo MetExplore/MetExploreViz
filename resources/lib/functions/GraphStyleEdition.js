@@ -120,6 +120,8 @@ metExploreD3.GraphStyleEdition = {
                 d3.select(this).attr("y",d3.mouse(this)[1] + deltaY);
             })
             .on("dragend", function (d,i) {
+                //console.log(d3.select(this).attr("x"));
+                //console.log(d3.select(this).attr("transform"));
                 d3.selectAll("#D3viz")
                     .style("cursor", "default");
             });
@@ -127,9 +129,70 @@ metExploreD3.GraphStyleEdition = {
     },
 
     applyResizeHandle : function (image) {
-        console.log(image);
-        //image.append("circle").attr("r", 3).attr("fill", "green").attr("x", 0).attr("y", 0);
-        //console.log(image);
+        var imgWidth = Number(image.attr("width"));
+        var imgHeight = Number(image.attr("height"));
+        var deltaX = 0;
+        var deltaY = 0;
+        var oldY = 0;
+
+        var drag = d3.behavior.drag().on("dragstart", function () {
+            d3.event.sourceEvent.stopPropagation();
+            deltaX = image.attr("x") - d3.mouse(this)[0];
+            deltaY = image.attr("y") - d3.mouse(this)[1];
+            imgWidth = Number(image.attr("width"));
+            imgHeight = Number(image.attr("height"));
+            oldY = Number(d3.select(this.parentNode).attr("y"));
+            d3.selectAll("#D3viz").style("cursor", "move");
+        }).on('drag', function () {
+            if (d3.select(this).attr("class") === "LL" || d3.select(this).attr("class") === "UL") {
+                image.attr("x", d3.event.x);
+                var newWidth = imgWidth -  d3.event.x + deltaX;
+            }
+            else {
+                var newWidth = d3.event.x - deltaX;
+            }
+            var newHeight = imgHeight * (newWidth/imgWidth);
+            image.attr("width", newWidth);
+            image.attr("height", newHeight);
+            if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
+                image.attr("y", imgHeight - newHeight + oldY);
+            }
+            metExploreD3.GraphStyleEdition.updateImageDimensions(image);
+        }).on("dragend", function () {
+            d3.selectAll("#D3viz").style("cursor", "default");
+        });
+
+        image.append("rect").attr("class", "W1").attr("width", 2).attr("height", imgHeight).attr("fill", "grey").attr("opacity", 0.5);
+        image.append("rect").attr("class", "W2").attr("width", 2).attr("height", imgHeight).attr("fill", "grey").attr("opacity", 0.5)
+            .attr("transform", "translate(" + (imgWidth - 2) + ",0)");
+        image.append("rect").attr("class", "H1").attr("width", imgWidth).attr("height", 2).attr("fill", "grey").attr("opacity", 0.5);
+        image.append("rect").attr("class", "H2").attr("width", imgWidth).attr("height", 2).attr("fill", "grey").attr("opacity", 0.5)
+            .attr("transform", "translate(0," + (imgHeight - 2) + ")");
+        image.append("circle").attr("class", "UL").attr("r", 5).attr("fill", "blue").attr("opacity", 0.5)
+            .call(drag);
+        image.append("circle").attr("class", "UR").attr("r", 5).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("transform", "translate(" + imgWidth + ",0)")
+            .call(drag);
+        image.append("circle").attr("class", "LL").attr("r", 5).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("y", imgHeight).attr("transform", "translate(0," + imgHeight + ")")
+            .call(drag);
+        image.append("circle").attr("class", "LR") .attr("r", 5).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("x", imgWidth).attr("y", imgHeight).attr("transform", "translate(" + imgWidth + "," + imgHeight + ")")
+            .call(drag);
+    },
+
+    updateImageDimensions : function(image) {
+        var imgWidth = image.attr("width");
+        var imgHeight = image.attr("height");
+        image.select(".mappingImage").attr("width", imgWidth);
+        image.select(".mappingImage").attr("height", imgHeight);
+        image.select(".UR").attr("transform", "translate(" + imgWidth + ", 0)");
+        image.select(".LL").attr("transform", "translate(0, " + imgHeight + ")");
+        image.select(".LR").attr("transform", "translate(" + imgWidth + ", " + imgHeight + ")");
+        image.select(".W1").attr("height", imgHeight);
+        image.select(".W2").attr("height", imgHeight).attr("transform", "translate(" + (imgWidth - 2) + ",0)");
+        image.select(".H1").attr("width", imgWidth);
+        image.select(".H2").attr("width", imgWidth).attr("transform", "translate(0," + (imgHeight - 2) + ")");
     },
 
     /*******************************************
@@ -741,8 +804,8 @@ metExploreD3.GraphStyleEdition = {
                         //return (d.id == nodeName);
                         return (d.name == nodeName);
                     });
-                if (!node.select(".mappingImage").empty()){
-                    node.select(".mappingImage").remove();
+                if (!node.select(".imageNode").empty()){
+                    node.select(".imageNode").remove();
                 }
                 // TO DO add a new div
                 /*node.append("image")
@@ -754,26 +817,43 @@ metExploreD3.GraphStyleEdition = {
                     .attr("class", "mappingImage")
                     .attr("opacity", 1);*/
                 //metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".mappingImage"));
-                node.append("g")
-                    .attr("class", "imageNode")
-                    .attr("x", "0")
-                    .attr("y", "0")
-                    .attr("width", "100")
-                    .attr("height", "100")
-                    .attr("opacity", 1);
-                var test = node.selectAll(".imageNode");
-                test.append("image")
-                    .attr("href", urlImage)
-                    .attr("x", "-50")
-                    //.attr("y", "0")
-                    .attr("width", "100")
-                    .attr("height", "100")
-                    .attr("class", "mappingImage")
-                    .attr("opacity", 1);
-                //test.append("circle").attr("r",15);
-                console.log(test);
+
+                // TO DO implement this
+                var img = new Image();
+                img.src = urlImage;
+                img.onload = function () {
+                    var imgWidth = this.width;
+                    var imgHeight = this.height;
+                    console.log(imgWidth);
+
+                    if (imgWidth > 150){
+                        imgHeight = imgHeight * (150/imgWidth);
+                        imgWidth = 150;
+                    }
+                    var offsetX = -imgWidth/2;
+                    node.append("svg")
+                        .attr("class", "imageNode")
+                        //.attr("x", -imgWidth/2)
+                        //.attr("y", 20)
+                        .attr("x", 0)
+                        .attr("y", 0)
+                        .attr("width", imgWidth)
+                        .attr("height", imgHeight)
+                        .attr("opacity", 1)
+                        .attr("transform", "translate(" + offsetX + ",20)");
+                    node.selectAll(".imageNode")
+                        .append("image")
+                        .attr("class", "mappingImage")
+                        .attr("href", urlImage)
+                        //.attr("y", 20)
+                        .attr("width", imgWidth)
+                        .attr("height", imgHeight)
+                        .attr("opacity", 1);
+                    metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode"));
+                };
+
                 //metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode").select(".mappingImage"));
-                metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode"));
+                //metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode"));
                 //
             }
             // TO DO display pdf
