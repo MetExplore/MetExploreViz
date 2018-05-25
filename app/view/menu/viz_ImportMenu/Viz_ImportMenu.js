@@ -54,9 +54,26 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         // Ajout
         {
             text: 'Image Mapping',
+            menu: {
+                items: [
+                    {
+                        text: 'By Name',
+                        reference: 'importImageMappingName',
+                        tooltip: 'Import image for mapping by name'
+                    },
+                    {
+                        text: 'By Id',
+                        reference: 'importImageMappingID',
+                        tooltip: 'Import image for mapping by id'
+
+                    }]
+            }
+        },
+        /*{
+            text: 'Image Mapping',
             reference: 'importImageMapping',
             tooltip: 'Import image for mapping'
-        },
+        },*/
         {
             xtype: 'buttonImportImage',
             reference: 'importImageMappingHidden',

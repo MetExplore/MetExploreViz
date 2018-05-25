@@ -792,69 +792,51 @@ metExploreD3.GraphStyleEdition = {
         };
         return labelStyle;
     },
-    mapImageToNode : function(fileList){
+    mapImageToNode : function(fileList, arg){
         for (var i=0; i<fileList.length; i++){
-            console.log(fileList[i]);
             if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "image/svg+xml"){
                 var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
                 var urlImage = URL.createObjectURL(fileList[i]);
                 var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
                     .selectAll("g.node")
                     .filter(function (d) {
+                        var target = (arg === "Name") ? d.name : d.id;
                         //return (d.id == nodeName);
-                        return (d.name == nodeName);
+                        //return (d.name == nodeName);
+                        return (nodeName === target);
                     });
                 if (!node.select(".imageNode").empty()){
                     node.select(".imageNode").remove();
                 }
-                // TO DO add a new div
-                /*node.append("image")
-                    .attr("href", urlImage)
-                    .attr("x", "-50")
-                    .attr("y", "0")
-                    .attr("width", "100")
-                    .attr("height", "100")
-                    .attr("class", "mappingImage")
-                    .attr("opacity", 1);*/
-                //metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".mappingImage"));
-
-                // TO DO implement this
                 var img = new Image();
                 img.src = urlImage;
+                img.node = node;
                 img.onload = function () {
                     var imgWidth = this.width;
                     var imgHeight = this.height;
-                    console.log(imgWidth);
 
                     if (imgWidth > 150){
                         imgHeight = imgHeight * (150/imgWidth);
                         imgWidth = 150;
                     }
                     var offsetX = -imgWidth/2;
-                    node.append("svg")
+                    this.node.append("svg")
                         .attr("class", "imageNode")
-                        //.attr("x", -imgWidth/2)
-                        //.attr("y", 20)
                         .attr("x", 0)
                         .attr("y", 0)
                         .attr("width", imgWidth)
                         .attr("height", imgHeight)
                         .attr("opacity", 1)
                         .attr("transform", "translate(" + offsetX + ",20)");
-                    node.selectAll(".imageNode")
+                    this.node.selectAll(".imageNode")
                         .append("image")
                         .attr("class", "mappingImage")
-                        .attr("href", urlImage)
-                        //.attr("y", 20)
+                        .attr("href", this.src)
                         .attr("width", imgWidth)
                         .attr("height", imgHeight)
                         .attr("opacity", 1);
-                    metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode"));
+                    metExploreD3.GraphStyleEdition.applyEventOnImage(this.node.select(".imageNode"));
                 };
-
-                //metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode").select(".mappingImage"));
-                //metExploreD3.GraphStyleEdition.applyEventOnImage(node.select(".imageNode"));
-                //
             }
             // TO DO display pdf
             /*if (fileList[i].type === "application/pdf"){

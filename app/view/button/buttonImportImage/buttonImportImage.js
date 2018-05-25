@@ -30,6 +30,7 @@ Ext.define('metExploreViz.view.button.buttonImportImage.ButtonImportImage', {
     requires: [
         'metExploreViz.view.button.buttonImportImage.ButtonImportImageController'
     ],
+    target:"ID",
 
     /**
      * @cfg {Boolean} multiple
@@ -48,6 +49,10 @@ Ext.define('metExploreViz.view.button.buttonImportImage.ButtonImportImage', {
      */
     getFileList: function () {
         return this.fileInputEl.dom.files;
+    },
+
+    changeTarget: function(arg) {
+        this.target = arg;
     }
 });
 

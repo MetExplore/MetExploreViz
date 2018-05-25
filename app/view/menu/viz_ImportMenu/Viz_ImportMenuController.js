@@ -54,13 +54,23 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 		});
 
 		// Ajout
-		view.lookupReference('importImageMapping').on({
+		view.lookupReference('importImageMappingName').on({
 			click : function(){
 				var component = this.lookupReference('importImageMappingHidden');
+				component.changeTarget("Name");
 				component.fileInputEl.dom.click();
 			},
 			scope : me
 		});
+
+    view.lookupReference('importImageMappingID').on({
+        click : function(){
+            var component = this.lookupReference('importImageMappingHidden');
+            component.changeTarget("ID");
+            component.fileInputEl.dom.click();
+        },
+        scope : me
+    });
 		// Fin Ajout
 	},
 
