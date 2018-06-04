@@ -53,7 +53,30 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 		title:'Compartments',
 		id:'captionFormCompartments',
 		xtype:'captionForm'
-	}
+	},
+        // Ajout
+        {
+            title:'Cycle',
+            id:'cycleDetection',
+            xtype:'panel',
+			//reference:'cycleDetectionPanel',
+            autoScroll: true,
+            autoHeight: true,
+            items:[{
+                xtype:'button',
+                text:'Detect Cycles',
+                margin: '10 10 10 10',
+                align:'stretch',
+                width:'95%',
+                reference:'buttonDetectCycles'
+            },{
+                xtype:'menuseparator'
+			},{
+                xtype:'panel',
+                reference:'cycleDetectionPanel'
+            }]
+        }
+        // Fin Ajout
 	,
 	{
 	   title:'Style',

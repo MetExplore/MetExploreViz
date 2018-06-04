@@ -41,6 +41,15 @@ metExploreD3.GraphLink = {
         var scaleValue = d3.scale.linear()
             .domain([-maxValue, 0, 0, maxValue])
             .range([-7, -1, 1, 7]);
+        // Ajout
+        //console.log(maxValue);
+        /*var scaleValue = d3.scale.quantile()
+            .domain([0, maxValue/10, maxValue/10*2, maxValue/10*3, maxValue/10*4, maxValue/10*5, maxValue/10*6, maxValue/10*7, maxValue/10*8, maxValue/10*9, maxValue])
+            .range([0, 7/10, 7/10 * 2, 7/10 * 3, 7/10 * 4, 7/10 * 5, 7/10 * 6, 7/10 * 7, 7/10 * 8, 7/10 * 9, 7]);*/
+        /*var scaleValue = d3.scale.pow().exponent(0.5)
+            .domain([0, maxValue])
+            .range([1, 7]);*/
+        // Fin Ajout
 
         function pathForReversibleReactions(source, target) {
             var metaboliteStyle = metExploreD3.getMetaboliteStyle();

@@ -228,6 +228,12 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 handler: function () {
                                     metExploreD3.GraphNode.fixSelectedNode("viz")
                                 }
+                            }/*, {
+                                text: 'detectCycle',
+                                handler: function () {
+                                    metExploreD3.GraphStyleEdition.findCycle(theNode);
+
+                                }*/
                             }
                             ]
                         });
