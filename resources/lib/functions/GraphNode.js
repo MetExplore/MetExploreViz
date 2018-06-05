@@ -2630,6 +2630,9 @@ metExploreD3.GraphNode = {
                 if(d.getBiologicalType()=="reaction"){
 
                     links.filter(function(link){return d.getId()==link.getSource().getId();})
+						.filter(function (link) {
+							return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                        })
                         .style("stroke", "green")
                         .style("stroke-width", "1.5")
 
@@ -2639,6 +2642,9 @@ metExploreD3.GraphNode = {
                     // });
 
                     links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .filter(function (link) {
+                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                        })
                         .style("stroke", "red")
                         .style("stroke-width", "1.5")
                     // .each(function(link){
@@ -2649,6 +2655,9 @@ metExploreD3.GraphNode = {
                 else
                 {
                     links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .filter(function (link) {
+                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                        })
                         .style("stroke", "red")
                         .style("stroke-width", "1.5")
                     // .each(function(link){
@@ -2657,6 +2666,9 @@ metExploreD3.GraphNode = {
                     // });
 
                     links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .filter(function (link) {
+                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                        })
                         .style("stroke", "green")
                         .style("stroke-width", "1.5")
                     // .each(function(link){
@@ -2743,6 +2755,9 @@ metExploreD3.GraphNode = {
                 d3.select("#"+parent).select("#D3viz").select("#graphComponent")
                     .selectAll("path.link")
                     .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
+                    .filter(function (link) {
+                        return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                    })
                     .style("stroke",linkStyle.getStrokeColor())
                     .style("stroke-width", "0.5");
 

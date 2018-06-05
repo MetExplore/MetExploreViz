@@ -228,14 +228,23 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 handler: function () {
                                     metExploreD3.GraphNode.fixSelectedNode("viz")
                                 }
-                            }/*, {
-                                text: 'detectCycle',
+                            }, {
+                                text: 'Detect Longest Cycle',
                                 handler: function () {
-                                    metExploreD3.GraphStyleEdition.findCycle(theNode);
-
+                                    var cycles = metExploreD3.GraphStyleEdition.findCycle(theNode);
+                                    var longest = [];
+                                    if (cycles.length > 0) {
+                                        var max = 0;
+                                        for (var i = 0; i < cycles.length; i++) {
+                                            if (cycles[i].length > max) {
+                                                longest = cycles[i];
+                                                max = longest.length;
+                                            }
+                                        }
+                                    }
+                                    metExploreD3.GraphStyleEdition.highlightCycle(longest);
                                 }
-                            }*/
-                            ]
+                            }]
                         });
                     }
                     else {

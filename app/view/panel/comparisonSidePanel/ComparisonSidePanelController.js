@@ -38,8 +38,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
             }).each(function (d) {
             	result = metExploreD3.GraphStyleEdition.findCycle(d);
         });*/
-        var result = metExploreD3.GraphStyleEdition.findCycle2();
-		console.log("Component :");
+        var result = metExploreD3.GraphStyleEdition.findCycle();
 		for (var i=0; i<result.length; i++){
             var newCheckbox = Ext.create('Ext.form.field.Checkbox', {
             	reference: 'checkboxCycle' + i,
