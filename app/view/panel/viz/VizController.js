@@ -232,17 +232,24 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 text: 'Detect Longest Cycle',
                                 handler: function () {
                                     var cycles = metExploreD3.GraphStyleEdition.findCycle(theNode);
-                                    var longest = [];
+                                    var longestCycles = [];
                                     if (cycles.length > 0) {
                                         var max = 0;
                                         for (var i = 0; i < cycles.length; i++) {
                                             if (cycles[i].length > max) {
-                                                longest = cycles[i];
-                                                max = longest.length;
+                                                longestCycles = [];
+                                                longestCycles.push(cycles[i]);
+                                                max = longestCycles[0].length;
+                                            }
+                                            else if (cycles[i].length === max){
+                                                longestCycles.push(cycles[i]);
                                             }
                                         }
                                     }
-                                    metExploreD3.GraphStyleEdition.highlightCycle(longest);
+                                    if (longestCycles[0] != undefined) {
+                                        metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
+                                        metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
+                                    }
                                 }
                             }]
                         });
@@ -376,6 +383,29 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         }
                                     }]
                                 }]
+                            }, {
+                                text: 'Detect Longest Cycle',
+                                handler: function () {
+                                    var cycles = metExploreD3.GraphStyleEdition.findCycle(theNode);
+                                    var longestCycles = [];
+                                    if (cycles.length > 0) {
+                                        var max = 0;
+                                        for (var i = 0; i < cycles.length; i++) {
+                                            if (cycles[i].length > max) {
+                                                longestCycles = [];
+                                                longestCycles.push(cycles[i]);
+                                                max = longestCycles[0].length;
+                                            }
+                                            else if (cycles[i].length === max){
+                                                longestCycles.push(cycles[i]);
+                                            }
+                                        }
+                                    }
+                                    if (longestCycles[0] != undefined) {
+                                        metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
+                                        metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
+                                    }
+                                }
                             },{
 							    text: 'Display/hide mappedImage',
                                 reference: 'displayMappedImage',
