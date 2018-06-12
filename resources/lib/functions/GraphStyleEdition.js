@@ -493,6 +493,10 @@ metExploreD3.GraphStyleEdition = {
                     var path = "M" + link.getTarget().x + "," + link.getTarget().y +
                         "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + link.getSource().x + "," + link.getSource().y;
                     d3.select(this).attr("d", path);
+                    var endPoint = this.getPointAtLength(this.getTotalLength() - metExploreD3.getMetaboliteStyle().getWidth() / 2);
+                    path = "M" + link.getTarget().x + "," + link.getTarget().y +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + endPoint.x + "," + endPoint.y;
+                    d3.select(this).attr("d", path);
                     var enteringMidPoint = this.getPointAtLength(this.getTotalLength()/2);
                     centroidSourceX = enteringMidPoint.x;
                     centroidSourceY = enteringMidPoint.y;
@@ -505,6 +509,10 @@ metExploreD3.GraphStyleEdition = {
                     var sweepFlag = (link.arcDirection === "clockwise") ? 1 : 0;
                     var path = "M" + link.getSource().x + "," + link.getSource().y +
                         "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + link.getTarget().x + "," + link.getTarget().y;
+                    d3.select(this).attr("d", path);
+                    var endPoint = this.getPointAtLength(this.getTotalLength() - metExploreD3.getMetaboliteStyle().getWidth() / 2);
+                    path = "M" + link.getSource().x + "," + link.getSource().y +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + endPoint.x + "," + endPoint.y;
                     d3.select(this).attr("d", path);
                     var exitingMidPoint = this.getPointAtLength(this.getTotalLength()/2);
                     centroidTargetX = exitingMidPoint.x;
@@ -557,9 +565,9 @@ metExploreD3.GraphStyleEdition = {
                 if (link.partOfCycle === true){
                     path = d3.select(this).attr("d");
                 }
-                /*else if (isCycleReaction === true){
-                    path = metExploreD3.GraphStyleEdition.computePathHorizontal(node, centroidSourceX, centroidSourceY, link.getSource());
-                }*/
+                else if (isCycleReaction === true){
+                    path = metExploreD3.GraphStyleEdition.computePathArcSibling(node, centroidSourceX, centroidSourceY, link.getSource(), enteringX, enteringY);
+                }
                 else if (enteringY == node.y){
                     path = metExploreD3.GraphStyleEdition.computePathHorizontal(node, enteringX, enteringY, link.getSource());
                 }
@@ -581,9 +589,9 @@ metExploreD3.GraphStyleEdition = {
                 if (link.partOfCycle === true){
                     path = d3.select(this).attr("d");
                 }
-                /*else if (isCycleReaction === true){
-                    path = metExploreD3.GraphStyleEdition.computePathHorizontal(node, centroidTargetX, centroidTargetY, link.getTarget());
-                }*/
+                else if (isCycleReaction === true){
+                    path = metExploreD3.GraphStyleEdition.computePathArcSibling(node, centroidTargetX, centroidTargetY, link.getTarget(), exitingX, exitingY);
+                }
                 else if (exitingY == node.y){
                     path = metExploreD3.GraphStyleEdition.computePathHorizontal(node, exitingX, exitingY, link.getTarget());
 
@@ -767,6 +775,18 @@ metExploreD3.GraphStyleEdition = {
                 "L" + lastPointX + "," + lastPointY;
         }
         return path;
+    },
+    computePathArcSibling: function (startNode, firstPointX, firstPointY, endNode, enteringX, enteringY) {
+        var path = "";
+        if (enteringY == startNode.y){
+            path = metExploreD3.GraphStyleEdition.computePathHorizontal(startNode, enteringX, enteringY, endNode);
+
+        }
+        else {
+            path = metExploreD3.GraphStyleEdition.computePathVertical(startNode, enteringX, enteringY, endNode);
+        }
+        return path;
+
     },
     computeCentroid : function (node, enteringLinks, exitingLinks) {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
@@ -1210,6 +1230,11 @@ metExploreD3.GraphStyleEdition = {
             var node = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
                 .filter(function (d) {
                     return (d.id === cycle[i]);
+                })
+                .each(function (d) {
+                    if (!(d.isSelected())) {
+                        metExploreD3.GraphNode.selection(d, 'viz');
+                    }
                 });
             nodesList.push(node);
         }
@@ -1271,7 +1296,6 @@ metExploreD3.GraphStyleEdition = {
 
         // Draw the arcs
         var cycleLinks = metExploreD3.GraphStyleEdition.getLinksFromCycle(cycle);
-        var path;
         var cycleLinksSelection = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
             .filter(function (d) {
                 return (cycleLinks.includes(d));
