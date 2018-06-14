@@ -71,16 +71,20 @@ metExploreD3.GraphStyleEdition = {
         //
     },
 
-    createDragBehavior : function () {
+    createDragBehavior : function (flag) {
         var deltaX;
         var deltaY;
+        var element;
         var drag = d3.behavior.drag()
             .on ("dragstart", function (d,i) {
                 d3.event.sourceEvent.stopPropagation();
+                element = (flag === "chrome") ? this.parentNode : this;
                 var cX = d3.select(this).attr("x");
                 var cY = d3.select(this).attr("y");
-                deltaX = cX - d3.mouse(this)[0];
-                deltaY = cY - d3.mouse(this)[1];
+                //deltaX = cX - d3.mouse(this)[0];
+                //deltaY = cY - d3.mouse(this)[1];
+                deltaX = cX - d3.mouse(element)[0];
+                deltaY = cY - d3.mouse(element)[1];
                 d3.selectAll("#D3viz")
                     .style("cursor", "move");
             })
@@ -92,12 +96,46 @@ metExploreD3.GraphStyleEdition = {
                 else{
                     d3.select(this).attr("transform", "translate(" + (d3.event.x + deltaX) + ", " + (d3.event.y + deltaY) +")");
                 }
-                d3.select(this).attr("x",d3.mouse(this)[0] + deltaX);
-                d3.select(this).attr("y",d3.mouse(this)[1] + deltaY);
+                //d3.select(this).attr("x",d3.mouse(this)[0] + deltaX);
+                //d3.select(this).attr("y",d3.mouse(this)[1] + deltaY);
+                d3.select(this).attr("x", d3.mouse(element)[0] + deltaX);
+                d3.select(this).attr("y", d3.mouse(element)[1] + deltaY);
             })
             .on("dragend", function (d,i) {
-                //console.log(d3.select(this).attr("x"));
-                //console.log(d3.select(this).attr("transform"));
+                d3.selectAll("#D3viz")
+                    .style("cursor", "default");
+            });
+        return drag;
+    },
+
+    createDragBehaviorImage : function () {
+        // TO DO : remove that function after testing createDragBehavior work on all browser
+        var deltaX;
+        var deltaY;
+        var drag = d3.behavior.drag()
+            .on ("dragstart", function (d,i) {
+                d3.event.sourceEvent.stopPropagation();
+                var cX = d3.select(this).attr("x");
+                var cY = d3.select(this).attr("y");
+                deltaX = cX - d3.mouse(this.parentNode)[0];
+                deltaY = cY - d3.mouse(this.parentNode)[1];
+                d3.selectAll("#D3viz")
+                    .style("cursor", "move");
+            })
+            .on("drag", function (d,i) {
+                if (d3.select(this).attr("transform")) {
+                    var transformScale = d3.transform(d3.select(this).attr("transform")).scale;
+                    d3.select(this).attr("transform", "translate(" + (d3.event.x + deltaX) + ", " + (d3.event.y + deltaY) + ") scale(" + transformScale[0] + ", " + transformScale[1] + ")");
+                }
+                else{
+                    d3.select(this).attr("transform", "translate(" + (d3.event.x + deltaX) + ", " + (d3.event.y + deltaY) +")");
+
+                    console.log(d3.select(this).attr("transform"));
+                }
+                d3.select(this).attr("x",d3.mouse(this.parentNode)[0] + deltaX);
+                d3.select(this).attr("y",d3.mouse(this.parentNode)[1] + deltaY);
+            })
+            .on("dragend", function (d,i) {
                 d3.selectAll("#D3viz")
                     .style("cursor", "default");
             });
@@ -128,6 +166,10 @@ metExploreD3.GraphStyleEdition = {
                 var newWidth = d3.event.x - deltaX;
             }
             var newHeight = imgHeight * (newWidth/imgWidth);
+            // Start test
+            newWidth = (newWidth > 0) ? newWidth : 0;
+            newHeight = (newHeight > 0) ? newHeight : 0;
+            // End test
             image.attr("width", newWidth);
             image.attr("height", newHeight);
             if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
@@ -157,14 +199,104 @@ metExploreD3.GraphStyleEdition = {
             .call(drag);
     },
 
+    applyResizeHandleG : function (image) {
+        console.log(image);
+        var imgWidth = Number(image.attr("width"));
+        var imgHeight = Number(image.attr("height"));
+        var deltaGX = 0;
+        var oldX = 0;
+        var oldY = 0;
+        var limitX = 0;
+
+        var drag = d3.behavior.drag().on("dragstart", function () {
+            d3.event.sourceEvent.stopPropagation();
+            imgWidth = Number(image.attr("width"));
+            imgHeight = Number(image.attr("height"));
+            oldX = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
+            oldY = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+            limitX = oldX + imgWidth;
+            d3.selectAll("#D3viz").style("cursor", "move");
+        }).on('drag', function () {
+            var newWidth = 0;
+            var newHeight = 0;
+            if (d3.select(this).attr("class") === "LL" || d3.select(this).attr("class") === "UL") {
+                var tmpWidth = d3.select(this.parentNode).attr("width");
+                newWidth = tmpWidth - (d3.event.x + deltaGX);
+                var transform = d3.select(this.parentNode).attr("transform");
+                var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
+                var x = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
+                var y = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+                //var tmp = Math.min(d3.event.x, limitX - 10);
+                var newX = x + d3.event.x + deltaGX;
+                //newX = (newX < limitX) ? newX : limitX;
+                newX = Math.min(newX, limitX);
+                var translate = "translate(" + newX + "," + y + ")";
+                d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
+            }
+            else {
+                newWidth = d3.event.x - deltaGX;
+            }
+            newHeight = imgHeight * (newWidth/imgWidth);
+            newWidth = (newWidth > 0) ? newWidth : 0;
+            newHeight = (newHeight > 0) ? newHeight : 0;
+            image.attr("width", newWidth);
+            image.attr("height", newHeight);
+            if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
+                var transform = d3.select(this.parentNode).attr("transform");
+                var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
+                var x = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
+                var y = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+                var newY =  oldY - (newHeight - imgHeight);
+                var translate = "translate(" + x + "," + newY + ")";
+                d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
+            }
+            metExploreD3.GraphStyleEdition.updateImageDimensions(image);
+        }).on("dragend", function () {
+            d3.selectAll("#D3viz").style("cursor", "default");
+        });
+
+        image.append("rect").attr("class", "W1").attr("width", 2).attr("height", imgHeight).attr("fill", "grey").attr("opacity", 0.5);
+        image.append("rect").attr("class", "W2").attr("width", 2).attr("height", imgHeight).attr("fill", "grey").attr("opacity", 0.5)
+            .attr("transform", "translate(" + (imgWidth - 2) + ",0)");
+        image.append("rect").attr("class", "H1").attr("width", imgWidth).attr("height", 2).attr("fill", "grey").attr("opacity", 0.5);
+        image.append("rect").attr("class", "H2").attr("width", imgWidth).attr("height", 2).attr("fill", "grey").attr("opacity", 0.5)
+            .attr("transform", "translate(0," + (imgHeight - 2) + ")");
+        /*image.append("circle").attr("class", "UL").attr("r", 5).attr("fill", "blue").attr("opacity", 0.5)
+            .call(drag);
+        image.append("circle").attr("class", "UR").attr("r", 5).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("transform", "translate(" + imgWidth + ",0)")
+            .call(drag);
+        image.append("circle").attr("class", "LL").attr("r", 5).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("y", imgHeight).attr("transform", "translate(0," + imgHeight + ")")
+            .call(drag);
+        image.append("circle").attr("class", "LR") .attr("r", 5).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("x", imgWidth).attr("y", imgHeight).attr("transform", "translate(" + imgWidth + "," + imgHeight + ")")
+            .call(drag);*/
+        image.append("rect").attr("class", "UL").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
+            .call(drag);
+        image.append("rect").attr("class", "UR").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("transform", "translate(" + (imgWidth - 4) + ",0)")
+            .call(drag);
+        image.append("rect").attr("class", "LL").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("transform", "translate(0," + (imgHeight - 4) + ")")
+            .call(drag);
+        image.append("rect").attr("class", "LR") .attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("transform", "translate(" + (imgWidth - 4) + "," + (imgHeight - 4) + ")")
+            .call(drag);
+    },
+
     updateImageDimensions : function(image) {
         var imgWidth = image.attr("width");
         var imgHeight = image.attr("height");
+        // Start test
+        imgWidth = (imgWidth > 0) ? imgWidth : 0;
+        imgHeight = (imgHeight > 0) ? imgHeight : 0;
+        // End test
         image.select(".mappingImage").attr("width", imgWidth);
         image.select(".mappingImage").attr("height", imgHeight);
-        image.select(".UR").attr("transform", "translate(" + imgWidth + ", 0)");
-        image.select(".LL").attr("transform", "translate(0, " + imgHeight + ")");
-        image.select(".LR").attr("transform", "translate(" + imgWidth + ", " + imgHeight + ")");
+        image.select(".UR").attr("transform", "translate(" + (imgWidth - 4) + ", 0)");
+        image.select(".LL").attr("transform", "translate(0, " + (imgHeight - 4) + ")");
+        image.select(".LR").attr("transform", "translate(" + (imgWidth - 4) + ", " + (imgHeight - 4) + ")");
         image.select(".W1").attr("height", imgHeight);
         image.select(".W2").attr("height", imgHeight).attr("transform", "translate(" + (imgWidth - 2) + ",0)");
         image.select(".H1").attr("width", imgWidth);
@@ -836,9 +968,15 @@ metExploreD3.GraphStyleEdition = {
         return labelStyle;
     },
     mapImageToNode : function(fileList, arg){
+        var listNames = [];
         for (var i=0; i<fileList.length; i++){
             if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "image/svg+xml"){
                 var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
+                if (listNames.includes(nodeName)){
+                    console.log('ok');
+                    continue;
+                }
+                listNames.push(nodeName);
                 var urlImage = URL.createObjectURL(fileList[i]);
                 var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
                     .selectAll("g.node")
@@ -863,7 +1001,7 @@ metExploreD3.GraphStyleEdition = {
                         imgWidth = 150;
                     }
                     var offsetX = -imgWidth/2;
-                    this.node.append("svg")
+                    this.node.append("g")
                         .attr("class", "imageNode")
                         .attr("x", 0)
                         .attr("y", 0)
@@ -920,15 +1058,32 @@ metExploreD3.GraphStyleEdition = {
     },
     applyEventOnImage : function (image) {
         image.on("mouseenter", function () {
-            var evt = new MouseEvent("mouseleave");
-            this.parentNode.dispatchEvent(evt);
+            var mouseleaveEvent = new MouseEvent("mouseleave");
+            this.parentNode.dispatchEvent(mouseleaveEvent);
         }).on("mouseleave", function () {
-            var evt = new MouseEvent("mouseenter");
-            this.parentNode.dispatchEvent(evt);
+            var mouseenterEvent = new MouseEvent("mouseenter");
+            this.parentNode.dispatchEvent(mouseenterEvent);
         });
-        var drag = metExploreD3.GraphStyleEdition.createDragBehavior();
-        image.call(drag);
-        metExploreD3.GraphStyleEdition.applyResizeHandle(image);
+
+        image.on("myevt", function(d, i){
+            var flag = "";
+            if (d3.mouse(this)[0] === d3.mouse(this.parentNode)[0] && d3.mouse(this)[1] === d3.mouse(this.parentNode)[1]){
+                flag = "chrome";
+            }
+            else {
+                flag = "firefox";
+            }
+            var drag = metExploreD3.GraphStyleEdition.createDragBehavior("firefox");
+            image.call(drag);
+            metExploreD3.GraphStyleEdition.applyResizeHandleG(image);
+        });
+        image.each(function () {
+            var evt = new MouseEvent("myevt");
+            this.dispatchEvent(evt);
+        });
+        //var drag = metExploreD3.GraphStyleEdition.createDragBehavior(flag);
+        //image.call(drag);
+        //metExploreD3.GraphStyleEdition.applyResizeHandle(image);
 
     },
     /*******************************************
@@ -1283,7 +1438,7 @@ metExploreD3.GraphStyleEdition = {
         var revNodesList = (direction === "counter-clockwise") ? [].concat(shiftedNodesList).reverse() : shiftedNodesList;
         for (var i=0; i<cycle.length; i++) {
             var transform = revNodesList[i].attr("transform");
-            var transformList = transform.split(/(translate\([\d.,\s]*\))/);
+            var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
             var x = centroidX + radius * Math.cos(2 * Math.PI * i / cycle.length);
             var y = centroidY + radius * Math.sin(2 * Math.PI * i / cycle.length);
             var translate = "translate(" + x + "," + y + ")";
