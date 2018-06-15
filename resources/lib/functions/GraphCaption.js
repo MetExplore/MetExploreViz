@@ -58,6 +58,25 @@ metExploreD3.GraphCaption = {
      * Draw caption
      */
     drawCaption : function(){
+        // Ajout
+        d3.select("#viz")
+            .select("#D3viz")
+            .select(".logoViz")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".linkCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".reactionCaption")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".textCaptionRev")
+            .remove();
+        // Fin Ajout
+
         d3.select("#viz")
             .select("#D3viz")
             .select(".logoViz")
@@ -134,6 +153,7 @@ metExploreD3.GraphCaption = {
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
+            .attr('class', 'textCaptionRev')
             .text('Reversible link')
             .attr('x', 20)
             .attr('y', 15)
@@ -184,6 +204,7 @@ metExploreD3.GraphCaption = {
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
+            .attr('class', 'textCaptionRev')
             .text('Link')
             .attr('x', 20)
             .attr('y', 15)
@@ -224,6 +245,7 @@ metExploreD3.GraphCaption = {
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
+            .attr('class', 'textCaptionRev')
             .text('Reaction')
             .attr('x', 20)
             .attr('y', 15)
@@ -245,6 +267,202 @@ metExploreD3.GraphCaption = {
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
+            .attr('class', 'textCaptionRev')
+            .text('Metabolites')
+            .attr('x', 20)
+            .attr('y',15)
+            .attr("transform","translate(30,140)");
+
+    },
+
+    /*****************************************************
+     * Draw caption
+     */
+    drawCaptionEditMode : function(){
+        d3.select("#viz")
+            .select("#D3viz")
+            .select(".logoViz")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".linkCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".reactionCaption")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".textCaptionRev")
+            .remove();
+
+        // Load user's preferences
+        var reactionStyle = metExploreD3.getReactionStyle();
+        var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
+        var xRea = 15/maxDimRea;
+
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
+        var xMet = 15/maxDimMet;
+
+        // This part create the legend of the representation and
+        // add a mention to Metexplore in the right bottom
+        // corner
+        // Issue to be solved: when the window size change we
+        // loose the MetExplore text.
+        var sx = 15/2 - reactionStyle.getWidth()*xRea/2;
+        var sy = 15;
+        var linkStyle = metExploreD3.getLinkStyle();
+        var path1 = "M"+(50 + 15/2 - reactionStyle.getWidth()*xRea/2 - reactionStyle.getWidth()*xRea)+","+sy+
+            "L"+sx+","+sy;
+        var path2 = "M"+(50 + 15/2 - reactionStyle.getWidth()*xRea/2)+","+sy+
+            "L"+(sx+90)+","+sy;
+
+        d3.select("#viz").select("#D3viz").append("defs").append("marker")
+            .attr("id", "marker")
+            .attr("viewBox", "-10 -5 20 20")
+            .attr("refX", 9)
+            .attr("refY", 6)
+            .attr("markerUnits", "userSpaceOnUse")
+            .attr("markerWidth", 15)
+            .attr("markerHeight", 10)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,6L-5,12L9,6L-5,0");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr('class', 'reactionCaption')
+            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
+            .attr('y', 15)
+            .attr("width", reactionStyle.getWidth()*xRea)
+            .attr("height", reactionStyle.getHeight()*xRea)
+            .attr("rx", reactionStyle.getRX()*xRea)
+            .attr("ry", reactionStyle.getRY()*xRea)
+            .attr("fill", "white")
+            .attr("transform", "translate(50,"+(40-(reactionStyle.getHeight()*xRea /2))+")")
+            .style("stroke",reactionStyle.getStrokeColor())
+            .style("stroke-width", 2);
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path1)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke",linkStyle.getStrokeColor())
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,40)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path2)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke",linkStyle.getStrokeColor())
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,40)")
+            .attr("marker-end", "url(#marker)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text('Reaction')
+            .attr('class', 'textCaptionRev')
+            .attr('x', 20)
+            .attr('y', 15)
+            .attr("transform", "translate(0,65)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr('class', 'reactionCaption')
+            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
+            .attr('y', 15)
+            .attr("width", reactionStyle.getWidth()*xRea)
+            .attr("height", reactionStyle.getHeight()*xRea)
+            .attr("rx", reactionStyle.getRX()*xRea)
+            .attr("ry", reactionStyle.getRY()*xRea)
+            .attr("fill", "white")
+            .attr("transform", "translate(50,"+(85-(reactionStyle.getHeight()*xRea /2))+")")
+            .style("stroke",reactionStyle.getStrokeColor())
+            .style("stroke-width", 2);
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path1)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke",linkStyle.getStrokeColor())
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,85)")
+            .attr("marker-end", "url(#marker)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path2)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke",linkStyle.getStrokeColor())
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,85)")
+            .attr("marker-end", "url(#marker)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .attr('class', 'textCaptionRev')
+            .text('Reversible reaction')
+            .attr('x', 20)
+            .attr('y', 15)
+            .attr("transform", "translate(0,110)");
+
+
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .attr('id', 'metexplore')
+            .text('MetExploreViz')
+            .attr('x', $("#viz").width() - 130)
+            .attr('y', $("#viz").height() - 10);
+
+        d3.select("#viz")
+            .select("#D3viz")
+            .append("svg:g")
+            .attr("class","logoViz").attr("id","logoViz")
+            .append("image")
+            .attr("xlink:href", "resources/icons/metExploreViz_Logo.svg")
+            .attr("width", "50")
+            .attr("height", "50")
+            .attr('x', $("#viz").width() - 110)
+            .attr('y', $("#viz").height() - 75);
+
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr('class', 'metaboliteCaption')
+            .attr('x', 15/2 - metaboliteStyle.getWidth()*xMet/2)
+            .attr('y', 15 + 15/2 - metaboliteStyle.getHeight()*xMet/2)
+            .attr("width", metaboliteStyle.getWidth()*xMet)
+            .attr("height", metaboliteStyle.getHeight()*xMet)
+            .attr("rx", metaboliteStyle.getRX()*xMet)
+            .attr("ry", metaboliteStyle.getRY()*xMet)
+            .attr("fill", "white")
+            .style("stroke", "black")
+            .style("stroke-width", 2)
+            .attr("transform","translate(15,130)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .attr('class', 'textCaptionRev')
             .text('Metabolites')
             .attr('x', 20)
             .attr('y',15)

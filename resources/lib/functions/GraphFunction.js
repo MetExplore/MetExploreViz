@@ -4,10 +4,6 @@
  */
     
 metExploreD3.GraphFunction = {
-	//Ajout
-	//editMode: false,
-	//curvedPath: false,
-	//Fin Ajout
 
     bfs : function (node){
 	    var graph = metExploreD3.GraphFunction.getGraphNotDirected();

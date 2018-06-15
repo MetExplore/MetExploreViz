@@ -725,7 +725,7 @@ metExploreD3.GraphNode = {
         nodenotsc.select('.fontSelected').style("fill-opacity", '0.4');
         nodeissc.select('.fontSelected').style("fill-opacity", '0.4');
 
-		_MyThisGraphNode.addText(d, panel);
+		//_MyThisGraphNode.addText(d, panel);
 	},
 
 	/*******************************************
@@ -2591,39 +2591,41 @@ metExploreD3.GraphNode = {
             .filter(function(d){ return !d.isDuplicated(); })
             .on("mouseenter", function(d) {
 
-                var transform = d3.select(this).attr("transform");
-                var scale=transform.substring(transform.indexOf("scale"),transform.length);
-                var scaleVal=scale.substring(6, scale.indexOf(')'));
+            	if (!metExploreD3.GraphStyleEdition.editMode) {
+                    var transform = d3.select(this).attr("transform");
+                    var scale = transform.substring(transform.indexOf("scale"), transform.length);
+                    var scaleVal = scale.substring(6, scale.indexOf(')'));
 
-                if(isNaN(scaleVal))
-                    scaleVal=1;
+                    if (isNaN(scaleVal))
+                        scaleVal = 1;
 
-                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal*2+")");
-                // Ajout
-                // Prevent movement of the node label during mouseenter
-                var labelElement = d3.select(this).select("text");
-                var newY = (labelElement.attr("y")) ? labelElement.attr("y")/2 : 0;
-                var newX = (labelElement.attr("x")) ? labelElement.attr("x")/2 : 0;
-                var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
-                var labelScale = d3.transform(labelElement.attr("transform")).scale;
-                if (metExploreD3.GraphStyleEdition.editMode){
-                    labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                    var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                    d3.select(this).attr("transform", "translate(" + d.x + ", " + d.y + ") scale(" + scaleVal * 2 + ")");
+                    // Ajout
+                    // Prevent movement of the node label during mouseenter
+                    var labelElement = d3.select(this).select("text");
+                    var newY = (labelElement.attr("y")) ? labelElement.attr("y") / 2 : 0;
+                    var newX = (labelElement.attr("x")) ? labelElement.attr("x") / 2 : 0;
+                    var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                    var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                    if (metExploreD3.GraphStyleEdition.editMode) {
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                    }
+                    else {
+                        labelElement.attr("y", newY);
+                        labelElement.attr("x", newX);
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
+                    }
+                    // Prevent movement of the node image during mouseenter
+                    //var imageElement = d3.select(this).select(".mappingImage");
+                    var imageElement = d3.select(this).select(".imageNode");
+                    if (!imageElement.empty()) {
+                        var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
+                        var imageScale = d3.transform(imageElement.attr("transform")).scale;
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + (imageScale[0] / 2) + ", " + (imageScale[1] / 2) + ")");
+                    }
+                    // Fin Ajout
                 }
-                else {
-                    labelElement.attr("y", newY);
-                    labelElement.attr("x", newX);
-                    labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
-                }
-                // Prevent movement of the node image during mouseenter
-                //var imageElement = d3.select(this).select(".mappingImage");
-                var imageElement = d3.select(this).select(".imageNode");
-                if (!imageElement.empty()) {
-                    var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
-                    var imageScale = d3.transform(imageElement.attr("transform")).scale;
-                    imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + (imageScale[0] / 2) + ", " + (imageScale[1] / 2) + ")");
-                }
-                // Fin Ajout
 
                 var links = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link");
 
@@ -2710,43 +2712,47 @@ metExploreD3.GraphNode = {
             })
             .on("mouseleave", function(d) {
 
-                var transform = d3.select(this).attr("transform");
-                var scale=transform.substring(transform.indexOf("scale"),transform.length);
-                var scaleVal=scale.substring(6, scale.indexOf(')'));
-                if(isNaN(scaleVal))
-                    scaleVal=1;
+                if (!metExploreD3.GraphStyleEdition.editMode) {
+                    var transform = d3.select(this).attr("transform");
+                    var scale = transform.substring(transform.indexOf("scale"), transform.length);
+                    var scaleVal = scale.substring(6, scale.indexOf(')'));
+                    if (isNaN(scaleVal))
+                        scaleVal = 1;
 
-                metExploreD3.GraphNode.node
-                    .filter(function(node){return node==d})
-                    .select('.locker')
-                    .classed('hide', true);
+                    metExploreD3.GraphNode.node
+                        .filter(function (node) {
+                            return node == d
+                        })
+                        .select('.locker')
+                        .classed('hide', true);
 
-                var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-                d3.select(this).attr("transform", "translate("+d.x+", "+d.y+") scale("+scaleVal/2+")");
-                // Ajout
-                // Prevent  movement of the node label during mouseleave
-                var labelElement = d3.select(this).select("text");
-                var newY = (labelElement.attr("y")) ? labelElement.attr("y")*2 : 0;
-                var newX = (labelElement.attr("x")) ? labelElement.attr("x")*2 : 0;
-                var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
-                var labelScale = d3.transform(labelElement.attr("transform")).scale;
-                if (metExploreD3.GraphStyleEdition.editMode) {
-                    labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                    var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                    d3.select(this).attr("transform", "translate(" + d.x + ", " + d.y + ") scale(" + scaleVal / 2 + ")");
+                    // Ajout
+                    // Prevent  movement of the node label during mouseleave
+                    var labelElement = d3.select(this).select("text");
+                    var newY = (labelElement.attr("y")) ? labelElement.attr("y") * 2 : 0;
+                    var newX = (labelElement.attr("x")) ? labelElement.attr("x") * 2 : 0;
+                    var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                    var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                    if (metExploreD3.GraphStyleEdition.editMode) {
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                    }
+                    else {
+                        labelElement.attr("y", newY);
+                        labelElement.attr("x", newX);
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")");
+                    }
+                    // Prevent  movement of the node label during mouseleave
+                    //var imageElement = d3.select(this).select(".mappingImage");
+                    var imageElement = d3.select(this).select(".imageNode");
+                    if (!imageElement.empty()) {
+                        var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
+                        var imageScale = d3.transform(imageElement.attr("transform")).scale;
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + (imageScale[0] * 2) + ", " + (imageScale[1] * 2) + ")");
+                    }
+                    // Fin Ajout
                 }
-                else {
-                    labelElement.attr("y", newY);
-                    labelElement.attr("x", newX);
-                    labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")");
-                }
-                // Prevent  movement of the node label during mouseleave
-                //var imageElement = d3.select(this).select(".mappingImage");
-                var imageElement = d3.select(this).select(".imageNode");
-                if (!imageElement.empty()) {
-                    var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
-                    var imageScale = d3.transform(imageElement.attr("transform")).scale;
-                    imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + (imageScale[0] * 2) + ", " + (imageScale[1] * 2) + ")");
-                }
-                // Fin Ajout
 
                 if(!d.isLocked())
                     d.fixed = false;
