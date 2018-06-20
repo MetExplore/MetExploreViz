@@ -141,7 +141,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         var node = networkData.getNodeById(id);
                                         if(node)
                                             selectedNodesObj.push(node);
-                                    })
+                                    });
                                     metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
                                 }
                             }]
@@ -182,240 +182,229 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                     });
 
                     //Ajout et Modif
-					//if (metExploreD3.GraphFunction.editMode==false) {
-                    if (metExploreD3.GraphStyleEdition.editMode==false) {
-                        viz.CtxMenu = new Ext.menu.Menu({
-                            items: [{
-                                text: 'Remove nodes',
-                                hidden: false,
-                                iconCls: "removeNode",
-                                menu: viz.removeMenu
-                            }, {
-                                text: 'Duplicate nodes as side compounds',
-                                hidden: false,
-                                iconCls: "duplicate-sideCompounds",
-                                menu: viz.duplicateMenu
-                            }, {
-                                text: 'Change name',
-                                hidden: false,
-                                iconCls: "edit",
+                    viz.CtxMenu = new Ext.menu.Menu({
+                        items: [{
+                            text: 'Remove nodes',
+                            hidden: false,
+                            iconCls: "removeNode",
+                            menu: viz.removeMenu
+                        }, {
+                            text: 'Duplicate nodes as side compounds',
+                            hidden: false,
+                            iconCls: "duplicate-sideCompounds",
+                            menu: viz.duplicateMenu
+                        }, {
+                            text: 'Change name',
+                            hidden: false,
+                            iconCls: "edit",
+                            handler: function () {
+                                metExploreD3.GraphNode.changeName(theNode);
+                            }
+                        }, {
+                            text: 'Select neighbours (N+select)',
+                            hidden: false,
+                            iconCls: "neighbours",
+                            handler: function () {
+                                metExploreD3.GraphNode.selectNeighbours(theNode, "viz");
+                            }
+                        }, {
+                            text: 'See more information',
+                            hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+                            iconCls: "info",
+                            handler: function () {
+                                metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
+                            }
+                        }, {
+                            text: 'Select node in table',
+                            hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+                            iconCls: "search",
+                            menu: viz.selectMenu
+                        }, {
+                            text: 'Fix selected nodes',
+                            hidden: false,
+                            iconCls: "lock_font_awesome",
+                            handler: function () {
+                                metExploreD3.GraphNode.fixSelectedNode("viz")
+                            }
+                        }, {
+                            text: 'Detect longest cycles',
+                            menu: [{
+                                text: 'Going through this node',
                                 handler: function () {
-                                    metExploreD3.GraphNode.changeName(theNode);
-                                }
-                            }, {
-                                text: 'Select neighbours (N+select)',
-                                hidden: false,
-                                iconCls: "neighbours",
-                                handler: function () {
-                                    metExploreD3.GraphNode.selectNeighbours(theNode, "viz");
-                                }
-                            }, {
-                                text: 'See more information',
-                                hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-                                iconCls: "info",
-                                handler: function () {
-                                    metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
-                                }
-                            }, {
-                                text: 'Select node in table',
-                                hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-                                iconCls: "search",
-                                menu: viz.selectMenu
-                            }, {
-                                text: 'Fix selected nodes',
-                                hidden: false,
-                                iconCls: "lock_font_awesome",
-                                handler: function () {
-                                    metExploreD3.GraphNode.fixSelectedNode("viz")
-                                }
-                            }, {
-                                text: 'Detect Longest Cycle',
-                                handler: function () {
-                                    var cycles = metExploreD3.GraphStyleEdition.findCycle(theNode);
-                                    var longestCycles = [];
-                                    if (cycles.length > 0) {
-                                        var max = 0;
-                                        for (var i = 0; i < cycles.length; i++) {
-                                            if (cycles[i].length > max) {
-                                                longestCycles = [];
-                                                longestCycles.push(cycles[i]);
-                                                max = longestCycles[0].length;
-                                            }
-                                            else if (cycles[i].length === max){
-                                                longestCycles.push(cycles[i]);
-                                            }
+                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles([theNode]);
+                                    if (longestCycles.length >= 1) {
+                                        metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
+                                        if (longestCycles.length === 1) {
+                                            metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
                                         }
                                     }
-                                    if (longestCycles[0] != undefined) {
-                                        metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
-                                        metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
+                                    if (longestCycles.length === 0){
+                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
                                     }
+                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listLongestCycles", longestCycles);
+                                }
+                            },{
+                                text: 'Going through all selected nodes',
+                                handler: function () {
+                                    var selectedNodes = [];
+                                    d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+                                        .filter(function (d) {
+                                            return (d.isSelected() === true);
+                                        }).each(function (d) {
+                                            selectedNodes.push(d);
+                                    });
+                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles(selectedNodes);
+                                    if (longestCycles.length >= 1) {
+                                        metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
+                                        if (longestCycles.length === 1) {
+                                            metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
+                                        }
+                                    }
+                                    if (longestCycles.length === 0){
+                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
+                                    }
+                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listLongestCycles", longestCycles);
                                 }
                             }]
-                        });
-                    }
-                    else {
-                        viz.CtxMenu = new Ext.menu.Menu({
-							items: [{
-							    text: 'Change font',
-                                menu: [{
-                                    text: 'This node',
-                                    handler: function () {
-                                        Ext.create('Ext.window.Window', {
-                                            title: 'Choose font',
-                                            width: 400,
-                                            layout: 'fit',
-                                            items: [{
-                                                xtype: 'combo',
-                                                id : 'fontStyleWindow',
-                                                fieldLabel: 'Font type:',
-                                                width:'95%',
-                                                margin:'5 5 5 5',
-                                                emptyText:'-- Choose a font --',
-                                                store: [
-                                                    ['Open Sans', 'Open Sans'],
-                                                    ['Arial', 'Arial'],
-                                                    ['Helvetica', 'Helvetica'],
-                                                    ['Times', 'Times'],
-                                                    ['Verdana', 'Verdana']
-                                                ],
-                                                editable: false
-                                            }],
-                                            buttons: [
-                                                {
-                                                    text: 'Ok',
-                                                    handler: function () {
-                                                        var fontType = Ext.getCmp('fontStyleWindow').getValue();
-                                                        metExploreD3.GraphStyleEdition.changeFontType(theNode, fontType);
-                                                    }
-                                                }
-                                            ]
-                                        }).show();
-                                    }
-                                },{
-                                    text: 'All selected nodes',
-                                    handler: function () {
-                                        Ext.create('Ext.window.Window', {
-                                            title: 'Choose font',
-                                            width: 400,
-                                            layout: 'fit',
-                                            items: [{
-                                                xtype: 'combo',
-                                                id : 'fontStyleSelectedWindow',
-                                                fieldLabel: 'Font type:',
-                                                width:'95%',
-                                                margin:'5 5 5 5',
-                                                emptyText:'-- Choose a font --',
-                                                store: [
-                                                    ['Open Sans', 'Open Sans'],
-                                                    ['Arial', 'Arial'],
-                                                    ['Helvetica', 'Helvetica'],
-                                                    ['Times', 'Times'],
-                                                    ['Verdana', 'Verdana']
-                                                ],
-                                                editable: false
-                                            }],
-                                            buttons: [
-                                                {
-                                                    text: 'Ok',
-                                                    handler: function () {
-                                                        var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
-                                                        metExploreD3.GraphStyleEdition.changeAllFontType(fontType ,"selection");
-                                                    }
-                                                }
-                                            ]
-                                        }).show();
-                                    }
-                                }]
-                            },{
-                                text: 'Change font size',
-                                menu: [{
-                                    text: 'This node',
-                                    handler: function () {
-                                        metExploreD3.GraphStyleEdition.changeFontSize(theNode)
-                                    }
-                                },{
-                                    text: 'All selected nodes',
-                                    handler: function () {
-                                        metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
-                                            if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
-                                                metExploreD3.GraphStyleEdition.changeAllFontSize(text, "selection");
-                                            }
-                                        })
-                                    }
-                                }]
-                            },{
-							    text: 'Change font style',
-                                menu: [{
-                                    text: 'This node',
-                                    menu: [{
-                                        text: 'Bold',
-                                        handler: function () {
-                                            metExploreD3.GraphStyleEdition.changeFontBold(theNode)
-                                        }
-                                    },{
-                                        text: 'Italic',
-                                        handler: function () {
-                                            metExploreD3.GraphStyleEdition.changeFontItalic(theNode)
-                                        }
-                                    },{
-                                        text: 'Underline',
-                                        handler: function () {
-                                            metExploreD3.GraphStyleEdition.changeFontUnderline(theNode)
-                                        }
-                                    }]
-                                },{
-                                    text: 'All selected nodes',
-                                    menu: [{
-                                        text: 'Bold',
-                                        handler: function () {
-                                            metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection")
-                                        }
-                                    },{
-                                        text: 'Italic',
-                                        handler: function () {
-                                            metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection")
-                                        }
-                                    },{
-                                        text: 'Underline',
-                                        handler: function () {
-                                            metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection")
-                                        }
-                                    }]
-                                }]
-                            }, {
-                                text: 'Detect Longest Cycle',
+                        },{
+                            text: 'Change font',
+                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
+                            menu: [{
+                                text: 'This node',
                                 handler: function () {
-                                    var cycles = metExploreD3.GraphStyleEdition.findCycle(theNode);
-                                    var longestCycles = [];
-                                    if (cycles.length > 0) {
-                                        var max = 0;
-                                        for (var i = 0; i < cycles.length; i++) {
-                                            if (cycles[i].length > max) {
-                                                longestCycles = [];
-                                                longestCycles.push(cycles[i]);
-                                                max = longestCycles[0].length;
+                                    Ext.create('Ext.window.Window', {
+                                        title: 'Choose font',
+                                        width: 400,
+                                        layout: 'fit',
+                                        items: [{
+                                            xtype: 'combo',
+                                            id : 'fontStyleWindow',
+                                            fieldLabel: 'Font type:',
+                                            width:'95%',
+                                            margin:'5 5 5 5',
+                                            emptyText:'-- Choose a font --',
+                                            store: [
+                                                ['Open Sans', 'Open Sans'],
+                                                ['Arial', 'Arial'],
+                                                ['Helvetica', 'Helvetica'],
+                                                ['Times', 'Times'],
+                                                ['Verdana', 'Verdana']
+                                            ],
+                                            editable: false
+                                        }],
+                                        buttons: [
+                                            {
+                                                text: 'Ok',
+                                                handler: function () {
+                                                    var fontType = Ext.getCmp('fontStyleWindow').getValue();
+                                                    metExploreD3.GraphStyleEdition.changeFontType(theNode, fontType);
+                                                }
                                             }
-                                            else if (cycles[i].length === max){
-                                                longestCycles.push(cycles[i]);
-                                            }
-                                        }
-                                    }
-                                    if (longestCycles[0] != undefined) {
-                                        metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
-                                        metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
-                                    }
+                                        ]
+                                    }).show();
                                 }
                             },{
-							    text: 'Display/hide mappedImage',
-                                reference: 'displayMappedImage',
-                                hidden: (mappedImage.empty()) ? true : false,
+                                text: 'All selected nodes',
                                 handler: function () {
-                                    metExploreD3.GraphStyleEdition.displayMappedImage(theNode);
+                                    Ext.create('Ext.window.Window', {
+                                        title: 'Choose font',
+                                        width: 400,
+                                        layout: 'fit',
+                                        items: [{
+                                            xtype: 'combo',
+                                            id : 'fontStyleSelectedWindow',
+                                            fieldLabel: 'Font type:',
+                                            width:'95%',
+                                            margin:'5 5 5 5',
+                                            emptyText:'-- Choose a font --',
+                                            store: [
+                                                ['Open Sans', 'Open Sans'],
+                                                ['Arial', 'Arial'],
+                                                ['Helvetica', 'Helvetica'],
+                                                ['Times', 'Times'],
+                                                ['Verdana', 'Verdana']
+                                            ],
+                                            editable: false
+                                        }],
+                                        buttons: [
+                                            {
+                                                text: 'Ok',
+                                                handler: function () {
+                                                    var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
+                                                    metExploreD3.GraphStyleEdition.changeAllFontType(fontType ,"selection");
+                                                }
+                                            }
+                                        ]
+                                    }).show();
                                 }
                             }]
-						});
-					}
+                        },{
+                            text: 'Change font size',
+                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
+                            menu: [{
+                                text: 'This node',
+                                handler: function () {
+                                    metExploreD3.GraphStyleEdition.changeFontSize(theNode)
+                                }
+                            },{
+                                text: 'All selected nodes',
+                                handler: function () {
+                                    metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
+                                        if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
+                                            metExploreD3.GraphStyleEdition.changeAllFontSize(text, "selection");
+                                        }
+                                    })
+                                }
+                            }]
+                        },{
+                            text: 'Change font style',
+                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
+                            menu: [{
+                                text: 'This node',
+                                menu: [{
+                                    text: 'Bold',
+                                    handler: function () {
+                                        metExploreD3.GraphStyleEdition.changeFontBold(theNode)
+                                    }
+                                },{
+                                    text: 'Italic',
+                                    handler: function () {
+                                        metExploreD3.GraphStyleEdition.changeFontItalic(theNode)
+                                    }
+                                },{
+                                    text: 'Underline',
+                                    handler: function () {
+                                        metExploreD3.GraphStyleEdition.changeFontUnderline(theNode)
+                                    }
+                                }]
+                            },{
+                                text: 'All selected nodes',
+                                menu: [{
+                                    text: 'Bold',
+                                    handler: function () {
+                                        metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection")
+                                    }
+                                },{
+                                    text: 'Italic',
+                                    handler: function () {
+                                        metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection")
+                                    }
+                                },{
+                                    text: 'Underline',
+                                    handler: function () {
+                                        metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection")
+                                    }
+                                }]
+                            }]
+                        },{
+                            text: 'Display/hide mappedImage',
+                            reference: 'displayMappedImage',
+                            hidden: (mappedImage.empty()) ? true : false,
+                            handler: function () {
+                                metExploreD3.GraphStyleEdition.displayMappedImage(theNode);
+                            }
+                        }]
+                    });
 					//Fin Ajout
 				}
 			}

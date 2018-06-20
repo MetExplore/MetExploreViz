@@ -57,22 +57,25 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
         // Ajout
         {
             title:'Cycle',
+			reference: 'cycleDetection',
             id:'cycleDetection',
             xtype:'panel',
-			//reference:'cycleDetectionPanel',
             autoScroll: true,
             autoHeight: true,
+			//hidden: true,
             items:[{
                 xtype:'button',
-                text:'Detect Cycles',
+                text:'Draw Cycle',
                 margin: '10 10 10 10',
                 align:'stretch',
                 width:'95%',
-                reference:'buttonDetectCycles'
+                reference:'buttonDrawCycle',
+                hidden: true,
             },{
                 xtype:'menuseparator'
 			},{
-                xtype:'panel',
+                xtype:'fieldcontainer',
+				id:'cycleDetectionPanel',
                 reference:'cycleDetectionPanel'
             }]
         }

@@ -319,16 +319,31 @@ metExploreD3.GraphCaption = {
             "L"+(sx+90)+","+sy;
 
         d3.select("#viz").select("#D3viz").append("defs").append("marker")
-            .attr("id", "marker")
+            .attr("id", "markerCaptionEntry")
             .attr("viewBox", "-10 -5 20 20")
             .attr("refX", 9)
             .attr("refY", 6)
             .attr("markerUnits", "userSpaceOnUse")
-            .attr("markerWidth", 15)
-            .attr("markerHeight", 10)
+            .attr("markerWidth", 30)
+            .attr("markerHeight", 20)
             .attr("orient", "auto")
+            .attr("fill", "red")
+            .attr("stroke", "black")
             .append("path")
-            .attr("d", "M0,6L-5,12L9,6L-5,0");
+            .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
+        d3.select("#viz").select("#D3viz").append("defs").append("marker")
+            .attr("id", "markerCaptionExit")
+            .attr("viewBox", "-10 -5 20 20")
+            .attr("refX", 9)
+            .attr("refY", 6)
+            .attr("markerUnits", "userSpaceOnUse")
+            .attr("markerWidth", 30)
+            .attr("markerHeight", 20)
+            .attr("orient", "auto")
+            .attr("fill", "green")
+            .attr("stroke", "black")
+            .append("path")
+            .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
 
         d3.select("#viz").select("#D3viz")
             .append("svg:rect")
@@ -367,7 +382,7 @@ metExploreD3.GraphCaption = {
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,40)")
-            .attr("marker-end", "url(#marker)");
+            .attr("marker-end", "url(#markerCaptionExit)");
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
@@ -402,7 +417,7 @@ metExploreD3.GraphCaption = {
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,85)")
-            .attr("marker-end", "url(#marker)");
+            .attr("marker-end", "url(#markerCaptionEntry)");
 
         d3.select("#viz").select("#D3viz")
             .append("svg:path")
@@ -415,7 +430,7 @@ metExploreD3.GraphCaption = {
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,85)")
-            .attr("marker-end", "url(#marker)");
+            .attr("marker-end", "url(#markerCaptionExit)");
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")

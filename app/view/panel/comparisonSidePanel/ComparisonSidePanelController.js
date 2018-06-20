@@ -18,8 +18,13 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
 			scope:me
 		});
 
-		view.lookupReference('buttonDetectCycles').on({
-			click:me.listGraphCycles,
+		view.lookupReference('cycleDetectionPanel').on({
+			listLongestCycles : me.listLongestCycles,
+			scope:me
+		});
+
+		view.lookupReference('buttonDrawCycle').on({
+			click:me.drawMetaboliteCycle,
 			scope:me
 		})
 	},
@@ -28,36 +33,44 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
 		metExploreD3.GraphCaption.drawCaption();
 	},
 
-    listGraphCycles: function () {
-		var that = this;
+    drawMetaboliteCycle: function () {
+        this.lookupReference('cycleDetectionPanel').items.each(function (d) {
+			if (d.checked){
+                metExploreD3.GraphStyleEdition.drawMetaboliteCycle(d.cycle);
+			}
+        })
+    },
+
+	listLongestCycles: function (cycles) {
         this.lookupReference('cycleDetectionPanel').removeAll(true);
-        var result = [];
-        /*d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-            .filter(function (d) {
-            	return d.id === "6632246";
-            }).each(function (d) {
-            	result = metExploreD3.GraphStyleEdition.findCycle(d);
-        });*/
-        var result = metExploreD3.GraphStyleEdition.findCycle();
-		for (var i=0; i<result.length; i++){
-            var newCheckbox = Ext.create('Ext.form.field.Checkbox', {
-            	reference: 'checkboxCycle' + i,
-                boxLabel: 'Highlight Cycle ' + (i + 1),
-                margin: '0 0 0 10',
-				listValue: i,
-				cycle: result[i],
-				listeners: {
-            		change: function () {
-						if (this.checked === true){
-                            metExploreD3.GraphStyleEdition.highlightCycle(this.cycle);
-						}
-						else if (this.checked === false){
-                            metExploreD3.GraphStyleEdition.removeHighlightCycle(this.cycle);
-						}
+        if (cycles.length > 0) {
+            for (var i = 0; i < cycles.length; i++) {
+                var newCheckbox = Ext.create('Ext.form.field.Radio', {
+                    reference: 'radioCycle' + i,
+                    boxLabel: 'Cycle ' + (i + 1),
+                    name: 'cycle',
+                    cycle: cycles[i],
+                    margin: '0 0 0 20',
+                    listeners: {
+                        change: function () {
+                            if (this.checked === true) {
+                                metExploreD3.GraphStyleEdition.highlightCycle(this.cycle);
+                            }
+                        }
                     }
-				}
-            });
-            this.lookupReference('cycleDetectionPanel').add(newCheckbox);
+
+                });
+                this.lookupReference('cycleDetectionPanel').add(newCheckbox);
+                if (i === 0) {
+                    this.lookupReference('radioCycle' + i).setValue(true);
+                }
+            }
+            this.getView().expand();
+            this.lookupReference('cycleDetection').expand();
+            this.lookupReference('buttonDrawCycle').show();
+        }
+        else {
+            this.lookupReference('buttonDrawCycle').hide();
 		}
     }
 });
