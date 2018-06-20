@@ -482,16 +482,25 @@ metExploreD3.GraphStyleEdition = {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
         // Create arrowhead marker
         d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
-            .attr("id", "marker")
+            .attr("id", "markerExit")
             .attr("viewBox", "-10 -5 20 20")
-            .attr("refX", 9)
-            .attr("refY", 6)
+            .attr("refX", 9).attr("refY", 6)
             .attr("markerUnits", "userSpaceOnUse")
-            .attr("markerWidth", 15)
-            .attr("markerHeight", 10)
+            .attr("markerWidth", 15).attr("markerHeight", 10)
             .attr("orient", "auto")
+            .attr("fill", "green").attr("stroke", "black")
             .append("path")
-            .attr("d", "M0,6L-5,12L9,6L-5,0");
+            .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
+        d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
+            .attr("id", "markerEntry")
+            .attr("viewBox", "-10 -5 20 20")
+            .attr("refX", 9).attr("refY", 6)
+            .attr("markerUnits", "userSpaceOnUse")
+            .attr("markerWidth", 15).attr("markerHeight", 10)
+            .attr("orient", "auto")
+            .attr("fill", "red").attr("stroke", "black")
+            .append("path")
+            .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
 
         reactions.each(function (node) {
             var enteringLinks = links.filter(function (link) {
@@ -604,7 +613,7 @@ metExploreD3.GraphStyleEdition = {
                 //console.log(link.getTarget());
             }).filter(function (link) {
                 return link.getTarget().getReactionReversibility();
-            }).attr("marker-end", "url(#marker)");
+            }).attr("marker-end", "url(#markerEntry)");
             exitingLinks.each(function (link) {
                 //var path = metExploreD3.GraphFunction.computePath(node, exitingX, exitingY, link, link.getTarget());
                 var path;
@@ -626,7 +635,7 @@ metExploreD3.GraphStyleEdition = {
                     //.style("stroke", 'black')
                     //.style("stroke-width", 0.5)
                     .style("opacity", 1);
-            }).attr("marker-end", "url(#marker)");
+            }).attr("marker-end", "url(#markerExit)");
         });
         //
         metExploreD3.GraphCaption.drawCaptionEditMode();
@@ -914,8 +923,8 @@ metExploreD3.GraphStyleEdition = {
         var mappedImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(d){return d.getId() === node.getId();})
-            .select(".mappingImage");
-        if (mappedImage.attr("opacity") === 0){
+            .select(".imageNode");
+        if (mappedImage.attr("opacity") === '0'){
             mappedImage.attr("opacity", 1);
         }
         else {
@@ -936,11 +945,11 @@ metExploreD3.GraphStyleEdition = {
 
     },
     /*******************************************
-     * Find all the metabolic cycles in the graph that is shwn in the visualisation panel
+     * Find all the metabolic cycles in the graph that is shown in the visualisation panel
      * @param {} node : Optional argument. If a node is given as argument, only the cycle passing through that node will be found.
      */
-    findCycle: function (node) {
-        node = (typeof node !== 'undefined') ? node : 0;
+    findAllCycles: function (listNodes) {
+        listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
         var vertices = [];
         var edges = [];
         var graph = [];
@@ -953,9 +962,9 @@ metExploreD3.GraphStyleEdition = {
             .each(function (d) {
                 vertices.push(d.id);
             });
-        if (node !== 0){
-            vertices[vertices.indexOf(node.id)] = vertices[0];
-            vertices[0] = node.id;
+        if (listNodes.length >= 1){
+            vertices[vertices.indexOf(listNodes[0].id)] = vertices[0];
+            vertices[0] = listNodes[0].id;
             flag = "Single";
         }
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
@@ -1007,9 +1016,43 @@ metExploreD3.GraphStyleEdition = {
             cycleList.push(cycle)
         }
 
+        var listValidCycles = metExploreD3.GraphStyleEdition.removeInvalidCycles(cycleList);
+        var listResultCycles = [];
+        for (var i=0; i<listValidCycles.length; i++){
+            var f = true;
+            for (var j=0; j<listNodes.length; j++){
+                if (!(listValidCycles[i].includes(listNodes[j].id))){
+                    f = false;
+                }
+            }
+            if (f) {
+                listResultCycles.push(listValidCycles[i]);
+            }
+        }
+        return listResultCycles;
+    },
+    findLongestCycles: function (listNodes) {
+        listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
+        var allCycles = metExploreD3.GraphStyleEdition.findAllCycles(listNodes);
+        var longestCycles = [];
+        if (allCycles.length > 0) {
+            var max = 0;
+            for (var i = 0; i < allCycles.length; i++) {
+                if (allCycles[i].length > max) {
+                    longestCycles = [];
+                    longestCycles.push(allCycles[i]);
+                    max = longestCycles[0].length;
+                }
+                else if (allCycles[i].length === max){
+                    longestCycles.push(allCycles[i]);
+                }
+            }
+        }
+        return longestCycles;
+    },
+    removeInvalidCycles : function (cycleList) {
         var cycleLinksList = [];
         var listValidCycles = [];
-
         for (var i=0; i<cycleList.length; i++) {
             // Get all the cycle edges from the output of the cycle finding algorithm
             var cycleLinks = metExploreD3.GraphStyleEdition.getLinksFromCycle(cycleList[i]);
@@ -1046,6 +1089,7 @@ metExploreD3.GraphStyleEdition = {
             }
         }
         return listValidCycles;
+
     },
     highlightCycle: function (cycle) {
         d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -1228,6 +1272,7 @@ metExploreD3.GraphStyleEdition = {
         return result;
     },
     drawMetaboliteCycle: function (cycle) {
+        metExploreD3.GraphStyleEdition.removeHighlightCycle(cycle);
         var radius = cycle.length * 10;
         var nodesList = [];
         for (var i=0; i<cycle.length; i++){
@@ -1321,7 +1366,6 @@ metExploreD3.GraphStyleEdition = {
                 d.fixed=d.isLocked();
             });
         }
-        //metExploreD3.GraphNode.fixSelectedNode();
         metExploreD3.GraphNode.tick('viz');
         metExploreD3.GraphLink.tick('viz');
     }
