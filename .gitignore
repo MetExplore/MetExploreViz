@@ -22,3 +22,10 @@ docs/resources/prettify/
 docs/source/
 
 bootstrap\.jsonp
+
+jasmine/*.*
+jasmine/lib/jasmine-3\.1\.0/
+
+jasmine/spec/
+
+jasmine/src/

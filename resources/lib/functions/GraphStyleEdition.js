@@ -7,6 +7,7 @@ metExploreD3.GraphStyleEdition = {
 
     editMode: false,
     curvedPath: false,
+    allDrawnCycles: [],
 
 
     /*******************************************
@@ -519,14 +520,18 @@ metExploreD3.GraphStyleEdition = {
             enteringLinks.each(function (link) {
                 if (link.partOfCycle === true){
                     isCycleReaction = true;
-                    var radius = link.cycleRadius;
-                    var sweepFlag = (link.arcDirection === "clockwise") ? 0 : 1;
-                    var path = "M" + link.getTarget().x + "," + link.getTarget().y +
+                    //var radius = link.cycleRadius;
+                    //var sweepFlag = (link.arcDirection === "clockwise") ? 0 : 1;
+                    /*var path = "M" + link.getTarget().x + "," + link.getTarget().y +
                         "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + link.getSource().x + "," + link.getSource().y;
+                    console.log(link);
+                    console.log(this);
+                    console.log(d3.select(this).datum());
                     d3.select(this).attr("d", path);
                     var endPoint = this.getPointAtLength(this.getTotalLength() - metExploreD3.getMetaboliteStyle().getWidth() / 2);
                     path = "M" + link.getTarget().x + "," + link.getTarget().y +
-                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + endPoint.x + "," + endPoint.y;
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + endPoint.x + "," + endPoint.y;*/
+                    var path = metExploreD3.GraphStyleEdition.computePathCycleArc(link.getTarget(), d3.select(this), link.getSource());
                     d3.select(this).attr("d", path);
                     var enteringMidPoint = this.getPointAtLength(this.getTotalLength()/2);
                     centroidSourceX = enteringMidPoint.x;
@@ -536,14 +541,15 @@ metExploreD3.GraphStyleEdition = {
             exitingLinks.each(function (link) {
                 if (link.partOfCycle === true){
                     isCycleReaction = true;
-                    var radius = link.cycleRadius;
-                    var sweepFlag = (link.arcDirection === "clockwise") ? 1 : 0;
-                    var path = "M" + link.getSource().x + "," + link.getSource().y +
+                    //var radius = link.cycleRadius;
+                    //var sweepFlag = (link.arcDirection === "clockwise") ? 1 : 0;
+                    /*var path = "M" + link.getSource().x + "," + link.getSource().y +
                         "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + link.getTarget().x + "," + link.getTarget().y;
                     d3.select(this).attr("d", path);
                     var endPoint = this.getPointAtLength(this.getTotalLength() - metExploreD3.getMetaboliteStyle().getWidth() / 2);
                     path = "M" + link.getSource().x + "," + link.getSource().y +
-                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + endPoint.x + "," + endPoint.y;
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + endPoint.x + "," + endPoint.y;*/
+                    var path = metExploreD3.GraphStyleEdition.computePathCycleArc(link.getSource(), d3.select(this), link.getTarget());
                     d3.select(this).attr("d", path);
                     var exitingMidPoint = this.getPointAtLength(this.getTotalLength()/2);
                     centroidTargetX = exitingMidPoint.x;
@@ -639,6 +645,25 @@ metExploreD3.GraphStyleEdition = {
         });
         //
         metExploreD3.GraphCaption.drawCaptionEditMode();
+    },
+    computePathCycleArc : function (startNode, link, endNode) {
+        var path = "";
+        link.each(function (d) {
+            var radius = d.cycleRadius;
+            if (d.getSource() === startNode) {
+                var sweepFlag = (d.arcDirection === "clockwise") ? 1 : 0;
+            }
+            else {
+                var sweepFlag = (d.arcDirection === "clockwise") ? 0 : 1;
+            }
+            path = "M" + startNode.x + "," + startNode.y +
+                "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + endNode.x + "," + endNode.y;
+            d3.select(this).attr("d", path);
+            var endPoint = this.getPointAtLength(this.getTotalLength() - metExploreD3.getMetaboliteStyle().getWidth() / 2);
+            path = "M" + startNode.x + "," + startNode.y +
+                "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + endPoint.x + "," + endPoint.y;
+        });
+        return path;
     },
     computePathHorizontal : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
@@ -812,13 +837,41 @@ metExploreD3.GraphStyleEdition = {
         var path = "";
         if (enteringY == startNode.y){
             path = metExploreD3.GraphStyleEdition.computePathHorizontal(startNode, enteringX, enteringY, endNode);
-
         }
         else {
             path = metExploreD3.GraphStyleEdition.computePathVertical(startNode, enteringX, enteringY, endNode);
         }
-        return path;
 
+
+        var differenceStartEndX = startNode.x - endNode.x;
+        var differenceStartEndY = startNode.y - endNode.y;
+        var differenceStartMidpointX = startNode.x - endNode.x;
+        var differenceStartMidpointY = startNode.y - endNode.y;
+        var differenceEndMidpointX = startNode.x - endNode.x;
+        var differenceEndMidpointY = startNode.y - endNode.y;
+        if (Math.abs(differenceStartEndX) < Math.abs(differenceStartEndY)){
+            path = "M" + startNode.x + "," + startNode.y +
+                "L" + firstPointX + "," + firstPointY +
+                "L" + firstPointX + "," + endNode.y +
+                "L" + endNode.x + "," + endNode.y;
+        }
+        else {
+            path = "M" + startNode.x + "," + startNode.y +
+                "L" + firstPointX + "," + firstPointY +
+                "L" + endNode.x + "," + firstPointY +
+                "L" + endNode.x + "," + endNode.y;
+        }
+        if (Math.abs(differenceStartEndX) < Math.abs(differenceStartEndY)){
+            path = "M" + startNode.x + "," + startNode.y +
+                "L" + firstPointX + "," + firstPointY +
+                "Q" + firstPointX + "," + endNode.y + "," + endNode.x + "," +endNode.y;
+        }
+        else {
+            path = "M" + startNode.x + "," + startNode.y +
+                "L" + firstPointX + "," + firstPointY +
+                "Q" + endNode.x + "," + firstPointY + "," + endNode.x + "," + endNode.y;
+        }
+        return path;
     },
     computeCentroid : function (node, enteringLinks, exitingLinks) {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
@@ -873,7 +926,6 @@ metExploreD3.GraphStyleEdition = {
             if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "image/svg+xml"){
                 var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
                 if (listNames.includes(nodeName)){
-                    console.log('ok');
                     continue;
                 }
                 listNames.push(nodeName);
@@ -993,20 +1045,17 @@ metExploreD3.GraphStyleEdition = {
             indexToVertices[i] = vertices[i];
         }
         for (var key in indexToVertices){
-            verticesToIndex[indexToVertices[key]] = key;
+            verticesToIndex[indexToVertices[key]] = Number(key);
         }
         for (var i=0; i<vertices.length; i++){
-            graph.push([0]);
+            graph.push([]);
         }
         for (var i=0; i<edges.length; i++) {
             var index = verticesToIndex[edges[i][0]];
             var value = verticesToIndex[edges[i][1]];
             graph[index].push(value);
         }
-        for (var i=0; i<vertices.length; i++){
-            graph[i][0] = graph[i].length-1;
-        }
-        var result = metExploreD3.GraphStyleEdition.HawickJamesAlgorithm(graph, vertices.length, flag);
+        var result = metExploreD3.GraphStyleEdition.HawickJamesAlgorithm(graph, flag);
         var cycleList = [];
         for (var i=0; i<result.length; i++){
             var cycle = [];
@@ -1048,7 +1097,27 @@ metExploreD3.GraphStyleEdition = {
                 }
             }
         }
+        //console.log(longestCycles[0].length);
         return longestCycles;
+    },
+    findShortestCycles: function (listNodes) {
+        listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
+        var allCycles = metExploreD3.GraphStyleEdition.findAllCycles(listNodes);
+        var shortestCycles = [];
+        if (allCycles.length > 0) {
+            var min = allCycles[0].length;
+            for (var i = 0; i < allCycles.length; i++) {
+                if (allCycles[i].length < min) {
+                    shortestCycles = [];
+                    shortestCycles.push(allCycles[i]);
+                    min = shortestCycles[0].length;
+                }
+                else if (allCycles[i].length === min){
+                    shortestCycles.push(allCycles[i]);
+                }
+            }
+        }
+        return shortestCycles;
     },
     removeInvalidCycles : function (cycleList) {
         var cycleLinksList = [];
@@ -1143,21 +1212,22 @@ metExploreD3.GraphStyleEdition = {
                 var newJ = (j + 1 < cycle.length) ? j + 1 : 0;
                 if (d.getSource().id === cycle[j] && d.getTarget().id === cycle[newJ]) {
                     cycleLinks.push(d);
-                    d.arcDirection = "sameAsCycle";
+                    //d.arcDirection = "sameAsCycle";
                     return true;
                 }
                 else if (d.getTarget().id === cycle[j] && d.getSource().id === cycle[newJ]) {
                     cycleLinks.push(d);
-                    d.arcDirection = "counterCycle";
+                    //d.arcDirection = "counterCycle";
                     return true;
                 }
             });
         }
         return cycleLinks;
     },
-    HawickJamesAlgorithm: function(graph, size, flag){
+    HawickJamesAlgorithm: function(graph, flag){
         // Variables initialisation
-        var nVertices = size;
+        //console.log(graph);
+        var nVertices = graph.length;
         var start = 0;
         var Ak = graph;
         var B = [];
@@ -1167,8 +1237,10 @@ metExploreD3.GraphStyleEdition = {
             blocked[i] = false;
         }
         var stack = [];
+        for (var i=0; i<nVertices; i++){
+            stack.push(null);
+        }
         var stackTop = 0;
-        stackInit(nVertices);
         var nbNodeToRun = (flag === "Single") ? 1 : nVertices;
         var result = [];
 
@@ -1190,7 +1262,7 @@ metExploreD3.GraphStyleEdition = {
             stackPush(v);
             blocked[v] = true;
 
-            for (var wPos=1; wPos<=Ak[v][0]; wPos++){
+            for (var wPos=0; wPos<Ak[v].length; wPos++){
                 var w = Ak[v][wPos];
                 if (w < start){
                     continue;
@@ -1213,7 +1285,7 @@ metExploreD3.GraphStyleEdition = {
                 unblock(v);
             }
             else {
-                for (var wPos=1; wPos<=Ak[v][0]; wPos++){
+                for (var wPos=0; wPos<Ak[v].length; wPos++){
                     var w = Ak[v][wPos];
                     if (w < start){
                         continue;
@@ -1228,12 +1300,6 @@ metExploreD3.GraphStyleEdition = {
         }
 
         // Stack management
-        function stackInit(max){
-            for (var i=0; i<max; i++){
-                stack.push(null);
-            }
-            stackTop = 0;
-        }
         function stackPush(val){
             if (stackTop >= stack.length){
                 stack.push(null);
@@ -1242,9 +1308,6 @@ metExploreD3.GraphStyleEdition = {
         }
         function stackPop(){
             return stack[--stackTop];
-        }
-        function stackClear(){
-            stackTop = 0;
         }
 
         // List Management
@@ -1259,7 +1322,6 @@ metExploreD3.GraphStyleEdition = {
         }
 
         // Main
-        stackClear();
         start = 0;
         while (start < nbNodeToRun){
             for (var i=0; i<nVertices; i++){
@@ -1269,9 +1331,28 @@ metExploreD3.GraphStyleEdition = {
             circuit(start);
             start = start + 1;
         }
+        //console.log(result);
         return result;
     },
     drawMetaboliteCycle: function (cycle) {
+        // check if drawing this cycle will conflict with other already drawn cycle
+        var alreadyDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+        for (var i=0; i<alreadyDrawnCycles.length; i++){
+            var test = false;
+            for (var j=0; j<alreadyDrawnCycles[i].length; j++) {
+                if (cycle.includes(alreadyDrawnCycles[i][j])){
+                    test = true;
+                }
+            }
+            if (test === true){
+                var alreadyDrawnLinks = metExploreD3.GraphStyleEdition.getLinksFromCycle(alreadyDrawnCycles[i]);
+                for (var j=0; j<alreadyDrawnLinks.length; j++) {
+                    alreadyDrawnLinks[j].partOfCycle = false;
+                }
+            }
+        }
+        alreadyDrawnCycles.push(cycle);
+
         metExploreD3.GraphStyleEdition.removeHighlightCycle(cycle);
         var radius = cycle.length * 10;
         var nodesList = [];
@@ -1347,7 +1428,20 @@ metExploreD3.GraphStyleEdition = {
 
         // Draw the arcs
         var cycleLinks = metExploreD3.GraphStyleEdition.getLinksFromCycle(cycle);
-        var cycleLinksSelection = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+        for (var i=0; i<cycleLinks.length; i++){
+            cycleLinks[i].partOfCycle = true;
+            cycleLinks[i].cycleRadius = radius;
+            if (cycleLinks[i].getSource().id === cycle[i]){
+                //cycleLinks[i].arcDirection = "sameAsCycle";
+                cycleLinks[i].arcDirection = (direction === "clockwise") ? "clockwise" : "counter-clockwise";
+            }
+            else if (cycleLinks[i].getTarget().id === cycle[i]){
+                //cycleLinks[i].arcDirection = "counterCycle";
+                cycleLinks[i].arcDirection = (direction === "clockwise") ? "counter-clockwise" : "clockwise";
+
+            }
+        }
+        /*var cycleLinksSelection = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
             .filter(function (d) {
                 return (cycleLinks.includes(d));
             }).each (function (d) {
@@ -1356,10 +1450,10 @@ metExploreD3.GraphStyleEdition = {
                 if (direction === "clockwise"){
                     d.arcDirection = (d.arcDirection === "sameAsCycle") ? "clockwise" : "counter-clockwise";
                 }
-                else {
+                else if (direction === "counter-clockwise"){
                     d.arcDirection = (d.arcDirection === "sameAsCycle") ? "counter-clockwise" : "clockwise";
                 }
-            });
+            });*/
         for (var i=0; i<cycle.length; i++){
             nodesList[i].each(function (d) {
                 d.setLocked(true);

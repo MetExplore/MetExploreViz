@@ -234,14 +234,11 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles([theNode]);
                                     if (longestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
-                                        if (longestCycles.length === 1) {
-                                            metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
-                                        }
                                     }
                                     if (longestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
                                     }
-                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listLongestCycles", longestCycles);
+                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", longestCycles);
                                 }
                             },{
                                 text: 'Going through all selected nodes',
@@ -256,14 +253,51 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles(selectedNodes);
                                     if (longestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
-                                        if (longestCycles.length === 1) {
-                                            metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
-                                        }
                                     }
                                     if (longestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
                                     }
-                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listLongestCycles", longestCycles);
+                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", longestCycles);
+                                }
+                            }]
+                        },{
+                            text: 'Detect shortest cycles',
+                            menu: [{
+                                text: 'Going through this node',
+                                handler: function () {
+                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles([theNode]);
+                                    if (shortestCycles.length >= 1) {
+                                        metExploreD3.GraphStyleEdition.highlightCycle(shortestCycles[0]);
+                                        /*if (longestCycles.length === 1) {
+                                            metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
+                                        }*/
+                                    }
+                                    if (shortestCycles.length === 0){
+                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
+                                    }
+                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", shortestCycles);
+                                }
+                            },{
+                                text: 'Going through all selected nodes',
+                                handler: function () {
+                                    var selectedNodes = [];
+                                    d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+                                        .filter(function (d) {
+                                            return (d.isSelected() === true);
+                                        }).each(function (d) {
+                                        selectedNodes.push(d);
+                                    });
+                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles(selectedNodes);
+                                    if (shortestCycles.length >= 1) {
+                                        metExploreD3.GraphStyleEdition.highlightCycle(shortestCycles[0]);
+                                        /*if (longestCycles.length === 1) {
+                                            metExploreD3.GraphStyleEdition.drawMetaboliteCycle(longestCycles[0]);
+                                        }*/
+                                    }
+                                    if (shortestCycles.length === 0){
+                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
+                                    }
+                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", shortestCycles);
                                 }
                             }]
                         },{

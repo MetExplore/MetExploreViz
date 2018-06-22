@@ -19,7 +19,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
 		});
 
 		view.lookupReference('cycleDetectionPanel').on({
-			listLongestCycles : me.listLongestCycles,
+			listCycles : me.listCycles,
 			scope:me
 		});
 
@@ -41,7 +41,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
         })
     },
 
-	listLongestCycles: function (cycles) {
+	listCycles: function (cycles) {
         this.lookupReference('cycleDetectionPanel').removeAll(true);
         if (cycles.length > 0) {
             for (var i = 0; i < cycles.length; i++) {
