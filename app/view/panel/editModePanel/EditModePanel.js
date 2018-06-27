@@ -13,6 +13,7 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
     /*requires: ['MetExplore.view.form.V_SelectConditionForm',
                'MetExplore.view.form.V_UpdateStyleForm'
                ],
+               //
 */
     collapsible: true,
     collapsed:true,
