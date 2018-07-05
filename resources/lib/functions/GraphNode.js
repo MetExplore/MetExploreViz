@@ -110,13 +110,22 @@ metExploreD3.GraphNode = {
 					    node.setLabel(text);
 						if(networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
 						{
+                            var font = d3.select(this).select("text").style("font-family");
+                            var fontSize = d3.select(this).select("text").style("font-size");
+                            var fontBold = d3.select(this).select("text").style("font-weight");
+                            var fontItalic = d3.select(this).select("text").style("font-style");
+                            var fontUnderline = d3.select(this).select("text").style("text-decoration-line");
+                            var opacity = d3.select(this).select("text").attr("opacity");
+                            var x = d3.select(this).select("text").attr("x");
+                            var y = d3.select(this).select("text").attr("y");
 							var transform = d3.select(this).select("text").attr("transform");
 							d3.select(this)
 								.select("text")
 								.remove();
 
 							metExploreD3.GraphNode.addText(node, "viz");
-                            d3.select(this).select("text").attr("transform", transform);
+                            d3.select(this).select("text").attr("opacity", opacity).attr("transform", transform).attr("x", x).attr("y", y)
+								.style("font-family", font).style("font-size", fontSize).style("font-weight", fontBold).style("font-style", fontItalic).style("text-decoration-line", fontUnderline);
 						}
 					});
 		    }
