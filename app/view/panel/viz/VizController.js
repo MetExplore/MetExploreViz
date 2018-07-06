@@ -231,7 +231,17 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             menu: [{
                                 text: 'Going through this node',
                                 handler: function () {
-                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles([theNode]);
+                                    // Some test
+                                    /*var count = 0;
+                                    d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function (d) {
+                                        return (d.isSideCompound !== true);
+                                    }).each(function (d) {
+                                        count = count + 1;
+                                    });
+                                    console.log(count);*/
+
+                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles2([theNode]);
+                                    console.log(longestCycles);
                                     if (longestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
                                     }
@@ -239,6 +249,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
                                     }
                                     metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", longestCycles);
+                                    //console.log(longestCycles);
                                 }
                             },{
                                 text: 'Going through all selected nodes',
@@ -250,7 +261,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         }).each(function (d) {
                                             selectedNodes.push(d);
                                     });
-                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles(selectedNodes);
+                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles2(selectedNodes);
                                     if (longestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
                                     }
@@ -265,7 +276,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             menu: [{
                                 text: 'Going through this node',
                                 handler: function () {
-                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles([theNode]);
+                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles2([theNode]);
                                     if (shortestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(shortestCycles[0]);
                                         /*if (longestCycles.length === 1) {
@@ -287,7 +298,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         }).each(function (d) {
                                         selectedNodes.push(d);
                                     });
-                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles(selectedNodes);
+                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles2(selectedNodes);
                                     if (shortestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(shortestCycles[0]);
                                         /*if (longestCycles.length === 1) {

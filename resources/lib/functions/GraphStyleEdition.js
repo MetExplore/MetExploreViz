@@ -1002,6 +1002,7 @@ metExploreD3.GraphStyleEdition = {
      */
     findAllCycles: function (listNodes) {
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
+        // Create a new data structure for the graph to efficiently run the Johnson algorithm
         var vertices = [];
         var edges = [];
         var graph = [];
@@ -1020,6 +1021,8 @@ metExploreD3.GraphStyleEdition = {
             vertices[0] = listNodes[0].id;
             flag = "Single";
         }
+        // Side compounds are not included in the new graph structures
+        // From each edges exiting or entering from a reversible reaction, a new edge between the same vertices but going into the opposite direction is created
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
             .style("stroke", "black")
             .style("stroke-width", "0.5")
@@ -1059,6 +1062,29 @@ metExploreD3.GraphStyleEdition = {
             graph[index].push(value);
         }
 
+        // New data structure to efficiently get back the edges from vertex id
+        /*var verticesPairsToLinks = {};
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .filter(function (d) {
+                return (d.getSource().isSideCompound !== true && d.getTarget().isSideCompound !== true)
+            })
+            .each(function (d) {
+                var reactionNode = (d.getSource().biologicalType === "reaction") ? d.getSource() : d.getTarget();
+                var sourceId = d.getSource().id;
+                var targetId = d.getTarget().id;
+                if (!verticesPairsToLinks[sourceId]){
+                    verticesPairsToLinks[sourceId] = {};
+                }
+                verticesPairsToLinks[sourceId][targetId] = d;
+                if (reactionNode.reactionReversibility === true){
+                    if (!verticesPairsToLinks[targetId]){
+                        verticesPairsToLinks[targetId] = {};
+                    }
+                    verticesPairsToLinks[targetId][sourceId] = d;
+                }
+            });
+        console.log(verticesPairsToLinks);*/
+
         // The cycle enumeration algorithm itself
         var t0 = performance.now();
         var result = metExploreD3.GraphStyleEdition.HawickJamesAlgorithm(graph, flag);
@@ -1090,16 +1116,19 @@ metExploreD3.GraphStyleEdition = {
             }
         }
 
-        // Keep only the cycles corresponding to valid metabolic cycles
-        var orderedCyclesList = listSelectedNodesCycles.sort(function (a, b) {
+        // Ordering of the list
+        /*var orderedCyclesList = listSelectedNodesCycles.sort(function (a, b) {
             return b.length - a.length;
         });
-        //var listValidCycles = metExploreD3.GraphStyleEdition.removeInvalidCycles(listSelectedNodesCycles);
 
-        return orderedCyclesList;
-        return listValidCycles;
+        return orderedCyclesList;*/
+        
+        var validCyclesList = metExploreD3.GraphStyleEdition.removeInvalidCycles2(listSelectedNodesCycles);
+        console.log(validCyclesList);
+        return validCyclesList;
     },
     findLongestCycles: function (listNodes) {
+        var t0 = performance.now();
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
         var allCycles = metExploreD3.GraphStyleEdition.findAllCycles(listNodes);
         // Test to gain time
@@ -1108,7 +1137,6 @@ metExploreD3.GraphStyleEdition = {
             return b.length - a.length;
         });
         //  Regrouping each array of same length in a single array
-        var t0 = performance.now();
         var cyclesByLength = [];
         var length = orderedCyclesList[0].length;
         for (var i=0; i<orderedCyclesList.length; i++){
@@ -1183,6 +1211,58 @@ metExploreD3.GraphStyleEdition = {
         console.log(validCyclesList);
         return validCyclesList;
     },
+    findLongestCycles2: function (listNodes) {
+        var t0 = performance.now();
+        listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
+        var allCycles = metExploreD3.GraphStyleEdition.findAllCycles(listNodes);
+        var t1 = performance.now();
+        console.log("Call to get all cycles with links by length took " + (t1 - t0) + " milliseconds.");
+        // Find the longest valid metabolic cycles by calling the function on the array of the longest cycles,
+        // then, if no valid cycles have been found call the function on the array of the second longest cycles and so on
+        var t0 = performance.now();
+        var longestCycles = [];
+        var max = 0;
+        for (var i=0; i<allCycles.length; i++){
+            if (allCycles[i].length > max){
+                max = allCycles[i].length;
+                longestCycles = [];
+                longestCycles.push(allCycles[i]);
+            }
+            else if (allCycles[i].length === max){
+                longestCycles.push(allCycles[i]);
+            }
+        }
+        var t1 = performance.now();
+        console.log("Call to get longest took " + (t1 - t0) + " milliseconds.");
+        console.log(longestCycles);
+        return longestCycles;
+    },
+    findShortestCycles2: function (listNodes) {
+        var t0 = performance.now();
+        listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
+        var allCycles = metExploreD3.GraphStyleEdition.findAllCycles(listNodes);
+        var t1 = performance.now();
+        console.log("Call to get all cycles with links by length took " + (t1 - t0) + " milliseconds.");
+        // Find the longest valid metabolic cycles by calling the function on the array of the longest cycles,
+        // then, if no valid cycles have been found call the function on the array of the second longest cycles and so on
+        var t0 = performance.now();
+        var shortestCycles = [];
+        var min = allCycles[0].length;
+        for (var i=0; i<allCycles.length; i++){
+            if (allCycles[i].length < min){
+                min = allCycles[i].length;
+                shortestCycles = [];
+                shortestCycles.push(allCycles[i]);
+            }
+            else if (allCycles[i].length === min){
+                shortestCycles.push(allCycles[i]);
+            }
+        }
+        var t1 = performance.now();
+        console.log("Call to get shortest took " + (t1 - t0) + " milliseconds.");
+        console.log(shortestCycles);
+        return shortestCycles;
+    },
     removeInvalidCycles : function (cycleList) {
         //var cycleLinksList = [];
         var listValidCycles = [];
@@ -1213,6 +1293,86 @@ metExploreD3.GraphStyleEdition = {
             }
             if (valid === true) {
                 listValidCycles.push(cycleList[i]);
+            }
+        }
+        return listValidCycles;
+
+    },
+    removeInvalidCycles2 : function (cyclesList) {
+        // New data structure to efficiently get back the edges from vertex id
+        var verticesPairsToLinks = {};
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .filter(function (d) {
+                return (d.getSource().isSideCompound !== true && d.getTarget().isSideCompound !== true)
+            })
+            .each(function (d) {
+                var reactionNode = (d.getSource().biologicalType === "reaction") ? d.getSource() : d.getTarget();
+                var sourceId = d.getSource().id;
+                var targetId = d.getTarget().id;
+                if (!verticesPairsToLinks[sourceId]){
+                    verticesPairsToLinks[sourceId] = {};
+                }
+                verticesPairsToLinks[sourceId][targetId] = d;
+                if (reactionNode.reactionReversibility === true){
+                    if (!verticesPairsToLinks[targetId]){
+                        verticesPairsToLinks[targetId] = {};
+                    }
+                    verticesPairsToLinks[targetId][sourceId] = d;
+                }
+            });
+        console.log(verticesPairsToLinks);
+
+        // Get the links that are part of the cycle from the vertex id
+        var cyclesLinksList = [];
+        for (var i=0; i<cyclesList.length; i++){
+            var cycleLinks = [];
+            for (var j=0; j<cyclesList[i].length; j++) {
+                var newJ = (j + 1 < cyclesList[i].length) ? j + 1 : 0;
+                var currentVertex = cyclesList[i][j];
+                var nextVertex = cyclesList[i][newJ];
+                var link = "";
+                if (verticesPairsToLinks[currentVertex][nextVertex]){
+                    link = verticesPairsToLinks[currentVertex][nextVertex];
+                }
+                else if (verticesPairsToLinks[nextVertex][currentVertex]){
+                    link = verticesPairsToLinks[nextVertex][currentVertex];
+                }
+                cycleLinks.push(link);
+            }
+            cyclesLinksList.push(cycleLinks);
+        }
+
+        console.log(cyclesList);
+        console.log(cyclesLinksList);
+
+        var listValidCycles = [];
+        for (var i=0; i<cyclesList.length; i++) {
+            // Get all the cycle edges from the output of the cycle finding algorithm
+            var cycle = cyclesList[i];
+            var cycleLinks = cyclesLinksList[i];
+
+            // Check if each cycle found is a valid metabolite cycle
+            // (if a reversible reaction that produce 2 metabolites, a cycle might have been found that has a segment that
+            // goes from the 1st metabolite to the reaction to the second metabolite, even though it is not a valid metabolic cycle)
+            var valid = true;
+            for (var j = 0; j < cycle.length; j++) {
+                var lastJ = (j - 1 >= 0) ? j - 1 : cycle.length - 1;
+                if (cycleLinks[j].getSource().id === cycle[j]) {
+                    //Edge in cycle direction
+                    if (cycleLinks[j].getSource().biologicalType === "reaction" && cycleLinks[lastJ].getSource().biologicalType === "reaction"){
+                        valid = false;
+                    }
+                }
+                else if (cycleLinks[j].getTarget().id === cycle[j]){
+                    //Edge in inverse cycle direction
+                    if (cycleLinks[j].getTarget().biologicalType === "reaction" && cycleLinks[lastJ].getTarget().biologicalType === "reaction") {
+                        valid = false;
+                    }
+                }
+            }
+
+            if (valid === true) {
+                listValidCycles.push(cycle);
             }
         }
         return listValidCycles;
@@ -1265,28 +1425,6 @@ metExploreD3.GraphStyleEdition = {
     getLinksFromCycle : function(cycle) {
         var cycleLinks = [];
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
-        // Test
-        // Pre filtering to gain time on large set
-        /*var filterLinks = links.filter(function (d) {
-            return (cycle.includes(d.getSource().id) && cycle.includes(d.getTarget().id))
-        });
-        for (var j = 0; j < cycle.length; j++) {
-            var newJ = (j + 1 < cycle.length) ? j + 1 : 0;
-            var currentCycle = cycle[j];
-            var nextCycle = cycle[newJ];
-            filterLinks.filter(function (d) {
-                var sourceId = d.getSource().id;
-                var targetId = d.getTarget().id;
-                if (sourceId === currentCycle && targetId === nextCycle) {
-                    cycleLinks.push(d);
-                    return true;
-                }
-                else if (targetId === currentCycle && sourceId === nextCycle) {
-                    cycleLinks.push(d);
-                    return true;
-                }
-            });
-        };*/
         // Test 2
         var tmpList = [];
         for (var i=0; i<cycle.length; i++){
@@ -1304,64 +1442,21 @@ metExploreD3.GraphStyleEdition = {
         });
         for (var i = 0; i < cycle.length; i++) {
             var newI = (i + 1 < cycle.length) ? i + 1 : 0;
-            var currentCycle = cycle[i];
-            var nextCycle = cycle[newI];
+            var currentVertex = cycle[i];
+            var nextVertex = cycle[newI];
             for (var j=0; j<tmpList[i].length; j++){
                 var link = tmpList[i][j];
                 var sourceId = link.getSource().id;
                 var targetId = link.getTarget().id;
-                if (sourceId === currentCycle && targetId === nextCycle) {
+                if (sourceId === currentVertex && targetId === nextVertex) {
                     cycleLinks.push(link);
                 }
-                else if (targetId === currentCycle && sourceId === nextCycle) {
+                else if (targetId === currentVertex && sourceId === nextVertex) {
                     cycleLinks.push(link);
                 }
             }
         }
         return cycleLinks;
-    },
-    getLinksFromCyclesList : function(cycleList) {
-        //console.log(cycleList);
-        //console.log(cycleList.length);
-        var cycleListLinks = [];
-        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
-        var filterLinks = links.filter(function (d) {
-            //return (cycle.includes(d.getSource().id) && cycle.includes(d.getTarget().id));
-            var bool = false;
-            for (var i=0; i<cycleList.length; i++){
-                //return (cycleList[i].includes(d.getSource().id) && cycleList[i].includes(d.getTarget().id));
-                if (cycleList[i].includes(d.getSource().id) && cycleList[i].includes(d.getTarget().id)){
-                    bool = true;
-                }
-            }
-            return bool;
-        });
-        //console.log(filterLinks);
-        filterLinks.style("stroke", "blue");
-        for (var i=0; i<cycleList.length; i++) {
-            var cycleLinks = [];
-            var cycle = cycleList[i];
-            for (var j = 0; j < cycle.length; j++) {
-                var newJ = (j + 1 < cycle.length) ? j + 1 : 0;
-                filterLinks.filter(function (d) {
-                    var sourceId = d.getSource().id;
-                    var targetId = d.getTarget().id;
-                    var currentCycle = cycle[j];
-                    var nextCycle = cycle[newJ];
-                    if (sourceId === currentCycle && targetId === nextCycle) {
-                        cycleLinks.push(d);
-                        return true;
-                    }
-                    else if (targetId === currentCycle && sourceId === nextCycle) {
-                        cycleLinks.push(d);
-                        return true;
-                    }
-                });
-            }
-            cycleListLinks.push(cycleLinks);
-        };
-        //console.log(cycleListLinks);
-        return cycleListLinks;
     },
     HawickJamesAlgorithm: function(graph, flag){
         // Variables initialisation
