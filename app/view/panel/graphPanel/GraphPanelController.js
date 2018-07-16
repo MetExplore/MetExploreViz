@@ -234,6 +234,96 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				.attr("transform", "translate(-35,-35)");
 
 		}
+
+		if(view.lookupReference("searchNodeTextField").getValue()=="worldchampion")
+		{
+			// d3.select("#viz").select("#D3viz")
+			// 	.style("background-image","url('resources/images/easteregg/happyhalloween.png')")
+			// 	.style("background-repeat","round");
+			
+			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.linkGroup").selectAll("*").remove();
+			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("*").remove();
+
+			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+				.filter(
+					function(d) {
+						return (d.getBiologicalType() == 'reaction');
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/drapeau-tricolore.png")
+				.attr("width", "70px")
+				.attr("height", "70px")
+				.attr("transform", "translate(-25,-25)");
+
+			var metabolites = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+				.filter(
+					function(d) {
+						return (d.getBiologicalType() == 'metabolite');
+					}
+				)
+
+			metabolites
+				.filter(
+					function(d, i) {
+						return (i > 5);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/drapeau-tricolore.png")
+				.attr("width", "70px")
+				.attr("height", "70px")
+				.attr("transform", "translate(-35,-35)");
+
+			metabolites
+				.filter(
+					function(d, i) {
+						return (i == 0 || i == 1);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/coupe_du_monde.png")
+				.attr("width", "120px")
+				.attr("height", "120px")
+				.attr("transform", "translate(-35,-35)");
+
+			metabolites.filter(
+					function(d, i) {
+						return (i == 2);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/zizou.png")
+				.attr("width", "300px")
+				.attr("height", "300px")
+				.attr("transform", "translate(-35,-35)");
+
+			metabolites
+				.filter(
+					function(d, i) {
+						return (i == 3);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/francais.png")
+				.attr("width", "300px")
+				.attr("height", "300px")
+				.attr("transform", "translate(-35,-35)");
+
+			metabolites
+				.filter(
+					function(d, i) {
+						return (i == 5 || i == 4);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/star.png")
+				.attr("width", "100px")
+				.attr("height", "100px")
+				.attr("transform", "translate(-35,-35)");
+
+		}
+
 		metExploreD3.GraphNode.searchNode(view.lookupReference("searchNodeTextField").getValue());
 	},
 
