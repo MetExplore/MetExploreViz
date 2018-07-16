@@ -241,7 +241,6 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			// 	.style("background-image","url('resources/images/easteregg/happyhalloween.png')")
 			// 	.style("background-repeat","round");
 			
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.linkGroup").selectAll("*").remove();
 			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("*").remove();
 
 			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
@@ -254,7 +253,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				.attr("xlink:href","resources/images/easteregg/wc/drapeau-tricolore.png")
 				.attr("width", "70px")
 				.attr("height", "70px")
-				.attr("transform", "translate(-25,-25)");
+				.attr("transform", "translate(-35,-35)");
 
 			var metabolites = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
 				.filter(
@@ -285,7 +284,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				.attr("xlink:href","resources/images/easteregg/wc/coupe_du_monde.png")
 				.attr("width", "120px")
 				.attr("height", "120px")
-				.attr("transform", "translate(-35,-35)");
+				.attr("transform", "translate(-60,-60)");
 
 			metabolites.filter(
 					function(d, i) {
@@ -296,7 +295,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				.attr("xlink:href","resources/images/easteregg/wc/zizou.png")
 				.attr("width", "300px")
 				.attr("height", "300px")
-				.attr("transform", "translate(-35,-35)");
+				.attr("transform", "translate(-150,-150)");
 
 			metabolites
 				.filter(
@@ -308,7 +307,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				.attr("xlink:href","resources/images/easteregg/wc/francais.png")
 				.attr("width", "300px")
 				.attr("height", "300px")
-				.attr("transform", "translate(-35,-35)");
+				.attr("transform", "translate(-150,-150)");
 
 			metabolites
 				.filter(
@@ -320,7 +319,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				.attr("xlink:href","resources/images/easteregg/wc/star.png")
 				.attr("width", "100px")
 				.attr("height", "100px")
-				.attr("transform", "translate(-35,-35)");
+				.attr("transform", "translate(-50,-50)");
 
 		}
 
