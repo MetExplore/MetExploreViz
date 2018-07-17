@@ -70,13 +70,21 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
                 align:'stretch',
                 width:'95%',
                 reference:'buttonDrawCycle',
-                hidden: true,
+                hidden: true
             },{
                 xtype:'menuseparator'
 			},{
                 xtype:'fieldcontainer',
 				id:'cycleDetectionPanel',
                 reference:'cycleDetectionPanel'
+            },{
+                xtype:'button',
+                text:'Hide cycle',
+                margin: '10 10 10 10',
+                align:'stretch',
+                width:'25%',
+                reference:'buttonHideCycle',
+                hidden: true
             }]
         }
         // Fin Ajout

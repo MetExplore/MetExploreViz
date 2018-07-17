@@ -61,8 +61,8 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 				var isAlias = view.lookupReference('checkboxAlias').getValue();
 
 			    //Ajout
-			    var labelOpacity = (view.lookupReference('checkHideLabel').getValue()) ? 0.0 : 1.0;
-			    var newLabelOpacity = (!isNaN(labelOpacity) && labelOpacity>=0.0 && labelOpacity<=1.0) ? labelOpacity : s_MetaboliteStyle.getLabelOpacity();
+			    //var labelOpacity = (view.lookupReference('checkHideLabel').getValue()) ? 0.0 : 1.0;
+			    //var newLabelOpacity = (!isNaN(labelOpacity) && labelOpacity>=0.0 && labelOpacity<=1.0) ? labelOpacity : s_MetaboliteStyle.getLabelOpacity();
 			    //Fin Ajout
 			    
 				if(newLabel!==s_MetaboliteStyle.getLabel()
@@ -73,7 +73,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 					|| (newrx !== s_MetaboliteStyle.getRX())
 					|| (newry !== s_MetaboliteStyle.getRY())
 				   //Ajout
-					|| (newLabelOpacity !== s_MetaboliteStyle.getLabelOpacity())
+					//|| (newLabelOpacity !== s_MetaboliteStyle.getLabelOpacity())
 				   //Fin Ajout
 				){
 					isset=true;

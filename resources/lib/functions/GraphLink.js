@@ -1375,6 +1375,7 @@ metExploreD3.GraphLink = {
     loadLinksForFlux: function (parent, networkData, linkStyle, metaboliteStyle, showValues, conditionName) {
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup").remove();
         _metExploreViz.getSessionById(parent).setMappingDataType("Flux");
+
         var divs = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
             .data(networkData.getLinks())
             .enter()
@@ -1859,10 +1860,12 @@ metExploreD3.GraphLink = {
         }
         else {
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
-            if(flux)
+            if(flux) {
                 funcPath = metExploreD3.GraphLink.funcPathForFlux;
-            else
+            }
+            else {
                 funcPath = metExploreD3.GraphLink.funcPath3;
+            }
 
             // If you want to use selection on compartments path
             /*d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
@@ -1871,6 +1874,12 @@ metExploreD3.GraphLink = {
 
             d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                 .selectAll("path.link")
+                .attr("fill", function (d) {
+                    if (d.interaction == "out")
+                        return metExploreD3.getLinkStyle().getMarkerOutColor();
+                    else
+                        return metExploreD3.getLinkStyle().getMarkerInColor();
+                })
                 .attr("d", function(link){  return funcPath(link, panel, this.id);})
                 .style("stroke-linejoin", "bevel");
         }

@@ -26,7 +26,12 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
 		view.lookupReference('buttonDrawCycle').on({
 			click:me.drawMetaboliteCycle,
 			scope:me
-		})
+		});
+
+        view.lookupReference('buttonHideCycle').on({
+            click:me.hideMetaboliteCycle,
+            scope:me
+        });
 	},
 	
 	drawCaption : function(){
@@ -38,6 +43,15 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
 			if (d.checked){
                 metExploreD3.GraphStyleEdition.drawMetaboliteCycle(d.cycle);
 			}
+        })
+    },
+
+    hideMetaboliteCycle: function () {
+        this.lookupReference('cycleDetectionPanel').items.each(function (d) {
+            if (d.checked){
+                d.setValue(false);
+                metExploreD3.GraphStyleEdition.removeHighlightCycle(d.cycle);
+            }
         })
     },
 
@@ -68,9 +82,11 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
             this.getView().expand();
             this.lookupReference('cycleDetection').expand();
             this.lookupReference('buttonDrawCycle').show();
+            this.lookupReference('buttonHideCycle').show();
         }
         else {
             this.lookupReference('buttonDrawCycle').hide();
+            this.lookupReference('buttonHideCycle').hide();
 		}
     }
 });

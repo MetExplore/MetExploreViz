@@ -240,13 +240,13 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     });
                                     console.log(count);*/
 
-                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles2([theNode]);
+                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles([theNode]);
                                     console.log(longestCycles);
                                     if (longestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
                                     }
                                     if (longestCycles.length === 0){
-                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
+                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
                                     }
                                     metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", longestCycles);
                                     //console.log(longestCycles);
@@ -261,12 +261,12 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         }).each(function (d) {
                                             selectedNodes.push(d);
                                     });
-                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles2(selectedNodes);
+                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles(selectedNodes);
                                     if (longestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
                                     }
                                     if (longestCycles.length === 0){
-                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
+                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
                                     }
                                     metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", longestCycles);
                                 }
@@ -276,7 +276,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             menu: [{
                                 text: 'Going through this node',
                                 handler: function () {
-                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles2([theNode]);
+                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles([theNode]);
                                     if (shortestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(shortestCycles[0]);
                                         /*if (longestCycles.length === 1) {
@@ -284,7 +284,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         }*/
                                     }
                                     if (shortestCycles.length === 0){
-                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
+                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
                                     }
                                     metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", shortestCycles);
                                 }
@@ -298,7 +298,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         }).each(function (d) {
                                         selectedNodes.push(d);
                                     });
-                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles2(selectedNodes);
+                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles(selectedNodes);
                                     if (shortestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(shortestCycles[0]);
                                         /*if (longestCycles.length === 1) {
@@ -306,7 +306,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                         }*/
                                     }
                                     if (shortestCycles.length === 0){
-                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles going through the selected nodes');
+                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
                                     }
                                     metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", shortestCycles);
                                 }

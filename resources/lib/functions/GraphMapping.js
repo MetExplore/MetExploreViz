@@ -753,6 +753,24 @@ metExploreD3.GraphMapping = {
 								force.start();
 						}
 					}
+					// Ajout
+                    /*console.log( metExploreD3.GraphMapping.mapFluxes.caller);
+                    //metExploreD3.GraphLink.loadLinksForFlux("viz", session.getD3Data(), metExploreD3.getLinkStyle());
+                    var allValues = [];
+                    var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
+                    var conditions = _metExploreViz.getSessionById('viz').isMapped();
+                    d3.select("#viz").select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .each(function (d) {
+                            if (d.getSource().getBiologicalType() === "reaction"){
+                                allValues.push(d.getSource().getMappingDataByNameAndCond(mappingName, conditions[0]));
+                            }
+                            else if (d.getTarget().getBiologicalType() === "reaction"){
+                                allValues.push(d.getTarget().getMappingDataByNameAndCond(mappingName, conditions[0]));
+                            }
+                        });
+                    console.log(allValues);*/
+                    // Fin Ajout
 					metExploreD3.GraphNetwork.tick('viz');
 		   		}, 1
 		   	);
