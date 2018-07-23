@@ -82,7 +82,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
                 text:'Hide cycle',
                 margin: '10 10 10 10',
                 align:'stretch',
-                width:'25%',
+                width:'50%',
                 reference:'buttonHideCycle',
                 hidden: true
             }]

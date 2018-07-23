@@ -84,7 +84,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 					s_MetaboliteStyle.setRY(parseFloat(newry));
 					s_MetaboliteStyle.setLabel(newLabel);
 					s_MetaboliteStyle.setUseAlias(isAlias);
-				    s_MetaboliteStyle.setLabelOpacity(newLabelOpacity);
+				    //s_MetaboliteStyle.setLabelOpacity(newLabelOpacity);
 				}		
 
 				if(isset){

@@ -94,7 +94,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 					s_ReactionStyle.setRY(parseFloat(newry));
 					s_ReactionStyle.setLabel(newLabel);
 					s_ReactionStyle.setUseAlias(isAlias);
-                    s_ReactionStyle.setLabelOpacity(newLabelOpacity);
+                    //s_ReactionStyle.setLabelOpacity(newLabelOpacity);
 				}	
 
 				if(isset){
