@@ -1181,18 +1181,7 @@ metExploreD3.GraphNetwork = {
 		metExploreD3.sortCompartmentInBiosource();
  		
  		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
-
- 		// Ajout
-        // set label property
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-            .each(function (node) {
-            	var label = "";
-                d3.select(this).select("text").each(function (d) {
-                    label = this.textContent;
-                });
-                node.setLabel(label);
-            });
-        // Fin Ajout
+ 		
 	},
 
 	rescale : function(panel){

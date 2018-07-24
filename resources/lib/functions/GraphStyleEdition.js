@@ -986,8 +986,10 @@ metExploreD3.GraphStyleEdition = {
                 var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
                     .selectAll("g.node")
                     .filter(function (d) {
+                        var style = (d.getBiologicalType() === "metabolite") ? metExploreD3.getMetaboliteStyle() : metExploreD3.getReactionStyle();
+                        var label = style.getDisplayLabel(d, style.getLabel());
                         //var target = (arg === "Name") ? d.name : d.dbIdentifier;
-                        var target = (arg === "Name") ? d.getLabel() : d.dbIdentifier;
+                        var target = (arg === "Name") ? label : d.dbIdentifier;
                         return (nodeName === target);
                     });
                 if (!node.select(".imageNode").empty()){
