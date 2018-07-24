@@ -120,11 +120,12 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                            //Ajout
                            {
                                xtype:'button',
-                               text:'Edit mode',
+                               text:'Enter edit mode',
                                tooltip:'Enter edit mode',
                                scale:'large',
                                id:'enterEditMode',
                                reference:'enterEditMode',
+                               enableToggle: true,
                                //disabled:true,
                                hidden:false,
                                padding:'0 0 0 0'

@@ -773,9 +773,18 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 	//Ajout
 	,
     enterEditMode: function () {
-        //metExploreD3.GraphFunction.toggleEditMode();
         metExploreD3.GraphStyleEdition.toggleEditMode();
-        //(metExploreD3.GraphFunction.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
+        //Ext.getCmp('enterEditMode').setDisabled(true);
+        //console.log(Ext.getCmp('enterEditMode'));
+        //Ext.getCmp('enterEditMode').style.backgroundColor = "ff0000";
+		if (metExploreD3.GraphStyleEdition.editMode){
+            Ext.getCmp('enterEditMode').setText("Exit edit mode");
+            Ext.getCmp('enterEditMode').setTooltip("Exit edit mode");
+		}
+		else {
+            Ext.getCmp('enterEditMode').setText("Enter edit mode");
+            Ext.getCmp('enterEditMode').setTooltip("Enter edit mode");
+		}
         (metExploreD3.GraphStyleEdition.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
     }
 	//Fin Ajout
