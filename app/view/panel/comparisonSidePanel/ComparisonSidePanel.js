@@ -88,15 +88,5 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
             }]
         }
         // Fin Ajout
-	,
-	{
-	   title:'Style',
-	   id:'updateStyleForm',
-	   xtype:'updateStyleForm',
-	   layout:{
-		   type:'vbox',
-		   align:'stretch'
-	   }
-	}
 	]
 });

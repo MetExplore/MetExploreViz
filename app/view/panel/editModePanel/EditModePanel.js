@@ -407,6 +407,15 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
             ]
         },
         {
+            title:'Style',
+            id:'updateStyleForm',
+            xtype:'updateStyleForm',
+            layout:{
+                type:'vbox',
+                align:'stretch'
+            }
+        },
+        {
             title: "Curve",
             xtype: 'panel',
             collapsible: true,
