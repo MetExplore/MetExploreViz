@@ -1181,7 +1181,7 @@ metExploreD3.GraphNetwork = {
 		metExploreD3.sortCompartmentInBiosource();
  		
  		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
- 		
+
 	},
 
 	rescale : function(panel){

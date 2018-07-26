@@ -79,6 +79,22 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
         ]
     },
     {
+
+        margin:'10 0 0 5',
+        xtype      : 'fieldcontainer',
+        defaultType: 'checkboxfield',
+        reference : 'regroupValuesIntoClass',
+        hidden : true,
+        items: [
+            {
+                boxLabel  : 'Regroup flux values into 10 classes',
+                name      : 'regroupValuesIntoClass',
+                inputValue: true,
+                id        : 'regroupValuesIntoClassCheck'
+            }
+        ]
+    },
+    {
         xtype      : 'fieldcontainer',
         defaultType: 'checkboxfield',
         label: 'Threshold',

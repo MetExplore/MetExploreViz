@@ -1109,7 +1109,8 @@ metExploreD3.GraphMapping = {
 	},
 
 
- 	graphMappingFlux : function(mappingName, conditionName, fluxType, colorMax, colorMin, isOpac, showValues){
+ 	graphMappingFlux : function(mappingName, conditionName, fluxType, colorMax, colorMin, isOpac, showValues, isBinned){
+		console.log(isBinned);
 		metExploreD3.onloadMapping(mappingName, function(){
 			var session = _metExploreViz.getSessionById('viz');
 			metExploreD3.GraphMapping.parseFluxValues(mappingName);
