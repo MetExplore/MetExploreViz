@@ -458,7 +458,7 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	* @param {} func : callback function
 	*/
-	mapFluxes : function(mappingName, conditionName, colorMax, colorMin, useOpacity, func) {
+	mapFluxes : function(mappingName, conditionName, colorMax, colorMin, useOpacity, isBinned, func) {
 		var mapping = _metExploreViz.getMappingByName(mappingName);
 		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
 		
@@ -754,22 +754,16 @@ metExploreD3.GraphMapping = {
 						}
 					}
 					// Ajout
-                    /*console.log( metExploreD3.GraphMapping.mapFluxes.caller);
-                    //metExploreD3.GraphLink.loadLinksForFlux("viz", session.getD3Data(), metExploreD3.getLinkStyle());
-                    var allValues = [];
-                    var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
-                    var conditions = _metExploreViz.getSessionById('viz').isMapped();
-                    d3.select("#viz").select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .each(function (d) {
-                            if (d.getSource().getBiologicalType() === "reaction"){
-                                allValues.push(d.getSource().getMappingDataByNameAndCond(mappingName, conditions[0]));
-                            }
-                            else if (d.getTarget().getBiologicalType() === "reaction"){
-                                allValues.push(d.getTarget().getMappingDataByNameAndCond(mappingName, conditions[0]));
-                            }
-                        });
-                    console.log(allValues);*/
+					if (isBinned){
+                        for (var i=0; i<conditionName.length; i++) {
+                            metExploreD3.GraphStyleEdition.discretizeFluxRange(conditionName[i]);
+                        }
+					}
+					else {
+                        for (var i=0; i<conditionName.length; i++) {
+                            metExploreD3.GraphStyleEdition.removeBinnedMapping(conditionName[i]);
+                        }
+					}
                     // Fin Ajout
 					metExploreD3.GraphNetwork.tick('viz');
 		   		}, 1
@@ -786,7 +780,7 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	* @param {} func : callback function
 	*/
-	mapUniqueFlux : function(mappingName, conditionName, colorMax, useOpacity, func) {
+	mapUniqueFlux : function(mappingName, conditionName, colorMax, useOpacity, isBinned, func) {
 		var mapping = _metExploreViz.getMappingByName(mappingName);
 		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
 		
@@ -1019,6 +1013,18 @@ metExploreD3.GraphMapping = {
 								force.start();
 						}
 					}
+					// Ajout
+                    if (isBinned){
+                        for (var i=0; i<conditionName.length; i++) {
+                            metExploreD3.GraphStyleEdition.discretizeFluxRange(conditionName[i]);
+                        }
+                    }
+                    else {
+                        for (var i=0; i<conditionName.length; i++) {
+                            metExploreD3.GraphStyleEdition.removeBinnedMapping(conditionName[i]);
+                        }
+                    }
+                    // Fin Ajout
 					metExploreD3.GraphNetwork.tick('viz');
 		   		}, 1
 		   	);
@@ -1117,12 +1123,12 @@ metExploreD3.GraphMapping = {
 			metExploreD3.GraphLink.loadLinksForFlux("viz", session.getD3Data(), metExploreD3.getLinkStyle(), metExploreD3.getMetaboliteStyle(), showValues, conditionName);
 
 			if(fluxType=='Compare') {
-                metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac, function() {
+                metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac, isBinned, function() {
                     metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
                 });
             }
 			else {
-                metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac, function(){
+                metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac, isBinned, function(){
                     metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
                 });
             }

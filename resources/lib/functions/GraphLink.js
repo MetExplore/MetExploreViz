@@ -41,15 +41,6 @@ metExploreD3.GraphLink = {
         var scaleValue = d3.scale.linear()
             .domain([-maxValue, 0, 0, maxValue])
             .range([-7, -1, 1, 7]);
-        // Ajout
-        //console.log(maxValue);
-        /*var scaleValue = d3.scale.quantile()
-            .domain([0, maxValue/10, maxValue/10*2, maxValue/10*3, maxValue/10*4, maxValue/10*5, maxValue/10*6, maxValue/10*7, maxValue/10*8, maxValue/10*9, maxValue])
-            .range([0, 7/10, 7/10 * 2, 7/10 * 3, 7/10 * 4, 7/10 * 5, 7/10 * 6, 7/10 * 7, 7/10 * 8, 7/10 * 9, 7]);*/
-        /*var scaleValue = d3.scale.pow().exponent(0.5)
-            .domain([0, maxValue])
-            .range([1, 7]);*/
-        // Fin Ajout
 
         function pathForReversibleReactions(source, target) {
             var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -57,6 +48,23 @@ metExploreD3.GraphLink = {
 
             map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
             map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
+            // Ajout
+            // Check whether to use linear flux value or discretized value
+            var map1Value;
+            var map2Value;
+            if (map1 !== null){
+                map1Value = map1.getMapValue();
+                if (map1.hasOwnProperty('binnedMapValue')) {
+                    map1Value = map1.binnedMapValue;
+                }
+            }
+            if (map2 !== null){
+                map2Value = map2.getMapValue();
+                if (map2.hasOwnProperty('binnedMapValue')) {
+                    map2Value = map2.binnedMapValue;
+                }
+            }
+            // Fin Ajout
 
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
@@ -65,12 +73,12 @@ metExploreD3.GraphLink = {
             var diffY = dY / Math.abs(dY);
             if (linkId == 'linkRev') {
                 if (map2 == null)
-                    var value = 0
+                    var value = 0;
                 else {
-                    if (isNaN(map2.getMapValue()))
-                        var value = 0
+                    if (isNaN(map2Value))
+                        var value = 0;
                     else
-                        var value = scaleValue(map2.getMapValue());
+                        var value = scaleValue(map2Value);
                 }
 
                 if (value == -1 || value == 1)
@@ -86,10 +94,10 @@ metExploreD3.GraphLink = {
                 if (map1 == null)
                     var value = 0;
                 else {
-                    if (isNaN(map1.getMapValue()))
+                    if (isNaN(map1Value))
                         var value = 0;
                     else
-                        var value = scaleValue(map1.getMapValue());
+                        var value = scaleValue(map1Value);
                 }
 
                 if (value == -1 || value == 1)

@@ -1670,5 +1670,69 @@ metExploreD3.GraphStyleEdition = {
         }
         metExploreD3.GraphNode.tick('viz');
         metExploreD3.GraphLink.tick('viz');
+    },
+    discretizeFluxRange: function (condition) {
+        // Create the distribution table for the flux values
+        var allValues = [];
+        var distributionTable = {};
+        var sortedKeys = [];
+        var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
+        var conditions = _metExploreViz.getSessionById('viz').isMapped();
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function (d) {
+                return d.getBiologicalType() === "reaction";
+            })
+            .each(function (d) {
+                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
+                allValues.push(reactionMapping)
+            });
+        allValues.sort(function (a, b) {
+            return a.mapValue - b.mapValue;
+        });
+        for (var i=0; i<allValues.length; i++){
+            var value = allValues[i].mapValue;
+            if (!distributionTable[value]){
+                distributionTable[value] = 1;
+                sortedKeys.push(Number(value));
+            }
+            else {
+                distributionTable[value] += 1;
+            }
+
+        }
+        // Create 10 bins
+        var range = sortedKeys[sortedKeys.length-1] - sortedKeys[0];
+        var nbBins = 10;
+        var binsWidth = range/nbBins;
+        var breakPoints = [];
+        for (var i=1; i<nbBins; i++){
+            breakPoints.push(sortedKeys[0] + i * binsWidth);
+        }
+        // Assign the values into the corresponding bins
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function (d) {
+                return d.getBiologicalType() === "reaction";
+            })
+            .each(function (d) {
+                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
+                reactionMapping["binnedMapValue"] = 30;
+            });
+    },
+    removeBinnedMapping : function (condition) {
+        var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
+        var conditions = _metExploreViz.getSessionById('viz').isMapped();
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function (d) {
+                return d.getBiologicalType() === "reaction";
+            })
+            .each(function (d) {
+                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
+                if (reactionMapping){
+                    delete reactionMapping.binnedMapValue;
+                }
+            })
     }
 }
