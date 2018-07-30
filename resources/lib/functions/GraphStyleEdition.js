@@ -25,7 +25,6 @@ metExploreD3.GraphStyleEdition = {
             d3.select("#viz").select("#buttonAnim").select("image").remove();
             metExploreD3.GraphStyleEdition.startDragLabel();
             var component = Ext.getCmp('editModePanel');
-            //metExploreD3.GraphCaption.drawCaptionEditMode();
         }
         else {
             metExploreD3.GraphStyleEdition.editMode=false;
@@ -33,7 +32,6 @@ metExploreD3.GraphStyleEdition = {
             metExploreD3.GraphNetwork.animationButtonOff('viz');
             metExploreD3.GraphStyleEdition.endDragLabel();
             metExploreD3.GraphNode.applyEventOnNode('viz');
-            //metExploreD3.GraphCaption.drawCaption();
         }
     },
 
@@ -1674,8 +1672,7 @@ metExploreD3.GraphStyleEdition = {
     discretizeFluxRange: function (condition) {
         // Create the distribution table for the flux values
         var allValues = [];
-        var distributionTable = {};
-        var sortedKeys = [];
+        var distributionTable = [];
         var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
         var conditions = _metExploreViz.getSessionById('viz').isMapped();
         d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -1691,23 +1688,42 @@ metExploreD3.GraphStyleEdition = {
             return a.mapValue - b.mapValue;
         });
         for (var i=0; i<allValues.length; i++){
-            var value = allValues[i].mapValue;
-            if (!distributionTable[value]){
-                distributionTable[value] = 1;
-                sortedKeys.push(Number(value));
+            var value = Number(allValues[i].mapValue);
+            if (!distributionTable.length || distributionTable[distributionTable.length -1].value !== value){
+                var valueObject = {value: value, nbOccurence: 1};
+                if (distributionTable.length){
+                    valueObject.gap = valueObject.value - distributionTable[distributionTable.length -1].value;
+                }
+                else {
+                    valueObject.gap = 0;
+                }
+                distributionTable.push(valueObject);
             }
             else {
-                distributionTable[value] += 1;
+                distributionTable[distributionTable.length -1].nbOccurence += 1;
             }
-
         }
-        // Create 10 bins
-        var range = sortedKeys[sortedKeys.length-1] - sortedKeys[0];
+
+        //  Find the 9 largest gaps between consecutive values
         var nbBins = 10;
-        var binsWidth = range/nbBins;
+        distributionTable.sort(function (a, b) {
+            return a.gap - b.gap;
+        });
         var breakPoints = [];
-        for (var i=1; i<nbBins; i++){
-            breakPoints.push(sortedKeys[0] + i * binsWidth);
+        for (var i=distributionTable.length - nbBins + 1; i<distributionTable.length; i++){
+            breakPoints.push(distributionTable[i].value);
+        }
+        breakPoints.sort(function (a, b) {
+            return a - b;
+        });
+        // Divide the range of value into 10 bins
+        var maxValue = Number(allValues[allValues.length-1].mapValue);
+        var minValue = Number(allValues[0].mapValue);
+        var range = maxValue - minValue;
+        var binsWidth = range/nbBins;
+        var midBinValues = [];
+        for (var i=0; i<nbBins; i++){
+            midBinValues.push(minValue + binsWidth / 2 + i * binsWidth);
         }
         // Assign the values into the corresponding bins
         d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -1717,7 +1733,16 @@ metExploreD3.GraphStyleEdition = {
             })
             .each(function (d) {
                 var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
-                reactionMapping["binnedMapValue"] = 30;
+                var binnedValue;
+                for (var i=0; i<breakPoints.length; i++){
+                    if (reactionMapping.mapValue < breakPoints[i]){
+                        reactionMapping.binnedMapValue = midBinValues[i];
+                        break;
+                    }
+                }
+                if (reactionMapping.binnedMapValue === undefined){
+                    reactionMapping.binnedMapValue = midBinValues[midBinValues.length-1];
+                }
             });
     },
     removeBinnedMapping : function (condition) {
