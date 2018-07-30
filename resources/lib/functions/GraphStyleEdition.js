@@ -1733,14 +1733,14 @@ metExploreD3.GraphStyleEdition = {
             })
             .each(function (d) {
                 var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
-                var binnedValue;
+                var mapValue = Math.abs(Number(reactionMapping.mapValue));
                 for (var i=0; i<breakPoints.length; i++){
-                    if (reactionMapping.mapValue < breakPoints[i]){
+                    if (mapValue < breakPoints[i]){
                         reactionMapping.binnedMapValue = midBinValues[i];
                         break;
                     }
                 }
-                if (Number(reactionMapping.mapValue) === 0){
+                if (Number(mapValue) === 0){
                     reactionMapping.binnedMapValue = 0;
                 }
                 else if (reactionMapping.binnedMapValue === undefined){
