@@ -1685,10 +1685,10 @@ metExploreD3.GraphStyleEdition = {
                 allValues.push(reactionMapping)
             });
         allValues.sort(function (a, b) {
-            return a.mapValue - b.mapValue;
+            return Math.abs(a.mapValue) - Math.abs(b.mapValue);
         });
         for (var i=0; i<allValues.length; i++){
-            var value = Number(allValues[i].mapValue);
+            var value = Math.abs(Number(allValues[i].mapValue));
             if (!distributionTable.length || distributionTable[distributionTable.length -1].value !== value){
                 var valueObject = {value: value, nbOccurence: 1};
                 if (distributionTable.length){
@@ -1717,8 +1717,8 @@ metExploreD3.GraphStyleEdition = {
             return a - b;
         });
         // Divide the range of value into 10 bins
-        var maxValue = Number(allValues[allValues.length-1].mapValue);
-        var minValue = Number(allValues[0].mapValue);
+        var maxValue = Math.abs(Number(allValues[allValues.length-1].mapValue));
+        var minValue = Math.abs(Number(allValues[0].mapValue));
         var range = maxValue - minValue;
         var binsWidth = range/nbBins;
         var midBinValues = [];
@@ -1740,7 +1740,10 @@ metExploreD3.GraphStyleEdition = {
                         break;
                     }
                 }
-                if (reactionMapping.binnedMapValue === undefined){
+                if (Number(reactionMapping.mapValue) === 0){
+                    reactionMapping.binnedMapValue = 0;
+                }
+                else if (reactionMapping.binnedMapValue === undefined){
                     reactionMapping.binnedMapValue = midBinValues[midBinValues.length-1];
                 }
             });
