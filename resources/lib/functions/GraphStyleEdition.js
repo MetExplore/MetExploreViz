@@ -62,6 +62,9 @@ metExploreD3.GraphStyleEdition = {
         //
     },
 
+    /*******************************************
+     * Create drag-and-drop behavior
+     */
     createDragBehavior : function () {
         var deltaX;
         var deltaY;
@@ -104,8 +107,11 @@ metExploreD3.GraphStyleEdition = {
         return drag;
     },
 
+    /*******************************************
+     * Add element in the corner of an image that can be used to resize that image
+     * @param {} image : The g element containing the image on which to add the element
+     */
     applyResizeHandle : function (image) {
-        console.log(image);
         var imgWidth = Number(image.attr("width"));
         var imgHeight = Number(image.attr("height"));
         var deltaGX = 0;
@@ -178,6 +184,10 @@ metExploreD3.GraphStyleEdition = {
             .call(drag);
     },
 
+    /*******************************************
+     * Resize an image and any associated resize handles so that they correspond to the dimension of their parent element
+     * @param {} image : The g element containing the image to resize
+     */
     updateImageDimensions : function(image) {
         var imgWidth = image.attr("width");
         var imgHeight = image.attr("height");
@@ -633,6 +643,12 @@ metExploreD3.GraphStyleEdition = {
         //
         metExploreD3.GraphCaption.drawCaptionEditMode();
     },
+    /*******************************************
+     * Compute path of an edge belonging to cycle
+     * @param {} startNode : The node at the start of the path
+     * @param {} link : The link between the two nodes
+     * @param {} endNode : The node at the end of the path
+     */
     computePathCycleArc : function (startNode, link, endNode) {
         var path = "";
         link.each(function (d) {
@@ -652,6 +668,13 @@ metExploreD3.GraphStyleEdition = {
         });
         return path;
     },
+    /*******************************************
+     * Compute path of an edge so that the axe of the reaction is horizontal
+     * @param {} startNode : The node at the start of the path
+     * @param {} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction
+     * @param {} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction
+     * @param {} endNode : The node at the end of the path
+     */
     computePathHorizontal : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -752,6 +775,13 @@ metExploreD3.GraphStyleEdition = {
         }
         return path;
     },
+    /*******************************************
+     * Compute path of an edge so that the axe of the reaction is vertical
+     * @param {} startNode : The node at the start of the path
+     * @param {} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction
+     * @param {} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction
+     * @param {} endNode : The node at the end of the path
+     */
     computePathVertical : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
