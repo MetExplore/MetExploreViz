@@ -835,7 +835,7 @@ metExploreD3.GraphPanel = {
                 var nodesData = networkDataViz.getNodes();
 				nodesData.forEach(function(node) {
 					metExploreD3.GraphStyleEdition.setStartingStyle(node);
-				})
+				});
                 // Fin Ajout
 				endFunc();
 			}

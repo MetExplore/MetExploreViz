@@ -479,6 +479,63 @@ metExploreD3.GraphStyleEdition = {
             if (node.labelFont.fontTransform) { selection.attr("transform", node.labelFont.fontTransform); }
         }
     },
+    setStartingImageStyle : function (node) {
+        //gestion undefined à prendre en compte
+        if (node.imagePosition) {
+            var selection = d3.select("#viz").select("#D3viz").select("#graphComponent")
+                .selectAll("g.node")
+                .filter(function (d) {
+                    return d.getId() == node.getId();
+                })
+                .select(".imageNode");
+            var imgWidth = selection.attr("width");
+            var imgHeight = selection.attr("height");
+            if (node.imagePosition.imageX) { selection.attr("x", node.imagePosition.imageX); }
+            if (node.imagePosition.imageY) { selection.attr("y", node.imagePosition.imageY); }
+            if (node.imagePosition.imageWidth) {
+                selection.attr("width", node.imagePosition.imageWidth);
+                selection.attr("height", node.imagePosition.imageWidth * imgHeight / imgWidth);
+            }
+            if (node.imagePosition.imageTransform) { selection.attr("transform", node.imagePosition.imageTransform); }
+            metExploreD3.GraphStyleEdition.updateImageDimensions(selection);
+        }
+    },
+    createLabelStyleObject : function (node) {
+        var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(d){return d.getId()==node.getId();})
+            .select("text");
+        var labelStyle = {
+            font : nodeLabel.style("font-family"),
+            fontSize : nodeLabel.style("font-size"),
+            fontBold : nodeLabel.style("font-weight"),
+            fontItalic : nodeLabel.style("font-style"),
+            fontUnderline : nodeLabel.style("text-decoration-line"),
+            fontOpacity : nodeLabel.attr("opacity"),
+            fontX : nodeLabel.attr("x"),
+            fontY : nodeLabel.attr("y"),
+            fontTransform : nodeLabel.attr("transform")
+        };
+        return labelStyle;
+    },
+    createImageStyleObject : function (node) {
+        var nodeImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(d){return d.getId()==node.getId();})
+            .select(".imageNode");
+        if (!nodeImage.empty()) {
+            var imageStyle = {
+                imageX: nodeImage.attr("x"),
+                imageY: nodeImage.attr("y"),
+                imageWidth: nodeImage.attr("width"),
+                imageTransform: nodeImage.attr("transform")
+            };
+            return imageStyle;
+        }
+        else {
+            return undefined;
+        }
+    },
 
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction
@@ -983,24 +1040,6 @@ metExploreD3.GraphStyleEdition = {
 
         return [centroidSourceX, centroidSourceY, centroidTargetX, centroidTargetY];
     },
-    createLabelStyleObject : function (node) {
-        var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
-            .select("text");
-        var labelStyle = {
-            font : nodeLabel.style("font-family"),
-            fontSize : nodeLabel.style("font-size"),
-            fontBold : nodeLabel.style("font-weight"),
-            fontItalic : nodeLabel.style("font-style"),
-            fontUnderline : nodeLabel.style("text-decoration-line"),
-            fontOpacity : nodeLabel.attr("opacity"),
-            fontX : nodeLabel.attr("x"),
-            fontY : nodeLabel.attr("y"),
-            fontTransform : nodeLabel.attr("transform")
-        };
-        return labelStyle;
-    },
     mapImageToNode : function(fileList, arg){
         var listNames = [];
         for (var i=0; i<fileList.length; i++){
@@ -1053,6 +1092,7 @@ metExploreD3.GraphStyleEdition = {
                     metExploreD3.GraphStyleEdition.applyEventOnImage(this.node.select(".imageNode"));
                     this.node.selectAll(".imageNode")
                         .each(function(d){
+                            metExploreD3.GraphStyleEdition.setStartingImageStyle(d);
                             this.parentNode.parentNode.appendChild(this.parentNode);
                         });
                 };

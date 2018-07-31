@@ -1443,8 +1443,11 @@ metExploreD3.GraphUtils = {
 					   	}
 
 					   	// Ajout
-						//console.log(node);
 				    	networkJSON+="\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node))+",";
+                        var imagePosition = metExploreD3.GraphStyleEdition.createImageStyleObject(node);
+                        if (imagePosition != undefined) {
+                            networkJSON += "\"imagePosition\":" + JSON.stringify(imagePosition) + ",";
+                        }
 						// Fin Ajout
 					   	
 					   	if(node.x!=undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
