@@ -2650,11 +2650,14 @@ metExploreD3.GraphNetwork = {
     * @param {} panel :panel where node must be duplicated
     */
     duplicateSideCompound : function(theNodeElement, panel){
+    	// Ajout
+        metExploreD3.GraphStyleEdition.removeCycleContainingNode(theNodeElement);
+    	// Fin Ajout
 		var session = _metExploreViz.getSessionById(panel);
 
 		var vis = d3.select("#"+panel).select("#D3viz");
-		
-		if(session!=undefined) 
+
+		if(session!=undefined)
 		{
 			// We stop the previous animation
 			if(session.isLinked()){
@@ -2662,35 +2665,35 @@ metExploreD3.GraphNetwork = {
 				if(session!=undefined)
 				{
 					var force = session.getForce();
-					if(force!=undefined)  
-					{		
+					if(force!=undefined)
+					{
 						if(metExploreD3.GraphNetwork.isAnimated("viz")== "true" || metExploreD3.GraphNetwork.isAnimated("viz")==true)
 							force.resume();
-					}	
+					}
 				}
 			}
 			else
-			{	
-				
+			{
+
 				var force = session.getForce();
-				if(force!=undefined)  
+				if(force!=undefined)
 				{
 					if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" || metExploreD3.GraphNetwork.isAnimated(panel)==true)
 						force.resume();
-											
+
 				}
 			}
 		}
 		metExploreD3.GraphNetwork.duplicateANode(theNodeElement, panel);
 
-		
-		if(session!=undefined)  
+
+		if(session!=undefined)
 		{
-			if(force!=undefined)  
-			{		
+			if(force!=undefined)
+			{
 				if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" || metExploreD3.GraphNetwork.isAnimated(panel)==true)
 					force.start();
-			}	
+			}
 		}
 		metExploreD3.GraphNetwork.initCentroids();
 	},

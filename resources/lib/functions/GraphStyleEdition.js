@@ -1613,6 +1613,7 @@ metExploreD3.GraphStyleEdition = {
     drawMetaboliteCycle: function (cycle) {
         // check if drawing this cycle will conflict with other already drawn cycle
         var alreadyDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+        var cycleToRemoveIndex;
         for (var i=0; i<alreadyDrawnCycles.length; i++){
             var test = false;
             for (var j=0; j<alreadyDrawnCycles[i].length; j++) {
@@ -1625,8 +1626,10 @@ metExploreD3.GraphStyleEdition = {
                 for (var j=0; j<alreadyDrawnLinks.length; j++) {
                     alreadyDrawnLinks[j].partOfCycle = false;
                 }
+                cycleToRemoveIndex = i;
             }
         }
+        alreadyDrawnCycles.splice(cycleToRemoveIndex, 1);
         alreadyDrawnCycles.push(cycle);
 
         metExploreD3.GraphStyleEdition.removeHighlightCycle(cycle);
@@ -1738,6 +1741,55 @@ metExploreD3.GraphStyleEdition = {
         }
         metExploreD3.GraphNode.tick('viz');
         metExploreD3.GraphLink.tick('viz');
+    },
+    removeCycleContainingNode: function (node) {
+        console.log(node);
+        // check if the nodes is part of a drawn cycle
+        var alreadyDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+        var cycleToRemoveIndex = [];
+        for (var i=0; i<alreadyDrawnCycles.length; i++){
+            var test = false;
+            for (var j=0; j<alreadyDrawnCycles[i].length; j++) {
+                if (node.id === alreadyDrawnCycles[i][j]){
+                    test = true;
+                }
+            };
+            if (test === true){
+                var alreadyDrawnLinks = metExploreD3.GraphStyleEdition.getLinksFromCycle(alreadyDrawnCycles[i]);
+                for (var j=0; j<alreadyDrawnLinks.length; j++) {
+                    alreadyDrawnLinks[j].partOfCycle = false;
+                }
+                cycleToRemoveIndex.push(i);
+            }
+        }
+        for (var i=0; i<cycleToRemoveIndex; i++){
+            alreadyDrawnCycles.splice(cycleToRemoveIndex[i], 1);
+        }
+        metExploreD3.GraphNode.tick('viz');
+        metExploreD3.GraphLink.tick('viz');
+    },
+    checkIfPartOfCycle: function (node, panel) {
+        var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .filter(function (d) {
+                if (d.getSource() === node || d.getTarget() === node){
+                    return (d.partOfCycle === true);
+                }
+            });
+        return !links.empty();
+    },
+    checkIfSelectionIsPartOfCycle : function (panel) {
+        var result = false;
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
+            .filter(function(d) {
+                return d.isSelected() && d.getBiologicalType()=="metabolite";
+            })
+            .filter(function(d){
+                if (this.getAttribute("duplicated")==undefined) { return true; }
+                else { return !this.getAttribute("duplicated"); }
+            }).each(function (d) {
+                if (metExploreD3.GraphStyleEdition.checkIfPartOfCycle(d, panel)) { result = true; }
+            });
+        return result;
     },
     discretizeFluxRange: function (condition) {
         // Create the distribution table for the flux values
