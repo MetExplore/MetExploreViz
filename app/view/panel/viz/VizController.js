@@ -244,7 +244,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 text: 'Going through this node',
                                 handler: function () {
                                     var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles([theNode]);
-                                    console.log(longestCycles);
                                     if (longestCycles.length >= 1) {
                                         metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
                                     }

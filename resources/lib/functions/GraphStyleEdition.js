@@ -537,8 +537,6 @@ metExploreD3.GraphStyleEdition = {
         var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
-                //console.log(node);
-                //console.log(this);
                 return node.getBiologicalType()=="reaction";
             });
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
@@ -659,15 +657,11 @@ metExploreD3.GraphStyleEdition = {
                 }
                 d3.select(this).attr("d", path)
                     .attr("fill", "none")
-                    //.style("stroke", 'black')
-                    //.style("stroke-width", 0.5)
                     .style("opacity", 1);
-                //console.log(link.getTarget());
             }).filter(function (link) {
                 return link.getTarget().getReactionReversibility();
             }).attr("marker-end", "url(#markerEntry)");
             exitingLinks.each(function (link) {
-                //var path = metExploreD3.GraphFunction.computePath(node, exitingX, exitingY, link, link.getTarget());
                 var path;
                 if (link.partOfCycle === true){
                     path = d3.select(this).attr("d");
@@ -684,8 +678,6 @@ metExploreD3.GraphStyleEdition = {
                 }
                 d3.select(this).attr("d", path)
                     .attr("fill", "none")
-                    //.style("stroke", 'black')
-                    //.style("stroke-width", 0.5)
                     .style("opacity", 1);
             }).attr("marker-end", "url(#markerExit)");
         });
@@ -1161,11 +1153,7 @@ metExploreD3.GraphStyleEdition = {
         }
 
         // The cycle enumeration algorithm itself
-        var t0 = performance.now();
         var result = metExploreD3.GraphStyleEdition.HawickJamesAlgorithm(graph, flag);
-        var t1 = performance.now();
-        console.log("Call to do Algo took " + (t1 - t0) + " milliseconds.");
-        //console.log("Nb of cycle" + result.length);
 
         // From the cycles as array of arbitrary number, get back the cycles as array of vertex id
         var cycleList = [];
@@ -1192,7 +1180,6 @@ metExploreD3.GraphStyleEdition = {
         }
 
         var validCyclesList = metExploreD3.GraphStyleEdition.removeInvalidCycles(listSelectedNodesCycles);
-        console.log(validCyclesList);
 
         // Remove duplicated cycles (cycles)
         var removedDuplicateCycle = [];
@@ -1227,14 +1214,10 @@ metExploreD3.GraphStyleEdition = {
         return removedDuplicateCycle;
     },
     findLongestCycles: function (listNodes) {
-        var t0 = performance.now();
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
         var allCycles = metExploreD3.GraphStyleEdition.findAllCycles(listNodes);
-        var t1 = performance.now();
-        console.log("Call to get all cycles with links by length took " + (t1 - t0) + " milliseconds.");
         // Find the longest valid metabolic cycles by calling the function on the array of the longest cycles,
         // then, if no valid cycles have been found call the function on the array of the second longest cycles and so on
-        var t0 = performance.now();
         var longestCycles = [];
         var max = 0;
         for (var i=0; i<allCycles.length; i++){
@@ -1247,20 +1230,13 @@ metExploreD3.GraphStyleEdition = {
                 longestCycles.push(allCycles[i]);
             }
         }
-        var t1 = performance.now();
-        console.log("Call to get longest took " + (t1 - t0) + " milliseconds.");
-        console.log(longestCycles);
         return longestCycles;
     },
     findShortestCycles: function (listNodes) {
-        var t0 = performance.now();
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
         var allCycles = metExploreD3.GraphStyleEdition.findAllCycles(listNodes);
-        var t1 = performance.now();
-        console.log("Call to get all cycles with links by length took " + (t1 - t0) + " milliseconds.");
         // Find the longest valid metabolic cycles by calling the function on the array of the longest cycles,
         // then, if no valid cycles have been found call the function on the array of the second longest cycles and so on
-        var t0 = performance.now();
         var shortestCycles = [];
         var min = (allCycles[0]) ? allCycles[0].length : 0;
         for (var i=0; i<allCycles.length; i++){
@@ -1273,9 +1249,6 @@ metExploreD3.GraphStyleEdition = {
                 shortestCycles.push(allCycles[i]);
             }
         }
-        var t1 = performance.now();
-        console.log("Call to get shortest took " + (t1 - t0) + " milliseconds.");
-        console.log(shortestCycles);
         return shortestCycles;
     },
     removeInvalidCycles : function (cyclesList) {
@@ -1300,7 +1273,6 @@ metExploreD3.GraphStyleEdition = {
                     verticesPairsToLinks[targetId][sourceId] = d;
                 }
             });
-        console.log(verticesPairsToLinks);
 
         // Get the links that are part of the cycle from the vertex id
         var cyclesLinksList = [];
@@ -1321,9 +1293,6 @@ metExploreD3.GraphStyleEdition = {
             }
             cyclesLinksList.push(cycleLinks);
         }
-
-        console.log(cyclesList);
-        console.log(cyclesLinksList);
 
         var listValidCycles = [];
         for (var i=0; i<cyclesList.length; i++) {
@@ -1391,11 +1360,10 @@ metExploreD3.GraphStyleEdition = {
                 return (cycleLinks.includes(d));
             }).style("stroke", "black")
             .style("stroke-width", "0.5");
-            //.style("pointerEvents", "auto");
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
             .filter(function (d) {
                 return (nodesCycle.includes(d));
-            });//.style("pointer-events", "auto");
+            });
     },
 
     /*******************************************
@@ -1439,7 +1407,6 @@ metExploreD3.GraphStyleEdition = {
     },
     HawickJamesAlgorithm: function(graph, flag){
         // Variables initialisation
-        //console.log(graph);
         var nVertices = graph.length;
         var start = 0;
         var Ak = graph;
@@ -1544,13 +1511,12 @@ metExploreD3.GraphStyleEdition = {
             circuit(start);
             start = start + 1;
         }
-        //console.log(result);
         return result;
     },
     drawMetaboliteCycle: function (cycle) {
         // check if drawing this cycle will conflict with other already drawn cycle
         var alreadyDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
-        var cycleToRemoveIndex;
+        var cycleToRemoveIndex = false;
         for (var i=0; i<alreadyDrawnCycles.length; i++){
             var test = false;
             for (var j=0; j<alreadyDrawnCycles[i].length; j++) {
@@ -1566,7 +1532,9 @@ metExploreD3.GraphStyleEdition = {
                 cycleToRemoveIndex = i;
             }
         }
-        alreadyDrawnCycles.splice(cycleToRemoveIndex, 1);
+        if (cycleToRemoveIndex !== false) {
+            alreadyDrawnCycles.splice(cycleToRemoveIndex, 1);
+        }
         alreadyDrawnCycles.push(cycle);
 
         metExploreD3.GraphStyleEdition.removeHighlightCycle(cycle);
@@ -1648,28 +1616,14 @@ metExploreD3.GraphStyleEdition = {
             cycleLinks[i].partOfCycle = true;
             cycleLinks[i].cycleRadius = radius;
             if (cycleLinks[i].getSource().id === cycle[i]){
-                //cycleLinks[i].arcDirection = "sameAsCycle";
                 cycleLinks[i].arcDirection = (direction === "clockwise") ? "clockwise" : "counter-clockwise";
             }
             else if (cycleLinks[i].getTarget().id === cycle[i]){
-                //cycleLinks[i].arcDirection = "counterCycle";
                 cycleLinks[i].arcDirection = (direction === "clockwise") ? "counter-clockwise" : "clockwise";
 
             }
         }
-        /*var cycleLinksSelection = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
-            .filter(function (d) {
-                return (cycleLinks.includes(d));
-            }).each (function (d) {
-                d.partOfCycle = true;
-                d.cycleRadius = radius;
-                if (direction === "clockwise"){
-                    d.arcDirection = (d.arcDirection === "sameAsCycle") ? "clockwise" : "counter-clockwise";
-                }
-                else if (direction === "counter-clockwise"){
-                    d.arcDirection = (d.arcDirection === "sameAsCycle") ? "counter-clockwise" : "clockwise";
-                }
-            });*/
+
         for (var i=0; i<cycle.length; i++){
             nodesList[i].each(function (d) {
                 d.setLocked(true);
@@ -1680,7 +1634,6 @@ metExploreD3.GraphStyleEdition = {
         metExploreD3.GraphLink.tick('viz');
     },
     removeCycleContainingNode: function (node) {
-        console.log(node);
         // check if the nodes is part of a drawn cycle
         var alreadyDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
         var cycleToRemoveIndex = [];
@@ -1699,7 +1652,7 @@ metExploreD3.GraphStyleEdition = {
                 cycleToRemoveIndex.push(i);
             }
         }
-        for (var i=0; i<cycleToRemoveIndex; i++){
+        for (var i=0; i<cycleToRemoveIndex.length; i++){
             alreadyDrawnCycles.splice(cycleToRemoveIndex[i], 1);
         }
         metExploreD3.GraphNode.tick('viz');
