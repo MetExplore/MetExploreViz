@@ -532,16 +532,16 @@ metExploreD3.GraphStyleEdition = {
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction
      */
-    bundleLinks : function () {
+    bundleLinks : function (panel) {
         var reactionStyle = metExploreD3.getReactionStyle();
-        var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
+        var reactions = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
                 return node.getBiologicalType()=="reaction";
             });
-        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+        var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link");
         // Create arrowhead marker
-        d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent").append("defs").append("marker")
             .attr("id", "markerExit")
             .attr("viewBox", "-10 -5 20 20")
             .attr("refX", 9).attr("refY", 6)
@@ -551,7 +551,7 @@ metExploreD3.GraphStyleEdition = {
             .attr("fill", "green").attr("stroke", "black")
             .append("path")
             .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
-        d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs").append("marker")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent").append("defs").append("marker")
             .attr("id", "markerEntry")
             .attr("viewBox", "-10 -5 20 20")
             .attr("refX", 9).attr("refY", 6)

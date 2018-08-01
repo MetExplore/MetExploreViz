@@ -1863,8 +1863,8 @@ metExploreD3.GraphLink = {
         d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
             .attr("d", metExploreD3.GraphNode.groupPath)
             .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
-        if (metExploreD3.GraphStyleEdition.curvedPath == true && panel == "viz"){
-            metExploreD3.GraphStyleEdition.bundleLinks();
+        if (metExploreD3.GraphStyleEdition.curvedPath == true){
+            metExploreD3.GraphStyleEdition.bundleLinks(panel);
         }
         else {
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
