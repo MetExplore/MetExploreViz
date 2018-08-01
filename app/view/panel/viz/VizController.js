@@ -444,6 +444,13 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             handler: function () {
                                 metExploreD3.GraphStyleEdition.displayMappedImage(theNode);
                             }
+                        },{
+                            text: 'Unfix nodes in cycle',
+                            reference: 'unfixCycle',
+                            hidden: false,
+                            handler: function () {
+                                metExploreD3.GraphStyleEdition.removeCycleContainingNode(theNode);
+                            }
                         }]
                     });
 					//Fin Ajout
