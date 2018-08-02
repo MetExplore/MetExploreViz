@@ -261,14 +261,14 @@ metExploreD3.GraphStyleEdition = {
      */
     changeAllFontSize : function (text, targets) {
         // Change the font size of all the targeted nodes labels
-        targets = (typeof targets !== 'undefined') ? targets : 0;
+        targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
-                if (targets == 0){
+                if (targets === "all"){
                     return true;
                 }
-                else if (targets == "selection"){
+                else if (targets === "selection"){
                     return node.isSelected();
                 }
                 else {
@@ -299,14 +299,14 @@ metExploreD3.GraphStyleEdition = {
      */
     changeAllFontType : function (text, targets) {
         // Change the font of all the targeted nodes labels
-        targets = (typeof targets !== 'undefined') ? targets : 0;
+        targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
-                if (targets == 0){
+                if (targets === "all"){
                     return true;
                 }
-                else if (targets == "selection"){
+                else if (targets === "selection"){
                     return node.isSelected();
                 }
                 else {
@@ -342,15 +342,15 @@ metExploreD3.GraphStyleEdition = {
      */
     changeAllFontBold : function (bool, targets) {
         // Change the font boldness of all the targeted nodes labels
-        targets = (typeof targets !== 'undefined') ? targets : 0;
+        targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
         var boldOrNot = (bool) ? "bold" : "normal";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
-                if (targets == 0){
+                if (targets === "all"){
                     return true;
                 }
-                else if (targets == "selection"){
+                else if (targets === "selection"){
                     return node.isSelected();
                 }
                 else {
@@ -386,15 +386,15 @@ metExploreD3.GraphStyleEdition = {
      */
     changeAllFontItalic : function (bool, targets) {
         // Italicize the font of all the targeted nodes labels or revert to normal
-        targets = (typeof targets !== 'undefined') ? targets : 0;
+        targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
         var italicOrNot = (bool) ? "italic" : "normal";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
-                if (targets == 0){
+                if (targets === "all"){
                     return true;
                 }
-                else if (targets == "selection"){
+                else if (targets === "selection"){
                     return node.isSelected();
                 }
                 else {
@@ -430,15 +430,15 @@ metExploreD3.GraphStyleEdition = {
      */
     changeAllFontUnderline : function (bool, targets) {
         // Underline the font of all the targeted nodes labels or revert to normal
-        targets = (typeof targets !== 'undefined') ? targets : 0;
+        targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
         var underlineOrNot = (bool) ? "underline" : "none";
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
-                if (targets == 0){
+                if (targets === "all"){
                     return true;
                 }
-                else if (targets == "selection"){
+                else if (targets === "selection"){
                     return node.isSelected();
                 }
                 else {

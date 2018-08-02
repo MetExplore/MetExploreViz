@@ -9,8 +9,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.form.selectConditionForm.SelectConditionForm",
-        "metExploreViz.view.form.captionForm.CaptionForm",
-        'metExploreViz.view.form.updateStyleForm.UpdateStyleForm'
+        "metExploreViz.view.form.captionForm.CaptionForm"
     ],
  	controller: "panel-comparisonSidePanel-comparisonSidePanel",
 	/*requires: ['MetExplore.view.form.V_SelectConditionForm',
