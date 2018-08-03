@@ -113,6 +113,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 					var theNode = metExploreD3.GraphNode.selectNodeData(e.target);
 					var mappedImage = metExploreD3.GraphMapping.selectMappedImages(theNode);
 					var isMetabolite = (theNode.getBiologicalType()=="metabolite");
+					var isPartOfCycle = metExploreD3.GraphFunction.checkIfPartOfCycle(theNode, "viz");
 
                     viz.selectMenu = new Ext.menu.Menu({
                         items : [{
@@ -166,7 +167,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             hidden : !isMetabolite,
                             iconCls:"duplicate-sideCompounds",
                             handler : function(){
-                                if (metExploreD3.GraphStyleEdition.checkIfPartOfCycle(theNode, "viz")){
+                                if (metExploreD3.GraphFunction.checkIfPartOfCycle(theNode, "viz")){
                                     var text = "This node is part of a drawn cycle and duplicationg it will break the cycle. Do you want to proceed ?";
                                     metExploreD3.displayMessageYesNo("Warning", text, function (btn) {
                                         if (btn === "yes") { metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz"); }
@@ -179,7 +180,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             hidden : false,
                             iconCls:"duplicate-sideCompounds",
                             handler : function(){
-                                if (metExploreD3.GraphStyleEdition.checkIfSelectionIsPartOfCycle("viz")){
+                                if (metExploreD3.GraphFunction.checkIfSelectionIsPartOfCycle("viz")){
                                     var text = "Some of the selected nodes are part of a drawn cycle and duplicationg them will break the cycle. Do you want to proceed ?";
                                     metExploreD3.displayMessageYesNo("Warning", text, function (btn) {
                                         if (btn === "yes") { metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); }
@@ -240,9 +241,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             menu: [{
                                 text: 'Going through this node',
                                 handler: function () {
-                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles([theNode]);
+                                    var longestCycles = metExploreD3.GraphFunction.findLongestCycles([theNode]);
                                     if (longestCycles.length >= 1) {
-                                        metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
+                                        metExploreD3.GraphFunction.highlightCycle(longestCycles[0]);
                                     }
                                     if (longestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
@@ -261,9 +262,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                             selectedNodes.push(node);
                                         }
                                     });
-                                    var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles(selectedNodes);
+                                    var longestCycles = metExploreD3.GraphFunction.findLongestCycles(selectedNodes);
                                     if (longestCycles.length >= 1) {
-                                        metExploreD3.GraphStyleEdition.highlightCycle(longestCycles[0]);
+                                        metExploreD3.GraphFunction.highlightCycle(longestCycles[0]);
                                     }
                                     if (longestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
@@ -276,9 +277,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             menu: [{
                                 text: 'Going through this node',
                                 handler: function () {
-                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles([theNode]);
+                                    var shortestCycles = metExploreD3.GraphFunction.findShortestCycles([theNode]);
                                     if (shortestCycles.length >= 1) {
-                                        metExploreD3.GraphStyleEdition.highlightCycle(shortestCycles[0]);
+                                        metExploreD3.GraphFunction.highlightCycle(shortestCycles[0]);
                                     }
                                     if (shortestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
@@ -297,9 +298,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                             selectedNodes.push(node);
                                         }
                                     });
-                                    var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles(selectedNodes);
+                                    var shortestCycles = metExploreD3.GraphFunction.findShortestCycles(selectedNodes);
                                     if (shortestCycles.length >= 1) {
-                                        metExploreD3.GraphStyleEdition.highlightCycle(shortestCycles[0]);
+                                        metExploreD3.GraphFunction.highlightCycle(shortestCycles[0]);
                                     }
                                     if (shortestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
@@ -445,11 +446,11 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 metExploreD3.GraphMapping.displayMappedImage(theNode);
                             }
                         },{
-                            text: 'Unfix nodes in cycle',
+                            text: 'Remove cycle drawing',
                             reference: 'unfixCycle',
-                            hidden: false,
+                            hidden: (!isPartOfCycle || !metExploreD3.GraphStyleEdition.editMode),
                             handler: function () {
-                                metExploreD3.GraphStyleEdition.removeCycleContainingNode(theNode);
+                                metExploreD3.GraphFunction.removeCycleContainingNode(theNode);
                             }
                         }]
                     });

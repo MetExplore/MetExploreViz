@@ -2829,7 +2829,7 @@ metExploreD3.GraphNetwork = {
     */
     duplicateSideCompound : function(theNodeElement, panel){
     	// Ajout
-        metExploreD3.GraphStyleEdition.removeCycleContainingNode(theNodeElement);
+        metExploreD3.GraphFunction.removeCycleContainingNode(theNodeElement);
     	// Fin Ajout
 		var session = _metExploreViz.getSessionById(panel);
 
