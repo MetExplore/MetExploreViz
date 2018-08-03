@@ -26,7 +26,7 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
                 var curveBundling = view.lookupReference('EdgeBundling').getValue();
                 if (curveBundling == true) {
                     metExploreD3.GraphStyleEdition.curvedPath = true;
-                    metExploreD3.GraphStyleEdition.bundleLinks("viz");
+                    metExploreD3.GraphLink.bundleLinks("viz");
                 }
                 else {
                     metExploreD3.GraphStyleEdition.curvedPath = false;
