@@ -10,7 +10,7 @@ Ext.define('metExploreViz.view.button.buttonImportImage.ButtonImportImageControl
         view.on({
             change: function (filefield, newFileName, oldFileName) {
                 var fileList = filefield.getFileList();
-                metExploreD3.GraphStyleEdition.mapImageToNode(fileList, view.target);
+                metExploreD3.GraphMapping.mapImageToNode(fileList, view.target);
             }
         });
     }

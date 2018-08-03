@@ -111,7 +111,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
 
 					var theNode = metExploreD3.GraphNode.selectNodeData(e.target);
-					var mappedImage = metExploreD3.GraphStyleEdition.selectMappedImages(theNode);
+					var mappedImage = metExploreD3.GraphMapping.selectMappedImages(theNode);
 					var isMetabolite = (theNode.getBiologicalType()=="metabolite");
 
                     viz.selectMenu = new Ext.menu.Menu({
@@ -442,7 +442,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             reference: 'displayMappedImage',
                             hidden: (mappedImage.empty()) ? true : false,
                             handler: function () {
-                                metExploreD3.GraphStyleEdition.displayMappedImage(theNode);
+                                metExploreD3.GraphMapping.displayMappedImage(theNode);
                             }
                         },{
                             text: 'Unfix nodes in cycle',

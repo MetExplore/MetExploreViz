@@ -102,105 +102,6 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Add element in the corner of an image that can be used to resize that image
-     * @param {} image : The g element containing the image on which to add the element
-     */
-    applyResizeHandle : function (image) {
-        var imgWidth = Number(image.attr("width"));
-        var imgHeight = Number(image.attr("height"));
-        var deltaGX = 0;
-        var oldX = 0;
-        var oldY = 0;
-        var limitX = 0;
-
-        var drag = d3.behavior.drag().on("dragstart", function () {
-            d3.event.sourceEvent.stopPropagation();
-            imgWidth = Number(image.attr("width"));
-            imgHeight = Number(image.attr("height"));
-            oldX = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
-            oldY = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
-            limitX = oldX + imgWidth;
-            d3.selectAll("#D3viz").style("cursor", "move");
-        }).on('drag', function () {
-            var newWidth = 0;
-            var newHeight = 0;
-            if (d3.select(this).attr("class") === "LL" || d3.select(this).attr("class") === "UL") {
-                var tmpWidth = d3.select(this.parentNode).attr("width");
-                newWidth = tmpWidth - (d3.event.x + deltaGX);
-                var transform = d3.select(this.parentNode).attr("transform");
-                var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
-                var x = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
-                var y = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
-                var newX = x + d3.event.x + deltaGX;
-                newX = Math.min(newX, limitX - 8);
-                var translate = "translate(" + newX + "," + y + ")";
-                d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
-            }
-            else {
-                newWidth = d3.event.x - deltaGX;
-            }
-            newWidth = Math.max(newWidth, 8);
-            newHeight = imgHeight * (newWidth/imgWidth);
-            newWidth = (newWidth > 0) ? newWidth : 0;
-            newHeight = (newHeight > 0) ? newHeight : 0;
-            image.attr("width", newWidth);
-            image.attr("height", newHeight);
-            if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
-                var transform = d3.select(this.parentNode).attr("transform");
-                var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
-                var x = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
-                var y = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
-                var newY =  oldY - (newHeight - imgHeight);
-                var translate = "translate(" + x + "," + newY + ")";
-                d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
-            }
-            metExploreD3.GraphStyleEdition.updateImageDimensions(image);
-        }).on("dragend", function () {
-            d3.selectAll("#D3viz").style("cursor", "default");
-        });
-
-        image.append("rect").attr("class", "W1").attr("width", 2).attr("height", imgHeight).attr("fill", "grey").attr("opacity", 0.5);
-        image.append("rect").attr("class", "W2").attr("width", 2).attr("height", imgHeight).attr("fill", "grey").attr("opacity", 0.5)
-            .attr("transform", "translate(" + (imgWidth - 2) + ",0)");
-        image.append("rect").attr("class", "H1").attr("width", imgWidth).attr("height", 2).attr("fill", "grey").attr("opacity", 0.5);
-        image.append("rect").attr("class", "H2").attr("width", imgWidth).attr("height", 2).attr("fill", "grey").attr("opacity", 0.5)
-            .attr("transform", "translate(0," + (imgHeight - 2) + ")");
-        image.append("rect").attr("class", "UL").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
-            .call(drag);
-        image.append("rect").attr("class", "UR").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
-            .attr("transform", "translate(" + (imgWidth - 4) + ",0)")
-            .call(drag);
-        image.append("rect").attr("class", "LL").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
-            .attr("transform", "translate(0," + (imgHeight - 4) + ")")
-            .call(drag);
-        image.append("rect").attr("class", "LR") .attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
-            .attr("transform", "translate(" + (imgWidth - 4) + "," + (imgHeight - 4) + ")")
-            .call(drag);
-    },
-
-    /*******************************************
-     * Resize an image and any associated resize handles so that they correspond to the dimension of their parent element
-     * @param {} image : The g element containing the image to resize
-     */
-    updateImageDimensions : function(image) {
-        var imgWidth = image.attr("width");
-        var imgHeight = image.attr("height");
-        // Start test
-        imgWidth = (imgWidth > 0) ? imgWidth : 0;
-        imgHeight = (imgHeight > 0) ? imgHeight : 0;
-        // End test
-        image.select(".mappingImage").attr("width", imgWidth);
-        image.select(".mappingImage").attr("height", imgHeight);
-        image.select(".UR").attr("transform", "translate(" + (imgWidth - 4) + ", 0)");
-        image.select(".LL").attr("transform", "translate(0, " + (imgHeight - 4) + ")");
-        image.select(".LR").attr("transform", "translate(" + (imgWidth - 4) + ", " + (imgHeight - 4) + ")");
-        image.select(".W1").attr("height", imgHeight);
-        image.select(".W2").attr("height", imgHeight).attr("transform", "translate(" + (imgWidth - 2) + ",0)");
-        image.select(".H1").attr("width", imgWidth);
-        image.select(".H2").attr("width", imgWidth).attr("transform", "translate(0," + (imgHeight - 2) + ")");
-    },
-
-    /*******************************************
      * Change text of node label
      * @param {} node : The node whose label will be modified
      * @param {} panel : The panel where the action is launched
@@ -499,26 +400,7 @@ metExploreD3.GraphStyleEdition = {
             if (node.labelFont.fontTransform) { selection.attr("transform", node.labelFont.fontTransform); }
         }
     },
-    setStartingImageStyle : function (node) {
-        if (node.imagePosition) {
-            var selection = d3.select("#viz").select("#D3viz").select("#graphComponent")
-                .selectAll("g.node")
-                .filter(function (d) {
-                    return d.getId() == node.getId();
-                })
-                .select(".imageNode");
-            var imgWidth = selection.attr("width");
-            var imgHeight = selection.attr("height");
-            if (node.imagePosition.imageX) { selection.attr("x", node.imagePosition.imageX); }
-            if (node.imagePosition.imageY) { selection.attr("y", node.imagePosition.imageY); }
-            if (node.imagePosition.imageWidth) {
-                selection.attr("width", node.imagePosition.imageWidth);
-                selection.attr("height", node.imagePosition.imageWidth * imgHeight / imgWidth);
-            }
-            if (node.imagePosition.imageTransform) { selection.attr("transform", node.imagePosition.imageTransform); }
-            metExploreD3.GraphStyleEdition.updateImageDimensions(selection);
-        }
-    },
+
     createLabelStyleObject : function (node) {
         var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -1029,100 +911,10 @@ metExploreD3.GraphStyleEdition = {
 
         return [centroidSourceX, centroidSourceY, centroidTargetX, centroidTargetY];
     },
-    mapImageToNode : function(fileList, arg){
-        var listNames = [];
-        for (var i=0; i<fileList.length; i++){
-            if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "image/svg+xml"){
-                var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
-                if (listNames.includes(nodeName)){
-                    continue;
-                }
-                listNames.push(nodeName);
-                var urlImage = URL.createObjectURL(fileList[i]);
-                var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
-                    .selectAll("g.node")
-                    .filter(function (d) {
-                        var style = (d.getBiologicalType() === "metabolite") ? metExploreD3.getMetaboliteStyle() : metExploreD3.getReactionStyle();
-                        var label = style.getDisplayLabel(d, style.getLabel());
-                        //var target = (arg === "Name") ? d.name : d.dbIdentifier;
-                        var target = (arg === "Name") ? label : d.dbIdentifier;
-                        return (nodeName === target);
-                    });
-                if (!node.select(".imageNode").empty()){
-                    node.select(".imageNode").remove();
-                }
-                var img = new Image();
-                img.src = urlImage;
-                img.node = node;
-                img.onload = function () {
-                    var imgWidth = this.width;
-                    var imgHeight = this.height;
 
-                    if (imgWidth > 150){
-                        imgHeight = imgHeight * (150/imgWidth);
-                        imgWidth = 150;
-                    }
-                    var offsetX = -imgWidth/2;
-                    this.node.append("g")
-                        .attr("class", "imageNode")
-                        .attr("x", 0)
-                        .attr("y", 0)
-                        .attr("width", imgWidth)
-                        .attr("height", imgHeight)
-                        .attr("opacity", 1)
-                        .attr("transform", "translate(" + offsetX + ",20)");
-                    this.node.selectAll(".imageNode")
-                        .append("image")
-                        .attr("class", "mappingImage")
-                        .attr("href", this.src)
-                        .attr("width", imgWidth)
-                        .attr("height", imgHeight)
-                        .attr("opacity", 1);
-                    metExploreD3.GraphStyleEdition.applyEventOnImage(this.node.select(".imageNode"));
-                    this.node.selectAll(".imageNode")
-                        .each(function(d){
-                            metExploreD3.GraphStyleEdition.setStartingImageStyle(d);
-                            this.parentNode.parentNode.appendChild(this.parentNode);
-                        });
-                };
-            }
-        }
-    },
-    selectMappedImages: function (node) {
-        var selectedImages = d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
-            .select(".mappingImage");
-        return selectedImages;
-    },
-    displayMappedImage: function (node) {
-        var mappedImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("g.node")
-            .filter(function(d){return d.getId() === node.getId();})
-            .select(".imageNode");
-        if (mappedImage.attr("opacity") === '0'){
-            mappedImage.attr("opacity", 1);
-        }
-        else {
-            mappedImage.attr("opacity", 0);
-        }
-    },
-    applyEventOnImage : function (image) {
-        image.on("mouseenter", function () {
-            var mouseleaveEvent = new MouseEvent("mouseleave");
-            this.parentNode.dispatchEvent(mouseleaveEvent);
-        }).on("mouseleave", function () {
-            var mouseenterEvent = new MouseEvent("mouseenter");
-            this.parentNode.dispatchEvent(mouseenterEvent);
-        });
-        var drag = metExploreD3.GraphStyleEdition.createDragBehavior();
-        image.call(drag);
-        metExploreD3.GraphStyleEdition.applyResizeHandle(image);
-
-    },
     /*******************************************
-     * Find all the metabolic cycles in the graph that is shown in the visualisation panel
-     * @param {} node : Optional argument. If a node is given as argument, only the cycle passing through that node will be found.
+     * Find all the metabolic cycles in the graph passing through some nodes that is shown in the visualisation panel
+     * @param {} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
      */
     findAllCycles: function (listNodes) {
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
@@ -1247,6 +1039,11 @@ metExploreD3.GraphStyleEdition = {
 
         return removedDuplicateCycle;
     },
+
+    /*******************************************
+     * Find all the metabolic cycles in the graph that is shown in the visualisation panel
+     * @param {} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
+     */
     findLongestCycles: function (listNodes) {
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
         var allCycles = metExploreD3.GraphStyleEdition.findAllCycles(listNodes);
