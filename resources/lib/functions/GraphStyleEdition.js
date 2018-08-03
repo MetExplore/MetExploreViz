@@ -448,6 +448,33 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("text-decoration-line", underlineOrNot);
     },
+    setAllFontOpacity: function (labelOpacity, flag) {
+        var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var s_ReactionStyle = metExploreD3.getReactionStyle();
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function (node) {
+                if (flag === "all"){
+                    s_MetaboliteStyle.setLabelOpacity(labelOpacity);
+                    s_ReactionStyle.setLabelOpacity(labelOpacity);
+                    return true;
+                }
+                else if (flag === "selection"){
+                    return node.isSelected();
+                }
+                else if (flag === "reaction") {
+                    s_ReactionStyle.setLabelOpacity(labelOpacity);
+                    return node.getBiologicalType() == "reaction";
+                }
+
+                else if (flag === "metabolite") {
+                    s_MetaboliteStyle.setLabelOpacity(labelOpacity);
+                    return node.getBiologicalType() == "metabolite";
+                }
+            })
+            .select("text")
+            .attr("opacity", labelOpacity);
+    },
 
     /*******************************************
      * Apply label style if style data are associated to the node
@@ -1060,6 +1087,13 @@ metExploreD3.GraphStyleEdition = {
                 };
             }
         }
+    },
+    selectMappedImages: function (node) {
+        var selectedImages = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(d){return d.getId()==node.getId();})
+            .select(".mappingImage");
+        return selectedImages;
     },
     displayMappedImage: function (node) {
         var mappedImage = d3.select("#viz").select("#D3viz").select("#graphComponent")

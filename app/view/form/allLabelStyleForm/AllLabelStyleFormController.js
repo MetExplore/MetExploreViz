@@ -18,7 +18,6 @@ Ext.define('metExploreViz.view.form.allLabelStyleForm.AllLabelStyleFormControlle
 
         view.lookupReference('refreshLabelStyle').on({
             click: function () {
-                console.log(targetObjects.rawValue);
                 var flag = targetObjects.rawValue.toLowerCase();
                 var fontType = view.lookupReference('chooseFontType').getValue();
                 var fontSize = view.lookupReference('chooseFontSize').getValue();
@@ -31,31 +30,7 @@ Ext.define('metExploreViz.view.form.allLabelStyleForm.AllLabelStyleFormControlle
                 metExploreD3.GraphStyleEdition.changeAllFontBold(fontBold, flag);
                 metExploreD3.GraphStyleEdition.changeAllFontItalic(fontItalic, flag);
                 metExploreD3.GraphStyleEdition.changeAllFontUnderline(fontUnderline, flag);
-                var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
-                var s_ReactionStyle = metExploreD3.getReactionStyle();
-                d3.select("#viz").select("#D3viz").select("#graphComponent")
-                    .selectAll("g.node")
-                    .filter(function (node) {
-                        if (flag === "all"){
-                            s_MetaboliteStyle.setLabelOpacity(labelOpacity);
-                            s_ReactionStyle.setLabelOpacity(labelOpacity);
-                            return true;
-                        }
-                        else if (flag === "selection"){
-                            return node.isSelected();
-                        }
-                        else if (flag === "reaction") {
-                            s_ReactionStyle.setLabelOpacity(labelOpacity);
-                            return node.getBiologicalType() == "reaction";
-                        }
-
-                        else if (flag === "metabolite") {
-                            s_MetaboliteStyle.setLabelOpacity(labelOpacity);
-                            return node.getBiologicalType() == "metabolite";
-                        }
-                    })
-                    .select("text")
-                    .attr("opacity", labelOpacity);
+                metExploreD3.GraphStyleEdition.setAllFontOpacity(labelOpacity, flag);
             },
             scope: me
         });

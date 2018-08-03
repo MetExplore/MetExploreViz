@@ -111,10 +111,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
 
 					var theNode = metExploreD3.GraphNode.selectNodeData(e.target);
-					var mappedImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
-                        .selectAll("g.node")
-                        .filter(function(d){return d.getId()==theNode.getId();})
-                        .select(".mappingImage");
+					var mappedImage = metExploreD3.GraphStyleEdition.selectMappedImages(theNode);
 					var isMetabolite = (theNode.getBiologicalType()=="metabolite");
 
                     viz.selectMenu = new Ext.menu.Menu({
@@ -135,7 +132,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 handler : function() {
                                     var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
                                     var selectedNodesObj = [];
-                                    networkData = networkVizSessionStore.getD3Data();
+                                    var networkData = networkVizSessionStore.getD3Data();
 
                                     selectedNodesIds.forEach(function(id){
                                         var node = networkData.getNodeById(id);
@@ -255,12 +252,14 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             },{
                                 text: 'Going through all selected nodes',
                                 handler: function () {
+                                    var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
                                     var selectedNodes = [];
-                                    d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-                                        .filter(function (d) {
-                                            return (d.isSelected() === true);
-                                        }).each(function (d) {
-                                            selectedNodes.push(d);
+                                    var networkData = networkVizSessionStore.getD3Data();
+                                    selectedNodesIds.forEach(function(id){
+                                        var node = networkData.getNodeById(id);
+                                        if (node) {
+                                            selectedNodes.push(node);
+                                        }
                                     });
                                     var longestCycles = metExploreD3.GraphStyleEdition.findLongestCycles(selectedNodes);
                                     if (longestCycles.length >= 1) {
@@ -289,12 +288,14 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             },{
                                 text: 'Going through all selected nodes',
                                 handler: function () {
+                                    var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
                                     var selectedNodes = [];
-                                    d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-                                        .filter(function (d) {
-                                            return (d.isSelected() === true);
-                                        }).each(function (d) {
-                                        selectedNodes.push(d);
+                                    networkData = networkVizSessionStore.getD3Data();
+                                    selectedNodesIds.forEach(function(id){
+                                        var node = networkData.getNodeById(id);
+                                        if (node) {
+                                            selectedNodes.push(node);
+                                        }
                                     });
                                     var shortestCycles = metExploreD3.GraphStyleEdition.findShortestCycles(selectedNodes);
                                     if (shortestCycles.length >= 1) {
