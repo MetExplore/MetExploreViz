@@ -61,7 +61,8 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
             xtype:'panel',
             autoScroll: true,
             autoHeight: true,
-			//hidden: true,
+			collapsed: true,
+			hidden: true,
             items:[{
                 xtype:'button',
                 text:'Draw Cycle',

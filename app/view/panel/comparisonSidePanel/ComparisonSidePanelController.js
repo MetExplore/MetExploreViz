@@ -56,6 +56,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
     },
 
 	listCycles: function (cycles) {
+	    this.lookupReference('cycleDetection').setVisible(true);
         this.lookupReference('cycleDetectionPanel').removeAll(true);
         if (cycles.length > 0) {
             for (var i = 0; i < cycles.length; i++) {
@@ -81,6 +82,9 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
             }
             this.getView().expand();
             this.lookupReference('cycleDetection').expand();
+            Ext.getCmp('selectConditionForm').collapsed = true;
+            Ext.getCmp('captionFormPathways').collapsed = true;
+            Ext.getCmp('captionFormCompartments').collapsed = true;
             this.lookupReference('buttonDrawCycle').show();
             this.lookupReference('buttonHideCycle').show();
         }
