@@ -62,6 +62,10 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								iconCls:"lock_font_awesome",
 								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
 							},{
+                                text : 'Unfix selected nodes',
+                                hidden : false,
+                                handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
+                            },{
 								text : 'Duplicate selected nodes as side compounds',
 								hidden : false,
 								iconCls:"duplicate-sideCompounds",
@@ -236,6 +240,10 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             handler: function () {
                                 metExploreD3.GraphNode.fixSelectedNode("viz")
                             }
+                        },{
+                            text : 'Unfix selected nodes',
+                            hidden : false,
+                            handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
                         }, {
                             text: 'Detect longest cycles',
                             menu: [{

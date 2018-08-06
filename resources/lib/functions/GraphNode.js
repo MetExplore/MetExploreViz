@@ -2590,9 +2590,17 @@ metExploreD3.GraphNode = {
 				node.setLocked(true);
 				node.fixed=node.isLocked();
 			})		
-	}
+	},
+	unfixSelectedNode : function () {
+        metExploreD3.GraphNode.node
+            .filter(function(node){ return node.isSelected();})
+            .each(function(node){
+                node.setLocked(false);
+                node.fixed=node.isLocked();
+            })
+    },
 	//Ajout
-	,
+
 	applyEventOnNode : function (parent) {
         var reactionStyle = metExploreD3.getReactionStyle();
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
