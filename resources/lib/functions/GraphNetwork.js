@@ -1182,6 +1182,11 @@ metExploreD3.GraphNetwork = {
  		
  		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
 
+ 		// Ajout
+		// reinitialize
+		metExploreD3.GraphStyleEdition.allDrawnCycles = [];
+		// Fin Ajout
+
 	},
 
 	rescale : function(panel){

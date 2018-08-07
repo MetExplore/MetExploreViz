@@ -836,6 +836,11 @@ metExploreD3.GraphPanel = {
 				nodesData.forEach(function(node) {
 					metExploreD3.GraphStyleEdition.setStartingStyle(node);
 				});
+				if (sessions['viz'].drawnCycles && Array.isArray(sessions['viz'].drawnCycles)) {
+					for (var i=0; i<sessions['viz'].drawnCycles.length; i++){
+                        metExploreD3.GraphFunction.drawMetaboliteCycle(sessions['viz'].drawnCycles[i]);
+					}
+                }
                 // Fin Ajout
 				endFunc();
 			}

@@ -1374,6 +1374,13 @@ metExploreD3.GraphUtils = {
 				    networkJSON+="\n"+JSON.stringify(key)+":{\n\"id\":\"" + _metExploreViz.getSessionById(key).getId() + "\",";
 				    networkJSON+="\n\"animated\": false ,";
 
+				    // Ajout
+					var allDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+					if (Array.isArray(allDrawnCycles) && allDrawnCycles.length) {
+                        networkJSON += "\n\"drawnCycles\":" + JSON.stringify(metExploreD3.GraphStyleEdition.allDrawnCycles) + ",";
+                    }
+					// Fin Ajout
+
 				    networkJSON+="\n\"d3Data\":{\"id\":"+JSON.stringify(key)+"," ;
 				    networkJSON+="\"nodes\":[" ;
 				   
