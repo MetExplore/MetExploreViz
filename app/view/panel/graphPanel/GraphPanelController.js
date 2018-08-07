@@ -774,9 +774,6 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 	,
     enterEditMode: function () {
         metExploreD3.GraphStyleEdition.toggleEditMode();
-        //Ext.getCmp('enterEditMode').setDisabled(true);
-        //console.log(Ext.getCmp('enterEditMode'));
-        //Ext.getCmp('enterEditMode').style.backgroundColor = "ff0000";
 		if (metExploreD3.GraphStyleEdition.editMode){
             Ext.getCmp('enterEditMode').setText("Exit edit mode");
             Ext.getCmp('enterEditMode').setTooltip("Exit edit mode");

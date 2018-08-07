@@ -502,6 +502,10 @@ metExploreD3.GraphPanel = {
 						{
 							metExploreD3.GraphPanel.refreshJSON(json);
 							if(func!=undefined && typeof func==='function') func();
+                            Ext.getCmp('cycleDetection').setVisible(false);
+                            if (metExploreD3.GraphStyleEdition.editMode){
+                            	metExploreD3.fireEvent("enterEditMode", "click");
+							}
 						}
 		           },
 		           icon: Ext.Msg.QUESTION

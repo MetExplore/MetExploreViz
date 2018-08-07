@@ -2086,8 +2086,8 @@ metExploreD3.GraphLink = {
                 centroidTargetY = resultComputeCentroid[3];
             }
 
-            // For each node, check which is the closest point to that node between the centroid of the source nodes of the arcs entering that node and the centroid of the target nodes of the arcs exiting that node
-            // Then check whether that closest point is closer to the axe parallel to the x-axis or the one parallel to the y-axis passing through that node
+            // For each node, compare the difference between the x-coordinates of the 2 centroids and the difference between their y-coordinates
+            // to determine if the axis of the reaction should be horizontal or vertical
             // From those test, attribute the coordinate for the entry and exit points of that node
             var distanceSource = Math.sqrt(Math.pow(centroidSourceX - node.x, 2) + Math.pow(centroidSourceY - node.y, 2));
             var distanceTarget = Math.sqrt(Math.pow(centroidTargetX - node.x, 2) + Math.pow(centroidTargetY - node.y, 2));
@@ -2114,9 +2114,8 @@ metExploreD3.GraphLink = {
 
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
             enteringLinks.each(function (link) {
-                //var path = metExploreD3.GraphFunction.computePath(node, enteringX, enteringY, link, link.getSource());
                 var path;
-                // Handle the case where the link is a cycle arc or one of the links coming/exiting from the reaction is an arc
+                // Handle the case where the link is a cycle arc or a sibling of cycle arc
                 if (link.partOfCycle === true){
                     path = d3.select(this).attr("d");
                 }

@@ -349,6 +349,12 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("text-decoration-line", underlineOrNot);
     },
+
+    /*******************************************
+     * Set the opacity of multiple node labels
+     * @param {} labelOpacity : New opacity value
+     * @param {} flag : The nodes whose label will be modified
+     */
     setAllFontOpacity: function (labelOpacity, flag) {
         var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
         var s_ReactionStyle = metExploreD3.getReactionStyle();
