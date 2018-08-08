@@ -1,6 +1,6 @@
 /**
  * @author Adrien Rohan
- * The editModePanel component's controller
+ * Controller class for EditModePanel
  */
 Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
     extend: 'Ext.app.ViewController',

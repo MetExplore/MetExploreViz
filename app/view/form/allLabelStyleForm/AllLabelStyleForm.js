@@ -1,6 +1,6 @@
 /**
  * @author Adrien Rohan
- * Display label style edition option for all nodes
+ * Display label style edition options for all nodes
  */
 Ext.define('metExploreViz.view.form.allLabelStyleForm.AllLabelStyleForm', {
     extend: 'Ext.panel.Panel',

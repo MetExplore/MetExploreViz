@@ -1,6 +1,6 @@
 /**
  * @author Adrien Rohan
- * A panel including various style options
+ * A panel including subpanels for various style options
  */
 Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
     extend: 'Ext.panel.Panel',

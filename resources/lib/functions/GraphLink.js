@@ -2004,7 +2004,7 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction.
-     * @param {} panel : The panel in which to draw the links.
+     * @param {String} panel : The panel in which to draw the links.
      */
     bundleLinks : function (panel) {
         var reactionStyle = metExploreD3.getReactionStyle();
@@ -2160,9 +2160,9 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Compute path of an edge belonging to a cycle.
-     * @param {} startNode : The node at the start of the path.
+     * @param {Object} startNode : The node at the start of the path.
      * @param {} link : The link between the two nodes.
-     * @param {} endNode : The node at the end of the path.
+     * @param {Object} endNode : The node at the end of the path.
      */
     computePathCycleArc : function (startNode, link, endNode) {
         var path = "";
@@ -2186,10 +2186,10 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Compute path of an edge so that the axe of the reaction is horizontal.
-     * @param {} startNode : The node at the start of the path.
-     * @param {} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {} endNode : The node at the end of the path
+     * @param {Object} startNode : The node at the start of the path.
+     * @param {Number} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode : The node at the end of the path
      */
     computePathHorizontal : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
@@ -2294,10 +2294,10 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Compute path of an edge so that the axe of the reaction is vertical.
-     * @param {} startNode : The node at the start of the path.
-     * @param {} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {} endNode : The node at the end of the path.
+     * @param {Object} startNode : The node at the start of the path.
+     * @param {Number} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode : The node at the end of the path.
      */
     computePathVertical : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
@@ -2401,10 +2401,10 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Compute path of an edge that is not itself part of a cycle but merge with one that is part of a cycle.
-     * @param {} startNode : The node at the start of the path.
-     * @param {} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {} endNode : The node at the end of the path.
+     * @param {Object} startNode : The node at the start of the path.
+     * @param {Number} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode : The node at the end of the path.
      * @param {} arcLink : The link that is part of cycle.
      */
     computePathArcSibling: function (startNode, firstPointX, firstPointY, endNode, arcLink) {
@@ -2451,7 +2451,7 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * For a reaction node, compute the coordinates of the centroid of all the substrate of that node and the coordinates of the centroid of all the product of that node.
-     * @param {} node : The reaction node.
+     * @param {Object} node : The reaction node.
      * @param {} enteringLinks : All the links going from a substrate to the node.
      * @param {} exitingLinks : All the links going from the node to a product.
      */

@@ -1,6 +1,6 @@
 /**
  * @author Adrien Rohan
- * Class to control label style edition option
+ * Controller class for AllLabelStyleForm
  */
 
 Ext.define('metExploreViz.view.form.allLabelStyleForm.AllLabelStyleFormController', {

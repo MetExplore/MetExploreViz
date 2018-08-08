@@ -1,3 +1,8 @@
+/**
+ * @author Adrien Rohan
+ * Controller class for ButtonImportImage
+ */
+
 Ext.define('metExploreViz.view.button.buttonImportImage.ButtonImportImageController', {
     extend: 'Ext.app.ViewController',
 

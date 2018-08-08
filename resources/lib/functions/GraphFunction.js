@@ -1568,7 +1568,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Find all the metabolic cycles in the graph passing through some nodes that is shown in the visualisation panel
-     * @param {} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
+     * @param {Object[]} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
      */
     findAllCycles: function (listNodes) {
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
@@ -1696,7 +1696,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Find all the longest metabolic cycles in the graph passing through some nodes that is shown in the visualisation panel
-     * @param {} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
+     * @param {Object[]} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
      */
     findLongestCycles: function (listNodes) {
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
@@ -1720,7 +1720,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Find all the shortest metabolic cycles in the graph passing through some nodes that is shown in the visualisation panel
-     * @param {} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
+     * @param {Object[]} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
      */
     findShortestCycles: function (listNodes) {
         listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
@@ -1744,7 +1744,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * From a list of cycle, remove all the cycles that are not valid metabolic cycle (i.e. some case where an edge go from a product of a reaction to this reaction, followed by another edge going to another product of the same reaction)
-     * @param {} cyclesList : List of cycles. A cycle is define as a list of nodes id.
+     * @param {String[][]} cyclesList : List of cycles. A cycle is define as a list of nodes id.
      */
     removeInvalidCycles : function (cyclesList) {
         // New data structure to efficiently get back the edges from vertex id
@@ -1825,7 +1825,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Highlight the edges of a cycle in blue on the visualisation
-     * @param {} cycle : The cycle to highlight. A cycle is defined as a list of nodes id.
+     * @param {String[][]} cycle : The cycle to highlight. A cycle is defined as a list of nodes id.
      */
     highlightCycle: function (cycle) {
         d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -1851,7 +1851,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Remove highlight of the edges of a cycle on the visualisation
-     * @param {} cycle : The cycle on which to remove the highlight. A cycle is defined as a list of nodes id.
+     * @param {String[][]} cycle : The cycle on which to remove the highlight. A cycle is defined as a list of nodes id.
      */
     removeHighlightCycle: function (cycle) {
         var cycleLinks = metExploreD3.GraphFunction.getLinksFromCycle(cycle);
@@ -1873,7 +1873,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Get all the links in a cycle defined by his node
-     * @param {} cycle : The cycle from which to get the links. A cycle is defined as a list of nodes id.
+     * @param {String[][]} cycle : The cycle from which to get the links. A cycle is defined as a list of nodes id.
      */
     getLinksFromCycle : function(cycle) {
         var cycleLinks = [];
@@ -1913,8 +1913,8 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Johnson's cycle enumeration algorithm
-     * @param {} graph : An array of arrays of integer that is the graph structure in which to find the cycle. Each of the N nodes are defined by a number from 0 to N-1. If j is in the array of index i that mean there is an arc going form i to j.
-     * @param {} flag: If flag is "Single", the algorithm will run to only find cycles going through the first node of the graph.
+     * @param {Number[][]} graph : An array of arrays of integer that is the graph structure in which to find the cycle. Each of the N nodes are defined by a number from 0 to N-1. If j is in the array of index i that mean there is an arc going form i to j.
+     * @param {"Single"/"All"} flag: If flag is "Single", the algorithm will run to only find cycles going through the first node of the graph.
      */
     JohnsonAlgorithm: function(graph, flag){
         // Variables initialisation
@@ -2027,7 +2027,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Position all the nodes of cycle along a circle in the visualisation
-     * @param {} cycle: The cycle to draw. A cycle is defined as a list of nodes id.
+     * @param {String[][]} cycle: The cycle to draw. A cycle is defined as a list of nodes id.
      */
     drawMetaboliteCycle: function (cycle) {
         // check if drawing this cycle will conflict with other already drawn cycle
@@ -2152,7 +2152,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Remove the cycle containing the node form the list of drawn cycle. Once removed, if using curves for edges, the edge of the cycles won't be drawn as arcs.
-     * @param {} node: A node. If a drawn cycle contain this node, it is removed from the list of drawn cycle.
+     * @param {Object} node: A node. If a drawn cycle contain this node, it is removed from the list of drawn cycle.
      */
     removeCycleContainingNode: function (node) {
         // check if the nodes is part of a drawn cycle
@@ -2182,8 +2182,8 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Check if a node is part of a cycle or not.
-     * @param {} node: The node to check.
-     * @param {} panel: The panel containing the node.
+     * @param {Object} node: The node to check.
+     * @param {String} panel: The panel containing the node.
      */
     checkIfPartOfCycle: function (node, panel) {
         var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
@@ -2197,7 +2197,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
      * Check if the selected nodes are part of a cycle or not.
-     * @param {} panel: The panel containing the nodes.
+     * @param {String} panel: The panel containing the nodes.
      */
     checkIfSelectionIsPartOfCycle : function (panel) {
         var result = false;

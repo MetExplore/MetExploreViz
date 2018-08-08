@@ -1,27 +1,7 @@
-/*Ext.define('metExploreViz.view.button.buttonImportImage.ButtonImportImage', {
-    extend: 'Ext.form.Panel',
-    alias:'widget.buttonImportImage',
-    controller : 'buttonImportImage',
-    requires: [
-        'metExploreViz.view.button.buttonImportImage.ButtonImportImageController'
-    ],
-    text: 'Import images',
-
-    items: [{
-        xtype: 'filefield',
-        name : 'fileData',
-        buttonOnly: true,
-        height:'100%',
-        width:'100px',
-        reference : 'importImage',
-        multiple: true,
-        buttonConfig: {
-            id : 'IDimportImage'
-        }
-    }],
-    hideLabel: true
-});*/
-
+/**
+ * @author Adrien Rohan
+ * Component for loading multiple files
+ */
 
 Ext.define('metExploreViz.view.button.buttonImportImage.ButtonImportImage', {
     extend: 'Ext.form.field.File',
@@ -31,10 +11,6 @@ Ext.define('metExploreViz.view.button.buttonImportImage.ButtonImportImage', {
         'metExploreViz.view.button.buttonImportImage.ButtonImportImageController'
     ],
     target:"ID",
-
-    /**
-     * @cfg {Boolean} multiple
-     */
 
     /**
      * Override that adds the multiple config to the fileInputEl.dom

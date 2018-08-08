@@ -2598,7 +2598,7 @@ metExploreD3.GraphMapping = {
     /*****************************************************
      * Map images to node using the name of the image files and a property of the nodes and display those images next to the corresponding nodes on the visualisation.
      * @param {} fileList : A list of image files.
-     * @param {} arg : A flag to determine which node property to use for the mapping. "Name" will map the images using the label of the node currently displayed, "Id" use the identifier of the node. Default to "Id".
+     * @param {"Name"/"Id"} arg : A flag to determine which node property to use for the mapping. "Name" will map the images using the label of the node currently displayed, "Id" use the identifier of the node. Default to "Id".
      */
     mapImageToNode : function(fileList, arg){
         var listNames = [];
@@ -2662,7 +2662,7 @@ metExploreD3.GraphMapping = {
 
     /*****************************************************
      * Select an image element mapped to a node.
-     * @param {} node : The node on which is mapped the image to select.
+     * @param {Object} node : The node on which is mapped the image to select.
      */
     selectMappedImages: function (node) {
         var selectedImages = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -2674,7 +2674,7 @@ metExploreD3.GraphMapping = {
 
     /*****************************************************
      * Toggle the opacity of an image element between 0 and 1.
-     * @param {} node : The node on which is mapped the image.
+     * @param {Object} node : The node on which is mapped the image.
      */
     displayMappedImage: function (node) {
         var mappedImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -2808,7 +2808,7 @@ metExploreD3.GraphMapping = {
 
     /*******************************************
      * Set position and size of an image if those kind of data were provided with the JSON
-     * @param {} node : The node whose label will be modified
+     * @param {Object} node : The node whose label will be modified
      */
     setStartingImageStyle : function (node) {
         if (node.imagePosition) {

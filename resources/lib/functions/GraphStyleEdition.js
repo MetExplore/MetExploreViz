@@ -103,9 +103,9 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change text of node label
-     * @param {} node : The node whose label will be modified
-     * @param {} panel : The panel where the action is launched
-     * @param {} text : The new text of the node label
+     * @param {Object} node : The node whose label will be modified
+     * @param {String} panel : The panel where the action is launched
+     * @param {String} text : The new text of the node label
      */
     changeNodeLabel: function (node, panel, text) {
         var nodeElement = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
@@ -140,7 +140,7 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change the font size of a node label
-     * @param {} node : The node whose label will be modified
+     * @param {Object} node : The node whose label will be modified
      */
     changeFontSize : function (node) {
         // Change the font size of the node label
@@ -157,8 +157,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change the font size of multiple node labels
-     * @param {} text : The new font size of the node label
-     * @param {} targets : The nodes whose label will be modified
+     * @param {String} text : The new font size of the node label
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
     changeAllFontSize : function (text, targets) {
         // Change the font size of all the targeted nodes labels
@@ -181,8 +181,8 @@ metExploreD3.GraphStyleEdition = {
     },
     /*******************************************
      * Change the font of a node label
-     * @param {} node : The node whose label will be modified
-     * @param {} text : The new font of the node label
+     * @param {Object} node : The node whose label will be modified
+     * @param {String} text : The new font of the node label
      */
     changeFontType : function (node, text) {
         // Change the font of the node label
@@ -195,8 +195,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change the font family of multiple node labels
-     * @param {} text : The new font of the node label
-     * @param {} targets : The nodes whose label will be modified
+     * @param {String} text : The new font of the node label
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
     changeAllFontType : function (text, targets) {
         // Change the font of all the targeted nodes labels
@@ -220,7 +220,7 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether the font of a node label is bold or not
-     * @param {} node : The node whose label will be modified
+     * @param {Object} node : The node whose label will be modified
      */
     changeFontBold : function (node) {
         // Change the font boldness of the node label
@@ -238,8 +238,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether the font of multiple node labels is bold or not
-     * @param {} bool : True to change the font to bold, false to change back to normal
-     * @param {} targets : The nodes whose label will be modified
+     * @param {Boolean} bool : True to change the font to bold, false to change back to normal
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
     changeAllFontBold : function (bool, targets) {
         // Change the font boldness of all the targeted nodes labels
@@ -264,7 +264,7 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether the font of a node label is italic or not
-     * @param {} node : The node whose label will be modified
+     * @param {Object} node : The node whose label will be modified
      */
     changeFontItalic : function (node) {
         // Italicize the font of the node label or revert to normal
@@ -282,8 +282,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether the font of multiple node labels is italic or not
-     * @param {} bool : True to change the font to italic, false to change back to normal
-     * @param {} targets : The nodes whose label will be modified
+     * @param {Boolean} bool : True to change the font to italic, false to change back to normal
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
     changeAllFontItalic : function (bool, targets) {
         // Italicize the font of all the targeted nodes labels or revert to normal
@@ -308,7 +308,7 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether a node label is underlined or not
-     * @param {} node : The node whose label will be modified
+     * @param {Object} node : The node whose label will be modified
      */
     changeFontUnderline : function (node) {
         // Underline the font of the node label or revert to normal
@@ -326,8 +326,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Add or remove underline to multiple node labels
-     * @param {} bool : True to add underline to the label, false to remove them
-     * @param {} targets : The nodes whose label will be modified
+     * @param {Boolean} bool : True to add underline to the label, false to remove them
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
     changeAllFontUnderline : function (bool, targets) {
         // Underline the font of all the targeted nodes labels or revert to normal
@@ -352,8 +352,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Set the opacity of multiple node labels
-     * @param {} labelOpacity : New opacity value
-     * @param {} flag : The nodes whose label will be modified
+     * @param {Number} labelOpacity : New opacity value
+     * @param {"all"/"selection"/"metabolite"/"reaction"} flag : The nodes whose label will be modified
      */
     setAllFontOpacity: function (labelOpacity, flag) {
         var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -385,7 +385,7 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Apply label style if style data are associated to the node
-     * @param {} node : The node whose label will be modified
+     * @param {Object} node : The node whose label will be modified
      */
     setStartingStyle : function (node) {
         if (node.labelFont) {
@@ -407,6 +407,10 @@ metExploreD3.GraphStyleEdition = {
         }
     },
 
+    /*******************************************
+     * Create an object containing the label style data associated to a node
+     * @param {Object} node : The node whose label syle data will be put in the object
+     */
     createLabelStyleObject : function (node) {
         var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -425,6 +429,11 @@ metExploreD3.GraphStyleEdition = {
         };
         return labelStyle;
     },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
     createImageStyleObject : function (node) {
         var nodeImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -444,6 +453,10 @@ metExploreD3.GraphStyleEdition = {
         }
     },
 
+    /*******************************************
+     * Partition all the flux value into 10 groups
+     * @param {String} condition : The mapping condition
+     */
     discretizeFluxRange: function (condition) {
         // Create the distribution table for the flux values
         var allValues = [];
@@ -523,6 +536,11 @@ metExploreD3.GraphStyleEdition = {
                 }
             });
     },
+
+    /*******************************************
+     * Remove the partition of all the flux value into 10 group
+     * @param {String} condition : The mapping condition
+     */
     removeBinnedMapping : function (condition) {
         var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
         var conditions = _metExploreViz.getSessionById('viz').isMapped();

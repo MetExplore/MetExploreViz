@@ -1,6 +1,6 @@
 /**
  * @author Adrien Rohan
- * Class to control Label Style panel
+ * Controller class for UpdateLabelStyleForm
  */
 
 Ext.define('metExploreViz.view.form.updateLabelStyleForm.UpdateLabelStyleFormController', {
