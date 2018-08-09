@@ -458,11 +458,9 @@ metExploreD3.GraphStyleEdition = {
      * @param {String} condition : The mapping condition
      */
     discretizeFluxRange: function (condition) {
-        // Create the distribution table for the flux values
+        // Sort the flux value
         var allValues = [];
-        var distributionTable = [];
         var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
-        var conditions = _metExploreViz.getSessionById('viz').isMapped();
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function (d) {
@@ -475,35 +473,53 @@ metExploreD3.GraphStyleEdition = {
         allValues.sort(function (a, b) {
             return Math.abs(a.mapValue) - Math.abs(b.mapValue);
         });
-        for (var i=0; i<allValues.length; i++){
+
+        var valueList = [];
+        for (var i=0; i<allValues.length; i++) {
             var value = Math.abs(Number(allValues[i].mapValue));
-            if (!distributionTable.length || distributionTable[distributionTable.length -1].value !== value){
-                var valueObject = {value: value, nbOccurence: 1};
-                if (distributionTable.length){
-                    valueObject.gap = valueObject.value - distributionTable[distributionTable.length -1].value;
+            if (!valueList.length || valueList[valueList.length - 1] !== value) {
+                if (value !== 0) {
+                    valueList.push(value);
                 }
-                else {
-                    valueObject.gap = 0;
-                }
-                distributionTable.push(valueObject);
             }
-            else {
-                distributionTable[distributionTable.length -1].nbOccurence += 1;
-            }
+        }
+        var clusterList = [];
+        for (var i=0; i<valueList.length; i++){
+            clusterList.push([valueList[i]]);
         }
 
-        //  Find the 9 largest gaps between consecutive values
+        // Cluster the values into 10 groups
         var nbBins = 10;
-        distributionTable.sort(function (a, b) {
-            return a.gap - b.gap;
-        });
-        var breakPoints = [];
-        for (var i=distributionTable.length - nbBins + 1; i<distributionTable.length; i++){
-            breakPoints.push(distributionTable[i].value);
+        var nbClusters = clusterList.length;
+        while (nbClusters > nbBins){
+            var result = clusterClosestValues(valueList, clusterList);
+            valueList = result[0];
+            clusterList = result[1];
+            nbClusters = clusterList.length;
         }
-        breakPoints.sort(function (a, b) {
-            return a - b;
-        });
+        function clusterClosestValues(valueList, clusterList){
+            var min = valueList[valueList.length-1];
+            var minIndex = 0;
+            for (var i=0; i<valueList.length-1; i++){
+                var gap = valueList[i+1] - valueList[i];
+                if (gap < min){
+                    min = gap;
+                    minIndex = i;
+                }
+            }
+            var newValue = (valueList[minIndex+1] + valueList[minIndex]) / 2;
+            var newCluster = clusterList[minIndex].concat(clusterList[minIndex+1]);
+            var newValueList = valueList.slice(0,minIndex).concat(newValue, valueList.slice(minIndex+2));
+            var newClusterList = clusterList.slice(0,minIndex).concat([newCluster], clusterList.slice(minIndex+2));
+            return [newValueList, newClusterList]
+        }
+
+        var breakPoints = [];
+        for (var i=0; i<clusterList.length; i++){
+            breakPoints.push(clusterList[i][clusterList[i].length-1]);
+        }
+
+
         // Divide the range of value into 10 bins
         var maxValue = Math.abs(Number(allValues[allValues.length-1].mapValue));
         var minValue = Math.abs(Number(allValues[0].mapValue));
@@ -513,6 +529,7 @@ metExploreD3.GraphStyleEdition = {
         for (var i=0; i<nbBins; i++){
             midBinValues.push(minValue + binsWidth / 2 + i * binsWidth);
         }
+
         // Assign the values into the corresponding bins
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -523,16 +540,13 @@ metExploreD3.GraphStyleEdition = {
                 var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
                 var mapValue = Math.abs(Number(reactionMapping.mapValue));
                 for (var i=0; i<breakPoints.length; i++){
-                    if (mapValue < breakPoints[i]){
+                    if (mapValue <= breakPoints[i]){
                         reactionMapping.binnedMapValue = midBinValues[i];
                         break;
                     }
                 }
                 if (Number(mapValue) === 0){
                     reactionMapping.binnedMapValue = 0;
-                }
-                else if (reactionMapping.binnedMapValue === undefined){
-                    reactionMapping.binnedMapValue = midBinValues[midBinValues.length-1];
                 }
             });
     },
