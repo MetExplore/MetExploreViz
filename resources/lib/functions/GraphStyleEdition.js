@@ -6,7 +6,7 @@
 metExploreD3.GraphStyleEdition = {
 
     editMode: false,
-    curvedPath: false,
+    curvedPath: true,
     allDrawnCycles: [],
 
 
@@ -451,123 +451,5 @@ metExploreD3.GraphStyleEdition = {
         else {
             return undefined;
         }
-    },
-
-    /*******************************************
-     * Partition all the flux value into 10 groups
-     * @param {String} condition : The mapping condition
-     */
-    discretizeFluxRange: function (condition) {
-        // Sort the flux value
-        var allValues = [];
-        var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("g.node")
-            .filter(function (d) {
-                return d.getBiologicalType() === "reaction";
-            })
-            .each(function (d) {
-                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
-                allValues.push(reactionMapping)
-            });
-        allValues.sort(function (a, b) {
-            return Math.abs(a.mapValue) - Math.abs(b.mapValue);
-        });
-
-        var valueList = [];
-        for (var i=0; i<allValues.length; i++) {
-            var value = Math.abs(Number(allValues[i].mapValue));
-            if (!valueList.length || valueList[valueList.length - 1] !== value) {
-                if (value !== 0) {
-                    valueList.push(value);
-                }
-            }
-        }
-        var clusterList = [];
-        for (var i=0; i<valueList.length; i++){
-            clusterList.push([valueList[i]]);
-        }
-
-        // Cluster the values into 10 groups
-        var nbBins = 10;
-        var nbClusters = clusterList.length;
-        while (nbClusters > nbBins){
-            var result = clusterClosestValues(valueList, clusterList);
-            valueList = result[0];
-            clusterList = result[1];
-            nbClusters = clusterList.length;
-        }
-        function clusterClosestValues(valueList, clusterList){
-            var min = valueList[valueList.length-1];
-            var minIndex = 0;
-            for (var i=0; i<valueList.length-1; i++){
-                var gap = valueList[i+1] - valueList[i];
-                if (gap < min){
-                    min = gap;
-                    minIndex = i;
-                }
-            }
-            var newValue = (valueList[minIndex+1] + valueList[minIndex]) / 2;
-            var newCluster = clusterList[minIndex].concat(clusterList[minIndex+1]);
-            var newValueList = valueList.slice(0,minIndex).concat(newValue, valueList.slice(minIndex+2));
-            var newClusterList = clusterList.slice(0,minIndex).concat([newCluster], clusterList.slice(minIndex+2));
-            return [newValueList, newClusterList]
-        }
-
-        var breakPoints = [];
-        for (var i=0; i<clusterList.length; i++){
-            breakPoints.push(clusterList[i][clusterList[i].length-1]);
-        }
-
-
-        // Divide the range of value into 10 bins
-        var maxValue = Math.abs(Number(allValues[allValues.length-1].mapValue));
-        var minValue = Math.abs(Number(allValues[0].mapValue));
-        var range = maxValue - minValue;
-        var binsWidth = range/nbBins;
-        var midBinValues = [];
-        for (var i=0; i<nbBins; i++){
-            midBinValues.push(minValue + binsWidth / 2 + i * binsWidth);
-        }
-
-        // Assign the values into the corresponding bins
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("g.node")
-            .filter(function (d) {
-                return d.getBiologicalType() === "reaction";
-            })
-            .each(function (d) {
-                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
-                var mapValue = Math.abs(Number(reactionMapping.mapValue));
-                for (var i=0; i<breakPoints.length; i++){
-                    if (mapValue <= breakPoints[i]){
-                        reactionMapping.binnedMapValue = midBinValues[i];
-                        break;
-                    }
-                }
-                if (Number(mapValue) === 0){
-                    reactionMapping.binnedMapValue = 0;
-                }
-            });
-    },
-
-    /*******************************************
-     * Remove the partition of all the flux value into 10 group
-     * @param {String} condition : The mapping condition
-     */
-    removeBinnedMapping : function (condition) {
-        var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
-        var conditions = _metExploreViz.getSessionById('viz').isMapped();
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("g.node")
-            .filter(function (d) {
-                return d.getBiologicalType() === "reaction";
-            })
-            .each(function (d) {
-                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
-                if (reactionMapping){
-                    delete reactionMapping.binnedMapValue;
-                }
-            })
     }
 }

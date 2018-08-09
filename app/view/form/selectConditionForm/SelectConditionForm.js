@@ -87,7 +87,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
         hidden : true,
         items: [
             {
-                boxLabel  : 'Regroup flux values into 10 classes',
+                boxLabel  : 'Discretize flux values into 10 classes',
                 name      : 'regroupValuesIntoClass',
                 inputValue: true,
                 id        : 'regroupValuesIntoClassCheck'

@@ -56,7 +56,7 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
                     items: [
                         {
                             boxLabel:'Edges Bundling',
-                            checked:false,
+                            checked:true,
                             reference:'EdgeBundling'
                         }
                     ]
