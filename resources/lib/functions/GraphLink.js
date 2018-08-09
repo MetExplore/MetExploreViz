@@ -1864,7 +1864,23 @@ metExploreD3.GraphLink = {
             .attr("d", metExploreD3.GraphNode.groupPath)
             .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
         if (metExploreD3.GraphStyleEdition.curvedPath == true){
-            metExploreD3.GraphLink.bundleLinks(panel);
+            var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
+            if(flux) {
+                funcPath = metExploreD3.GraphLink.funcPathForFlux;
+                d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                    .selectAll("path.link")
+                    .attr("fill", function (d) {
+                        if (d.interaction == "out")
+                            return metExploreD3.getLinkStyle().getMarkerOutColor();
+                        else
+                            return metExploreD3.getLinkStyle().getMarkerInColor();
+                    })
+                    .attr("d", function(link){  return funcPath(link, panel, this.id);})
+                    .style("stroke-linejoin", "bevel");
+            }
+            else {
+                metExploreD3.GraphLink.bundleLinks(panel);
+            }
         }
         else {
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";

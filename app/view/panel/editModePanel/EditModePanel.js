@@ -55,7 +55,7 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanel', {
                     defaultType:'checkboxfield',
                     items: [
                         {
-                            boxLabel:'Edge Bundling',
+                            boxLabel:'Edges Bundling',
                             checked:false,
                             reference:'EdgeBundling'
                         }

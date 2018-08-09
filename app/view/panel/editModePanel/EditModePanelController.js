@@ -24,7 +24,11 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
             click : function()
             {
                 var curveBundling = view.lookupReference('EdgeBundling').getValue();
-                if (curveBundling == true) {
+                var flux = _metExploreViz.getSessionById('viz').getMappingDataType()=="Flux";
+                if (flux){
+                    metExploreD3.displayWarning("Can't draw curves", 'The edges bundling option is unavailable with flux visualisation');
+                }
+                else if (curveBundling == true) {
                     metExploreD3.GraphStyleEdition.curvedPath = true;
                     metExploreD3.GraphLink.bundleLinks("viz");
                 }
