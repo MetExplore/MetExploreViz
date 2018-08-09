@@ -54,6 +54,16 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 		});
 
 		// Ajout
+		view.lookupReference('importCycle').on({
+			click : function(){
+				var component = Ext.getCmp('IDimportCycle');
+                if(component!= undefined){
+                    component.fileInputEl.dom.click();
+                }
+			},
+			scope : me
+		});
+
 		view.lookupReference('importImageMappingName').on({
 			click : function(){
 				var component = this.lookupReference('importImageMappingHidden');

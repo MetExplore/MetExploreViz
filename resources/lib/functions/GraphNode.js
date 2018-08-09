@@ -2694,8 +2694,8 @@ metExploreD3.GraphNode = {
                         .filter(function(node){return node==d})
                         .select('.locker')
                         //Ajout et Modif
-                        .classed('hide', metExploreD3.GraphFunction.editMode)
-                        //.classed('hide', false)
+                        //.classed('hide', metExploreD3.GraphStyleEdition.editMode)
+                        .classed('hide', false)
                         //Fin Ajout
                         .select('.iconlocker')
                         .attr(
@@ -2859,8 +2859,8 @@ metExploreD3.GraphNode = {
                         .filter(function(node){return node==d})
                         .select('.locker')
                         //Ajout et Modif
-                        .classed('hide', metExploreD3.GraphFunction.editMode)
-                        //.classed('hide', false)
+                        //.classed('hide', metExploreD3.GraphStyleEdition.editMode)
+                        .classed('hide', false)
                         //Fin Ajout
                         .select('.iconlocker')
                         .attr(

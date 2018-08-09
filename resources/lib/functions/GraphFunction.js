@@ -2069,6 +2069,17 @@ metExploreD3.GraphFunction = {
             nodesList.push(node);
         }
 
+        // Check if the node are present in the graph
+        var cycleExist = true;
+        for (var i=0; i< nodesList.length; i++){
+        	if (nodesList[i].empty()){
+                cycleExist = false;
+			}
+		}
+		if (!cycleExist){
+        	return -1;
+		}
+
         // Determine whether the points are arranged in a mostly clockwise or counter-clockwise fashion (cf shoelace formula)
         var directionTotal = 0;
         var topValue = 0;
@@ -2148,6 +2159,7 @@ metExploreD3.GraphFunction = {
         }
         metExploreD3.GraphNode.tick('viz');
         metExploreD3.GraphLink.tick('viz');
+        return 0;
     },
 
     /*******************************************

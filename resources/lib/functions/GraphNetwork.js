@@ -1993,7 +1993,8 @@ metExploreD3.GraphNetwork = {
                         .selectAll('g.node')
                         .filter(function(node){return node==d})
                         .select('.locker')
-                        .classed('hide', metExploreD3.GraphFunction.editMode)
+                        //.classed('hide', metExploreD3.GraphStyleEdition.editMode)
+						.classed('hide', false)
                         .select('.iconlocker')
                         .attr(
                             "xlink:href",

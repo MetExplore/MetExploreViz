@@ -53,6 +53,16 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         },
         // Ajout
         {
+            text: 'Import Cycle',
+            reference: 'importCycle',
+            tooltip: 'Import cycle for drawing'
+        },
+        {
+            hidden:true,
+            id:'buttonCycle',
+            xtype:'buttonImportCycle'
+        },
+        {
             text: 'Image Mapping',
             menu: {
                 items: [

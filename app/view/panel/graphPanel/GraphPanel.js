@@ -24,6 +24,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
         'metExploreViz.view.button.buttonImportCoordinates.ButtonImportCoordinates',
         'metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwork',
         'metExploreViz.view.button.buttonImportImage.ButtonImportImage',
+        'metExploreViz.view.button.buttonImportCycle.ButtonImportCycle',
         'metExploreViz.view.panel.viz.Viz'
     ],
     /*requires: [
