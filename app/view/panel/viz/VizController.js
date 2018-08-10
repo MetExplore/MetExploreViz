@@ -63,6 +63,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
 							},{
                                 text : 'Unfix selected nodes',
+                                iconCls:"unlock_font_awesome",
                                 hidden : false,
                                 handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
                             },{
@@ -243,9 +244,11 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                         },{
                             text : 'Unfix selected nodes',
                             hidden : false,
+                            iconCls: "unlock_font_awesome",
                             handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
                         }, {
                             text: 'Detect longest cycles',
+                            iconCls: "longCycle",
                             menu: [{
                                 text: 'Going through this node',
                                 handler: function () {
@@ -282,6 +285,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             }]
                         },{
                             text: 'Detect shortest cycles',
+                            iconCls: "shortCycle",
                             menu: [{
                                 text: 'Going through this node',
                                 handler: function () {
@@ -318,6 +322,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             }]
                         },{
                             text: 'Change font',
+                            iconCls: "font",
                             hidden: (!metExploreD3.GraphStyleEdition.editMode),
                             menu: [{
                                 text: 'This node',
@@ -390,8 +395,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             }]
                         },{
                             text: 'Change font size',
+                            iconCls: "fontSize",
                             hidden: (!metExploreD3.GraphStyleEdition.editMode),
-                            menu: [{
+                            fontSizemenu: [{
                                 text: 'This node',
                                 handler: function () {
                                     metExploreD3.GraphStyleEdition.changeFontSize(theNode)
@@ -408,21 +414,25 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             }]
                         },{
                             text: 'Change font style',
+                            iconCls: "fontStyle",
                             hidden: (!metExploreD3.GraphStyleEdition.editMode),
                             menu: [{
                                 text: 'This node',
                                 menu: [{
                                     text: 'Bold',
+                                    iconCls: "bold",
                                     handler: function () {
                                         metExploreD3.GraphStyleEdition.changeFontBold(theNode)
                                     }
                                 },{
                                     text: 'Italic',
+                                    iconCls: "italic",
                                     handler: function () {
                                         metExploreD3.GraphStyleEdition.changeFontItalic(theNode)
                                     }
                                 },{
                                     text: 'Underline',
+                                    iconCls: "underline",
                                     handler: function () {
                                         metExploreD3.GraphStyleEdition.changeFontUnderline(theNode)
                                     }
@@ -431,16 +441,19 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 text: 'All selected nodes',
                                 menu: [{
                                     text: 'Bold',
+                                    iconCls: "bold",
                                     handler: function () {
                                         metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection")
                                     }
                                 },{
                                     text: 'Italic',
+                                    iconCls: "italic",
                                     handler: function () {
                                         metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection")
                                     }
                                 },{
                                     text: 'Underline',
+                                    iconCls: "underline",
                                     handler: function () {
                                         metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection")
                                     }
@@ -455,8 +468,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             }
                         },{
                             text: 'Remove cycle drawing',
+                            iconCls: "removeCycle",
                             reference: 'unfixCycle',
-                            hidden: (!isPartOfCycle || !metExploreD3.GraphStyleEdition.editMode),
+                            hidden: (!isPartOfCycle),
                             handler: function () {
                                 metExploreD3.GraphFunction.removeCycleContainingNode(theNode);
                             }

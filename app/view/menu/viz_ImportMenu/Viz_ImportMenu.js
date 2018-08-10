@@ -55,7 +55,8 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         {
             text: 'Import Cycle',
             reference: 'importCycle',
-            tooltip: 'Import cycle for drawing'
+            tooltip: 'Import cycle for drawing',
+            iconCls:'importCycle'
         },
         {
             hidden:true,
@@ -77,7 +78,8 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
                         tooltip: 'Import image for mapping by id'
 
                     }]
-            }
+            },
+            iconCls:'importImage'
         },
         /*{
             text: 'Image Mapping',
