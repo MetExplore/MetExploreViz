@@ -20,11 +20,11 @@ Ext.define('metExploreViz.view.menu.viz_AlignMenu.Viz_AlignMenu', {
            // <-- submenu by nested config object
         items: [
             {
-                text: 'Horizontal alignment',
+                text: 'Horizontal alignment  (Click H)',
                 reference:'horizontalAlign',
                 iconCls:'horizontalalign'
             }, {
-                text: 'Vertical alignment',
+                text: 'Vertical alignment  (Click V)',
                 reference:'verticalAlign',
                 iconCls:'verticalalign'
             }

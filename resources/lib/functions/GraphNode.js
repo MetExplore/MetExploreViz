@@ -927,10 +927,19 @@ metExploreD3.GraphNode = {
 		var session = _metExploreViz.getSessionById(parent);
 		var sessionMain = _metExploreViz.getSessionById('viz');
 
+        document.addEventListener("keydown", function(e) {
+			// 83=S
+            if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+                e.preventDefault();
+                metExploreD3.GraphUtils.saveNetworkJSON();
+            }
+        }, false);
+
 		d3.select("body")
 		    .on("keydown", function() {
-		    	_MyThisGraphNode.charKey = d3.event.keyCode;
-              	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+
+                _MyThisGraphNode.charKey = d3.event.keyCode;
+                _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
 
               	// 65=A
 		    	if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)
@@ -943,6 +952,19 @@ metExploreD3.GraphNode = {
 							}
 						});
 		    	}
+
+                //H	72
+                if(_MyThisGraphNode.charKey==72 && session.getSelectedNodes().length>0)
+                {
+                    metExploreD3.GraphFunction.horizontalAlign();
+				}
+
+                //V 86
+                if(_MyThisGraphNode.charKey==86 && session.getSelectedNodes().length>0)
+                {
+					metExploreD3.GraphFunction.verticalAlign();
+                }
+
 		    })
 		    .on("keyup", function(e) {
 		    	// 46=Suppr
@@ -950,12 +972,11 @@ metExploreD3.GraphNode = {
 		    	{
 		    		metExploreD3.displayMessageYesNo("Selected nodes",'Do you want remove selected nodes?',function(btn){
 		                if(btn=="yes")
-		                {   
-		                   metExploreD3.GraphNetwork.removeSelectedNode("viz") 
+		                {
+		                   metExploreD3.GraphNetwork.removeSelectedNode("viz")
 		                }
 		           });
 		    	}
-
 		    	_MyThisGraphNode.charKey = 'none';
               	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
 		    });
