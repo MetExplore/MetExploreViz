@@ -4114,19 +4114,19 @@ setTimeout(
             .attr("class","buttonLink").attr("id","buttonLink")
             .attr("isLink", "false")
             .on("click", metExploreD3.GraphNetwork.setLink)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/unlink.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .attr("transform", "translate(10,50) scale(.5)")
             .on("mouseover", function(){
                 tooltip.text("Link compared networks");
                 return tooltip.style("top", "55px").style("left","50px").style("visibility", "visible");
             })
             .on("mouseout", function(){
                 return tooltip.style("visibility", "hidden");
-            });
+            })
+            .style("cursor", "hand")
+            .append("image")
+            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/unlink.svg")
+            .attr("width", "50")
+            .attr("height", "50")
+            .attr("transform", "translate(10,50) scale(.5)");
 
         d3
             .select("#"+panel)
