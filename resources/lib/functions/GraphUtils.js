@@ -1374,12 +1374,10 @@ metExploreD3.GraphUtils = {
 				    networkJSON+="\n"+JSON.stringify(key)+":{\n\"id\":\"" + _metExploreViz.getSessionById(key).getId() + "\",";
 				    networkJSON+="\n\"animated\": false ,";
 
-				    // Ajout
 					var allDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
 					if (Array.isArray(allDrawnCycles) && allDrawnCycles.length) {
                         networkJSON += "\n\"drawnCycles\":" + JSON.stringify(metExploreD3.GraphStyleEdition.allDrawnCycles) + ",";
                     }
-					// Fin Ajout
 
 				    networkJSON+="\n\"d3Data\":{\"id\":"+JSON.stringify(key)+"," ;
 				    networkJSON+="\"nodes\":[" ;
@@ -1449,13 +1447,11 @@ metExploreD3.GraphUtils = {
 					    	networkJSON+="\"svgHeight\":"+JSON.stringify(node.getSvgHeight())+",";
 					   	}
 
-					   	// Ajout
 				    	networkJSON+="\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node))+",";
                         var imagePosition = metExploreD3.GraphStyleEdition.createImageStyleObject(node);
                         if (imagePosition != undefined) {
                             networkJSON += "\"imagePosition\":" + JSON.stringify(imagePosition) + ",";
                         }
-						// Fin Ajout
 					   	
 					   	if(node.x!=undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
 					   	if(node.y!=undefined) networkJSON+="\"y\":"+JSON.stringify(node.y)+",";

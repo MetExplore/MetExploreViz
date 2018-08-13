@@ -753,7 +753,6 @@ metExploreD3.GraphMapping = {
 								force.start();
 						}
 					}
-					// Ajout
 					if (isBinned){
                         for (var i=0; i<conditionName.length; i++) {
                             metExploreD3.GraphMapping.discretizeFluxRange(conditionName[i]);
@@ -764,7 +763,6 @@ metExploreD3.GraphMapping = {
                             metExploreD3.GraphMapping.removeBinnedMapping(conditionName[i]);
                         }
 					}
-                    // Fin Ajout
 					metExploreD3.GraphNetwork.tick('viz');
 		   		}, 1
 		   	);
@@ -1013,7 +1011,6 @@ metExploreD3.GraphMapping = {
 								force.start();
 						}
 					}
-					// Ajout
                     if (isBinned){
                         for (var i=0; i<conditionName.length; i++) {
                             metExploreD3.GraphMapping.discretizeFluxRange(conditionName[i]);
@@ -1024,7 +1021,6 @@ metExploreD3.GraphMapping = {
                             metExploreD3.GraphMapping.removeBinnedMapping(conditionName[i]);
                         }
                     }
-                    // Fin Ajout
 					metExploreD3.GraphNetwork.tick('viz');
 		   		}, 1
 		   	);

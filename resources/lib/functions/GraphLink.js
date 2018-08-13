@@ -48,7 +48,6 @@ metExploreD3.GraphLink = {
 
             map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
             map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
-            // Ajout
             // Check whether to use linear flux value or discretized value
             var map1Value;
             var map2Value;
@@ -64,7 +63,6 @@ metExploreD3.GraphLink = {
                     map2Value = map2.binnedMapValue;
                 }
             }
-            // Fin Ajout
 
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
@@ -1858,7 +1856,6 @@ metExploreD3.GraphLink = {
      * @param {} scale = Ext.getStore('S_Scale').getStoreByGraphName(panel);
      */
     tick : function(panel, scale) {
-        //Ajout
         // If you want to use selection on compartments path
         d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
             .attr("d", metExploreD3.GraphNode.groupPath)
@@ -1907,7 +1904,6 @@ metExploreD3.GraphLink = {
                 .attr("d", function(link){  return funcPath(link, panel, this.id);})
                 .style("stroke-linejoin", "bevel");
         }
-        // Fin Ajout
     },
 
     displayConvexhulls : function(panel){

@@ -195,7 +195,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                         }]
                     });
 
-                    //Ajout et Modif
                     viz.CtxMenu = new Ext.menu.Menu({
                         items: [{
                             text: 'Remove nodes',
@@ -462,7 +461,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             }
                         }]
                     });
-					//Fin Ajout
 				}
 			}
 			

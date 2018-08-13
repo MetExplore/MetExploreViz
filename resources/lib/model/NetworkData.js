@@ -515,11 +515,9 @@ NetworkData.prototype = {
                         });
                     }
                 }
-                // Ajout
                 if (node.imagePosition != undefined){
                     that.nodes[that.nodes.length-1].imagePosition = node.imagePosition;
                 }
-                // Fin Ajout
 
                 that.nodes[that.nodes.length-1].x = node.x;
                 that.nodes[that.nodes.length-1].y = node.y;

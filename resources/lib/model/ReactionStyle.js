@@ -150,9 +150,7 @@ ReactionStyle.prototype = {
             displayedLabel = node.getName();
 
         return displayedLabel;
-    }
-    //Ajout
-    ,
+    },
     getLabelOpacity:function()
     {
         return this.labelOpacity;
@@ -162,5 +160,4 @@ ReactionStyle.prototype = {
     {
         this.labelOpacity = newData;
     }
-    //Fin Ajout
 };

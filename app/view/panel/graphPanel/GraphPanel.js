@@ -118,7 +118,6 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 hidden:false,
                                 padding:'0 0 0 0'
                           },
-                           //Ajout
                            {
                                xtype:'button',
                                text:'Enter edit mode',
@@ -131,7 +130,6 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                hidden:false,
                                padding:'0 0 0 0'
                            },
-                           //Fin Ajout
                           {
                                 xtype:'button'/*,text: 'Copy network'*/,
                                 overflowText: 'MetExploreViz documentation',
@@ -253,15 +251,12 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                 {
                     id : 'viz',
                     xtype : 'viz'
+                },
+                {
+                    title: 'Style Edition',
+                    id:'editModePanel',
+                    xtype : 'editModePanel'
                 }
-                //Ajout
-                    ,
-                    {
-                        title: 'Style Edition',
-                        id:'editModePanel',
-                        xtype : 'editModePanel'
-                    }
-                    //Fin Ajout
 ]
            }
            ,{   

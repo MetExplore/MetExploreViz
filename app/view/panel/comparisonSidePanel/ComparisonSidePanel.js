@@ -53,40 +53,38 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 		id:'captionFormCompartments',
 		xtype:'captionForm'
 	},
-        // Ajout
-        {
-            title:'Cycle',
-			reference: 'cycleDetection',
-            id:'cycleDetection',
-            xtype:'panel',
-            autoScroll: true,
-            autoHeight: true,
-			collapsed: true,
-			hidden: true,
-            items:[{
-                xtype:'button',
-                text:'Draw Cycle',
-                margin: '10 10 10 10',
-                align:'stretch',
-                width:'95%',
-                reference:'buttonDrawCycle',
-                hidden: true
-            },{
-                xtype:'menuseparator'
-			},{
-                xtype:'fieldcontainer',
-				id:'cycleDetectionPanel',
-                reference:'cycleDetectionPanel'
-            },{
-                xtype:'button',
-                text:'Hide cycle',
-                margin: '10 10 10 10',
-                align:'stretch',
-                width:'50%',
-                reference:'buttonHideCycle',
-                hidden: true
-            }]
-        }
-        // Fin Ajout
+	{
+		title:'Cycle',
+		reference: 'cycleDetection',
+		id:'cycleDetection',
+		xtype:'panel',
+		autoScroll: true,
+		autoHeight: true,
+		collapsed: true,
+		hidden: true,
+		items:[{
+			xtype:'button',
+			text:'Draw Cycle',
+			margin: '10 10 10 10',
+			align:'stretch',
+			width:'95%',
+			reference:'buttonDrawCycle',
+			hidden: true
+		},{
+			xtype:'menuseparator'
+		},{
+			xtype:'fieldcontainer',
+			id:'cycleDetectionPanel',
+			reference:'cycleDetectionPanel'
+		},{
+			xtype:'button',
+			text:'Hide cycle',
+			margin: '10 10 10 10',
+			align:'stretch',
+			width:'50%',
+			reference:'buttonHideCycle',
+			hidden: true
+		}]
+	}
 	]
 });

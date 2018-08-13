@@ -58,7 +58,6 @@ metExploreD3.GraphCaption = {
      * Draw caption
      */
     drawCaption : function(){
-        // Ajout
         d3.select("#viz")
             .select("#D3viz")
             .select(".logoViz")
@@ -75,7 +74,6 @@ metExploreD3.GraphCaption = {
             .select("#D3viz")
             .selectAll(".textCaptionRev")
             .remove();
-        // Fin Ajout
 
         d3.select("#viz")
             .select("#D3viz")

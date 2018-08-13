@@ -10,9 +10,7 @@ var metExploreD3 = {
     GraphPanel:"",
     GraphPath:"",
     GraphNode:"",
-    //Ajout
     GraphStyleEdition:"",
-    //Fin Ajout
     Features:"",
     user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
@@ -827,10 +825,7 @@ var metExploreViz = function(panel, webSite){
     this.dataFromWebSite = null;
     this.panel = panel;
     this.linkStyle = new LinkStyle(25, 2, 5, 5, 'red', 'green', 'black', '0.7', 'black');
-    // Ajout
-    //this.reactionStyle = new ReactionStyle(15, 30, 3, 3, 'dbIdentifier', 9, 'black', 1);
     this.reactionStyle = new ReactionStyle(7, 7, 0, 0, 'dbIdentifier', 9, 'black', 1, false);
-    // Fin Ajout
     this.metaboliteStyle = new MetaboliteStyle(14, 14, 7, 7, 7, 1,'name', '#b2ae92', false, false);
     this.generalStyle = new GeneralStyle("Website", "yellow", "blue", 500, false, false, false, false, false, false);
     this.initialData = undefined;

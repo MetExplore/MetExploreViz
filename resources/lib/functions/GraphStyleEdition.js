@@ -18,7 +18,6 @@ metExploreD3.GraphStyleEdition = {
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         if (metExploreD3.GraphStyleEdition.editMode==false) {
             metExploreD3.GraphStyleEdition.editMode=true;
-            console.log('edit mode entered');
             metExploreD3.GraphNetwork.animationButtonOff('viz');
             var force = _metExploreViz.getSessionById("viz").getForce();
             force.stop();
@@ -28,7 +27,6 @@ metExploreD3.GraphStyleEdition = {
         }
         else {
             metExploreD3.GraphStyleEdition.editMode=false;
-            console.log('edit mode exited');
             metExploreD3.GraphNetwork.animationButtonOff('viz');
             metExploreD3.GraphStyleEdition.endDragLabel();
             metExploreD3.GraphNode.applyEventOnNode('viz');

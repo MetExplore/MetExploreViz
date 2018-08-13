@@ -95,12 +95,11 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			click : me.searchNode,
 			scope : me
 		});
-		///Ajout
+
 		view.lookupReference('enterEditMode').on({
 			click : me.enterEditMode,
 			scope : me
 		});
-		//Fin Ajout
 	},
 
 	changeoption : function(){
@@ -769,9 +768,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				Ext.MessageBox.alert('Server-side failure with status code ' + response.status); 
 			}
 		});
-	}
-	//Ajout
-	,
+	},
     enterEditMode: function () {
         metExploreD3.GraphStyleEdition.toggleEditMode();
 		if (metExploreD3.GraphStyleEdition.editMode){
@@ -784,5 +781,4 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 		}
         (metExploreD3.GraphStyleEdition.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
     }
-	//Fin Ajout
 });

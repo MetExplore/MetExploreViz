@@ -53,7 +53,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 			scope : me
 		});
 
-		// Ajout
 		view.lookupReference('importCycle').on({
 			click : function(){
 				var component = Ext.getCmp('IDimportCycle');
@@ -73,15 +72,14 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 			scope : me
 		});
 
-    view.lookupReference('importImageMappingID').on({
-        click : function(){
-            var component = this.lookupReference('importImageMappingHidden');
-            component.changeTarget("ID");
-            component.fileInputEl.dom.click();
-        },
-        scope : me
-    });
-		// Fin Ajout
+		view.lookupReference('importImageMappingID').on({
+			click : function(){
+				var component = this.lookupReference('importImageMappingHidden');
+				component.changeTarget("ID");
+				component.fileInputEl.dom.click();
+			},
+			scope : me
+		});
 	},
 
 	importMapping : function(){

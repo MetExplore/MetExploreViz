@@ -51,7 +51,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
             id:'buttonImportCoords',
             xtype:'buttonImportCoordinates'/*,text: 'Refresh/Build network'*/
         },
-        // Ajout
         {
             text: 'Import Cycle',
             reference: 'importCycle',
@@ -79,11 +78,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
                     }]
             }
         },
-        /*{
-            text: 'Image Mapping',
-            reference: 'importImageMapping',
-            tooltip: 'Import image for mapping'
-        },*/
         {
             xtype: 'buttonImportImage',
             reference: 'importImageMappingHidden',
@@ -96,7 +90,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
             multiple: true,
             hidden: true
         }
-        // Fin Ajout
         // {
         //     text: 'Import saved network from JSON file',
         //     reference:'importSavedNetwork',
