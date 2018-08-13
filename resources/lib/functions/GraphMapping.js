@@ -2266,9 +2266,9 @@ metExploreD3.GraphMapping = {
 	* Remove the mapping graphically
 	* @param {} conditionName : Condition choosed by the user
 	*/
-	removeGraphMappingData : function(conditionName) {
-		var session = _metExploreViz.getSessionById('viz');
-		var vis = d3.select("#viz").select("#D3viz");
+	removeGraphMappingData : function(panel) {
+		var session = _metExploreViz.getSessionById(panel);
+		var vis = d3.select("#"+panel).select("#D3viz");
 
 		vis.selectAll("g.node")
 			.transition().duration(1000)
@@ -2284,7 +2284,7 @@ metExploreD3.GraphMapping = {
 					else
 						d3.select(this).select('text').transition().duration(4000).style("fill", "black");
 				}
-			});	
+			});
 
 		vis.selectAll("g.node")
 			.filter(function(d){
@@ -2297,8 +2297,10 @@ metExploreD3.GraphMapping = {
 
 		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 		var linkStyle = metExploreD3.getLinkStyle();
-		metExploreD3.GraphLink.refreshLink('viz', session, linkStyle, metaboliteStyle);					
+		if(panel==="viz")
+			metExploreD3.GraphLink.refreshLink('viz', session, linkStyle, metaboliteStyle);
 	},
+
 
 	launchAfterMappingFunction:function(mappingId, func) {
         var mapping = _metExploreViz.getMappingById(mappingId); 

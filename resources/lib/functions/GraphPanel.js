@@ -337,31 +337,6 @@ metExploreD3.GraphPanel = {
 				.select("#buttonHand")
 				.attr("transform", "translate("+deltaX+",0) scale(1)");
 
-			x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#whiteBlack")
-				.attr('x');
-			deltaX = w-100-x;
-
-		    d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#whiteBlack")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
-
-			x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#invertColor")
-				.attr('x');
-			deltaX = w-100-x;
-
-		    d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#invertColor")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
 		}
 		if(session!=undefined)
 		{

@@ -15,7 +15,7 @@
    inkscape:version="0.92.1 r15371"
    width="512"
    height="512"
-   sodipodi:docname="copy-network.svg">
+   sodipodi:docname="alignMapping.svg">
   <metadata
      id="metadata3125">
     <rdf:RDF>
@@ -24,7 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -43,9 +43,9 @@
      inkscape:window-height="1058"
      id="namedview3121"
      showgrid="false"
-     inkscape:zoom="3.21875"
-     inkscape:cx="161.61237"
-     inkscape:cy="279.9078"
+     inkscape:zoom="0.35355339"
+     inkscape:cx="698.0384"
+     inkscape:cy="1039.7705"
      inkscape:window-x="3832"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -58,14 +58,27 @@
      x="0"
      y="0" />
   <path
-     style="fill:#800000;fill-opacity:1"
-     id="path11"
+     style="fill:#00ffff;fill-opacity:1"
+     id="path25"
      sodipodi:type="arc"
-     sodipodi:cx="70.05825"
-     sodipodi:cy="201.16504"
-     sodipodi:rx="12.582524"
-     sodipodi:ry="15.689321"
+     sodipodi:cx="88.840515"
+     sodipodi:cy="244.14964"
+     sodipodi:rx="37.447475"
+     sodipodi:ry="38.859249"
      sodipodi:start="0"
-     sodipodi:end="0.046675166"
-     d="m 82.640775,201.16504 a 12.582524,15.689321 0 0 1 -0.0137,0.73203 L 70.05825,201.16504 Z" />
+     sodipodi:end="6.2261482"
+     d="M 126.28799,244.14964 A 37.447475,38.859249 0 0 1 89.374471,283.00494 37.447475,38.859249 0 0 1 51.408267,245.2577 37.447475,38.859249 0 0 1 87.239082,205.32594 37.447475,38.859249 0 0 1 126.22709,241.93443"
+     sodipodi:open="true" />
+  <path
+     style="fill:#00ffff;fill-opacity:1"
+     id="path25-3"
+     sodipodi:type="arc"
+     sodipodi:cx="290.26733"
+     sodipodi:cy="344.41568"
+     sodipodi:rx="37.447475"
+     sodipodi:ry="38.859249"
+     sodipodi:start="0"
+     sodipodi:end="6.2261482"
+     d="m 327.71481,344.41568 a 37.447475,38.859249 0 0 1 -36.91352,38.8553 37.447475,38.859249 0 0 1 -37.9662,-37.74724 37.447475,38.859249 0 0 1 35.83081,-39.93176 37.447475,38.859249 0 0 1 38.98801,36.60848"
+     sodipodi:open="true" />
 </svg>

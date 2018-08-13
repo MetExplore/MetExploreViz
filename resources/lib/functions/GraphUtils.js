@@ -248,6 +248,18 @@ metExploreD3.GraphUtils = {
 		if(buttonLink!=null)  
 		  buttonLink.style("display", "none");
 
+		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
+		if(buttonAlignMapping!=null)
+            buttonAlignMapping.style("display", "none");
+
+		var buttonImportCoordinates = d3.selectAll("#buttonImportCoordinates");
+		if(buttonImportCoordinates!=null)
+            buttonImportCoordinates.style("display", "none");
+
+		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
+		if(buttonExportCoordinates!=null)
+            buttonExportCoordinates.style("display", "none");
+
 		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
 		if(buttonZoomIn!=null)  
 		  buttonZoomIn.style("display", "none");
@@ -255,14 +267,6 @@ metExploreD3.GraphUtils = {
 		var buttonHand = d3.selectAll("#buttonHand");
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "none");
-
-		var whiteBlack = d3.selectAll("#whiteBlack");
-		if(whiteBlack!=null)  
-		  whiteBlack.style("display", "none");
-
-		var invertColor = d3.selectAll("#invertColor");
-		if(invertColor!=null)  
-		  invertColor.style("display", "none");
 
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  
@@ -472,6 +476,18 @@ metExploreD3.GraphUtils = {
 		if(buttonLink!=null)  
 		  buttonLink.style("display ", "inline");
 
+		var buttonImportCoordinates = d3.selectAll("#buttonImportCoordinates");
+		if(buttonImportCoordinates!=null)
+            buttonImportCoordinates.style("display ", "inline");
+
+		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
+		if(buttonExportCoordinates!=null)
+            buttonExportCoordinates.style("display ", "inline");
+
+		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
+		if(buttonAlignMapping!=null)
+            buttonAlignMapping.style("display ", "inline");
+
 		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
 		if(buttonZoomIn!=null)  
 		  buttonZoomIn.style("display", "inline");
@@ -479,15 +495,6 @@ metExploreD3.GraphUtils = {
 		var buttonHand = d3.selectAll("#buttonHand");
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "inline");
-
-
-		var invertColor = d3.selectAll("#invertColor");
-		if(invertColor!=null)  
-		  invertColor.style("display", "inline");
-
-		var whiteBlack = d3.selectAll("#whiteBlack");
-		if(whiteBlack!=null)  
-		  whiteBlack.style("display", "inline");
 
 		var buttonRescale = d3.selectAll("#buttonRescale");
 		if(buttonRescale!=null)
@@ -550,14 +557,6 @@ metExploreD3.GraphUtils = {
 				var buttonAnim = clone.getElementById("buttonAnim");
 				if(buttonAnim!=null) 
 					buttonAnim.parentNode.removeChild(buttonAnim);
-
-				var invertColor = clone.getElementById("invertColor");
-				if(invertColor!=null) 
-					invertColor.parentNode.removeChild(invertColor);
-
-                var whiteBlack = clone.getElementById("whiteBlack");
-                if(whiteBlack!=null)
-                    whiteBlack.parentNode.removeChild(whiteBlack);
 
                 var buttonRescale = clone.getElementById("buttonRescale");
                 if(buttonRescale!=null)
@@ -1072,11 +1071,12 @@ metExploreD3.GraphUtils = {
 				        {
 				            while (child) {
 			        			if(child.getAttribute!=undefined){
-						            if(child.getAttribute("href")!="resources/icons/pause.svg" 
-						                && child.getAttribute("href")!="resources/icons/whiteBlack.png" 
+						            if(child.getAttribute("href")!="resources/icons/pause.svg"
 						                && child.getAttribute("href")!="resources/icons/rescale.png"
-						                && child.getAttribute("href")!="resources/icons/invertColor.svg"
 						                && child.getAttribute("href")!="resources/icons/link.svg" 
+						                && child.getAttribute("href")!="resources/icons/exportCoordinates.png"
+                                        && child.getAttribute("href")!="resources/icons/importCoordinates.png"
+                                        && child.getAttribute("href")!="resources/icons/alignMapping.svg"
 						                && child.getAttribute("href")!="resources/icons/unlink.svg")
 						            {
 						                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
@@ -1132,9 +1132,21 @@ metExploreD3.GraphUtils = {
 		d3.selectAll("#buttonAnim")
         	.style("display", "none");
 
+		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
+		if(buttonAlignMapping!=null)
+            buttonAlignMapping.style("display", "none");
+
 		var buttonLink = d3.selectAll("#buttonLink");
-		if(buttonLink!=null)  
+		if(buttonLink!=null)
 		  buttonLink.style("display", "none");
+
+		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
+		if(buttonExportCoordinates!=null)
+            buttonExportCoordinates.style("display", "none");
+
+		var buttonImportCoordinates = d3.selectAll("#buttonImportCoordinates");
+		if(buttonImportCoordinates!=null)
+            buttonImportCoordinates.style("display", "none");
 
 		var brush = d3.selectAll("#brush");
 		if(brush!=null)  
@@ -1147,14 +1159,6 @@ metExploreD3.GraphUtils = {
 		var buttonHand = d3.selectAll("#buttonHand");
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "none");
-
-		var invertColor = d3.selectAll("#invertColor");
-		if(invertColor!=null)  
-		  invertColor.style("display", "none");
-
-		var whiteBlack = d3.selectAll("#whiteBlack");
-		if(whiteBlack!=null)  
-		  whiteBlack.style("display", "none");
 
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  

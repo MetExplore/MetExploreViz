@@ -622,7 +622,7 @@ metExploreD3.GraphNode = {
 					var sessionsStore = _metExploreViz.getSessionsSet();
 
 					for (var key in sessionsStore) {
-						if(sessionsStore[key].isLinked() && panel!=sessionsStore[key].getDbIdentifier())
+						if(sessionsStore[key].isLinked() && panel!=key)
 						{
 
 							// Chage the node statute
@@ -640,11 +640,11 @@ metExploreD3.GraphNode = {
 
                             if(d.isSelected())
 							{ 
-								_MyThisGraphNode.selectNode(d, sessionsStore[key].getDbIdentifier());
+								_MyThisGraphNode.selectNode(d, key);
 							}
 							else
 							{
-								_MyThisGraphNode.unSelectNode(d, sessionsStore[key].getDbIdentifier());
+								_MyThisGraphNode.unSelectNode(d, key);
 							}				
 						}
 					}

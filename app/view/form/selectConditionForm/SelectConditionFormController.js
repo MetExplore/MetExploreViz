@@ -424,8 +424,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	},
 
 	// RemoveMapping in function of data type
-	removeGraphMapping : function(conditionName) {
-		metExploreD3.GraphMapping.removeGraphMappingData(conditionName);
+	removeGraphMapping : function() {
+		metExploreD3.GraphMapping.removeGraphMappingData('viz');
 	},
 
 	// RemoveMapping in function of data type
