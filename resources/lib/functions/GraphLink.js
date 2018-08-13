@@ -2210,7 +2210,7 @@ metExploreD3.GraphLink = {
     computePathHorizontal : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-        // Compute the coordinates of the control point used for drawing the path (it is the point where all the arc entering or all the arc exiting the starting node converge)
+        // Compute the coordinates of the control point used for drawing the path
         var controlX = endNode.x;
         var controlY = startNode.y;
         if (firstPointX < startNode.x && controlX > firstPointX){
@@ -2318,7 +2318,7 @@ metExploreD3.GraphLink = {
     computePathVertical : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-        // Compute the coordinates of the control point used for drawing the path (it is the point where all the arc entering or all the arc exiting the starting node converge)
+        // Compute the coordinates of the control point used for drawing the path
         var controlX = startNode.x;
         var controlY = endNode.y;
         if (firstPointY < startNode.y && controlY > firstPointY){
