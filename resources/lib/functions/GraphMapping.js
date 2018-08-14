@@ -2659,12 +2659,10 @@ metExploreD3.GraphMapping = {
 
         // Divide the range of value into 10 bins
         var maxValue = Math.abs(Number(allValues[allValues.length-1].mapValue));
-        var minValue = Math.abs(Number(allValues[0].mapValue));
-        var range = maxValue - minValue;
-        var binsWidth = range/nbBins;
+        var binsWidth = maxValue/breakPoints.length;
         var midBinValues = [];
-        for (var i=0; i<nbBins; i++){
-            midBinValues.push(minValue + binsWidth / 2 + i * binsWidth);
+        for (var i=0; i<breakPoints.length; i++){
+            midBinValues.push(binsWidth / 2 + i * binsWidth);
         }
 
         // Assign the values into the corresponding bins
