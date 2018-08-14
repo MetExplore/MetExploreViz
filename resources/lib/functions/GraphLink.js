@@ -2019,6 +2019,9 @@ metExploreD3.GraphLink = {
      * @param {String} panel : The panel in which to draw the links.
      */
     bundleLinks : function (panel) {
+        if (panel !== "viz") {
+            metExploreD3.GraphFunction.checkIfCycleInPanel(panel);
+        }
         var reactionStyle = metExploreD3.getReactionStyle();
         var reactions = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")

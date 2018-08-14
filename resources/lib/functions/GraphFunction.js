@@ -2208,6 +2208,33 @@ metExploreD3.GraphFunction = {
     },
 
     /*******************************************
+     * Check if the links in a panel are part of a cycle that should be drawn and give them the needed attributes.
+     * @param {String} panel: The panel.
+     */
+    checkIfCycleInPanel: function (panel) {
+    	var linkViz = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+			.filter(function (d) {
+                return (d.partOfCycle === true);
+            });
+        var linksPanel = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+			.filter(function (d) {
+				var flag = true;
+				linkViz.each(function (dViz) {
+					if (d.id === dViz.id){
+						d.partOfCycle = dViz.partOfCycle;
+						d.cycleRadius = dViz.cycleRadius;
+						d.arcDirection = dViz.arcDirection;
+						flag = false;
+					}
+                });
+				return flag;
+            })
+			.each(function (d) {
+				d.partOfCycle = false;
+            });
+    },
+
+    /*******************************************
      * Check if the selected nodes are part of a cycle or not.
      * @param {String} panel: The panel containing the nodes.
      */
