@@ -27,6 +27,11 @@ Ext.define('metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenuController', {
 			scope : me
 		});
 
+		view.lookupReference('exportCycles').on({
+			click : me.exportCycles,
+			scope : me
+		});
+
 		view.lookupReference('exportDOT').on({
 			click : me.exportDOT,
 			scope : me
@@ -48,5 +53,8 @@ Ext.define('metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenuController', {
 	},
 	exportJSON : function(){
 		metExploreD3.GraphUtils.saveNetworkJSON();
-	}
+	},
+	exportCycles : function () {
+		metExploreD3.GraphUtils.saveCyclesList();
+    }
 });

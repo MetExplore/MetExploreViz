@@ -1741,9 +1741,81 @@ metExploreD3.GraphUtils = {
 				    window.open(uri);
 				}
 				metExploreD3.hideMask(myMask);
-					
+
 	        }, 100);
 		}
-	}
+	},
+	
+	saveCyclesList : function () {
+        var allDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+        if ( metExploreD3.GraphStyleEdition.allDrawnCycles.length) {
+            var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+            if (myMask != undefined) {
+
+                metExploreD3.showMask(myMask);
+
+                metExploreD3.deferFunction(function () {
+
+
+                    var cycleList = "";
+                    for (var i = 0; i < allDrawnCycles.length; i++) {
+                        for (var j = 0; j < allDrawnCycles[i].length; j++) {
+                            cycleList += allDrawnCycles[i][j];
+                            if (j !== allDrawnCycles[i].length - 1) {
+                                cycleList += ",";
+                            }
+                            else {
+                                cycleList += "\n";
+                            }
+                        }
+                    }
+
+                    var blob = new Blob([cycleList], {type: "text"}); // pass a useful mime type here
+                    var url = URL.createObjectURL(blob);
+                    // var url = 'data:text/json;charset=utf8,' + encodeURIComponent(networkJSON);
+                    var link = document.createElement('a');
+                    if (typeof link.download === 'string') {
+                        link.href = url;
+
+
+                        var today = new Date();
+                        var dd = today.getDate();
+                        var mm = today.getMonth() + 1; //January is 0!
+                        var yyyy = today.getFullYear();
+
+                        if (dd < 10) {
+                            dd = '0' + dd
+                        }
+
+                        if (mm < 10) {
+                            mm = '0' + mm
+                        }
+
+                        today = mm + '-' + dd + '-' + yyyy;
+
+                        link.download = "MetExploreVizCycles_" + today + ".txt";
+
+                        //Firefox requires the link to be in the body
+                        document.body.appendChild(link);
+
+                        //simulate click
+                        link.click();
+
+                        //remove the link when done
+                        document.body.removeChild(link);
+                    }
+                    else {
+                        window.open(uri);
+                    }
+                    metExploreD3.hideMask(myMask);
+                    console.log(cycleList);
+
+                }, 100);
+            }
+        }
+        else {
+            metExploreD3.displayWarning('No cycles found', 'There is not any cycles to export');
+		}
+    }
 };
 
