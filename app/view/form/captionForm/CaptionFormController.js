@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description CaptionFormController : Control displaying pathway and compartment caption
+ * (a)description CaptionFormController : Control displaying pathway and compartment caption
  */
 
 Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {

@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description class to control metabolite styles or configs
+ * (a)description class to control metabolite styles or configs
  */
 
 Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormController', {
@@ -59,7 +59,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 
 				var newLabel = view.lookupReference('selectDisplayMetaboliteLabel').getValue();
 				var isAlias = view.lookupReference('checkboxAlias').getValue();
-
+			    
 				if(newLabel!==s_MetaboliteStyle.getLabel()
                     || isAlias!==s_MetaboliteStyle.isUseAlias()
                     || (newHeight !== s_MetaboliteStyle.getHeight())
@@ -76,7 +76,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 					s_MetaboliteStyle.setRY(parseFloat(newry));
 					s_MetaboliteStyle.setLabel(newLabel);
 					s_MetaboliteStyle.setUseAlias(isAlias);
-
 				}		
 
 				if(isset){

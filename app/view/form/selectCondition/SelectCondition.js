@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description combobox to select condition in mapping
+ * (a)description combobox to select condition in mapping
  * selectCondition
  */
 Ext.define('metExploreViz.view.form.selectCondition.SelectCondition', {

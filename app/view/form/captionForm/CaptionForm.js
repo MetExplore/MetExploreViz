@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description CaptionForm : Display pathway and compartment caption
+ * (a)description CaptionForm : Display pathway and compartment caption
  */
 Ext.define('metExploreViz.view.form.captionForm.CaptionForm', {
     extend: 'Ext.panel.Panel',  

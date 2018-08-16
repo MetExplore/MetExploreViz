@@ -1,6 +1,6 @@
 /**
  * @author Maxime Chazalviel
- * @description Menu export network viz
+ * (a)description Menu export network viz
  */
 
 Ext.define('metExploreViz.view.menu.viz_ColorMenu.Viz_ColorMenu', {

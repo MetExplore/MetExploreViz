@@ -52,6 +52,34 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 			},
 			scope : me
 		});
+
+		view.lookupReference('importCycle').on({
+			click : function(){
+				var component = Ext.getCmp('IDimportCycle');
+                if(component!= undefined){
+                    component.fileInputEl.dom.click();
+                }
+			},
+			scope : me
+		});
+
+		view.lookupReference('importImageMappingName').on({
+			click : function(){
+				var component = this.lookupReference('importImageMappingHidden');
+				component.changeTarget("Name");
+				component.fileInputEl.dom.click();
+			},
+			scope : me
+		});
+
+		view.lookupReference('importImageMappingID').on({
+			click : function(){
+				var component = this.lookupReference('importImageMappingHidden');
+				component.changeTarget("ID");
+				component.fileInputEl.dom.click();
+			},
+			scope : me
+		});
 	},
 
 	importMapping : function(){

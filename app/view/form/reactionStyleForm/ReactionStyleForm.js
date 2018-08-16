@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description GeneralStyleForm : Reaction style configs
+ * (a)description GeneralStyleForm : Reaction style configs
  */
 Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
     extend: 'Ext.panel.Panel',  

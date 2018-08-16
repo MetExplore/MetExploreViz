@@ -22,7 +22,8 @@ var NodeData = function(
         pathW, 
         lock, 
         alias, 
-        label
+        label,
+        labelFont
     ) {
         this.name=name;
         this.dbIdentifier = dbIdentifier ;
@@ -57,6 +58,7 @@ var NodeData = function(
             lock=false;
         this.locked = lock;
         this.label= label;
+        this.labelFont = labelFont;
 };
 
 

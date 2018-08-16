@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description : Tu manage the metabolic network
+ * (a)description : Tu manage the metabolic network
  */
 
     	
@@ -963,7 +963,10 @@ metExploreD3.GraphNetwork = {
 		metExploreD3.sortCompartmentInBiosource();
  		
  		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
- 			
+
+		// reinitialize
+		metExploreD3.GraphStyleEdition.allDrawnCycles = [];
+
 	},
 
 	rescale : function(panel){
@@ -1727,107 +1730,180 @@ metExploreD3.GraphNetwork = {
 				metaboliteStyle.getStrokeWidth()/2
 			);
 
+		//metExploreD3.GraphNode.applyEventOnNode(panel);
 		node.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
 			.filter(function(d) { return d.getId() == identifier; })
-			.on("mouseenter", function(d) { 
-					var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
-					d3.select(this)
-						.each(function(node){
-							var last = nodes[0][nodes.size()-1];
-							this.parentNode.insertBefore(this, last);
-						})
-						.attr("transform", "translate("+d.x+", "+d.y+") scale(2)");
-			})
-			.on("mouseover", function(d) { 
+            .on("mouseenter", function(d) {
+                if (!metExploreD3.GraphStyleEdition.editMode) {
+                    var transform = d3.select(this).attr("transform");
+                    var scale = transform.substring(transform.indexOf("scale"), transform.length);
+                    var scaleVal = scale.substring(6, scale.indexOf(')'));
 
-				d.fixed = true;
-				if(parent=="viz")
-				{
-					d3.select("#"+panel)
-						.selectAll('g.node')
-						.filter(function(n){return n==d})
-						.select('.locker')
+                    if (isNaN(scaleVal))
+                        scaleVal = 1;
+
+                    d3.select(this).attr("transform", "translate(" + d.x + ", " + d.y + ") scale(" + scaleVal * 2 + ")");
+                    // Prevent movement of the node label during mouseenter
+                    var labelElement = d3.select(this).select("text");
+                    var newY = (labelElement.attr("y")) ? labelElement.attr("y") / 2 : 0;
+                    var newX = (labelElement.attr("x")) ? labelElement.attr("x") / 2 : 0;
+                    var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                    var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                    if (metExploreD3.GraphStyleEdition.editMode) {
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                    }
+                    else {
+                        labelElement.attr("y", newY);
+                        labelElement.attr("x", newX);
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
+                    }
+                    // Prevent movement of the node image during mouseenter
+                    var imageElement = d3.select(this).select(".imageNode");
+                    if (!imageElement.empty()) {
+                        var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
+                        var imageScale = d3.transform(imageElement.attr("transform")).scale;
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + (imageScale[0] / 2) + ", " + (imageScale[1] / 2) + ")");
+                    }
+                }
+
+                var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+                if(d.getBiologicalType()=="reaction"){
+
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5");
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5");
+                }
+                else
+                {
+                    links.filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "red")
+                        .style("stroke-width", "1.5");
+
+                    links.filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "green")
+                        .style("stroke-width", "1.5");
+                }
+            })
+            .on("mouseover", function(d) {
+                var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                d3.select(this)
+                    .each(function(node){
+                        var last = nodes[0][nodes.size()-1];
+                        this.parentNode.insertBefore(this, last);
+                    });
+
+                d.fixed = true;
+                if(panel=="viz")
+                {
+                    d3.select("#"+panel)
+                        .selectAll('g.node')
+                        .filter(function(node){return node==d})
+                        .select('.locker')
+                        //.classed('hide', metExploreD3.GraphStyleEdition.editMode)
 						.classed('hide', false)
-						.select('.iconlocker')
-						.attr(
-							"xlink:href",
-							function(d) {
-								if(d.isLocked())
-									return "resources/icons/lock_font_awesome.svg";
-								else
-									return "resources/icons/unlock_font_awesome.svg";
-						});
-				}
+                        .select('.iconlocker')
+                        .attr(
+                            "xlink:href",
+                            function(d) {
+                                if(d.isLocked())
+                                    return "resources/icons/lock_font_awesome.svg";
+                                else
+                                    return "resources/icons/unlock_font_awesome.svg";
+                            });
+                }
 
-				if(d.getBiologicalType()=="reaction"){
-					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-						.selectAll("path.link")
-						.filter(function(link){return d.getId()==link.getSource().getId();})
-						.style("stroke", "green"); 	
-					 
-					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-						.selectAll("path.link")
-						.filter(function(link){return d.getId()==link.getTarget().getId();})
-						.style("stroke", "red"); 	
-				}
-				else
-				{
-					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-						.selectAll("path.link")
-						.filter(function(link){return d.getId()==link.getSource().getId();})
-						.style("stroke", "red"); 	
-					 
-					d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-						.selectAll("path.link")
-						.filter(function(link){return d.getId()==link.getTarget().getId();})
-						.style("stroke", "green"); 
-				}
-				 
-				var xScale=scale.getXScale();
-				var yScale=scale.getYScale();
-				
+                if(d.getBiologicalType()=="reaction"){
+                    d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "green");
+
+                    d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "red");
+                }
+                else
+                {
+                    d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getSource().getId();})
+                        .style("stroke", "red");
+
+                    d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                        .selectAll("path.link")
+                        .filter(function(link){return d.getId()==link.getTarget().getId();})
+                        .style("stroke", "green");
+                }
+            })
+            .on("mouseleave", function(d) {
+                d3.select(this).select('.locker').classed('hide', true);
+
+                if (!metExploreD3.GraphStyleEdition.editMode) {
+                    var transform = d3.select(this).attr("transform");
+                    var scale = transform.substring(transform.indexOf("scale"), transform.length);
+                    var scaleVal = scale.substring(6, scale.indexOf(')'));
+                    if (isNaN(scaleVal))
+                        scaleVal = 1;
+
+                    var nodes = d3.select("#" + panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                    d3.select(this).attr("transform", "translate(" + d.x + ", " + d.y + ") scale(" + scaleVal / 2 + ")");
+                    var labelElement = d3.select(this).select("text");
+                    var newY = (labelElement.attr("y")) ? labelElement.attr("y") * 2 : 0;
+                    var newX = (labelElement.attr("x")) ? labelElement.attr("x") * 2 : 0;
+                    var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
+                    var labelScale = d3.transform(labelElement.attr("transform")).scale;
+                    if (metExploreD3.GraphStyleEdition.editMode) {
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                    }
+                    else {
+                        labelElement.attr("y", newY);
+                        labelElement.attr("x", newX);
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")");
+                    }
+                    var imageElement = d3.select(this).select(".imageNode");
+                    if (!imageElement.empty()) {
+                        var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
+                        var imageScale = d3.transform(imageElement.attr("transform")).scale;
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + (imageScale[0] * 2) + ", " + (imageScale[1] * 2) + ")");
+                    }
+                }
+
+                if(!d.isLocked())
+                    d.fixed = false;
+                var linkStyle = metExploreD3.getLinkStyle();
 
 
-			})
-	        .on("mouseleave", function(d) {  
-				d3.select(this)
-					.attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
-				
-				if(!d.isLocked())
-					d.fixed = false;
+                d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                    .selectAll("path.link")
+                    .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
+                    .style("stroke",linkStyle.getStrokeColor())
+                    .style("stroke-width", "0.5");
 
-				node
-					.filter(function(n){return n==d})
-					.select('.locker')
-					.classed('hide', true);
+                if(d.getBiologicalType()=="reaction"){
+                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", reactionStyle.getWidth())
+                        .attr("height", reactionStyle.getHeight())
+                        .attr( "transform", "translate(-" + reactionStyle.getWidth() / 2 + ",-" + reactionStyle.getHeight() / 2 + ")");
+                }
+                else
+                {
 
-				var linkStyle = metExploreD3.getLinkStyle();  
-
-	    		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-					.selectAll("path.link")
-					.filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
-					.style("stroke",linkStyle.getStrokeColor());
-
-				if(d.getBiologicalType()=="reaction"){
-					d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
-						.duration(750)
-	                    .attr("width", reactionStyle.getWidth())
-	                    .attr("height", reactionStyle.getHeight())
-	                    .attr( "transform", "translate(-" + reactionStyle.getWidth() / 2 + ",-" + reactionStyle.getHeight() / 2 + ")");
-				}
-				else
-				{
-					
-					d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
-						 .duration(750)
-	                     .attr("width", metaboliteStyle.getWidth())
-	                     .attr("height", metaboliteStyle.getHeight())
-						 .attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
-												+ metaboliteStyle.getHeight() / 2
-												+ ")");
-				}
-	        });
-
+                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
+                        .duration(750)
+                        .attr("width", metaboliteStyle.getWidth())
+                        .attr("height", metaboliteStyle.getHeight())
+                        .attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
+                            + metaboliteStyle.getHeight() / 2
+                            + ")");
+                }
+            });
 			var selection = node.filter(function(d) { return d.getId() == identifier; });
  			
 	 		metExploreD3.GraphNode.colorStoreByCompartment(selection);
@@ -2017,7 +2093,13 @@ metExploreD3.GraphNetwork = {
 			if (metExploreD3.GraphNetwork.isAnimated(panel)==true || metExploreD3.GraphNetwork.isAnimated(panel)=="true") {
 				force.start();
 			}
-			return newNode;
+
+        if (metExploreD3.GraphStyleEdition.editMode){
+            metExploreD3.GraphStyleEdition.endDragLabel();
+            metExploreD3.GraphStyleEdition.startDragLabel();
+        }
+
+        return newNode;
 	},
 
 	/*******************************************
@@ -2431,11 +2513,12 @@ metExploreD3.GraphNetwork = {
     * @param {} panel :panel where node must be duplicated
     */
     duplicateSideCompound : function(theNodeElement, panel){
+        metExploreD3.GraphFunction.removeCycleContainingNode(theNodeElement);
 		var session = _metExploreViz.getSessionById(panel);
 
 		var vis = d3.select("#"+panel).select("#D3viz");
-		
-		if(session!=undefined) 
+
+		if(session!=undefined)
 		{
 			// We stop the previous animation
 			if(session.isLinked()){
@@ -2443,35 +2526,35 @@ metExploreD3.GraphNetwork = {
 				if(session!=undefined)
 				{
 					var force = session.getForce();
-					if(force!=undefined)  
-					{		
+					if(force!=undefined)
+					{
 						if(metExploreD3.GraphNetwork.isAnimated("viz")== "true" || metExploreD3.GraphNetwork.isAnimated("viz")==true)
 							force.resume();
-					}	
+					}
 				}
 			}
 			else
-			{	
-				
+			{
+
 				var force = session.getForce();
-				if(force!=undefined)  
+				if(force!=undefined)
 				{
 					if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" || metExploreD3.GraphNetwork.isAnimated(panel)==true)
 						force.resume();
-											
+
 				}
 			}
 		}
 		metExploreD3.GraphNetwork.duplicateANode(theNodeElement, panel);
 
-		
-		if(session!=undefined)  
+
+		if(session!=undefined)
 		{
-			if(force!=undefined)  
-			{		
+			if(force!=undefined)
+			{
 				if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" || metExploreD3.GraphNetwork.isAnimated(panel)==true)
 					force.start();
-			}	
+			}
 		}
 		metExploreD3.GraphNetwork.initCentroids();
 	},

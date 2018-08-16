@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description class to control contion selection panel and to draw mapping in the mapping story
+ * (a)description class to control contion selection panel and to draw mapping in the mapping story
  */
 
 Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {

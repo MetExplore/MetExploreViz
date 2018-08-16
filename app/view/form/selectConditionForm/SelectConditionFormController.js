@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description class to control contion selection panel and to draw mapping in the mapping story
+ * (a)description class to control contion selection panel and to draw mapping in the mapping story
  */
 
 Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormController', {
@@ -63,17 +63,20 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				if(newVal=="Flux"){
 					view.lookupReference('opacity').setHidden(false);  
 					view.lookupReference('valueonarrow').setHidden(false);
+                    view.lookupReference('regroupValuesIntoClass').setHidden(false);
 					view.lookupReference('threshold').setHidden(true);
 				}
 				else{
 					if(newVal=="Suggestion"){
 						view.lookupReference('opacity').setHidden(true);
 						view.lookupReference('valueonarrow').setHidden(true);
+                        view.lookupReference('regroupValuesIntoClass').setHidden(true);
 					view.lookupReference('threshold').setHidden(false);
 					}
 					else{
 						view.lookupReference('opacity').setHidden(true);
 						view.lookupReference('valueonarrow').setHidden(true);
+                        view.lookupReference('regroupValuesIntoClass').setHidden(true);
 					view.lookupReference('threshold').setHidden(true);
 					}
 				}
@@ -239,6 +242,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				var thresholdField = view.lookupReference('threshold');
 				var opacity = view.lookupReference('opacity');
 				var valueonarrow = view.lookupReference('valueonarrow');
+                var regroupValuesIntoClass = view.lookupReference('regroupValuesIntoClass');
 
 				var storeCond = comboCond.getStore();
 		        //take an array to store the object that we will get from the ajax response
@@ -253,6 +257,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
                 selectConditionType.clearValue();
                 thresholdField.hide();
                 valueonarrow.hide();
+                regroupValuesIntoClass.hide();
                 opacity.hide();
 	        }
         	metExploreD3.fireEventArg('selectMappingVisu', "removemapping", mapping);
@@ -352,9 +357,11 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
             var thresholdField = view.lookupReference('threshold');
             var opacity = view.lookupReference('opacity');
             var valueonarrow = view.lookupReference('valueonarrow');
+            var regroupValuesIntoClass = view.lookupReference('regroupValuesIntoClass');
 
             thresholdField.hide();
             valueonarrow.hide();
+            regroupValuesIntoClass.hide();
             opacity.hide();
         }
 
@@ -470,7 +477,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
         }
 
         if(dataType==="Flux"){
-            metExploreD3.GraphMapping.graphMappingFlux(mappingName, conditionName, fluxType, undefined, undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked);
+            metExploreD3.GraphMapping.graphMappingFlux(mappingName, conditionName, fluxType, undefined, undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
             session.setMappingDataType(dataType);
         }
 
@@ -741,11 +748,11 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 									var fluxType;
 									if (selectedCondition.length === 1) {
 										fluxType = 'Unique';
-										metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(color).getValue(), undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked);
+										metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(color).getValue(), undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
 									}
 									else {
 										fluxType = 'Compare';
-										metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(maxValue).getValue(), networkVizSession.getColorMappingById(minValue).getValue(), Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked);
+										metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(maxValue).getValue(), networkVizSession.getColorMappingById(minValue).getValue(), Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
 									}
 								}
 							}

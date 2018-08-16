@@ -1,6 +1,6 @@
 /**
  * @author Fabien Jourdan
- * @description Menu export network viz
+ * (a)description Menu export network viz
  */
 
 Ext.define('metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenu', {
@@ -40,6 +40,10 @@ Ext.define('metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenu', {
                  text: 'Save nodes coordinates',
                  reference:'exportCoordinates',
                  iconCls:'exportCoordinates'
+                },
+                {
+                 text: 'Save cycles',
+                 reference:'exportCycles'
                 },
                 {
                  text: 'Save Viz as XGMML',

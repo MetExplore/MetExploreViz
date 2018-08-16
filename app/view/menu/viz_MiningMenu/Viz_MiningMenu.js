@@ -1,6 +1,6 @@
 /**
  * @author Fabien Jourdan
- * @description Menu to call graph algorithms on Cytoscape network
+ * (a)description Menu to call graph algorithms on Cytoscape network
  */
 
 Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {

@@ -302,10 +302,76 @@ p {
   background-repeat: no-repeat;
 }
 .importToRsxFromJSON {
-       background-image: url(../icons/importToRsxFromJSON.png);
+    background-image: url(../icons/importToRsxFromJSON.png);
     background-size: 100% 100%;
-  background-position: 0% 0%;
-  background-repeat: no-repeat;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.importCycle {
+    background-image: url(../icons/importCycle.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.removeCycle {
+    background-image: url(../icons/removeCycle.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.shortCycle {
+    background-image: url(../icons/shortCycle.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.longCycle {
+    background-image: url(../icons/longCycle.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.fontSize {
+    background-image: url(../icons/fontSize.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.fontStyle {
+    background-image: url(../icons/fontStyle.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.bold {
+    background-image: url(../icons/bold.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.italic {
+    background-image: url(../icons/italic.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.underline {
+    background-image: url(../icons/underline.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.font {
+    background-image: url(../icons/font.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.importImage {
+    background-image: url(../icons/importImage.png);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
 }
 .importToRsxFromWS {
        background-image: url(../icons/importToRsxFromWS.png);
@@ -343,6 +409,13 @@ p {
 
 .lock_font_awesome {
        background-image: url(../icons/lock_font_awesome.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+
+.unlock_font_awesome {
+       background-image: url(../icons/unlock_font_awesome.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;

@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : Fonctions to map data on metabolic networks
+ * (a)description : Fonctions to map data on metabolic networks
  */
 metExploreD3.GraphMapping = {
 
@@ -458,7 +458,7 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	* @param {} func : callback function
 	*/
-	mapFluxes : function(mappingName, conditionName, colorMax, colorMin, useOpacity, func) {
+	mapFluxes : function(mappingName, conditionName, colorMax, colorMin, useOpacity, isBinned, func) {
 		var mapping = _metExploreViz.getMappingByName(mappingName);
 		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
 		
@@ -753,6 +753,16 @@ metExploreD3.GraphMapping = {
 								force.start();
 						}
 					}
+					if (isBinned){
+                        for (var i=0; i<conditionName.length; i++) {
+                            metExploreD3.GraphMapping.discretizeFluxRange(conditionName[i]);
+                        }
+					}
+					else {
+                        for (var i=0; i<conditionName.length; i++) {
+                            metExploreD3.GraphMapping.removeBinnedMapping(conditionName[i]);
+                        }
+					}
 					metExploreD3.GraphNetwork.tick('viz');
 		   		}, 1
 		   	);
@@ -768,7 +778,7 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	* @param {} func : callback function
 	*/
-	mapUniqueFlux : function(mappingName, conditionName, colorMax, useOpacity, func) {
+	mapUniqueFlux : function(mappingName, conditionName, colorMax, useOpacity, isBinned, func) {
 		var mapping = _metExploreViz.getMappingByName(mappingName);
 		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
 		
@@ -1001,6 +1011,16 @@ metExploreD3.GraphMapping = {
 								force.start();
 						}
 					}
+                    if (isBinned){
+                        for (var i=0; i<conditionName.length; i++) {
+                            metExploreD3.GraphMapping.discretizeFluxRange(conditionName[i]);
+                        }
+                    }
+                    else {
+                        for (var i=0; i<conditionName.length; i++) {
+                            metExploreD3.GraphMapping.removeBinnedMapping(conditionName[i]);
+                        }
+                    }
 					metExploreD3.GraphNetwork.tick('viz');
 		   		}, 1
 		   	);
@@ -1091,19 +1111,19 @@ metExploreD3.GraphMapping = {
 	},
 
 
- 	graphMappingFlux : function(mappingName, conditionName, fluxType, colorMax, colorMin, isOpac, showValues){
+ 	graphMappingFlux : function(mappingName, conditionName, fluxType, colorMax, colorMin, isOpac, showValues, isBinned){
 		metExploreD3.onloadMapping(mappingName, function(){
 			var session = _metExploreViz.getSessionById('viz');
 			metExploreD3.GraphMapping.parseFluxValues(mappingName);
 			metExploreD3.GraphLink.loadLinksForFlux("viz", session.getD3Data(), metExploreD3.getLinkStyle(), metExploreD3.getMetaboliteStyle(), showValues, conditionName);
 
 			if(fluxType=='Compare') {
-                metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac, function() {
+                metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac, isBinned, function() {
                     metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
                 });
             }
 			else {
-                metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac, function(){
+                metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac, isBinned, function(){
                     metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
                 });
             }
@@ -2570,5 +2590,363 @@ metExploreD3.GraphMapping = {
             default:
                 metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
         }
-	}
+	},
+
+    /*******************************************
+     * Partition all the flux value into 10 groups
+     * @param {String} condition : The mapping condition
+     */
+    discretizeFluxRange: function (condition) {
+        // Sort the flux value
+        var allValues = [];
+        var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function (d) {
+                return d.getBiologicalType() === "reaction";
+            })
+            .each(function (d) {
+                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
+                allValues.push(reactionMapping)
+            });
+        allValues.sort(function (a, b) {
+            return Math.abs(a.mapValue) - Math.abs(b.mapValue);
+        });
+
+        var valueList = [];
+        for (var i=0; i<allValues.length; i++) {
+            var value = Math.abs(Number(allValues[i].mapValue));
+            if (!valueList.length || valueList[valueList.length - 1] !== value) {
+                if (value !== 0) {
+                    valueList.push(value);
+                }
+            }
+        }
+        var clusterList = [];
+        for (var i=0; i<valueList.length; i++){
+            clusterList.push([valueList[i]]);
+        }
+
+        // Cluster the values into 10 groups
+        var nbBins = 10;
+        var nbClusters = clusterList.length;
+        while (nbClusters > nbBins){
+            var result = clusterClosestValues(valueList, clusterList);
+            valueList = result[0];
+            clusterList = result[1];
+            nbClusters = clusterList.length;
+        }
+        function clusterClosestValues(valueList, clusterList){
+            var min = valueList[valueList.length-1];
+            var minIndex = 0;
+            for (var i=0; i<valueList.length-1; i++){
+                var gap = valueList[i+1] - valueList[i];
+                if (gap < min){
+                    min = gap;
+                    minIndex = i;
+                }
+            }
+            var newValue = (valueList[minIndex+1] + valueList[minIndex]) / 2;
+            var newCluster = clusterList[minIndex].concat(clusterList[minIndex+1]);
+            var newValueList = valueList.slice(0,minIndex).concat(newValue, valueList.slice(minIndex+2));
+            var newClusterList = clusterList.slice(0,minIndex).concat([newCluster], clusterList.slice(minIndex+2));
+            return [newValueList, newClusterList]
+        }
+
+        var breakPoints = [];
+        for (var i=0; i<clusterList.length; i++){
+            breakPoints.push(clusterList[i][clusterList[i].length-1]);
+        }
+
+
+        // Divide the range of value into 10 bins
+        var maxValue = Math.abs(Number(allValues[allValues.length-1].mapValue));
+        var binsWidth = maxValue/breakPoints.length;
+        var midBinValues = [];
+        for (var i=0; i<breakPoints.length; i++){
+            midBinValues.push(binsWidth / 2 + i * binsWidth);
+        }
+
+        // Assign the values into the corresponding bins
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function (d) {
+                return d.getBiologicalType() === "reaction";
+            })
+            .each(function (d) {
+                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
+                var mapValue = Math.abs(Number(reactionMapping.mapValue));
+                for (var i=0; i<breakPoints.length; i++){
+                    if (mapValue <= breakPoints[i]){
+                        reactionMapping.binnedMapValue = midBinValues[i];
+                        break;
+                    }
+                }
+                if (Number(mapValue) === 0){
+                    reactionMapping.binnedMapValue = 0;
+                }
+            });
+    },
+
+    /*******************************************
+     * Remove the partition of all the flux value into 10 group
+     * @param {String} condition : The mapping condition
+     */
+    removeBinnedMapping : function (condition) {
+        var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
+        var conditions = _metExploreViz.getSessionById('viz').isMapped();
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function (d) {
+                return d.getBiologicalType() === "reaction";
+            })
+            .each(function (d) {
+                var reactionMapping = d.getMappingDataByNameAndCond(mappingName, condition);
+                if (reactionMapping){
+                    delete reactionMapping.binnedMapValue;
+                }
+            })
+    },
+
+    /*****************************************************
+     * Map images to node using the name of the image files and a property of the nodes and display those images next to the corresponding nodes on the visualisation.
+     * @param {} fileList : A list of image files.
+     * @param {"Name"/"Id"} arg : A flag to determine which node property to use for the mapping. "Name" will map the images using the label of the node currently displayed, "Id" use the identifier of the node. Default to "Id".
+     */
+    mapImageToNode : function(fileList, arg){
+        var listNames = [];
+        for (var i=0; i<fileList.length; i++){
+            if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "image/svg+xml"){
+                var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
+                if (listNames.includes(nodeName)){
+                    continue;
+                }
+                listNames.push(nodeName);
+                var urlImage = URL.createObjectURL(fileList[i]);
+                var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
+                    .selectAll("g.node")
+                    .filter(function (d) {
+                        var style = (d.getBiologicalType() === "metabolite") ? metExploreD3.getMetaboliteStyle() : metExploreD3.getReactionStyle();
+                        var label = style.getDisplayLabel(d, style.getLabel());
+                        //var target = (arg === "Name") ? d.name : d.dbIdentifier;
+                        var target = (arg === "Name") ? label : d.dbIdentifier;
+                        return (nodeName === target);
+                    });
+                if (!node.select(".imageNode").empty()){
+                    node.select(".imageNode").remove();
+                }
+
+                metExploreD3.GraphUtils.getDataUri(urlImage, function(dataUri) {
+                    // Do whatever you'd like with the Data URI!
+                    var img = new Image();
+                    img.src = dataUri;
+                    img.node = node;
+                    img.onload = function () {
+                        var imgWidth = this.width;
+                        var imgHeight = this.height;
+
+                        if (imgWidth > 150){
+                            imgHeight = imgHeight * (150/imgWidth);
+                            imgWidth = 150;
+                        }
+                        var offsetX = -imgWidth/2;
+                        this.node.append("g")
+                            .attr("class", "imageNode")
+                            .attr("x", 0)
+                            .attr("y", 0)
+                            .attr("width", imgWidth)
+                            .attr("height", imgHeight)
+                            .attr("opacity", 1)
+                            .attr("transform", "translate(" + offsetX + ",20)");
+                        this.node.selectAll(".imageNode")
+                            .append("image")
+                            .attr("class", "mappingImage")
+                            .attr("href", this.src)
+                            .attr("width", imgWidth)
+                            .attr("height", imgHeight)
+                            .attr("opacity", 1);
+                        metExploreD3.GraphMapping.applyEventOnImage(this.node.select(".imageNode"));
+                        this.node.selectAll(".imageNode")
+                            .each(function(d){
+                                metExploreD3.GraphMapping.setStartingImageStyle(d);
+                                this.parentNode.parentNode.appendChild(this.parentNode);
+                            });
+                    };
+                    console.log(dataUri);
+                });
+
+            }
+        }
+    },
+
+    /*****************************************************
+     * Select an image element mapped to a node.
+     * @param {Object} node : The node on which is mapped the image to select.
+     */
+    selectMappedImages: function (node) {
+        var selectedImages = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(d){return d.getId()==node.getId();})
+            .select(".mappingImage");
+        return selectedImages;
+    },
+
+    /*****************************************************
+     * Toggle the opacity of an image element between 0 and 1.
+     * @param {Object} node : The node on which is mapped the image.
+     */
+    displayMappedImage: function (node) {
+        var mappedImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(d){return d.getId() === node.getId();})
+            .select(".imageNode");
+        if (mappedImage.attr("opacity") === '0'){
+            mappedImage.attr("opacity", 1);
+        }
+        else {
+            mappedImage.attr("opacity", 0);
+        }
+    },
+
+    /*****************************************************
+     * Apply mouse event on an image element, allowing drag-and-drop and resizing of the image.
+     * @param {} image : The g element containing the image on which to apply the event.
+     */
+    applyEventOnImage : function (image) {
+        image.on("mouseenter", function () {
+            var mouseleaveEvent = new MouseEvent("mouseleave");
+            this.parentNode.dispatchEvent(mouseleaveEvent);
+        }).on("mouseleave", function () {
+            var mouseenterEvent = new MouseEvent("mouseenter");
+            this.parentNode.dispatchEvent(mouseenterEvent);
+        });
+        var drag = metExploreD3.GraphStyleEdition.createDragBehavior();
+        image.call(drag);
+        metExploreD3.GraphMapping.applyResizeHandle(image);
+
+    },
+
+    /*******************************************
+     * Add element in the corner of an image that can be used to resize that image
+     * @param {} image : The g element containing the image on which to add the element
+     */
+    applyResizeHandle : function (image) {
+        var imgWidth = Number(image.attr("width"));
+        var imgHeight = Number(image.attr("height"));
+        var deltaGX = 0;
+        var oldX = 0;
+        var oldY = 0;
+        var limitX = 0;
+
+        var drag = d3.behavior.drag().on("dragstart", function () {
+            d3.event.sourceEvent.stopPropagation();
+            imgWidth = Number(image.attr("width"));
+            imgHeight = Number(image.attr("height"));
+            oldX = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
+            oldY = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+            limitX = oldX + imgWidth;
+            d3.selectAll("#D3viz").style("cursor", "move");
+        }).on('drag', function () {
+            var newWidth = 0;
+            var newHeight = 0;
+            if (d3.select(this).attr("class") === "LL" || d3.select(this).attr("class") === "UL") {
+                var tmpWidth = d3.select(this.parentNode).attr("width");
+                newWidth = tmpWidth - (d3.event.x + deltaGX);
+                var transform = d3.select(this.parentNode).attr("transform");
+                var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
+                var x = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
+                var y = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+                var newX = x + d3.event.x + deltaGX;
+                newX = Math.min(newX, limitX - 8);
+                var translate = "translate(" + newX + "," + y + ")";
+                d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
+            }
+            else {
+                newWidth = d3.event.x - deltaGX;
+            }
+            newWidth = Math.max(newWidth, 8);
+            newHeight = imgHeight * (newWidth/imgWidth);
+            newWidth = (newWidth > 0) ? newWidth : 0;
+            newHeight = (newHeight > 0) ? newHeight : 0;
+            image.attr("width", newWidth);
+            image.attr("height", newHeight);
+            if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
+                var transform = d3.select(this.parentNode).attr("transform");
+                var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
+                var x = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
+                var y = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+                var newY =  oldY - (newHeight - imgHeight);
+                var translate = "translate(" + x + "," + newY + ")";
+                d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
+            }
+            metExploreD3.GraphMapping.updateImageDimensions(image);
+        }).on("dragend", function () {
+            d3.selectAll("#D3viz").style("cursor", "default");
+        });
+
+        image.append("rect").attr("class", "W1").attr("width", 2).attr("height", imgHeight).attr("fill", "grey").attr("opacity", 0.5);
+        image.append("rect").attr("class", "W2").attr("width", 2).attr("height", imgHeight).attr("fill", "grey").attr("opacity", 0.5)
+            .attr("transform", "translate(" + (imgWidth - 2) + ",0)");
+        image.append("rect").attr("class", "H1").attr("width", imgWidth).attr("height", 2).attr("fill", "grey").attr("opacity", 0.5);
+        image.append("rect").attr("class", "H2").attr("width", imgWidth).attr("height", 2).attr("fill", "grey").attr("opacity", 0.5)
+            .attr("transform", "translate(0," + (imgHeight - 2) + ")");
+        image.append("rect").attr("class", "UL").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
+            .call(drag);
+        image.append("rect").attr("class", "UR").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("transform", "translate(" + (imgWidth - 4) + ",0)")
+            .call(drag);
+        image.append("rect").attr("class", "LL").attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("transform", "translate(0," + (imgHeight - 4) + ")")
+            .call(drag);
+        image.append("rect").attr("class", "LR") .attr("width", 4).attr("height", 4).attr("fill", "blue").attr("opacity", 0.5)
+            .attr("transform", "translate(" + (imgWidth - 4) + "," + (imgHeight - 4) + ")")
+            .call(drag);
+    },
+
+    /*******************************************
+     * Resize an image and any associated resize handles so that they correspond to the dimension of their parent element
+     * @param {} image : The g element containing the image to resize
+     */
+    updateImageDimensions : function(image) {
+        var imgWidth = image.attr("width");
+        var imgHeight = image.attr("height");
+        // Start test
+        imgWidth = (imgWidth > 0) ? imgWidth : 0;
+        imgHeight = (imgHeight > 0) ? imgHeight : 0;
+        // End test
+        image.select(".mappingImage").attr("width", imgWidth);
+        image.select(".mappingImage").attr("height", imgHeight);
+        image.select(".UR").attr("transform", "translate(" + (imgWidth - 4) + ", 0)");
+        image.select(".LL").attr("transform", "translate(0, " + (imgHeight - 4) + ")");
+        image.select(".LR").attr("transform", "translate(" + (imgWidth - 4) + ", " + (imgHeight - 4) + ")");
+        image.select(".W1").attr("height", imgHeight);
+        image.select(".W2").attr("height", imgHeight).attr("transform", "translate(" + (imgWidth - 2) + ",0)");
+        image.select(".H1").attr("width", imgWidth);
+        image.select(".H2").attr("width", imgWidth).attr("transform", "translate(0," + (imgHeight - 2) + ")");
+    },
+
+    /*******************************************
+     * Set position and size of an image if those kind of data were provided with the JSON
+     * @param {Object} node : The node whose label will be modified
+     */
+    setStartingImageStyle : function (node) {
+        if (node.imagePosition) {
+            var selection = d3.select("#viz").select("#D3viz").select("#graphComponent")
+                .selectAll("g.node")
+                .filter(function (d) {
+                    return d.getId() == node.getId();
+                })
+                .select(".imageNode");
+            var imgWidth = selection.attr("width");
+            var imgHeight = selection.attr("height");
+            if (node.imagePosition.imageX) { selection.attr("x", node.imagePosition.imageX); }
+            if (node.imagePosition.imageY) { selection.attr("y", node.imagePosition.imageY); }
+            if (node.imagePosition.imageWidth) {
+                selection.attr("width", node.imagePosition.imageWidth);
+                selection.attr("height", node.imagePosition.imageWidth * imgHeight / imgWidth);
+            }
+            if (node.imagePosition.imageTransform) { selection.attr("transform", node.imagePosition.imageTransform); }
+            metExploreD3.GraphMapping.updateImageDimensions(selection);
+        }
+    }
 }

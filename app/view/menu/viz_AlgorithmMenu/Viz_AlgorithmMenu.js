@@ -1,6 +1,6 @@
 /**
  * @author Maxime Chazalviel
- * @description Menu with Tulip graph algorithms
+ * (a)description Menu with Tulip graph algorithms
  */
 
 Ext.define('metExploreViz.view.menu.viz_AlgorithmMenu.Viz_AlgorithmMenu', {

@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description selection panel
+ * (a)description selection panel
  * SelectMapping
  */
 Ext.define('metExploreViz.view.form.selectMapping.SelectMapping', {

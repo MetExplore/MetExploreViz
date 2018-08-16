@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : To manage the panel where is the graph
+ * (a)description : To manage the panel where is the graph
  */
 metExploreD3.GraphPanel = {
 	
@@ -477,6 +477,10 @@ metExploreD3.GraphPanel = {
 						{
 							metExploreD3.GraphPanel.refreshJSON(json);
 							if(func!=undefined && typeof func==='function') func();
+                            Ext.getCmp('cycleDetection').setVisible(false);
+                            if (metExploreD3.GraphStyleEdition.editMode){
+                            	metExploreD3.fireEvent("enterEditMode", "click");
+							}
 						}
 		           },
 		           icon: Ext.Msg.QUESTION
@@ -803,6 +807,19 @@ metExploreD3.GraphPanel = {
 				for (var key in sessions) {
 					metExploreD3.GraphNetwork.refreshSvg(key);	
 			    }
+                // set style of previous session from JSON
+                var networkDataViz = new NetworkData('viz');
+				networkDataViz.cloneObject(sessions['viz'].d3Data);
+                var nodesData = networkDataViz.getNodes();
+				nodesData.forEach(function(node) {
+					metExploreD3.GraphStyleEdition.setStartingStyle(node);
+				});
+				if (sessions['viz'].drawnCycles && Array.isArray(sessions['viz'].drawnCycles)) {
+					for (var i=0; i<sessions['viz'].drawnCycles.length; i++){
+                        metExploreD3.GraphFunction.drawMetaboliteCycle(sessions['viz'].drawnCycles[i]);
+					}
+                }
+
 				endFunc();
 			}
 		}

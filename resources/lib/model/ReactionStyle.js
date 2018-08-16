@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
  /**
  * draw a reaction
@@ -16,6 +16,7 @@ var ReactionStyle = function(height, width, rx, ry, displayNodeName, fontSize, s
     this.fontSize = fontSize;
     this.strokeWidth = strokeWidth;
     this.useAlias = useAlias;
+    this.labelOpacity = 1.0;
 };
 
 ReactionStyle.prototype = {
@@ -149,5 +150,14 @@ ReactionStyle.prototype = {
             displayedLabel = node.getName();
 
         return displayedLabel;
+    },
+    getLabelOpacity:function()
+    {
+        return this.labelOpacity;
+    },
+
+    setLabelOpacity:function(newData)
+    {
+        this.labelOpacity = newData;
     }
 };

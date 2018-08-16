@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
  /**
  * draw a Metabolite
@@ -16,6 +16,7 @@ var MetaboliteStyle = function(height, width, rx, ry, fontSize, strokeWidth, dis
     this.label = displayNodeName;
     this.strokeColor = strokeColor;
     this.useAlias = useAlias;
+    this.labelOpacity = 1.0;
 };
 
 MetaboliteStyle.prototype = {
@@ -148,5 +149,14 @@ MetaboliteStyle.prototype = {
             displayedLabel = node.getName();
 
         return displayedLabel;
+    },
+    getLabelOpacity:function()
+    {
+	return this.labelOpacity;
+    },
+
+    setLabelOpacity:function(newData)
+    {
+	this.labelOpacity = newData;
     }
 };
