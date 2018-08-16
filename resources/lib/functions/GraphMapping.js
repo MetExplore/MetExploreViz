@@ -2733,40 +2733,46 @@ metExploreD3.GraphMapping = {
                 if (!node.select(".imageNode").empty()){
                     node.select(".imageNode").remove();
                 }
-                var img = new Image();
-                img.src = urlImage;
-                img.node = node;
-                img.onload = function () {
-                    var imgWidth = this.width;
-                    var imgHeight = this.height;
 
-                    if (imgWidth > 150){
-                        imgHeight = imgHeight * (150/imgWidth);
-                        imgWidth = 150;
-                    }
-                    var offsetX = -imgWidth/2;
-                    this.node.append("g")
-                        .attr("class", "imageNode")
-                        .attr("x", 0)
-                        .attr("y", 0)
-                        .attr("width", imgWidth)
-                        .attr("height", imgHeight)
-                        .attr("opacity", 1)
-                        .attr("transform", "translate(" + offsetX + ",20)");
-                    this.node.selectAll(".imageNode")
-                        .append("image")
-                        .attr("class", "mappingImage")
-                        .attr("href", this.src)
-                        .attr("width", imgWidth)
-                        .attr("height", imgHeight)
-                        .attr("opacity", 1);
-                    metExploreD3.GraphMapping.applyEventOnImage(this.node.select(".imageNode"));
-                    this.node.selectAll(".imageNode")
-                        .each(function(d){
-                            metExploreD3.GraphMapping.setStartingImageStyle(d);
-                            this.parentNode.parentNode.appendChild(this.parentNode);
-                        });
-                };
+                metExploreD3.GraphUtils.getDataUri(urlImage, function(dataUri) {
+                    // Do whatever you'd like with the Data URI!
+                    var img = new Image();
+                    img.src = dataUri;
+                    img.node = node;
+                    img.onload = function () {
+                        var imgWidth = this.width;
+                        var imgHeight = this.height;
+
+                        if (imgWidth > 150){
+                            imgHeight = imgHeight * (150/imgWidth);
+                            imgWidth = 150;
+                        }
+                        var offsetX = -imgWidth/2;
+                        this.node.append("g")
+                            .attr("class", "imageNode")
+                            .attr("x", 0)
+                            .attr("y", 0)
+                            .attr("width", imgWidth)
+                            .attr("height", imgHeight)
+                            .attr("opacity", 1)
+                            .attr("transform", "translate(" + offsetX + ",20)");
+                        this.node.selectAll(".imageNode")
+                            .append("image")
+                            .attr("class", "mappingImage")
+                            .attr("href", this.src)
+                            .attr("width", imgWidth)
+                            .attr("height", imgHeight)
+                            .attr("opacity", 1);
+                        metExploreD3.GraphMapping.applyEventOnImage(this.node.select(".imageNode"));
+                        this.node.selectAll(".imageNode")
+                            .each(function(d){
+                                metExploreD3.GraphMapping.setStartingImageStyle(d);
+                                this.parentNode.parentNode.appendChild(this.parentNode);
+                            });
+                    };
+                    console.log(dataUri);
+                });
+
             }
         }
     },
