@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : Basic functions
+ * (a)description : Basic functions
  */
 metExploreD3.GraphUtils = {
     decodeJSON : function(json){
@@ -248,6 +248,18 @@ metExploreD3.GraphUtils = {
 		if(buttonLink!=null)  
 		  buttonLink.style("display", "none");
 
+		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
+		if(buttonAlignMapping!=null)
+            buttonAlignMapping.style("display", "none");
+
+		var buttonImportCoordinates = d3.selectAll("#buttonImportCoordinates");
+		if(buttonImportCoordinates!=null)
+            buttonImportCoordinates.style("display", "none");
+
+		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
+		if(buttonExportCoordinates!=null)
+            buttonExportCoordinates.style("display", "none");
+
 		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
 		if(buttonZoomIn!=null)  
 		  buttonZoomIn.style("display", "none");
@@ -255,14 +267,6 @@ metExploreD3.GraphUtils = {
 		var buttonHand = d3.selectAll("#buttonHand");
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "none");
-
-		var whiteBlack = d3.selectAll("#whiteBlack");
-		if(whiteBlack!=null)  
-		  whiteBlack.style("display", "none");
-
-		var invertColor = d3.selectAll("#invertColor");
-		if(invertColor!=null)  
-		  invertColor.style("display", "none");
 
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  
@@ -472,6 +476,18 @@ metExploreD3.GraphUtils = {
 		if(buttonLink!=null)  
 		  buttonLink.style("display ", "inline");
 
+		var buttonImportCoordinates = d3.selectAll("#buttonImportCoordinates");
+		if(buttonImportCoordinates!=null)
+            buttonImportCoordinates.style("display ", "inline");
+
+		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
+		if(buttonExportCoordinates!=null)
+            buttonExportCoordinates.style("display ", "inline");
+
+		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
+		if(buttonAlignMapping!=null)
+            buttonAlignMapping.style("display ", "inline");
+
 		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
 		if(buttonZoomIn!=null)  
 		  buttonZoomIn.style("display", "inline");
@@ -479,15 +495,6 @@ metExploreD3.GraphUtils = {
 		var buttonHand = d3.selectAll("#buttonHand");
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "inline");
-
-
-		var invertColor = d3.selectAll("#invertColor");
-		if(invertColor!=null)  
-		  invertColor.style("display", "inline");
-
-		var whiteBlack = d3.selectAll("#whiteBlack");
-		if(whiteBlack!=null)  
-		  whiteBlack.style("display", "inline");
 
 		var buttonRescale = d3.selectAll("#buttonRescale");
 		if(buttonRescale!=null)
@@ -550,14 +557,6 @@ metExploreD3.GraphUtils = {
 				var buttonAnim = clone.getElementById("buttonAnim");
 				if(buttonAnim!=null) 
 					buttonAnim.parentNode.removeChild(buttonAnim);
-
-				var invertColor = clone.getElementById("invertColor");
-				if(invertColor!=null) 
-					invertColor.parentNode.removeChild(invertColor);
-
-                var whiteBlack = clone.getElementById("whiteBlack");
-                if(whiteBlack!=null)
-                    whiteBlack.parentNode.removeChild(whiteBlack);
 
                 var buttonRescale = clone.getElementById("buttonRescale");
                 if(buttonRescale!=null)
@@ -677,6 +676,7 @@ metExploreD3.GraphUtils = {
 								alert("Votre navigateur ne gère pas l'AJAX cross-domain !");
 							}
 						});
+
 					allElements = metExploreD3.GraphUtils.setInlineStyles(clone, emptySvgDeclarationComputed, allElements);
 				}
 				else
@@ -810,6 +810,44 @@ metExploreD3.GraphUtils = {
 			}	
 		}
 	},
+
+    getDataUri : function(url, callback) {
+
+        var XMLrequest = new XMLHttpRequest(); // new XML request
+        XMLrequest.open("GET", url, false); // URL of the SVG file on server
+        XMLrequest.send(null); // get the SVG file
+		var res = XMLrequest.responseXML;
+        console.log(res);
+        if (res!==null){
+			var mySVG = res.getElementsByTagName("svg")[0];
+
+            var svg = new XMLSerializer().serializeToString(mySVG);
+            var base64 = window.btoa(svg);
+
+            callback('data:image/svg+xml;base64,' + base64);
+		}
+		else
+		{
+
+            var image = new Image();
+
+            image.onload = function () {
+            	var canvas = document.createElement('canvas');
+            	canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+            	canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+            	canvas.getContext('2d').drawImage(this, 0, 0);
+
+            	// Get raw image data
+            	callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+
+            	// ... or get as Data URI
+            	callback(canvas.toDataURL('image/png'));
+            };
+            image.src=url;
+		}
+	},
+
 
 	binaryblob : function(canvas, type){
 
@@ -1025,11 +1063,11 @@ metExploreD3.GraphUtils = {
 	    tree.push(obj);
 	    visit(obj);
 	    function visit(node) {
+
 	    	if ((!(node.className.baseVal && node.className.baseVal=="linkGroup")) && node.tagName!='line' ){
 	    			    		
 		        if (node && node.hasChildNodes()) {
 			        var child = node.firstChild;
-
 			        if(child.className!=undefined)
 			      	{
 			      		// if(child.tagName=="image")
@@ -1068,17 +1106,21 @@ metExploreD3.GraphUtils = {
 
 				        // }
 
-				        if(child.tagName!="image")
+				        if(child.tagName!="image" || child.className.baseVal=="mappingImage" )
 				        {
+
 				            while (child) {
 			        			if(child.getAttribute!=undefined){
-						            if(child.getAttribute("href")!="resources/icons/pause.svg" 
-						                && child.getAttribute("href")!="resources/icons/whiteBlack.png" 
+						            if(child.getAttribute("href")!="resources/icons/pause.svg"
 						                && child.getAttribute("href")!="resources/icons/rescale.png"
-						                && child.getAttribute("href")!="resources/icons/invertColor.svg"
 						                && child.getAttribute("href")!="resources/icons/link.svg" 
+						                && child.getAttribute("href")!="resources/icons/exportCoordinates.png"
+                                        && child.getAttribute("href")!="resources/icons/importCoordinates.png"
+                                        && child.getAttribute("href")!="resources/icons/alignMapping.svg"
 						                && child.getAttribute("href")!="resources/icons/unlink.svg")
 						            {
+                                        if(child.className.baseVal=="mappingImage")
+                                            // console.log(child.getAttribute("href"));
 						                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
 						                  	tree.push(child);
 						                    visit(child);
@@ -1132,9 +1174,21 @@ metExploreD3.GraphUtils = {
 		d3.selectAll("#buttonAnim")
         	.style("display", "none");
 
+		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
+		if(buttonAlignMapping!=null)
+            buttonAlignMapping.style("display", "none");
+
 		var buttonLink = d3.selectAll("#buttonLink");
-		if(buttonLink!=null)  
+		if(buttonLink!=null)
 		  buttonLink.style("display", "none");
+
+		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
+		if(buttonExportCoordinates!=null)
+            buttonExportCoordinates.style("display", "none");
+
+		var buttonImportCoordinates = d3.selectAll("#buttonImportCoordinates");
+		if(buttonImportCoordinates!=null)
+            buttonImportCoordinates.style("display", "none");
 
 		var brush = d3.selectAll("#brush");
 		if(brush!=null)  
@@ -1147,14 +1201,6 @@ metExploreD3.GraphUtils = {
 		var buttonHand = d3.selectAll("#buttonHand");
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "none");
-
-		var invertColor = d3.selectAll("#invertColor");
-		if(invertColor!=null)  
-		  invertColor.style("display", "none");
-
-		var whiteBlack = d3.selectAll("#whiteBlack");
-		if(whiteBlack!=null)  
-		  whiteBlack.style("display", "none");
 
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  
@@ -1374,6 +1420,11 @@ metExploreD3.GraphUtils = {
 				    networkJSON+="\n"+JSON.stringify(key)+":{\n\"id\":\"" + _metExploreViz.getSessionById(key).getId() + "\",";
 				    networkJSON+="\n\"animated\": false ,";
 
+					var allDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+					if (Array.isArray(allDrawnCycles) && allDrawnCycles.length) {
+                        networkJSON += "\n\"drawnCycles\":" + JSON.stringify(metExploreD3.GraphStyleEdition.allDrawnCycles) + ",";
+                    }
+
 				    networkJSON+="\n\"d3Data\":{\"id\":"+JSON.stringify(key)+"," ;
 				    networkJSON+="\"nodes\":[" ;
 				   
@@ -1386,6 +1437,10 @@ metExploreD3.GraphUtils = {
 				    	
 				    	if(node.getLabel()!=undefined){
 							networkJSON+="\"label\":"+JSON.stringify(node.getLabel())+",";
+				    	}
+
+				    	if(node.getAlias()!=undefined){
+							networkJSON+="\"alias\":"+JSON.stringify(node.getAlias())+",";
 				    	}
 
 				    	if(node.getCompartment()!=undefined){
@@ -1437,6 +1492,12 @@ metExploreD3.GraphUtils = {
 					    	networkJSON+="\"svgWidth\":"+JSON.stringify(node.getSvgWidth())+",";
 					    	networkJSON+="\"svgHeight\":"+JSON.stringify(node.getSvgHeight())+",";
 					   	}
+
+				    	networkJSON+="\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node))+",";
+                        var imagePosition = metExploreD3.GraphStyleEdition.createImageStyleObject(node);
+                        if (imagePosition != undefined) {
+                            networkJSON += "\"imagePosition\":" + JSON.stringify(imagePosition) + ",";
+                        }
 					   	
 					   	if(node.x!=undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
 					   	if(node.y!=undefined) networkJSON+="\"y\":"+JSON.stringify(node.y)+",";
@@ -1535,9 +1596,96 @@ metExploreD3.GraphUtils = {
 		}
 	},
 
+	/*****************************************************
+	* Save nodes coordinates
+    */
+	saveNetworkCoordinates : function() {
+		var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+
+	        metExploreD3.deferFunction(function() {
+
+
+				var networkJSON ="{";
+			    var session = _metExploreViz.getSessionById('viz');
+                session.getD3Data().initNodeIndex();
+
+
+				networkJSON+="\"nodes\":[" ;
+
+			   /**************
+			   * Saving nodes
+			   */
+			   session.getD3Data().getNodes()
+				   .filter(function (node) {
+                       return !node.getIsSideCompound();
+                   })
+				   .forEach(function(node, index){
+                       	networkJSON+="{";
+					    if(node.dbIdentifier!==undefined) networkJSON+="\"dbIdentifier\":"+JSON.stringify(node.getDbIdentifier())+",";
+					    if(node.x!==undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
+						if(node.y!==undefined) networkJSON+="\"y\":"+JSON.stringify(node.y)+",";
+						if(node.px!==undefined) networkJSON+="\"px\":"+JSON.stringify(node.px)+",";
+						if(node.py!==undefined) networkJSON+="\"py\":"+JSON.stringify(node.py);
+						networkJSON+="}";
+
+						if(index !== session.getD3Data().getNodes().length-1)
+							networkJSON+=",";
+				   }
+               );
+
+				networkJSON+="]}";
+
+			    // console.log(networkJSON);
+			    // console.log(JSON.parse(networkJSON));
+				var blob = new Blob([networkJSON], {type: "text/json"}); // pass a useful mime type here
+				var url = URL.createObjectURL(blob);
+				// var url = 'data:text/json;charset=utf8,' + encodeURIComponent(networkJSON);
+				var link = document.createElement('a');
+				if (typeof link.download === 'string') {
+				    link.href = url;
+
+
+				    var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1; //January is 0!
+					var yyyy = today.getFullYear();
+
+					if(dd<10) {
+					    dd='0'+dd
+					}
+
+					if(mm<10) {
+					    mm='0'+mm
+					}
+
+					today = mm+'-'+dd+'-'+yyyy;
+
+				    link.download = "MetExploreVizCoordinates_"+today+".json";
+
+				    //Firefox requires the link to be in the body
+				    document.body.appendChild(link);
+
+				    //simulate click
+				    link.click();
+
+				    //remove the link when done
+				    document.body.removeChild(link);
+				}
+				else {
+				    window.open(uri);
+				}
+				metExploreD3.hideMask(myMask);
+
+	        }, 100);
+		}
+	},
+
 	saveNetworkGml : function() {
 		var myMask = metExploreD3.createLoadMask("Export GML file...", 'viz');
-		if(myMask!= undefined){
+		if(myMask!==undefined){
 
 			metExploreD3.showMask(myMask);
 
@@ -1553,7 +1701,7 @@ metExploreD3.GraphUtils = {
 					networkJSON+="node [\n";
 						networkJSON+="id "+i+"\n";
 						if(node.getIsSideCompound()){
-							if(sideCompounds[node.getName()]!=undefined)
+							if(sideCompounds[node.getName()]!==undefined)
 							{
 								sideCompounds[node.getName()]++;
 							}
@@ -1587,7 +1735,7 @@ metExploreD3.GraphUtils = {
 										'"\n';
 					networkJSON+="]\n";
 				    
-				    if(link.isReversible()=="true"){
+				    if(link.isReversible()==="true"){
 				    	networkJSON+="edge [\n";
 							networkJSON+="source "+corresp[link.getTarget().getId()]+"\n";
 							networkJSON+="target "+corresp[link.getSource().getId()]+"\n";
@@ -1639,9 +1787,81 @@ metExploreD3.GraphUtils = {
 				    window.open(uri);
 				}
 				metExploreD3.hideMask(myMask);
-					
+
 	        }, 100);
 		}
-	}
-}
+	},
+	
+	saveCyclesList : function () {
+        var allDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+        if ( metExploreD3.GraphStyleEdition.allDrawnCycles.length) {
+            var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+            if (myMask != undefined) {
+
+                metExploreD3.showMask(myMask);
+
+                metExploreD3.deferFunction(function () {
+
+
+                    var cycleList = "";
+                    for (var i = 0; i < allDrawnCycles.length; i++) {
+                        for (var j = 0; j < allDrawnCycles[i].length; j++) {
+                            cycleList += allDrawnCycles[i][j];
+                            if (j !== allDrawnCycles[i].length - 1) {
+                                cycleList += ",";
+                            }
+                            else {
+                                cycleList += "\n";
+                            }
+                        }
+                    }
+
+                    var blob = new Blob([cycleList], {type: "text"}); // pass a useful mime type here
+                    var url = URL.createObjectURL(blob);
+                    // var url = 'data:text/json;charset=utf8,' + encodeURIComponent(networkJSON);
+                    var link = document.createElement('a');
+                    if (typeof link.download === 'string') {
+                        link.href = url;
+
+
+                        var today = new Date();
+                        var dd = today.getDate();
+                        var mm = today.getMonth() + 1; //January is 0!
+                        var yyyy = today.getFullYear();
+
+                        if (dd < 10) {
+                            dd = '0' + dd
+                        }
+
+                        if (mm < 10) {
+                            mm = '0' + mm
+                        }
+
+                        today = mm + '-' + dd + '-' + yyyy;
+
+                        link.download = "MetExploreVizCycles_" + today + ".txt";
+
+                        //Firefox requires the link to be in the body
+                        document.body.appendChild(link);
+
+                        //simulate click
+                        link.click();
+
+                        //remove the link when done
+                        document.body.removeChild(link);
+                    }
+                    else {
+                        window.open(uri);
+                    }
+                    metExploreD3.hideMask(myMask);
+                    console.log(cycleList);
+
+                }, 100);
+            }
+        }
+        else {
+            metExploreD3.displayWarning('No cycles found', 'There is not any cycles to export');
+		}
+    }
+};
 

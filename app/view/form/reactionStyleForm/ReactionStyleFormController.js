@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description class to control reaction styles or configs
+ * (a)description class to control reaction styles or configs
  */
 
 Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormController', {
@@ -34,6 +34,9 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 				metExploreD3.fireEventArg("chooseStrokeColorReactionPicker", "change", s_ReactionStyle.getStrokeColor());
 
       			Ext.getCmp('selectDisplayReactionLabel').setValue(s_ReactionStyle.getLabel());   
+			
+				view.lookupReference('checkboxAlias').setValue(s_ReactionStyle.isUseAlias());
+			
 			},
 			scope:me
 		});
@@ -63,8 +66,10 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 				var newry = (!isNaN(ry) && ry>=0 && ry<200) ? ry : s_ReactionStyle.getRY();
 
 				var newLabel = view.lookupReference('selectDisplayReactionLabel').getValue();
+				var isAlias = view.lookupReference('checkboxAlias').getValue();
 
 				if(newLabel!=s_ReactionStyle.getLabel()
+                    || isAlias!==s_ReactionStyle.isUseAlias()
 					|| (newHeight != s_ReactionStyle.getHeight())
 					|| (newWidth != s_ReactionStyle.getWidth())
 					|| (newstrokewidth != s_ReactionStyle.getStrokeWidth())
@@ -80,6 +85,7 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 					s_ReactionStyle.setRX(parseFloat(newrx));
 					s_ReactionStyle.setRY(parseFloat(newry));
 					s_ReactionStyle.setLabel(newLabel);
+					s_ReactionStyle.setUseAlias(isAlias);
 				}	
 
 				if(isset){
@@ -91,6 +97,16 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleFormControlle
 			scope : me
 		});
 
+
+		view.lookupReference('checkboxAlias').on({
+			afterrender: function(){
+				var s_ReactionStyle = metExploreD3.getMetaboliteStyle();
+
+		        view.lookupReference('checkboxAlias').setValue(s_ReactionStyle.isUseAlias());
+		    },
+			scope : me
+		});
+		
 		view.lookupReference('chooseHeightReaction').on({
 			afterrender: function(me){
 				var s_ReactionStyle = metExploreD3.getReactionStyle();

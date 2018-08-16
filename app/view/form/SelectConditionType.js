@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description combobox to select condition type
+ * (a)description combobox to select condition type
  */
 /**
  * selectConditionType
@@ -13,7 +13,8 @@ Ext.define('metExploreViz.view.form.SelectConditionType', {
         data : [
             {"name":"Continuous"},
             {"name":"Discrete"},
-            {"name":"Flux"}
+            {"name":"Flux"},
+            {"name":"Suggestion"}
         ]
     },
     listeners: {

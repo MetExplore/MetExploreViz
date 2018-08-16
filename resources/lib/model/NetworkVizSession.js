@@ -6,6 +6,7 @@ var NetworkVizSession = function(){
     this.activeMapping = "";
     this.animated = false;
     this.colorMappings = [];
+    this.colorSuggestions = [];
     this.colorComponents = [];
     this.displayNodeName = "";
     this.duplicatedNodes = [];
@@ -84,6 +85,35 @@ NetworkVizSession.prototype = {
     },
     addColorMapping : function(n, c){
         this.colorMappings.push(new ColorMapping(n,c)); 
+    },
+
+    // ColorSuggestion
+    getColorSuggestionsSet : function(){
+        return this.colorSuggestions;
+    },
+    removeColorSuggestionById : function(id){
+        var theColorSuggestion = null;
+        theColorSuggestionIndex = this.colorSuggestions.findIndex(function(aColorSuggestion){
+            return aColorSuggestion.getName()===id;
+        });
+        this.colorSuggestions.splice(theColorSuggestionIndex, 1);
+    }, 
+    getColorSuggestionById : function(id){
+        var theColorSuggestion = null;
+        this.colorSuggestions.forEach(function(aColorSuggestion){
+            if(aColorSuggestion.getName()===id)
+                theColorSuggestion = aColorSuggestion;
+        });
+        return theColorSuggestion;
+    }, 
+    getColorSuggestionsSetLength : function(){
+        return this.colorSuggestions.length;
+    },
+    resetColorSuggestion : function(){
+        this.colorSuggestions = [];
+    },
+    addColorSuggestion : function(n, c){
+        this.colorSuggestions.push(new ColorMapping(n,c));
     },
 
     // ColorComponent

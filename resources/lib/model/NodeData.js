@@ -2,13 +2,36 @@
  * NodeData class
  * For now, only contains the id
  */
-var NodeData = function(name, compart, dbIdentifier, ec, id, reactionReversibility, isSideCompound, biologicalType, isSelected, labelVisible, svg, svgWidth, svgHeight, mappings, isDuplicated, identifier, pathW, lock, label) {
+var NodeData = function(
+        name,
+        compart, 
+        dbIdentifier, 
+        ec, 
+        id, 
+        reactionReversibility, 
+        isSideCompound, 
+        biologicalType, 
+        isSelected, 
+        labelVisible, 
+        svg, 
+        svgWidth, 
+        svgHeight, 
+        mappings, 
+        isDuplicated, 
+        identifier, 
+        pathW, 
+        lock, 
+        alias, 
+        label,
+        labelFont
+    ) {
         this.name=name;
         this.dbIdentifier = dbIdentifier ;
         this.ec = ec;
         this.id = id;  
         this.identifier = identifier;   
-               
+        this.alias = alias;
+
         this.reactionReversibility = reactionReversibility;
         this.isSideCompound = isSideCompound;
           //a reaction or a metabolite...later a gene?
@@ -35,6 +58,7 @@ var NodeData = function(name, compart, dbIdentifier, ec, id, reactionReversibili
             lock=false;
         this.locked = lock;
         this.label= label;
+        this.labelFont = labelFont;
 };
 
 
@@ -123,6 +147,15 @@ NodeData.prototype = {
 
     setName : function(b){
       this.name = b;
+    },
+
+    getAlias:function()
+    {
+      return this.alias;
+    },
+
+    setAlias : function(b){
+      this.alias = b;
     },
 
     getLabel:function()

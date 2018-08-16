@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : Feature flipping
+ * (a)description : Feature flipping allows to enable fonction in function of user
  */
 metExploreD3.Features = {
 	

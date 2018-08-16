@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
 Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
     extend: 'Ext.panel.Panel',  
@@ -75,6 +75,43 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
                 name      : 'valueonarrow',
                 inputValue: true,
                 id        : 'valueonarrowCheck'
+            }
+        ]
+    },
+    {
+
+        margin:'10 0 0 5',
+        xtype      : 'fieldcontainer',
+        defaultType: 'checkboxfield',
+        reference : 'regroupValuesIntoClass',
+        hidden : true,
+        items: [
+            {
+                boxLabel  : 'Discretize flux values into 10 classes',
+                name      : 'regroupValuesIntoClass',
+                inputValue: true,
+                id        : 'regroupValuesIntoClassCheck'
+            }
+        ]
+    },
+    {
+        xtype      : 'fieldcontainer',
+        defaultType: 'checkboxfield',
+        label: 'Threshold',
+        hidden : true,
+        reference : 'threshold',
+        layout:{
+            type:'hbox',
+            align:'stretch'
+        },
+        margin:'0 5 0 5',
+        items: [
+            {
+                xtype: 'numberfield',
+                fieldLabel: 'Threshold',
+                minValue: 0,
+                name: 'threshold',
+                id: 'threshold'
             }
         ]
     },

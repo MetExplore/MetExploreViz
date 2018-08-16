@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
 var ColorComponent = function(name, value){
     this.name = name;

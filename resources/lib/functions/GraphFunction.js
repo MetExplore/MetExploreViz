@@ -1,9 +1,10 @@
 /**
  * @author MC
- * @description : Basic functions
+ * (a)description : Basic functions
  */
     
 metExploreD3.GraphFunction = {
+
     bfs : function (node){
 	    var graph = metExploreD3.GraphFunction.getGraphNotDirected();
 
@@ -272,8 +273,8 @@ metExploreD3.GraphFunction = {
     	var algo = "Sugiyama (OGDF)";
 		var params = [];
 		params.push({"name":"node spacing", "value":50});
-		params.push({"name":"node distance", "value":50});
 		params.push({"name":"layer distance", "value":50});
+		params.push({"name":"node distance", "value":25});
 		metExploreD3.GraphFunction.applyTulipLayoutAlgorithmInWorker(algo, params);
     },
 
@@ -1474,7 +1475,7 @@ metExploreD3.GraphFunction = {
 			}
 		}
 		return T;
-	}	
+	},
 
 	/**
 	 * SUBNETWORK EXTRACTION Path-finding algorithm Dijkstra
@@ -1564,4 +1565,691 @@ metExploreD3.GraphFunction = {
 		// }
 		// },
 	*/
+
+    /*******************************************
+     * Find all the metabolic cycles in the graph passing through some nodes that is shown in the visualisation panel
+     * @param {Object[]} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
+     */
+    findAllCycles: function (listNodes) {
+        listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
+        // Create a new data structure for the graph to efficiently run the Johnson algorithm
+        var vertices = [];
+        var edges = [];
+        var graph = [];
+        var flag = "All";
+
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+            .filter(function (d) {
+                return (d.isSideCompound !== true);
+            })
+            .each(function (d) {
+                vertices.push(d.id);
+            });
+        // If a list of nodes has been passed as an argument, we set on of these nodes as the first nodes of the list of vertices
+        if (listNodes.length >= 1){
+            vertices[vertices.indexOf(listNodes[0].id)] = vertices[0];
+            vertices[0] = listNodes[0].id;
+            flag = "Single";
+        }
+        // Side compounds are not included in the new graph structures
+        // From each edges exiting or entering from a reversible reaction, a new edge between the same vertices but going into the opposite direction is created
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .style("stroke", "black")
+            .style("stroke-width", "0.5")
+            .filter(function (d) {
+                return (d.getSource().isSideCompound !== true && d.getTarget().isSideCompound !== true)
+            })
+            .each(function (d) {
+                var reactionNode = (d.getSource().biologicalType === "reaction") ? d.getSource() : d.getTarget();
+                var edge = [];
+                edge.push(d.getSource().id);
+                edge.push(d.getTarget().id);
+                edges.push(edge);
+                if (reactionNode.reactionReversibility === true){
+                    var backEdge = [];
+                    backEdge.push(d.getTarget().id);
+                    backEdge.push(d.getSource().id);
+                    edges.push(backEdge);
+                }
+            });
+
+        // Create the graph structure for the cycle enumeration algorithm, such as each vertex is represented by an arbitrary number
+        // Also create data structure to get the vertex id back from the number given to each vertex, and vice versa
+        var indexToVertices = {};
+        var verticesToIndex = {};
+        for (var i=0; i<vertices.length; i++){
+            indexToVertices[i] = vertices[i];
+        }
+        for (var key in indexToVertices){
+            verticesToIndex[indexToVertices[key]] = Number(key);
+        }
+        for (var i=0; i<vertices.length; i++){
+            graph.push([]);
+        }
+        for (var i=0; i<edges.length; i++) {
+            var index = verticesToIndex[edges[i][0]];
+            var value = verticesToIndex[edges[i][1]];
+            graph[index].push(value);
+        }
+
+        // The cycle enumeration algorithm itself
+        var result = metExploreD3.GraphFunction.JohnsonAlgorithm(graph, flag);
+
+        // From the cycles as array of arbitrary number, get back the cycles as array of vertex id
+        var cycleList = [];
+        for (var i=0; i<result.length; i++){
+            var cycle = [];
+            for (var j=0; j<result[i].length; j++){
+                cycle.push(indexToVertices[result[i][j]]);
+            }
+            cycleList.push(cycle)
+        }
+
+        // Keep only the cycles containing all the input nodes
+        var listSelectedNodesCycles = [];
+        for (var i=0; i<cycleList.length; i++){
+            var f = true;
+            for (var j=0; j<listNodes.length; j++){
+                if (!(cycleList[i].includes(listNodes[j].id))){
+                    f = false;
+                }
+            }
+            if (f) {
+                listSelectedNodesCycles.push(cycleList[i]);
+            }
+        }
+
+        var validCyclesList = metExploreD3.GraphFunction.removeInvalidCycles(listSelectedNodesCycles);
+
+        // Remove duplicated cycles (cycles)
+        var removedDuplicateCycle = [];
+        for (var i=0; i<validCyclesList.length; i++){
+            if (removedDuplicateCycle.length === 0){
+                removedDuplicateCycle.push(validCyclesList[i]);
+            }
+            else {
+                var copy = validCyclesList[i].slice();
+                var inverted = copy.concat(copy.splice(0,1)).reverse();
+                var len = removedDuplicateCycle.length;
+                var bool1 = false;
+                for (var j = 0; j < len; j++) {
+                    if (removedDuplicateCycle[j].length === inverted.length) {
+                        var bool2 = true;
+                        for (var k=0; k<removedDuplicateCycle[j].length; k++){
+                            if (removedDuplicateCycle[j][k] !== inverted[k]) {
+                                bool2 = false;
+                            }
+                        }
+                        if (bool2){
+                            bool1 = true;
+                        }
+                    }
+                }
+                if (!bool1){
+                    removedDuplicateCycle.push(validCyclesList[i]);
+                }
+            }
+        }
+
+        return removedDuplicateCycle;
+    },
+
+    /*******************************************
+     * Find all the longest metabolic cycles in the graph passing through some nodes that is shown in the visualisation panel
+     * @param {Object[]} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
+     */
+    findLongestCycles: function (listNodes) {
+        listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
+        var allCycles = metExploreD3.GraphFunction.findAllCycles(listNodes);
+        // Find the longest valid metabolic cycles by calling the function on the array of the longest cycles,
+        // then, if no valid cycles have been found call the function on the array of the second longest cycles and so on
+        var longestCycles = [];
+        var max = 0;
+        for (var i=0; i<allCycles.length; i++){
+            if (allCycles[i].length > max){
+                max = allCycles[i].length;
+                longestCycles = [];
+                longestCycles.push(allCycles[i]);
+            }
+            else if (allCycles[i].length === max){
+                longestCycles.push(allCycles[i]);
+            }
+        }
+        return longestCycles;
+    },
+
+    /*******************************************
+     * Find all the shortest metabolic cycles in the graph passing through some nodes that is shown in the visualisation panel
+     * @param {Object[]} listNodes : List of nodes. Only the cycles passing through all the nodes in the list will be found.
+     */
+    findShortestCycles: function (listNodes) {
+        listNodes = (typeof listNodes !== 'undefined') ? listNodes : [];
+        var allCycles = metExploreD3.GraphFunction.findAllCycles(listNodes);
+        // Find the longest valid metabolic cycles by calling the function on the array of the longest cycles,
+        // then, if no valid cycles have been found call the function on the array of the second longest cycles and so on
+        var shortestCycles = [];
+        var min = (allCycles[0]) ? allCycles[0].length : 0;
+        for (var i=0; i<allCycles.length; i++){
+            if (allCycles[i].length < min){
+                min = allCycles[i].length;
+                shortestCycles = [];
+                shortestCycles.push(allCycles[i]);
+            }
+            else if (allCycles[i].length === min){
+                shortestCycles.push(allCycles[i]);
+            }
+        }
+        return shortestCycles;
+    },
+
+    /*******************************************
+     * From a list of cycle, remove all the cycles that are not valid metabolic cycle (i.e. some case where an edge go from a product of a reaction to this reaction, followed by another edge going to another product of the same reaction)
+     * @param {String[][]} cyclesList : List of cycles. A cycle is define as a list of nodes id.
+     */
+    removeInvalidCycles : function (cyclesList) {
+        // New data structure to efficiently get back the edges from vertex id
+        var verticesPairsToLinks = {};
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .filter(function (d) {
+                return (d.getSource().isSideCompound !== true && d.getTarget().isSideCompound !== true)
+            })
+            .each(function (d) {
+                var reactionNode = (d.getSource().biologicalType === "reaction") ? d.getSource() : d.getTarget();
+                var sourceId = d.getSource().id;
+                var targetId = d.getTarget().id;
+                if (!verticesPairsToLinks[sourceId]){
+                    verticesPairsToLinks[sourceId] = {};
+                }
+                verticesPairsToLinks[sourceId][targetId] = d;
+                if (reactionNode.reactionReversibility === true){
+                    if (!verticesPairsToLinks[targetId]){
+                        verticesPairsToLinks[targetId] = {};
+                    }
+                    verticesPairsToLinks[targetId][sourceId] = d;
+                }
+            });
+
+        // Get the links that are part of the cycle from the vertex id
+        var cyclesLinksList = [];
+        for (var i=0; i<cyclesList.length; i++){
+            var cycleLinks = [];
+            for (var j=0; j<cyclesList[i].length; j++) {
+                var newJ = (j + 1 < cyclesList[i].length) ? j + 1 : 0;
+                var currentVertex = cyclesList[i][j];
+                var nextVertex = cyclesList[i][newJ];
+                var link = "";
+                if (verticesPairsToLinks[currentVertex][nextVertex]){
+                    link = verticesPairsToLinks[currentVertex][nextVertex];
+                }
+                else if (verticesPairsToLinks[nextVertex][currentVertex]){
+                    link = verticesPairsToLinks[nextVertex][currentVertex];
+                }
+                cycleLinks.push(link);
+            }
+            cyclesLinksList.push(cycleLinks);
+        }
+
+        var listValidCycles = [];
+        for (var i=0; i<cyclesList.length; i++) {
+            // Get all the cycle edges from the output of the cycle finding algorithm
+            var cycle = cyclesList[i];
+            var cycleLinks = cyclesLinksList[i];
+
+            // Check if each cycle found is a valid metabolite cycle
+            // (if a reversible reaction that produce 2 metabolites, a cycle might have been found that has a segment that
+            // goes from the 1st metabolite to the reaction to the second metabolite, even though it is not a valid metabolic cycle)
+            var valid = true;
+            for (var j = 0; j < cycle.length; j++) {
+                var lastJ = (j - 1 >= 0) ? j - 1 : cycle.length - 1;
+                if (cycleLinks[j].getSource().id === cycle[j]) {
+                    //Edge in cycle direction
+                    if (cycleLinks[j].getSource().biologicalType === "reaction" && cycleLinks[lastJ].getSource().biologicalType === "reaction"){
+                        valid = false;
+                    }
+                }
+                else if (cycleLinks[j].getTarget().id === cycle[j]){
+                    //Edge in inverse cycle direction
+                    if (cycleLinks[j].getTarget().biologicalType === "reaction" && cycleLinks[lastJ].getTarget().biologicalType === "reaction") {
+                        valid = false;
+                    }
+                }
+            }
+
+            if (valid === true) {
+                listValidCycles.push(cycle);
+            }
+        }
+        return listValidCycles;
+
+    },
+
+    /*******************************************
+     * Highlight the edges of a cycle in blue on the visualisation
+     * @param {String[][]} cycle : The cycle to highlight. A cycle is defined as a list of nodes id.
+     */
+    highlightCycle: function (cycle) {
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("path.link")
+            .style("stroke", "black")
+            .style("stroke-width", "0.5");
+        var cycleLinks = metExploreD3.GraphFunction.getLinksFromCycle(cycle);
+        var nodesCycle = [];
+        for (var i = 0; i < cycleLinks.length; i++) {
+            nodesCycle.push(cycleLinks[i].source);
+            nodesCycle.push(cycleLinks[i].target);
+        }
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .filter(function (d) {
+                return (cycleLinks.includes(d));
+            }).style("stroke", "blue")
+            .style("stroke-width", "1.5");
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+            .filter(function (d) {
+                return (nodesCycle.includes(d));
+            });
+    },
+
+    /*******************************************
+     * Remove highlight of the edges of a cycle on the visualisation
+     * @param {String[][]} cycle : The cycle on which to remove the highlight. A cycle is defined as a list of nodes id.
+     */
+    removeHighlightCycle: function (cycle) {
+        var cycleLinks = metExploreD3.GraphFunction.getLinksFromCycle(cycle);
+        var nodesCycle = [];
+        for (var i=0; i<cycleLinks.length; i++){
+            nodesCycle.push(cycleLinks[i].source);
+            nodesCycle.push(cycleLinks[i].target);
+        }
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .filter(function (d) {
+                return (cycleLinks.includes(d));
+            }).style("stroke", "black")
+            .style("stroke-width", "0.5");
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+            .filter(function (d) {
+                return (nodesCycle.includes(d));
+            });
+    },
+
+    /*******************************************
+     * Get all the links in a cycle defined by his node
+     * @param {String[][]} cycle : The cycle from which to get the links. A cycle is defined as a list of nodes id.
+     */
+    getLinksFromCycle : function(cycle) {
+        var cycleLinks = [];
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+        var tmpList = [];
+        for (var i=0; i<cycle.length; i++){
+            tmpList.push([]);
+        }
+        links.each(function (d) {
+            var sourceIndex = cycle.indexOf(d.getSource().id);
+            if (sourceIndex !== -1){
+                var targetIndex = cycle.indexOf(d.getTarget().id);
+                if (targetIndex !== -1) {
+                    tmpList[sourceIndex].push(d);
+                    tmpList[targetIndex].push(d);
+                }
+            }
+        });
+        for (var i = 0; i < cycle.length; i++) {
+            var newI = (i + 1 < cycle.length) ? i + 1 : 0;
+            var currentVertex = cycle[i];
+            var nextVertex = cycle[newI];
+            for (var j=0; j<tmpList[i].length; j++){
+                var link = tmpList[i][j];
+                var sourceId = link.getSource().id;
+                var targetId = link.getTarget().id;
+                if (sourceId === currentVertex && targetId === nextVertex) {
+                    cycleLinks.push(link);
+                }
+                else if (targetId === currentVertex && sourceId === nextVertex) {
+                    cycleLinks.push(link);
+                }
+            }
+        }
+        return cycleLinks;
+    },
+
+    /*******************************************
+     * Johnson's cycle enumeration algorithm
+     * @param {Number[][]} graph : An array of arrays of integer that is the graph structure in which to find the cycle. Each of the N nodes are defined by a number from 0 to N-1. If j is in the array of index i that mean there is an arc going form i to j.
+     * @param {"Single"/"All"} flag: If flag is "Single", the algorithm will run to only find cycles going through the first node of the graph.
+     */
+    JohnsonAlgorithm: function(graph, flag){
+        // Variables initialisation
+        var nVertices = graph.length;
+        var start = 0;
+        var Ak = graph;
+        var B = [];
+        var blocked = [];
+        for (var i=0; i<nVertices; i++){
+            B.push(Array(nVertices).fill(""));
+            blocked[i] = false;
+        }
+        var stack = [];
+        for (var i=0; i<nVertices; i++){
+            stack.push(null);
+        }
+        var stackTop = 0;
+        var nbNodeToRun = (flag === "Single") ? 1 : nVertices;
+        var result = [];
+
+        // Recursive unblock
+        function unblock(u){
+            blocked[u] = false;
+            for (var wPos=0; wPos<B[u].length; wPos++){
+                var w = B[u][wPos];
+                wPos -= removeFromList(B[u], w);
+                if (blocked[w]){
+                    unblock(w);
+                }
+            }
+        }
+
+        // Recursive circuit enumeration
+        function circuit(v){
+            var f = false;
+            stackPush(v);
+            blocked[v] = true;
+
+            for (var wPos=0; wPos<Ak[v].length; wPos++){
+                var w = Ak[v][wPos];
+                if (w < start){
+                    continue;
+                }
+                if (w == start){
+                    var cycle = stack.slice(0, stackTop);
+                    if (cycle.length > 4) {
+                        result.push(stack.slice(0, stackTop));
+                    }
+                    f = true;
+                }
+                else if (!blocked[w]){
+                    if (circuit(w)){
+                        f = true;
+                    }
+                }
+            }
+
+            if (f){
+                unblock(v);
+            }
+            else {
+                for (var wPos=0; wPos<Ak[v].length; wPos++){
+                    var w = Ak[v][wPos];
+                    if (w < start){
+                        continue;
+                    }
+                    if (!(B[w].includes(v))){
+                        B[w].push(v);
+                    }
+                }
+            }
+            v = stackPop();
+            return f;
+        }
+
+        // Stack management
+        function stackPush(val){
+            if (stackTop >= stack.length){
+                stack.push(null);
+            }
+            stack[stackTop++] = val;
+        }
+        function stackPop(){
+            return stack[--stackTop];
+        }
+
+        // List Management
+        function removeFromList(list, val){
+            var nOcurrences = 0;
+            var itemIndex = 0;
+            while ((itemIndex = list.indexOf(val, itemIndex)) > -1) {
+                list.splice(itemIndex, 1);
+                nOcurrences++;
+            }
+            return nOcurrences;
+        }
+
+        // Main
+        start = 0;
+        while (start < nbNodeToRun){
+            for (var i=0; i<nVertices; i++){
+                blocked[i] = false;
+                B[i].length = 0;
+            }
+            circuit(start);
+            start = start + 1;
+        }
+        return result;
+    },
+
+    /*******************************************
+     * Position all the nodes of cycle along a circle in the visualisation
+     * @param {String[][]} cycle: The cycle to draw. A cycle is defined as a list of nodes id.
+     */
+    drawMetaboliteCycle: function (cycle) {
+        // check if drawing this cycle will conflict with other already drawn cycle
+        var alreadyDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+        var cycleToRemoveIndex = false;
+        for (var i=0; i<alreadyDrawnCycles.length; i++){
+            var test = false;
+            for (var j=0; j<alreadyDrawnCycles[i].length; j++) {
+                if (cycle.includes(alreadyDrawnCycles[i][j])){
+                    test = true;
+                }
+            }
+            if (test === true){
+                var alreadyDrawnLinks = metExploreD3.GraphFunction.getLinksFromCycle(alreadyDrawnCycles[i]);
+                for (var j=0; j<alreadyDrawnLinks.length; j++) {
+                    alreadyDrawnLinks[j].partOfCycle = false;
+                }
+                cycleToRemoveIndex = i;
+            }
+        }
+        if (cycleToRemoveIndex !== false) {
+            alreadyDrawnCycles.splice(cycleToRemoveIndex, 1);
+        }
+        alreadyDrawnCycles.push(cycle);
+
+        metExploreD3.GraphFunction.removeHighlightCycle(cycle);
+        var radius = cycle.length * 10;
+        var nodesList = [];
+        for (var i=0; i<cycle.length; i++){
+            var node = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+                .filter(function (d) {
+                    return (d.id === cycle[i]);
+                })
+                .each(function (d) {
+                    if (!(d.isSelected())) {
+                        metExploreD3.GraphNode.selection(d, 'viz');
+                    }
+                });
+            nodesList.push(node);
+        }
+
+        // Check if the node are present in the graph
+        var cycleExist = true;
+        for (var i=0; i< nodesList.length; i++){
+        	if (nodesList[i].empty()){
+                cycleExist = false;
+			}
+		}
+		if (!cycleExist){
+        	return -1;
+		}
+
+        // Determine whether the points are arranged in a mostly clockwise or counter-clockwise fashion (cf shoelace formula)
+        var directionTotal = 0;
+        var topValue = 0;
+        var topIndex = 0;
+        for (var i=0; i<cycle.length; i++){
+            var nextI = (i + 1 < cycle.length) ? i + 1 : 0;
+            var x1 = 0;
+            var x2 = 0;
+            var y1 = 0;
+            var y2 = 0;
+            nodesList[i].each(function (d) {
+                x1 = d.x;
+                y1 = d.y;
+            });
+            nodesList[nextI].each(function (d) {
+                x2 = d.x;
+                y2 = d.y;
+            });
+            if (x1 > topValue) {
+                topValue = x1;
+                topIndex = i;
+            }
+            directionTotal += (x2 - x1) * (y2 + y1);
+        }
+        var direction = (directionTotal < 0) ? "clockwise" : "counter-clockwise";
+
+        // Compute the centroid of the points that are part of the cycle
+        var centroidX = 0;
+        var centroidY = 0;
+        for (var i=0; i<cycle.length; i++){
+            nodesList[i].each(function (d) {
+                centroidX += d.x;
+                centroidY += d.y;
+            })
+        }
+        centroidX = centroidX / cycle.length;
+        centroidY = centroidY / cycle.length;
+
+        var shiftedNodesList = [].concat(nodesList);
+        shiftedNodesList = shiftedNodesList.concat(shiftedNodesList.splice(0, topIndex));
+        shiftedNodesList = (direction === "counter-clockwise") ? shiftedNodesList.concat(shiftedNodesList.splice(0, 1)) : shiftedNodesList;
+        var revNodesList = (direction === "counter-clockwise") ? [].concat(shiftedNodesList).reverse() : shiftedNodesList;
+        for (var i=0; i<cycle.length; i++) {
+            var transform = revNodesList[i].attr("transform");
+            var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
+            var x = centroidX + radius * Math.cos(2 * Math.PI * i / cycle.length);
+            var y = centroidY + radius * Math.sin(2 * Math.PI * i / cycle.length);
+            var translate = "translate(" + x + "," + y + ")";
+            revNodesList[i].attr("transform", transformList[0] + translate + transformList[2]);
+            revNodesList[i].each(function (d) {
+                d.x = x;
+                d.y = y;
+                d.px = x;
+                d.py = y;
+            });
+        }
+
+        // Draw the arcs
+        var cycleLinks = metExploreD3.GraphFunction.getLinksFromCycle(cycle);
+        for (var i=0; i<cycleLinks.length; i++){
+            cycleLinks[i].partOfCycle = true;
+            cycleLinks[i].cycleRadius = radius;
+            if (cycleLinks[i].getSource().id === cycle[i]){
+                cycleLinks[i].arcDirection = (direction === "clockwise") ? "clockwise" : "counter-clockwise";
+            }
+            else if (cycleLinks[i].getTarget().id === cycle[i]){
+                cycleLinks[i].arcDirection = (direction === "clockwise") ? "counter-clockwise" : "clockwise";
+
+            }
+        }
+
+        for (var i=0; i<cycle.length; i++){
+            nodesList[i].each(function (d) {
+                d.setLocked(true);
+                d.fixed=d.isLocked();
+            });
+        }
+        metExploreD3.GraphNode.tick('viz');
+        metExploreD3.GraphLink.tick('viz');
+        return 0;
+    },
+
+    /*******************************************
+     * Remove the cycle containing the node form the list of drawn cycle. Once removed, if using curves for edges, the edge of the cycles won't be drawn as arcs.
+     * @param {Object} node: A node. If a drawn cycle contain this node, it is removed from the list of drawn cycle.
+     */
+    removeCycleContainingNode: function (node) {
+        // check if the nodes is part of a drawn cycle
+        var alreadyDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
+        var cycleToRemoveIndex = [];
+        for (var i=0; i<alreadyDrawnCycles.length; i++){
+            var test = false;
+            for (var j=0; j<alreadyDrawnCycles[i].length; j++) {
+                if (node.id === alreadyDrawnCycles[i][j]){
+                    test = true;
+                }
+            };
+            if (test === true){
+                var alreadyDrawnLinks = metExploreD3.GraphFunction.getLinksFromCycle(alreadyDrawnCycles[i]);
+                for (var j=0; j<alreadyDrawnLinks.length; j++) {
+                    alreadyDrawnLinks[j].partOfCycle = false;
+                }
+                cycleToRemoveIndex.push(i);
+            }
+        }
+        for (var i=0; i<cycleToRemoveIndex.length; i++){
+            alreadyDrawnCycles.splice(cycleToRemoveIndex[i], 1);
+        }
+        metExploreD3.GraphNode.tick('viz');
+        metExploreD3.GraphLink.tick('viz');
+    },
+
+    /*******************************************
+     * Check if a node is part of a cycle or not.
+     * @param {Object} node: The node to check.
+     * @param {String} panel: The panel containing the node.
+     */
+    checkIfPartOfCycle: function (node, panel) {
+        var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .filter(function (d) {
+                if (d.getSource() === node || d.getTarget() === node){
+                    return (d.partOfCycle === true);
+                }
+            });
+        return !links.empty();
+    },
+
+    /*******************************************
+     * Check if the links in a panel are part of a cycle that should be drawn and give them the needed attributes.
+     * @param {String} panel: The panel.
+     */
+    checkIfCycleInPanel: function (panel) {
+    	var linkViz = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+			.filter(function (d) {
+                return (d.partOfCycle === true);
+            });
+        var linksPanel = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+			.filter(function (d) {
+				var flag = true;
+				linkViz.each(function (dViz) {
+					if (d.id === dViz.id){
+						d.partOfCycle = dViz.partOfCycle;
+						d.cycleRadius = dViz.cycleRadius;
+						d.arcDirection = dViz.arcDirection;
+						flag = false;
+					}
+                });
+				return flag;
+            })
+			.each(function (d) {
+				d.partOfCycle = false;
+            });
+    },
+
+    /*******************************************
+     * Check if the selected nodes are part of a cycle or not.
+     * @param {String} panel: The panel containing the nodes.
+     */
+    checkIfSelectionIsPartOfCycle : function (panel) {
+        var result = false;
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
+            .filter(function(d) {
+                return d.isSelected() && d.getBiologicalType()=="metabolite";
+            })
+            .filter(function(d){
+                if (this.getAttribute("duplicated")==undefined) { return true; }
+                else { return !this.getAttribute("duplicated"); }
+            }).each(function (d) {
+            if (metExploreD3.GraphFunction.checkIfPartOfCycle(d, panel)) { result = true; }
+        });
+        return result;
+    }
 }

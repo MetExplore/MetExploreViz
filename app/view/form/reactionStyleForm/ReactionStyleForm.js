@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description GeneralStyleForm : Reaction style configs
+ * (a)description GeneralStyleForm : Reaction style configs
  */
 Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
     extend: 'Ext.panel.Panel',  
@@ -54,6 +54,14 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
         xtype:'selectDisplayReactionLabel'  
     }
     , 
+    {
+        xtype: 'checkboxfield',
+        boxLabel  : 'Uses aliases',
+        inputValue: '0',
+        margin:'5 5 5 5',
+        checked   : true,
+        reference:'checkboxAlias'
+    },
     {   
         xtype: 'textfield',
         reference:'chooseStrokeReaction',

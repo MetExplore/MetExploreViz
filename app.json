@@ -7,7 +7,7 @@
     /**
      * The version of the application.
      */
-    "version": "1.2.8",
+    "version": "2.0.0",
 
     /**
      * The relative path to the application's markup file (html, jsp, asp, etc.).
@@ -344,6 +344,10 @@
         },
         {
             "path": "resources/lib/functions/GraphPath.js",  
+            "bundle": true
+        },
+        {
+            "path": "resources/lib/functions/GraphStyleEdition.js",
             "bundle": true
         }
     ], 

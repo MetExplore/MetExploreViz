@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description 
+ * (a)description 
  */
 Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleForm', {
     extend: 'Ext.panel.Panel',  
@@ -9,6 +9,7 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleForm', {
         "metExploreViz.view.form.reactionStyleForm.ReactionStyleForm",
         "metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm",
         "metExploreViz.view.form.generalStyleForm.GeneralStyleForm",
+        "metExploreViz.view.form.drawingStyleForm.DrawingStyleForm",
         "metExploreViz.view.form.updateStyleForm.UpdateStyleFormController"
     ],
 
@@ -34,6 +35,7 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleForm', {
         store: [
                 ['reactionStyleForm','Reaction'],
                 ['metaboliteStyleForm', 'Metabolite'],
+                ['drawingStyleForm', 'Drawing'],
                 ['generalStyleForm', 'General']
         ]
     },{
@@ -50,7 +52,12 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleForm', {
         xtype:'metaboliteStyleForm',
         hidden:true
     }
-    ,{   
+    ,{
+        id:'drawingStyleForm',
+        xtype:'drawingStyleForm',
+        hidden:true
+    }
+    ,{
         id:'generalStyleForm',
         xtype:'generalStyleForm',
         hidden:true

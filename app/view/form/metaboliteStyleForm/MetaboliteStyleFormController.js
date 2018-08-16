@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description class to control metabolite styles or configs
+ * (a)description class to control metabolite styles or configs
  */
 
 Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormController', {
@@ -30,6 +30,8 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		        view.lookupReference('chooseStrokeMetabolite').setValue(s_MetaboliteStyle.getStrokeWidth());   
 		   
       			Ext.getCmp('selectDisplayMetaboliteLabel').setValue(s_MetaboliteStyle.getLabel());   
+
+      			view.lookupReference('checkboxAlias').setValue(s_MetaboliteStyle.isUseAlias());
 			},
 			scope:me
 		});
@@ -56,9 +58,11 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 				var newry = (!isNaN(ry) && ry>=0 && ry<200) ? ry : s_MetaboliteStyle.getRY();
 
 				var newLabel = view.lookupReference('selectDisplayMetaboliteLabel').getValue();
-
+				var isAlias = view.lookupReference('checkboxAlias').getValue();
+			    
 				if(newLabel!==s_MetaboliteStyle.getLabel()
-					|| (newHeight !== s_MetaboliteStyle.getHeight())
+                    || isAlias!==s_MetaboliteStyle.isUseAlias()
+                    || (newHeight !== s_MetaboliteStyle.getHeight())
 					|| (newWidth !== s_MetaboliteStyle.getWidth())
 					|| (newstrokewidth !== s_MetaboliteStyle.getStrokeWidth())
 					|| (newrx !== s_MetaboliteStyle.getRX())
@@ -71,6 +75,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 					s_MetaboliteStyle.setRX(parseFloat(newrx));
 					s_MetaboliteStyle.setRY(parseFloat(newry));
 					s_MetaboliteStyle.setLabel(newLabel);
+					s_MetaboliteStyle.setUseAlias(isAlias);
 				}		
 
 				if(isset){
@@ -120,6 +125,15 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		    		me.changeStroke(newValue);
 				}
 			},
+			scope : me
+		});
+
+		view.lookupReference('checkboxAlias').on({
+			afterrender: function(){
+				var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
+
+		        view.lookupReference('checkboxAlias').setValue(s_MetaboliteStyle.isUseAlias());
+		    },
 			scope : me
 		});
 

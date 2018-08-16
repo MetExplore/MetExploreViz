@@ -1,6 +1,6 @@
 /**
  * @author Fabien Jourdan
- * @description Menu export network viz
+ * (a)description Menu export network viz
  */
 
 Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
@@ -40,6 +40,57 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
             hidden:true,
             id:'buttonSide',   
             xtype:'buttonImportSideCompounds'/*,text: 'Refresh/Build network'*/
+        },
+        {
+            text: 'Import coordinates',
+            reference:'importCoordinates',
+            iconCls:'importCoordinates'
+        },
+        {
+            hidden:true,
+            id:'buttonImportCoords',
+            xtype:'buttonImportCoordinates'/*,text: 'Refresh/Build network'*/
+        },
+        {
+            text: 'Import Cycle',
+            reference: 'importCycle',
+            tooltip: 'Import cycle for drawing',
+            iconCls:'importCycle'
+        },
+        {
+            hidden:true,
+            id:'buttonCycle',
+            xtype:'buttonImportCycle'
+        },
+        {
+            text: 'Image Mapping',
+            menu: {
+                items: [
+                    {
+                        text: 'By Name',
+                        reference: 'importImageMappingName',
+                        tooltip: 'Import image for mapping by name'
+                    },
+                    {
+                        text: 'By Id',
+                        reference: 'importImageMappingID',
+                        tooltip: 'Import image for mapping by id'
+
+                    }]
+            },
+            iconCls:'importImage'
+        },
+        {
+            xtype: 'buttonImportImage',
+            reference: 'importImageMappingHidden',
+            buttonConfig: {
+                text: 'Add logo',
+                width: '100%',
+                ui: 'default-toolbar'
+            },
+            buttonOnly: true,
+            multiple: true,
+            hidden: true
         }
         // {
         //     text: 'Import saved network from JSON file',

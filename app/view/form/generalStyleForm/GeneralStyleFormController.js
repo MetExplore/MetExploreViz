@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * @description class to control settings or configs
+ * (a)description class to control settings or configs
  */
 
 Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleFormController', {

@@ -1,6 +1,6 @@
 /**
  * @author MC
- * @description : To manage the panel where is the graph
+ * (a)description : To manage the panel where is the graph
  */
 metExploreD3.GraphPanel = {
 	
@@ -337,31 +337,6 @@ metExploreD3.GraphPanel = {
 				.select("#buttonHand")
 				.attr("transform", "translate("+deltaX+",0) scale(1)");
 
-			x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#whiteBlack")
-				.attr('x');
-			deltaX = w-100-x;
-
-		    d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#whiteBlack")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
-
-			x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#invertColor")
-				.attr('x');
-			deltaX = w-100-x;
-
-		    d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#invertColor")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
 		}
 		if(session!=undefined)
 		{
@@ -502,6 +477,10 @@ metExploreD3.GraphPanel = {
 						{
 							metExploreD3.GraphPanel.refreshJSON(json);
 							if(func!=undefined && typeof func==='function') func();
+                            Ext.getCmp('cycleDetection').setVisible(false);
+                            if (metExploreD3.GraphStyleEdition.editMode){
+                            	metExploreD3.fireEvent("enterEditMode", "click");
+							}
 						}
 		           },
 		           icon: Ext.Msg.QUESTION
@@ -513,6 +492,90 @@ metExploreD3.GraphPanel = {
 			//SYNTAX ERROR
 			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. Use a saved file from MetExploreViz or see <a href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#generalfunctioning">MetExploreViz documentation</a>.');
 		}
+	},
+	/*****************************************************
+	* Update the network
+	*/
+    refreshCoordinates : function(json, func) {
+		var me = this;
+		metExploreD3.hideInitialMask();
+
+        var panel = "viz";
+        var myMask = metExploreD3.createLoadMask("Move nodes in progress...", panel);
+        if(myMask!== undefined){
+
+            metExploreD3.showMask(myMask);
+
+            metExploreD3.deferFunction(function() {
+
+                metExploreD3.displayMessageYesNo("Set nodes coordinates",'Do you want highlight moved nodes.',function(btn){
+                    if(btn==="yes")
+                    {
+                        moveNodes(true);
+                    }
+                    else
+                    {
+                        moveNodes(false);
+                    }
+                });
+
+                function moveNodes(highlight){
+                    var session = _metExploreViz.getSessionById("viz");
+
+                    var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
+                    var nodesToMove = jsonParsed.nodes.filter(function(node){
+                        return session.getD3Data().getNodes().find(function(nodeInNetwork){
+                            return node.dbIdentifier === nodeInNetwork.getDbIdentifier();
+                        });
+                    });
+                    if(nodesToMove.length>0){
+                        if(session!==undefined)
+                        {
+                            if(highlight)
+                                metExploreD3.GraphNode.unselectAll("#viz");
+
+                            metExploreD3.GraphNetwork.animationButtonOff("viz");
+                            var force = session.getForce();
+                            force.stop();
+                            d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+                                .each(function(node){
+                                    var nodeToMove = nodesToMove.find(function (aNode) {
+                                        return aNode.dbIdentifier === node.getDbIdentifier();
+                                    });
+                                    if(nodeToMove){
+                                        node.px = nodeToMove.px ;
+                                        node.py = nodeToMove.py ;
+                                        node.x = nodeToMove.x ;
+                                        node.y = nodeToMove.y ;
+                                        node.setLocked(true);
+                                        node.fixed=node.isLocked();
+
+                                        if(highlight)
+                                        	metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
+                                    }
+                                });
+
+                            metExploreD3.GraphNetwork.tick("viz");
+                            metExploreD3.hideMask(myMask);
+
+                        }
+
+                        if(typeof func==='function') func();
+                    }
+                    else
+                    {
+                        //SYNTAX ERROR
+                        metExploreD3.displayWarning("None coordinate mapped", 'None nodes mapped by bdIdentifier verify used biosource.');
+                        metExploreD3.hideMask(myMask);
+                    }
+				}
+
+            }, 100);
+        }
+
+
+
+
 	},
 
 	/*****************************************************
@@ -731,19 +794,32 @@ metExploreD3.GraphPanel = {
 					
 				if(jsonParsed.metaboliteStyle)
 				{
-					var style = new MetaboliteStyle(jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.label, jsonParsed.metaboliteStyle.strokeColor);
+					var style = new MetaboliteStyle(jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.label, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.useAlias);
 					metExploreD3.setMetaboliteStyle(style);
 				}
 
 				if(jsonParsed.reactionStyle)
 				{
-					var style = new ReactionStyle(jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.label, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth);
+					var style = new ReactionStyle(jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.label, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth, jsonParsed.metaboliteStyle.useAlias);
 					metExploreD3.setReactionStyle(style);
 				}
 
 				for (var key in sessions) {
 					metExploreD3.GraphNetwork.refreshSvg(key);	
 			    }
+                // set style of previous session from JSON
+                var networkDataViz = new NetworkData('viz');
+				networkDataViz.cloneObject(sessions['viz'].d3Data);
+                var nodesData = networkDataViz.getNodes();
+				nodesData.forEach(function(node) {
+					metExploreD3.GraphStyleEdition.setStartingStyle(node);
+				});
+				if (sessions['viz'].drawnCycles && Array.isArray(sessions['viz'].drawnCycles)) {
+					for (var i=0; i<sessions['viz'].drawnCycles.length; i++){
+                        metExploreD3.GraphFunction.drawMetaboliteCycle(sessions['viz'].drawnCycles[i]);
+					}
+                }
+
 				endFunc();
 			}
 		}

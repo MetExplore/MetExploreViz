@@ -95,6 +95,11 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			click : me.searchNode,
 			scope : me
 		});
+
+		view.lookupReference('enterEditMode').on({
+			click : me.enterEditMode,
+			scope : me
+		});
 	},
 
 	changeoption : function(){
@@ -234,6 +239,95 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				.attr("transform", "translate(-35,-35)");
 
 		}
+
+		if(view.lookupReference("searchNodeTextField").getValue()=="worldchampion")
+		{
+			// d3.select("#viz").select("#D3viz")
+			// 	.style("background-image","url('resources/images/easteregg/happyhalloween.png')")
+			// 	.style("background-repeat","round");
+			
+			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("*").remove();
+
+			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+				.filter(
+					function(d) {
+						return (d.getBiologicalType() == 'reaction');
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/drapeau-tricolore.png")
+				.attr("width", "70px")
+				.attr("height", "70px")
+				.attr("transform", "translate(-35,-35)");
+
+			var metabolites = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+				.filter(
+					function(d) {
+						return (d.getBiologicalType() == 'metabolite');
+					}
+				)
+
+			metabolites
+				.filter(
+					function(d, i) {
+						return (i > 5);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/drapeau-tricolore.png")
+				.attr("width", "70px")
+				.attr("height", "70px")
+				.attr("transform", "translate(-35,-35)");
+
+			metabolites
+				.filter(
+					function(d, i) {
+						return (i == 0 || i == 1);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/coupe_du_monde.png")
+				.attr("width", "120px")
+				.attr("height", "120px")
+				.attr("transform", "translate(-60,-60)");
+
+			metabolites.filter(
+					function(d, i) {
+						return (i == 2);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/zizou.png")
+				.attr("width", "300px")
+				.attr("height", "300px")
+				.attr("transform", "translate(-150,-150)");
+
+			metabolites
+				.filter(
+					function(d, i) {
+						return (i == 3);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/francais.png")
+				.attr("width", "300px")
+				.attr("height", "300px")
+				.attr("transform", "translate(-150,-150)");
+
+			metabolites
+				.filter(
+					function(d, i) {
+						return (i == 5 || i == 4);
+					}
+				)
+				.append("image")
+				.attr("xlink:href","resources/images/easteregg/wc/star.png")
+				.attr("width", "100px")
+				.attr("height", "100px")
+				.attr("transform", "translate(-50,-50)");
+
+		}
+
 		metExploreD3.GraphNode.searchNode(view.lookupReference("searchNodeTextField").getValue());
 	},
 
@@ -349,7 +443,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 							undefined, reactiondbIdentifier,
 							reactionID, reactionReversibility,
 							'reaction', false, true, undefined,
-							undefined, undefined,undefined,ec);
+							undefined, undefined,undefined,reaction.get('alias'), ec);
 					// Add node in the graph
 					graph.addNode(reactionID);
 
@@ -442,8 +536,10 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 
 							var metabolite = storeM
 									.getById(metaboliteID);
-							metaboliteName = metabolite
-									.get('name');
+                            metaboliteName = metabolite
+                                .get('name');
+                            var alias = metabolite
+                                .get('alias');
 							compartment = metabolite
 									.get('compartment');
 							dbMetabolite = metabolite
@@ -462,7 +558,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 									metaboliteID, undefined,
 									'metabolite', false, true,
 									metaboliteSVG.svg,
-									svgWidth, svgHeight,isSsideCompoud,undefined);
+									svgWidth, svgHeight,isSsideCompoud,undefined,undefined,undefined,undefined,undefined,undefined,alias);
 
 							metaboliteMapIndex = ListIdMetabolites
 									.indexOf(metaboliteID);
@@ -761,5 +857,17 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				Ext.MessageBox.alert('Server-side failure with status code ' + response.status); 
 			}
 		});
-	}
+	},
+    enterEditMode: function () {
+        metExploreD3.GraphStyleEdition.toggleEditMode();
+		if (metExploreD3.GraphStyleEdition.editMode){
+            Ext.getCmp('enterEditMode').setText("Exit edit mode");
+            Ext.getCmp('enterEditMode').setTooltip("Exit edit mode");
+		}
+		else {
+            Ext.getCmp('enterEditMode').setText("Enter edit mode");
+            Ext.getCmp('enterEditMode').setTooltip("Enter edit mode");
+		}
+        (metExploreD3.GraphStyleEdition.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
+    }
 });

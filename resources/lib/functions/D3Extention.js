@@ -57,14 +57,15 @@ d3.selection.enter.prototype =
 	        .attr("class", function(d) { return d.getBiologicalType(); })
 			.each(function(d) { 
 				var el = d3.select(this);
-			    var name = style.getDisplayLabel(d, style.getLabel());
+									
+			    var name = style.getDisplayLabel(d, style.getLabel(), style.isUseAlias());
 				name = name.split(' ');
 				el.text('');
 				for (var i = 0; i < name.length; i++) {
 					var nameDOMFormat = $("<div/>").html(name[i]).text();
 			        var tspan = el.append('tspan').text(nameDOMFormat);
 			        if (i > 0)
-			            tspan.attr('x', 0).attr('dy', '5');
+			            tspan.attr('x', 0).attr('dy', '10');
 			    }
 			})
 			.style("font-size",style.getFontSize())
