@@ -677,6 +677,7 @@ metExploreD3.GraphUtils = {
 								alert("Votre navigateur ne gère pas l'AJAX cross-domain !");
 							}
 						});
+
 					allElements = metExploreD3.GraphUtils.setInlineStyles(clone, emptySvgDeclarationComputed, allElements);
 				}
 				else
@@ -810,6 +811,44 @@ metExploreD3.GraphUtils = {
 			}	
 		}
 	},
+
+    getDataUri : function(url, callback) {
+
+        var XMLrequest = new XMLHttpRequest(); // new XML request
+        XMLrequest.open("GET", url, false); // URL of the SVG file on server
+        XMLrequest.send(null); // get the SVG file
+		var res = XMLrequest.responseXML;
+        console.log(res);
+        if (res!==null){
+			var mySVG = res.getElementsByTagName("svg")[0];
+
+            var svg = new XMLSerializer().serializeToString(mySVG);
+            var base64 = window.btoa(svg);
+
+            callback('data:image/svg+xml;base64,' + base64);
+		}
+		else
+		{
+
+            var image = new Image();
+
+            image.onload = function () {
+            	var canvas = document.createElement('canvas');
+            	canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+            	canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+            	canvas.getContext('2d').drawImage(this, 0, 0);
+
+            	// Get raw image data
+            	callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+
+            	// ... or get as Data URI
+            	callback(canvas.toDataURL('image/png'));
+            };
+            image.src=url;
+		}
+	},
+
 
 	binaryblob : function(canvas, type){
 
@@ -1025,11 +1064,11 @@ metExploreD3.GraphUtils = {
 	    tree.push(obj);
 	    visit(obj);
 	    function visit(node) {
+
 	    	if ((!(node.className.baseVal && node.className.baseVal=="linkGroup")) && node.tagName!='line' ){
 	    			    		
 		        if (node && node.hasChildNodes()) {
 			        var child = node.firstChild;
-
 			        if(child.className!=undefined)
 			      	{
 			      		// if(child.tagName=="image")
@@ -1068,8 +1107,9 @@ metExploreD3.GraphUtils = {
 
 				        // }
 
-				        if(child.tagName!="image")
+				        if(child.tagName!="image" || child.className.baseVal=="mappingImage" )
 				        {
+
 				            while (child) {
 			        			if(child.getAttribute!=undefined){
 						            if(child.getAttribute("href")!="resources/icons/pause.svg" 
@@ -1079,6 +1119,8 @@ metExploreD3.GraphUtils = {
 						                && child.getAttribute("href")!="resources/icons/link.svg" 
 						                && child.getAttribute("href")!="resources/icons/unlink.svg")
 						            {
+                                        if(child.className.baseVal=="mappingImage")
+                                            // console.log(child.getAttribute("href"));
 						                if (child.nodeType === 1 && child.nodeName != 'SCRIPT'){
 						                  	tree.push(child);
 						                    visit(child);
