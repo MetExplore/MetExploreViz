@@ -37,14 +37,14 @@ metExploreD3.GraphFunction = {
 		return graph;          
 	},
 
-	horizontalAlign : function() {
+	horizontalAlign : function(panel) {
 		metExploreD3.GraphNode.fixSelectedNode();
-		var nodes = _metExploreViz.getSessionById('viz').getSelectedNodes();
+		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
 		
-		var yRef = _metExploreViz.getSessionById('viz').getD3Data().getNodeById(nodes[0]).y;
+		var yRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).y;
 		var arrayNode = [];
 		
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+		d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.filter(function(node){
 				return nodes.indexOf(node.getId())!=-1;
 			})
@@ -67,17 +67,17 @@ metExploreD3.GraphFunction = {
 			}
 		})
     
-     	metExploreD3.GraphNetwork.tick("viz");
+     	metExploreD3.GraphNetwork.tick(panel);
 	},
 
-	verticalAlign : function() {
+	verticalAlign : function(panel) {
 		metExploreD3.GraphNode.fixSelectedNode();
-		var nodes = _metExploreViz.getSessionById('viz').getSelectedNodes();
+		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
 		
-		var xRef = _metExploreViz.getSessionById('viz').getD3Data().getNodeById(nodes[0]).x;
+		var xRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).x;
 		
 		var arrayNode = [];
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+		d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.filter(function(node){
 				return nodes.indexOf(node.getId())!=-1;
 			})
@@ -100,7 +100,7 @@ metExploreD3.GraphFunction = {
 			}
 		})
     
-     	metExploreD3.GraphNetwork.tick("viz");
+     	metExploreD3.GraphNetwork.tick(panel);
 	},
 
     colorDistanceOnNode : function(graph, func){

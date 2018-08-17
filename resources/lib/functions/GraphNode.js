@@ -943,7 +943,56 @@ metExploreD3.GraphNode = {
         		});
 	},
 
-	/*******************************************
+    initShortCut: function () {
+        d3.select("body")
+            .on("keydown", function() {
+                _MyThisGraphNode.charKey = d3.event.keyCode;
+                _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+                var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+
+                //H	72
+                if(_MyThisGraphNode.charKey==72 && activesession.getSelectedNodes().length>0)
+                {
+                    metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
+                }
+
+                //V 86
+                if(_MyThisGraphNode.charKey==86 && activesession.getSelectedNodes().length>0)
+                {
+                    metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
+                }
+
+                // 65=A
+                if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)
+                {
+                    d3.select("#"+_MyThisGraphNode.activePanel).select("#D3viz").select("#graphComponent").selectAll("g.node")
+                        .each(function(node){
+                            if(!node.isSelected())
+                            {
+                                _MyThisGraphNode.selection(node, _MyThisGraphNode.activePanel);
+                            }
+                        });
+                }
+            })
+            .on("keyup", function(e) {
+                // 46=Suppr
+                var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+                if(_MyThisGraphNode.charKey==46 && activesession.getSelectedNodes().length>0)
+                {
+                    metExploreD3.displayMessageYesNo("Selected nodes",'Do you want remove selected nodes?',function(btn){
+                        if(btn=="yes")
+                        {
+                            metExploreD3.GraphNetwork.removeSelectedNode(_MyThisGraphNode.activePanel)
+                        }
+                    });
+                }
+
+                _MyThisGraphNode.charKey = 'none';
+                _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+            });
+    },
+
+    /*******************************************
 	* To add nodes in visualization
 	* @param {} panel : The panel where the action is launched
 	*/
@@ -966,51 +1015,7 @@ metExploreD3.GraphNode = {
             }
         }, false);
 
-		d3.select("body")
-		    .on("keydown", function() {
-
-                _MyThisGraphNode.charKey = d3.event.keyCode;
-                _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
-
-              	// 65=A
-		    	if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)
-		    	{
-					d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node")
-						.each(function(node){
-							if(!node.isSelected())
- 							{
-								_MyThisGraphNode.selection(node, parent);
-							}
-						});
-		    	}
-
-                //H	72
-                if(_MyThisGraphNode.charKey==72 && session.getSelectedNodes().length>0)
-                {
-                    metExploreD3.GraphFunction.horizontalAlign();
-				}
-
-                //V 86
-                if(_MyThisGraphNode.charKey==86 && session.getSelectedNodes().length>0)
-                {
-					metExploreD3.GraphFunction.verticalAlign();
-                }
-
-		    })
-		    .on("keyup", function(e) {
-		    	// 46=Suppr
-		    	if(_MyThisGraphNode.charKey==46 && session.getSelectedNodes().length>0)
-		    	{
-		    		metExploreD3.displayMessageYesNo("Selected nodes",'Do you want remove selected nodes?',function(btn){
-		                if(btn=="yes")
-		                {
-		                   metExploreD3.GraphNetwork.removeSelectedNode("viz")
-		                }
-		           });
-		    	}
-		    	_MyThisGraphNode.charKey = 'none';
-              	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
-		    });
+        this.initShortCut();
 
 		metExploreD3.GraphNode.panelParent = parent;
 
@@ -1618,41 +1623,8 @@ metExploreD3.GraphNode = {
 		var generalStyle = metExploreD3.getGeneralStyle();
 
 		var session = _metExploreViz.getSessionById(parent);
-		var sessionMain = _metExploreViz.getSessionById('viz');
 
-
-		d3.select("body")
-		    .on("keydown", function() {
-		    	_MyThisGraphNode.charKey = d3.event.keyCode;
-              	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
-
-              	// 65=A
-		    	if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)
-		    	{
-					d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node")
-						.each(function(node){
-							if(!node.isSelected())
- 							{
-								_MyThisGraphNode.selection(node, parent);
-							}
-						});
-		    	}
-		    })
-		    .on("keyup", function(e) {
-		    	// 46=Suppr
-		    	if(_MyThisGraphNode.charKey==46 && session.getSelectedNodes().length>0)
-		    	{
-		    		metExploreD3.displayMessageYesNo("Selected nodes",'Do you want remove selected nodes?',function(btn){
-		                if(btn=="yes")
-		                {   
-		                   metExploreD3.GraphNetwork.removeSelectedNode("viz") 
-		                }
-		           });
-		    	}
-
-		    	_MyThisGraphNode.charKey = 'none';
-              	_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
-		    });
+		this.initShortCut();
 
 		metExploreD3.GraphNode.panelParent = parent;
 
