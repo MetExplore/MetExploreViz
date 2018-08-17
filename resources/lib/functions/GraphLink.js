@@ -2053,10 +2053,10 @@ metExploreD3.GraphLink = {
 
         reactions.each(function (node) {
             var enteringLinks = links.filter(function (link) {
-                return node.id==link.getTarget().getId();
+                return node.id==link.getTarget();
             });
             var exitingLinks = links.filter(function (link) {
-                return node.id==link.getSource().getId();
+                return node.id==link.getSource();
             });
 
             // Check if some links are part of a cycle and return the midsection of the arc instead of the centroid if this is the case
