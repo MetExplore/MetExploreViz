@@ -1493,8 +1493,8 @@ metExploreD3.GraphUtils = {
 					    	networkJSON+="\"svgHeight\":"+JSON.stringify(node.getSvgHeight())+",";
 					   	}
 
-				    	networkJSON+="\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node))+",";
-                        var imagePosition = metExploreD3.GraphStyleEdition.createImageStyleObject(node);
+				    	networkJSON+="\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node, key))+",";
+                        var imagePosition = metExploreD3.GraphStyleEdition.createImageStyleObject(node, key);
                         if (imagePosition != undefined) {
                             networkJSON += "\"imagePosition\":" + JSON.stringify(imagePosition) + ",";
                         }
