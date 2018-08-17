@@ -133,16 +133,29 @@ metExploreD3.GraphNetwork = {
     * @param {} panel : The panel to refresh
     */ 
 	zoom:function(panel) {
-		var scale = metExploreD3.getScaleById(panel);
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-		var zoomListener = scale.getZoom();
+        var session = _metExploreViz.getSessionById(panel);
+        if(session.getScale().getZoomScale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+        else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
-		// Firstly we changed the store which correspond to viz panel
-		scale.setZoomScale(d3.event.scale);
-		scale.setXScale(zoomListener.x());
-		scale.setYScale(zoomListener.y());
 
-		metExploreD3.GraphLink.tick(panel, scale);
+        if(d3.event.sourceEvent !=null)
+            if(d3.event.sourceEvent.type=='wheel')
+                session.setResizable(false);
+
+        // if visualisation is actived we add item to menu
+        if(session.isActive()){
+
+			var scale = metExploreD3.getScaleById(panel);
+			d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+			var zoomListener = scale.getZoom();
+
+			// Firstly we changed the store which correspond to viz panel
+			scale.setZoomScale(d3.event.scale);
+			scale.setXScale(zoomListener.x());
+			scale.setYScale(zoomListener.y());
+
+			metExploreD3.GraphLink.tick(panel, scale);
+        }
 	},
 
 	/*******************************************
@@ -498,21 +511,7 @@ metExploreD3.GraphNetwork = {
 				.y( yScale )
 				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
-						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
-
-					var session = _metExploreViz.getSessionById(panel);
-	        		
-	        		if(d3.event.sourceEvent !=null)
-							if(d3.event.sourceEvent.type=='wheel')
-								session.setResizable(false);
-		        	
-		        	// if visualisation is actived we add item to menu
-	        		if(session.isActive()){
-					
-						that.zoom(panel);
-					}
+                    that.zoom(panel);
 				});
 		
 		
@@ -532,21 +531,7 @@ metExploreD3.GraphNetwork = {
 				.y( yScale )
 				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
-
-					
-					if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-					else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
-
-					var session = _metExploreViz.getSessionById(this.parentNode.id);
-					
-					if(d3.event.sourceEvent !=null)
-						if(d3.event.sourceEvent.type=='wheel')
-							session.setResizable(false);
-	        	
-	        		// if visualisation is actived we add item to menu
-	        		if(session.isActive()){
-						that.zoom(this.parentNode.id);
-					}
+                    that.zoom(this.parentNode.id);
 				});
 
 			var scale = new Scale(panel);
@@ -3280,21 +3265,7 @@ setTimeout(
 				.y( yScale )
 				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
-						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
-
-					var session = _metExploreViz.getSessionById(panel);
-	        		
-	        		if(d3.event.sourceEvent !=null)
-							if(d3.event.sourceEvent.type=='wheel')
-								session.setResizable(false);
-		        	
-		        	// if visualisation is actived we add item to menu
-	        		if(session.isActive()){
-					
-						that.zoom(panel);
-					}
+                    that.zoom(panel);
 				});
 		
 			scale.add({
@@ -3329,20 +3300,7 @@ setTimeout(
 					.y( yScale )
 					.scaleExtent([ 0.01, 30 ])
 					.on("zoom", function(e){
-						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
-
-						var session = _metExploreViz.getSessionById(this.parentNode.id);
-		        		
-		        		if(d3.event.sourceEvent !=null)
-							if(d3.event.sourceEvent.type=='wheel')
-								session.setResizable(false);
-		        	
-		        		// if visualisation is actived we add item to menu
-		        		if(session.isActive()){
-							that.zoom(this.parentNode.id);
-						}
+                        that.zoom(this.parentNode.id);
 					});
 			scale
 				.setScale(xScale, yScale, 1, 1, 1, metExploreD3.GraphNetwork.zoomListener.scale(), metExploreD3.GraphNetwork.zoomListener);			
@@ -3676,21 +3634,7 @@ setTimeout(
 				.y( yScale )
 				.scaleExtent([ 0.01, 30 ])
 				.on("zoom", function(e){
-						
-						if(metExploreD3.GraphNetwork.zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
-
-					var session = metExploreD3.getSessionById(panel);
-	        		
-	        		if(d3.event.sourceEvent !=null)
-							if(d3.event.sourceEvent.type=='wheel')
-								session.setResizable(false);
-		        	
-		        	// if visualisation is actived we add item to menu
-	        		if(session.isActive()){
-					
-						that.zoom(panel);
-					}
+                    that.zoom(panel);
 				});
 		
 		
@@ -3717,21 +3661,7 @@ setTimeout(
 					.y( yScale )
 					.scaleExtent([ 0.01, 30 ])
 					.on("zoom", function(e){
-						
-						if(zoomListener.scale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-						else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
-
-									
-						var session = metExploreD3.getSessionById(this.parentNode.id);
-		        		
-		        		if(d3.event.sourceEvent !=null)
-							if(d3.event.sourceEvent.type=='wheel')
-								session.setResizable(false);
-		        	
-		        		// if visualisation is actived we add item to menu
-		        		if(session.isActive()){
-							that.zoom(this.parentNode.id);
-						}
+                        that.zoom(this.parentNode.id);
 					});
 			scale
 				.getStoreByGraphName(panel)

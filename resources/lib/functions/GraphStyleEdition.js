@@ -409,22 +409,26 @@ metExploreD3.GraphStyleEdition = {
      * Create an object containing the label style data associated to a node
      * @param {Object} node : The node whose label syle data will be put in the object
      */
-    createLabelStyleObject : function (node) {
-        var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
+    createLabelStyleObject : function (node, panel) {
+        var nodeLabel = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(d){return d.getId()==node.getId();})
             .select("text");
-        var labelStyle = {
-            font : nodeLabel.style("font-family"),
-            fontSize : nodeLabel.style("font-size"),
-            fontBold : nodeLabel.style("font-weight"),
-            fontItalic : nodeLabel.style("font-style"),
-            fontUnderline : nodeLabel.style("text-decoration-line"),
-            fontOpacity : nodeLabel.attr("opacity"),
-            fontX : nodeLabel.attr("x"),
-            fontY : nodeLabel.attr("y"),
-            fontTransform : nodeLabel.attr("transform")
-        };
+        console.log(node);
+        console.log(nodeLabel);
+        if(nodeLabel.length>0){
+            var labelStyle = {
+                font : nodeLabel.style("font-family"),
+                fontSize : nodeLabel.style("font-size"),
+                fontBold : nodeLabel.style("font-weight"),
+                fontItalic : nodeLabel.style("font-style"),
+                fontUnderline : nodeLabel.style("text-decoration-line"),
+                fontOpacity : nodeLabel.attr("opacity"),
+                fontX : nodeLabel.attr("x"),
+                fontY : nodeLabel.attr("y"),
+                fontTransform : nodeLabel.attr("transform")
+            };
+        }
         return labelStyle;
     },
 
@@ -432,8 +436,8 @@ metExploreD3.GraphStyleEdition = {
      * Create an object containing the image position and dimension data associated to a node
      * @param {Object} node : The node whose image position and dimension data will be put in the object
      */
-    createImageStyleObject : function (node) {
-        var nodeImage = d3.select("#viz").select("#D3viz").select("#graphComponent")
+    createImageStyleObject : function (node, panel) {
+        var nodeImage = d3.select("#"+ panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(d){return d.getId()==node.getId();})
             .select(".imageNode");
