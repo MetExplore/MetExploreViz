@@ -2239,7 +2239,7 @@ metExploreD3.GraphNetwork = {
             "DbIdentifier",
             identifier,
             false,
-            "metabolite",//"pathway",
+            "pathway",
             false,
             "true",//theNode.getLabelVisible(),
             "",
@@ -2276,8 +2276,16 @@ metExploreD3.GraphNetwork = {
         oldNode.each(function(){ isMapped = this.getAttribute("mapped"); });
 */
 
-        var nodesToRemove = metExploreD3.GraphNode.node.filter(function(n){return n.pathways.length==1 && n.pathways.includes(pathwayName);}).data()
-        var nodesLink = metExploreD3.GraphNode.node.filter(function(n){return n.pathways.length>1 && n.pathways.includes(pathwayName);}).data()
+        var nodesToRemove = metExploreD3.GraphNode.node.filter(function(n){return n.pathways.length==1 && n.pathways.includes(pathwayName);});
+        var nodesLink = metExploreD3.GraphNode.node.filter(function(n){
+        	if(n.getName()==="Fumarate"){
+        		console.log(n);
+        		console.log(n.pathways.length);
+        		console.log(n.pathways);
+
+            }
+        	return n.pathways.length>1 && n.pathways.includes(pathwayName);
+        });
 
         //Add it to the force
         node = node.data(force.nodes(), function(d) { return d.getId(); });
@@ -2290,8 +2298,8 @@ metExploreD3.GraphNetwork = {
         var pathwaySize = node.filter(function(n){return n.pathways.includes(pathwayName);})[0].length;
 
         // For each metabolite we append a division of the class "rect" with the metabolite style by default or create by the user
-        node.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
-            .filter(function(d) { return d.getId() == identifier; })
+        node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
+            .filter(function(d) { return d.getId() === identifier; })
             .style("stroke-opacity",0.5)
             .addNodeForm(
                 pathwaySize*3,
@@ -2302,327 +2310,30 @@ metExploreD3.GraphNetwork = {
                 pathwaySize*3/10
             );
 
-
-        nodesLink
+        nodesLink.data()
             .forEach(function (linkNode) {
                 var theLink =networkData.addLink("identifier", linkNode, newNode, "out", false);
                 metExploreD3.GraphNetwork.addLinkInDrawing("identifier", linkNode, newNode, "out", false, "viz")
             });
 
-        metExploreD3.GraphNode.node
-            .filter(function(n){return n.pathways.length==1 && n.pathways.includes(pathwayName);})
-			.each(function (n) {
-                metExploreD3.GraphNetwork.removeANode(n, "viz")
+        nodesToRemove.data()
+			.forEach(function (n) {
+                metExploreD3.GraphNetwork.hideANode(n, "viz")
             });
-
-        //
-        //
-        // metExploreD3.GraphLink.link
-        //     .filter(function(l){return nodesToRemove.includes(l.source) && nodesToRemove.includes(l.target);})
-        //     .remove();
-        //
-        // metExploreD3.GraphLink.link
-        //     .filter(function(l){return (nodesLink.includes(l.source) && nodesToRemove.includes(l.target))||(nodesLink.includes(l.target) && nodesToRemove.includes(l.source));})
-        //     .remove();
-
-
-
-/*
-        node.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
-            .filter(function(d) { return d.getId() == identifier; })
-            .on("mouseenter", function(d) {
-                var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
-                d3.select(this)
-                    .each(function(node){
-                        var last = nodes[0][nodes.size()-1];
-                        this.parentNode.insertBefore(this, last);
-                    })
-                    .attr("transform", "translate("+d.x+", "+d.y+") scale(2)");
-            })
-            .on("mouseover", function(d) {
-
-                d.fixed = true;
-                if(parent=="viz")
-                {
-                    d3.select("#viz")
-                        .selectAll('g.node')
-                        .filter(function(n){return n==d})
-                        .select('.locker')
-                        .classed('hide', false)
-                        .select('.iconlocker')
-                        .attr(
-                            "xlink:href",
-                            function(d) {
-                                if(d.isLocked())
-                                    return "resources/icons/lock_font_awesome.svg";
-                                else
-                                    return "resources/icons/unlock_font_awesome.svg";
-                            });
-                }
-
-                if(d.getBiologicalType()=="reaction"){
-                    d3.select("#viz").select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .filter(function(link){return d.getId()==link.getSource().getId();})
-                        .style("stroke", "green");
-
-                    d3.select("#viz").select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .filter(function(link){return d.getId()==link.getTarget().getId();})
-                        .style("stroke", "red");
-                }
-                else
-                {
-                    d3.select("#viz").select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .filter(function(link){return d.getId()==link.getSource().getId();})
-                        .style("stroke", "red");
-
-                    d3.select("#viz").select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .filter(function(link){return d.getId()==link.getTarget().getId();})
-                        .style("stroke", "green");
-                }
-
-                var xScale=scale.getXScale();
-                var yScale=scale.getYScale();
-
-
-
-            })
-            .on("mouseleave", function(d) {
-                d3.select(this)
-                    .attr("transform", "translate("+d.x+", "+d.y+") scale(1)");
-
-                if(!d.isLocked())
-                    d.fixed = false;
-
-                node
-                    .filter(function(n){return n==d})
-                    .select('.locker')
-                    .classed('hide', true);
-
-                var linkStyle = metExploreD3.getLinkStyle();
-
-                d3.select("#viz").select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link")
-                    .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
-                    .style("stroke",linkStyle.getStrokeColor());
-
-                if(d.getBiologicalType()=="reaction"){
-                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
-                        .duration(750)
-                        .attr("width", reactionStyle.getWidth())
-                        .attr("height", reactionStyle.getHeight())
-                        .attr( "transform", "translate(-" + reactionStyle.getWidth() / 2 + ",-" + reactionStyle.getHeight() / 2 + ")");
-                }
-                else
-                {
-
-                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
-                        .duration(750)
-                        .attr("width", metaboliteStyle.getWidth())
-                        .attr("height", metaboliteStyle.getHeight())
-                        .attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
-                            + metaboliteStyle.getHeight() / 2
-                            + ")");
-                }
-            });
-
-        var selection = node.filter(function(d) { return d.getId() == identifier; });
-
-        metExploreD3.GraphNode.colorStoreByCompartment(selection);
-*/
-/*
-        if (networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt()) {
-            var minDim = Math.min(metaboliteStyle.getWidth()/2,metaboliteStyle.getHeight()/2);
-            // We define the text for a metabolie WITHOUT the coresponding SVG image
-            node
-                .filter(function(d) { return d.getId() == identifier; })
-                .filter(function(d) { return d.getLabelVisible() == true; })
-                .filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
-                .filter(function(d) { return d.getSvg() == "undefined" || d.getSvg() == undefined || d.getSvg() == ""; })
-                .addNodeText(metaboliteStyle);
-
-            // We define the text for a metabolie WITH the coresponding SVG image
-            // Text definition
-            node
-                .filter(function(d) { return d.getId() == identifier })
-                .filter(function(d) {
-                    return d.getLabelVisible() == true;
-                })
-                .filter(function(d) {
-                    return d.getBiologicalType() == 'metabolite';
-                })
-                .filter(function(d) {
-                    return d.getSvg() != "undefined" && d.getSvg() != undefined && d.getSvg() != "";
-                })
-                .addNodeText(metaboliteStyle);
-
-            // Image definition
-            node
-                .filter(function(d) { return d.getId() == identifier })
-                .filter(
-                    function(d) {
-                        return (d.getBiologicalType() == 'metabolite' && d.getSvg() != "undefined" && d.getSvg() != undefined && d.getSvg() != "");
-                    })
-                .append("svg")
-                .attr(
-                    "viewBox",
-                    function(d) {
-                        return "0 0 " + minDim
-                            + " " + minDim;
-                    })
-                .attr("width", minDim *8/10 + "px")
-                .attr("height", minDim *8/10+ "px")
-                .attr("x", (-minDim/2)+(minDim*1/10))
-                .attr("preserveAspectRatio", "xMinYMin")
-                .attr("y", (-minDim/2)+(minDim*1/10))
-                .attr("class", "structure_metabolite")
-                .append("image")
-                .style("opacity",0.5)
-                .attr(
-                    "xlink:href",
-                    function(d) {
-                        return "resources/images/structure_metabolite/"
-                            + d.getSvg();
-                    }).attr("width", "100%").attr(
-                "height", "100%");
-
-
-            // Lock Image definition
-            var box = node
-                .filter(function(d) { return d.getId() == identifier })
-                .insert("svg", ":first-child")
-                .attr(
-                    "viewBox",
-                    function(d) {
-                        + " " + minDim;
-                    }
-                )
-                .attr("width",metaboliteStyle.getWidth()/2)
-                .attr("height",metaboliteStyle.getHeight()/2)
-                .attr("preserveAspectRatio", "xMinYMin")
-                .attr("y",-metaboliteStyle.getHeight()/2)
-                .attr("x",-metaboliteStyle.getWidth()/2)
-                .attr("class", "locker")
-                .classed('hide', true);
-
-            box.append("svg:path")
-                .attr("class", "backgroundlocker")
-                .attr("d", function(node){
-                    var pathBack = "M"+metaboliteStyle.getWidth()/2+","+metaboliteStyle.getHeight()/2+
-                        " L0,"+metaboliteStyle.getHeight()/2+
-                        " L0,"+metaboliteStyle.getRY()*2/2+
-                        " A"+metaboliteStyle.getRX()*2/2+","+metaboliteStyle.getRY()*2/2+",0 0 1 "+metaboliteStyle.getRX()*2/2+",0"+
-                        " L"+metaboliteStyle.getWidth()/2+",0";
-                    return pathBack;
-                })
-                .attr("opacity", "0.20")
-                .attr("fill", "black");
-
-            box.append("image")
-                .attr("class", "iconlocker")
-                .attr("y",metaboliteStyle.getHeight()/4/2-(metaboliteStyle.getHeight()/2-metaboliteStyle.getRY()*2/2)/8)
-                .attr("x",metaboliteStyle.getWidth()/4/2-(metaboliteStyle.getWidth()/2-metaboliteStyle.getRX()*2/2)/8)
-                .attr("width", "40%")
-                .attr("height", "40%");
-
-
-            // We define the text for a reaction
-            node
-                .filter(function(d) { return d.getId() == identifier; })
-                .filter(function(d) {
-                    return d.getLabelVisible() == true;
-                })
-                .filter(function(d) {
-                    return d.getBiologicalType() == 'reaction';
-                })
-                .addNodeText(metaboliteStyle);
-        }
-*/
-/*
-        if(isMapped!=undefined && isMapped!=false && isMapped!="false"){
-            if(isMapped==true || isMapped=="true"){
-                node
-                    .filter(function(d) { return d.getId() == identifier; })
-                    .attr("mapped","true")
-                    .insert("rect", ":first-child")
-                    .attr("class", "stroke")
-                    .attr("width", metaboliteStyle.getWidth()/2+10)
-                    .attr("height", metaboliteStyle.getHeight()/2+10)
-                    .attr("rx", metaboliteStyle.getRX()/2+5)
-                    .attr("ry",metaboliteStyle.getRY()/2+5)
-                    .attr("transform", "translate(-" + parseInt(metaboliteStyle.getWidth()/2+10) / 2 + ",-"
-                        + parseInt(metaboliteStyle.getWidth()/2+10) / 2
-                        + ")")
-                    .style("opacity", '0.5')
-                    .style("fill", 'red');
-            }
-            else
-            {
-
-                var color = isMapped;
-                node
-                    .filter(function(d) { return d.getId() == identifier; })
-                    .attr("mapped",color)
-                    .style("fill", color)
-            }
-        }
-*/
-
 
         var originalX = 100;
         var originalY = 100;
-/*
-        node.filter(function(d) { return d.getBiologicalType() == 'reaction'; })
-            .filter(function(d) { return d.getId() == reactionId; })
-            .each(function(reactNode){
-                var dX =  reactNode.x - theNode.x;
-                var dY =  reactNode.y - theNode.y;
 
-                var d = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
-                originalX = reactNode.x - (40 * dX)/d;
-                originalY = reactNode.y - (40 * dY)/d;
-            });
-
-        node.filter(function(d) { return d.getBiologicalType() == 'metabolite'; })
-            .filter(function(d) { return d.getId() == identifier; })
-            .attr("transform", function(d) {
-                return "translate(" + originalX + "," + originalY + ")";
-            })
-            .each(function(node){
-                node.px = originalX;
-                node.py = originalY;
-                node.x = originalX;
-                node.y = originalY;
-
-
-            });
-*/
-/*
-        // add the node from group to draw convex hulls
-        var component=undefined;
-        session.groups.forEach(function(group){
-            if(component=="compartment"){
-                if(group.key==newNode.getCompartment())
-                    group.values.push(newNode);
-            }
-            else
-            {
-                var pathFound = newNode.getPathways().find(function(pathw)
-                    {
-                        return group.key==pathw;
-                    }
-                );
-                if(pathFound!=undefined)
-                    group.values.push(newNode);
-            }
-        });
-*/
         if (metExploreD3.GraphNetwork.isAnimated("viz")==true || metExploreD3.GraphNetwork.isAnimated("viz")=="true") {
             force.start();
         }
+		else
+		{
+            force.start();
+            force.stop();
+            metExploreD3.GraphNetwork.tick("viz");
+		}
+		
         return newNode;
     },
 
@@ -3405,79 +3116,132 @@ setTimeout(
 	    metExploreD3.GraphNetwork.initCentroids();
 	},
 
-	/*******************************************
-    * Remove a node
-    * @param {} theNode : The node to remove
-    * @param {} panel : The panel
-    */
+    /*******************************************
+     * Remove a node
+     * @param {} theNode : The node to remove
+     * @param {} panel : The panel
+     */
     removeANode : function(theNode, panel) {
-		var session = _metExploreViz.getSessionById(panel);
-		
-		var force = session.getForce();
-		var networkData = session.getD3Data();
-		var linksToRemove = [];
-		var vis = d3.select("#"+panel).select("#D3viz");
-		
-		vis.selectAll("path.link")
-			.filter(function(d) {
-				var source = d.source;
-				var target = d.target;
-				if(source==theNode || target==theNode) linksToRemove.push(d);
-				return (source==theNode || target==theNode);
-			})
-			.remove();
+        var session = _metExploreViz.getSessionById(panel);
 
-		var nodes = vis.selectAll("g.node");
+        var force = session.getForce();
+        var networkData = session.getD3Data();
+        var linksToRemove = [];
+        var vis = d3.select("#"+panel).select("#D3viz");
 
-		nodes
-			.filter(function(d) {
-				return theNode==d;
-			})
-			.transition().duration(1000)
-			.style("opacity", 0)
-			.remove();
+        vis.selectAll("path.link")
+            .filter(function(d) {
+                var source = d.source;
+                var target = d.target;
+                if(source==theNode || target==theNode) linksToRemove.push(d);
+                return (source==theNode || target==theNode);
+            })
+            .remove();
 
-		setTimeout(
-			function() {
-				
-				var selectedNodes = session.getSelectedNodes();
-				var index = selectedNodes.indexOf(theNode.getId());
-				if(index!=-1)
-					selectedNodes.splice(index, 1);
-				// for (i = 0; i < networkData.getLinks().length; i++) {
-				// 	var d = networkData.getLink(i);
-				// 	var source = d.source;
-				// 	var target = d.target;
+        var nodes = vis.selectAll("g.node");
 
-				// 	if(source==theNode || target==theNode)
-				// 		linksToRemove.push(d);
-				// }
-					
-				metExploreD3.GraphNetwork.removeNodeFromConvexHull(theNode, panel);
+        nodes
+            .filter(function(d) {
+                return theNode==d;
+            })
+            .transition().duration(1000)
+            .style("opacity", 0)
+            .remove();
 
-				var index = force.nodes().indexOf(theNode);
-				if(index!=-1)
-					force.nodes().splice(index, 1);
-			
+        setTimeout(
+            function() {
 
-				for (i = 0; i < linksToRemove.length; i++) {
-					var link = linksToRemove[i];
-					var index = force.links().indexOf(link);
+                var selectedNodes = session.getSelectedNodes();
+                var index = selectedNodes.indexOf(theNode.getId());
+                if(index!=-1)
+                    selectedNodes.splice(index, 1);
+                // for (i = 0; i < networkData.getLinks().length; i++) {
+                // 	var d = networkData.getLink(i);
+                // 	var source = d.source;
+                // 	var target = d.target;
 
-					if(index!=-1)
-						force.links().splice(index, 1);
-				}
-			}
-		, 1);
-		// metExploreD3.GraphNetwork.tick('viz');
-	},
+                // 	if(source==theNode || target==theNode)
+                // 		linksToRemove.push(d);
+                // }
+
+                metExploreD3.GraphNetwork.removeNodeFromConvexHull(theNode, panel);
+
+                var index = force.nodes().indexOf(theNode);
+                if(index!=-1)
+                    force.nodes().splice(index, 1);
+
+
+                for (i = 0; i < linksToRemove.length; i++) {
+                    var link = linksToRemove[i];
+                    var index = force.links().indexOf(link);
+
+                    if(index!=-1)
+                        force.links().splice(index, 1);
+                }
+            }
+            , 1);
+        // metExploreD3.GraphNetwork.tick('viz');
+    },
+
+	/*******************************************
+     * Remove a node
+     * @param {} theNode : The node to remove
+     * @param {} panel : The panel
+     */
+    hideANode : function(theNode, panel) {
+        var session = _metExploreViz.getSessionById(panel);
+
+        var force = session.getForce();
+        var networkData = session.getD3Data();
+        var linksToRemove = [];
+        var vis = d3.select("#"+panel).select("#D3viz");
+
+        vis.selectAll("path.link")
+            .filter(function(d) {
+                var source = d.source;
+                var target = d.target;
+                if(source==theNode || target==theNode) linksToRemove.push(d);
+                return (source==theNode || target==theNode);
+            })
+            .classed("hide", true);
+
+        var nodes = vis.selectAll("g.node");
+
+        nodes
+            .filter(function(d) {
+                return theNode==d;
+            })
+			.classed("hide", true);
+
+        setTimeout(
+            function() {
+
+                var selectedNodes = session.getSelectedNodes();
+                var index = selectedNodes.indexOf(theNode.getId());
+                if(index!=-1)
+                    selectedNodes.splice(index, 1);
+                // for (i = 0; i < networkData.getLinks().length; i++) {
+                // 	var d = networkData.getLink(i);
+                // 	var source = d.source;
+                // 	var target = d.target;
+
+                // 	if(source==theNode || target==theNode)
+                // 		linksToRemove.push(d);
+                // }
+
+                metExploreD3.GraphNetwork.removeNodeFromConvexHull(theNode, panel, false);
+            }
+            , 1);
+        // metExploreD3.GraphNetwork.tick('viz');
+    },
 
 	/*******************************************
     * Remove a node from convex hull (pathway or compartment)
     * @param {} theNode : The node to remove
     * @param {} panel : The panel
     */
-    removeNodeFromConvexHull : function(theNode, panel) {
+    removeNodeFromConvexHull : function(theNode, panel, setdata) {
+    	if(setdata===undefined) setdata=true;
 		var session = _metExploreViz.getSessionById(panel);
         // Remove the node from group to draw convex hulls
 
@@ -3487,6 +3251,7 @@ setTimeout(
             var nodeToRemove = group.values.find(function (node) {
                 return theNode.getId() == node.getId();
             });
+
             if(nodeToRemove!=null){
                 var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
 
@@ -3509,12 +3274,14 @@ setTimeout(
                                 })
                                 .remove();
                         }
-                        var compartment = session.getD3Data().getCompartmentByName(group.key);
-                        if (compartment != null)
-                            session.getD3Data().removeCompartment(session.getD3Data().getCompartmentByName(group.key));
+                        if(setdata){
+                            var compartment = session.getD3Data().getCompartmentByName(group.key);
+                            if (compartment != null)
+                                session.getD3Data().removeCompartment(session.getD3Data().getCompartmentByName(group.key));
 
-                        group.values = [];
-                        session.removeAGroup(group);
+                            group.values = [];
+                            session.removeAGroup(group);
+						}
                     }
                 }
                 else {
@@ -3534,16 +3301,18 @@ setTimeout(
                                 .remove();
                         }
                         var pathway = session.getD3Data().getPathwayByName(group.key);
-                        if (pathway != null)
-                            session.getD3Data().removePathway(session.getD3Data().getPathwayByName(group.key));
+                        if(setdata) {
+                            if (pathway != null)
+                                session.getD3Data().removePathway(session.getD3Data().getPathwayByName(group.key));
 
-                        group.values.forEach(function (metabolite) {
-                            var theMeta = session.getD3Data().getNodeById(metabolite.getId());
-                            theMeta.removePathway(group.key);
-                            metabolite.removePathway(group.key);
-                        })
-                        group.values = [];
-                        session.removeAGroup(group);
+                            group.values.forEach(function (metabolite) {
+                                var theMeta = session.getD3Data().getNodeById(metabolite.getId());
+                                theMeta.removePathway(group.key);
+                                metabolite.removePathway(group.key);
+                            })
+                            group.values = [];
+                            session.removeAGroup(group);
+                        }
                     }
                 }
             }
