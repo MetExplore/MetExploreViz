@@ -1583,12 +1583,12 @@ metExploreD3.GraphFunction = {
                 return (d.isSideCompound !== true);
             })
             .each(function (d) {
-                vertices.push(d.id);
+                vertices.push(d.getDbIdentifier());
             });
         // If a list of nodes has been passed as an argument, we set on of these nodes as the first nodes of the list of vertices
         if (listNodes.length >= 1){
-            vertices[vertices.indexOf(listNodes[0].id)] = vertices[0];
-            vertices[0] = listNodes[0].id;
+            vertices[vertices.indexOf(listNodes[0].getDbIdentifier())] = vertices[0];
+            vertices[0] = listNodes[0].getDbIdentifier();
             flag = "Single";
         }
         // Side compounds are not included in the new graph structures
@@ -1602,13 +1602,13 @@ metExploreD3.GraphFunction = {
             .each(function (d) {
                 var reactionNode = (d.getSource().biologicalType === "reaction") ? d.getSource() : d.getTarget();
                 var edge = [];
-                edge.push(d.getSource().id);
-                edge.push(d.getTarget().id);
+                edge.push(d.getSource().getDbIdentifier());
+                edge.push(d.getTarget().getDbIdentifier());
                 edges.push(edge);
                 if (reactionNode.reactionReversibility === true){
                     var backEdge = [];
-                    backEdge.push(d.getTarget().id);
-                    backEdge.push(d.getSource().id);
+                    backEdge.push(d.getTarget().getDbIdentifier());
+                    backEdge.push(d.getSource().getDbIdentifier());
                     edges.push(backEdge);
                 }
             });
@@ -1650,7 +1650,7 @@ metExploreD3.GraphFunction = {
         for (var i=0; i<cycleList.length; i++){
             var f = true;
             for (var j=0; j<listNodes.length; j++){
-                if (!(cycleList[i].includes(listNodes[j].id))){
+                if (!(cycleList[i].includes(listNodes[j].getDbIdentifier()))){
                     f = false;
                 }
             }
@@ -1755,8 +1755,8 @@ metExploreD3.GraphFunction = {
             })
             .each(function (d) {
                 var reactionNode = (d.getSource().biologicalType === "reaction") ? d.getSource() : d.getTarget();
-                var sourceId = d.getSource().id;
-                var targetId = d.getTarget().id;
+                var sourceId = d.getSource().getDbIdentifier();
+                var targetId = d.getTarget().getDbIdentifier();
                 if (!verticesPairsToLinks[sourceId]){
                     verticesPairsToLinks[sourceId] = {};
                 }
@@ -1801,13 +1801,13 @@ metExploreD3.GraphFunction = {
             var valid = true;
             for (var j = 0; j < cycle.length; j++) {
                 var lastJ = (j - 1 >= 0) ? j - 1 : cycle.length - 1;
-                if (cycleLinks[j].getSource().id === cycle[j]) {
+                if (cycleLinks[j].getSource().getDbIdentifier() === cycle[j]) {
                     //Edge in cycle direction
                     if (cycleLinks[j].getSource().biologicalType === "reaction" && cycleLinks[lastJ].getSource().biologicalType === "reaction"){
                         valid = false;
                     }
                 }
-                else if (cycleLinks[j].getTarget().id === cycle[j]){
+                else if (cycleLinks[j].getTarget().getDbIdentifier() === cycle[j]){
                     //Edge in inverse cycle direction
                     if (cycleLinks[j].getTarget().biologicalType === "reaction" && cycleLinks[lastJ].getTarget().biologicalType === "reaction") {
                         valid = false;
@@ -1883,9 +1883,9 @@ metExploreD3.GraphFunction = {
             tmpList.push([]);
         }
         links.each(function (d) {
-            var sourceIndex = cycle.indexOf(d.getSource().id);
+            var sourceIndex = cycle.indexOf(d.getSource().getDbIdentifier());
             if (sourceIndex !== -1){
-                var targetIndex = cycle.indexOf(d.getTarget().id);
+                var targetIndex = cycle.indexOf(d.getTarget().getDbIdentifier());
                 if (targetIndex !== -1) {
                     tmpList[sourceIndex].push(d);
                     tmpList[targetIndex].push(d);
@@ -1898,8 +1898,8 @@ metExploreD3.GraphFunction = {
             var nextVertex = cycle[newI];
             for (var j=0; j<tmpList[i].length; j++){
                 var link = tmpList[i][j];
-                var sourceId = link.getSource().id;
-                var targetId = link.getTarget().id;
+                var sourceId = link.getSource().getDbIdentifier();
+                var targetId = link.getTarget().getDbIdentifier();
                 if (sourceId === currentVertex && targetId === nextVertex) {
                     cycleLinks.push(link);
                 }
@@ -2059,7 +2059,7 @@ metExploreD3.GraphFunction = {
         for (var i=0; i<cycle.length; i++){
             var node = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
                 .filter(function (d) {
-                    return (d.id === cycle[i]);
+                    return (d.getDbIdentifier() === cycle[i]);
                 })
                 .each(function (d) {
                     if (!(d.isSelected())) {
@@ -2142,10 +2142,10 @@ metExploreD3.GraphFunction = {
         for (var i=0; i<cycleLinks.length; i++){
             cycleLinks[i].partOfCycle = true;
             cycleLinks[i].cycleRadius = radius;
-            if (cycleLinks[i].getSource().id === cycle[i]){
+            if (cycleLinks[i].getSource().getDbIdentifier() === cycle[i]){
                 cycleLinks[i].arcDirection = (direction === "clockwise") ? "clockwise" : "counter-clockwise";
             }
-            else if (cycleLinks[i].getTarget().id === cycle[i]){
+            else if (cycleLinks[i].getTarget().getDbIdentifier() === cycle[i]){
                 cycleLinks[i].arcDirection = (direction === "clockwise") ? "counter-clockwise" : "clockwise";
 
             }
@@ -2173,7 +2173,7 @@ metExploreD3.GraphFunction = {
         for (var i=0; i<alreadyDrawnCycles.length; i++){
             var test = false;
             for (var j=0; j<alreadyDrawnCycles[i].length; j++) {
-                if (node.id === alreadyDrawnCycles[i][j]){
+                if (node.getDbIdentifier() === alreadyDrawnCycles[i][j]){
                     test = true;
                 }
             };
@@ -2220,7 +2220,7 @@ metExploreD3.GraphFunction = {
 			.filter(function (d) {
 				var flag = true;
 				linkViz.each(function (dViz) {
-					if (d.id === dViz.id){
+					if (d.getDbIdentifier() === dViz.getDbIdentifier()){
 						d.partOfCycle = dViz.partOfCycle;
 						d.cycleRadius = dViz.cycleRadius;
 						d.arcDirection = dViz.arcDirection;
