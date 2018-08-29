@@ -414,8 +414,6 @@ metExploreD3.GraphStyleEdition = {
             .selectAll("g.node")
             .filter(function(d){return d.getId()==node.getId();})
             .select("text");
-        console.log(node);
-        console.log(nodeLabel);
         if(nodeLabel.length>0){
             var labelStyle = {
                 font : nodeLabel.style("font-family"),
