@@ -23,6 +23,7 @@ var NetworkVizSession = function(){
     this.reactions = [];
     this.resizable = false;
     this.selectedNodes = [];
+    this.selectedPathways = [];
 };
 
 NetworkVizSession.prototype = {
@@ -143,6 +144,11 @@ NetworkVizSession.prototype = {
             this.selectedNodes = [];
         this.selectedNodes.push(nodeId);
     },
+    addSelectedPathway : function(pathid){
+        if(this.selectedPathways==undefined)
+            this.selectedPathways = [];
+        this.selectedPathways.push(pathid);
+    },
     addMappedNode : function(nodeId){
         if(this.nodesMap==undefined)
             this.nodesMap = [];
@@ -199,6 +205,7 @@ NetworkVizSession.prototype = {
         this.emptyMetabolites();
         this.emptyReactions();
         this.selectedNodes = [];
+        this.selectedPathways = [];
         this.groups = [];
         this.nodesMap = [];
     },
@@ -348,6 +355,30 @@ NetworkVizSession.prototype = {
 
     getSelectedNodes:function(){
         return this.selectedNodes;
+    },
+
+    //Clearly not optimal...
+    removeSelectedPathway:function(pathwayId){
+        var found=false;
+        var i=0;
+        while(!found)
+        {
+            if(this.selectedPathways[i]==pathwayId)
+            {
+                this.selectedPathways.splice(i,1);
+                found=true;
+            }
+            i++;
+        }
+        //console.log(this.PathwayNodes);
+    },
+
+    removeAllSelectedPathways:function(){
+        this.selectedPathways = [];
+    },
+
+    getSelectedPathways:function(){
+        return this.selectedPathways;
     },
 
     //Clearly not optimal...
