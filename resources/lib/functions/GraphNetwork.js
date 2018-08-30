@@ -2248,7 +2248,7 @@ metExploreD3.GraphNetwork = {
                 }
             });
 
-        var minDim = pathwaySize*3/2;
+        var minDim = pathwaySize*3;
 
         // Lock Image definition
         var box = node
@@ -2260,22 +2260,22 @@ metExploreD3.GraphNetwork = {
                     + " " + minDim;
                 }
             )
-            .attr("width",pathwaySize*3/2)
-            .attr("height",pathwaySize*3/2)
+            .attr("width",pathwaySize*3)
+            .attr("height",pathwaySize*3)
             .attr("preserveAspectRatio", "xMinYMin")
-            .attr("y",-pathwaySize*3/2)
-            .attr("x",-pathwaySize*3/2)
+            .attr("y",-pathwaySize*3)
+            .attr("x",-pathwaySize*3)
             .attr("class", "locker")
             .classed('hide', true);
 
         box.append("svg:path")
             .attr("class", "backgroundlocker")
             .attr("d", function(node){
-                var pathBack = "M"+pathwaySize*3/2+","+pathwaySize*3/2+
-                    " L0,"+pathwaySize*3/2+
-                    " L0,"+pathwaySize*3/2/2+
-                    " A"+pathwaySize*3/2+","+pathwaySize*3/2/2+",0 0 1 "+pathwaySize*3/2+",0"+
-                    " L"+pathwaySize*3/2+",0";
+                var pathBack = "M"+pathwaySize*3+","+pathwaySize*3+
+                    " L0,"+pathwaySize*3+
+                    " L0,"+pathwaySize*3/2*2+
+                    " A"+pathwaySize*3/2*2+","+pathwaySize*3/2*2+",0 0 1 "+pathwaySize*3/2*2+",0"+
+                    " L"+pathwaySize*3+",0";
                 return pathBack;
             })
             .attr("opacity", "0.20")
@@ -2283,8 +2283,8 @@ metExploreD3.GraphNetwork = {
 
         box.append("image")
             .attr("class", "iconlocker")
-            .attr("y",pathwaySize*3/4/2-(pathwaySize*3/2-pathwaySize*3/2/2)/8)
-            .attr("x",pathwaySize*3/4/2-(pathwaySize*3/2-pathwaySize*3/2)/8)
+            .attr("y",pathwaySize*3/2/4-(pathwaySize*3-pathwaySize*3*2)/8)
+            .attr("x",pathwaySize*3/2/4-(pathwaySize*3-pathwaySize*3*2)/8)
             .attr("width", "40%")
             .attr("height", "40%");
 
