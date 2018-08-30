@@ -48,51 +48,62 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 					|| e.target.parentNode.parentNode.id=="D3viz" 
 					|| e.target.parentNode.id=="graphComponent") 
 				{
-					if(networkVizSessionStore.getSelectedNodes().length!=0)
-					{
-						viz.CtxMenu = new Ext.menu.Menu({
-							items : [{
-								text : 'Remove selected nodes',
-								hidden : false,
-								iconCls:"removeNode",
-								handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
-							},{
-								text : 'Fix selected nodes',
-								hidden : false,
-								iconCls:"lock_font_awesome",
-								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
-							},{
-                                text : 'Unfix selected nodes',
-                                iconCls:"unlock_font_awesome",
-                                hidden : false,
-                                handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
-                            },{
-								text : 'Duplicate selected nodes as side compounds',
-								hidden : false,
-								iconCls:"duplicate-sideCompounds",
-								handler : function(){
-									metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); 
-								}
-							}
-							,{
-								text : 'Select selected nodes in table',
-								hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-								iconCls:"search",
-								handler : function() {
-									var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
-									var selectedNodesObj = [];
-									networkData = networkVizSessionStore.getD3Data();
 
-									selectedNodesIds.forEach(function(id){
-										var node = networkData.getNodeById(id);
-										if(node)
-											selectedNodesObj.push(node);
-									})
-									metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
-								}
-							}]
-						});
-					}
+					viz.CtxMenu = new Ext.menu.Menu({
+						items : [{
+							text : 'Collapse selected pathway(s)',
+							hidden : networkVizSessionStore.getSelectedPathways().length===0,
+							iconCls:"removeNode",
+							handler :function(){
+								console.log("pass");
+								var sessionStore = _metExploreViz.getSessionById("viz");
+								sessionStore.getSelectedPathways().forEach(function (path) {
+									metExploreD3.GraphNetwork.collapsePathway(path);
+								});
+								sessionStore.removeAllSelectedPathways();
+							}
+						},{
+							text : 'Remove selected nodes',
+							hidden : networkVizSessionStore.getSelectedNodes().length===0,
+							iconCls:"removeNode",
+							handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
+						},{
+							text : 'Fix selected nodes',
+							hidden : networkVizSessionStore.getSelectedNodes().length===0,
+							iconCls:"lock_font_awesome",
+							handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
+						},{
+                            text : 'Unfix selected nodes',
+                            iconCls:"unlock_font_awesome",
+                            hidden : networkVizSessionStore.getSelectedNodes().length===0,
+                            handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
+                        },{
+							text : 'Duplicate selected nodes as side compounds',
+							hidden : networkVizSessionStore.getSelectedNodes().length===0,
+							iconCls:"duplicate-sideCompounds",
+							handler : function(){
+								metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz");
+							}
+						}
+						,{
+							text : 'Select selected nodes in table',
+							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo() && networkVizSessionStore.getSelectedNodes().length===0,
+							iconCls:"search",
+							handler : function() {
+								var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
+								var selectedNodesObj = [];
+								networkData = networkVizSessionStore.getD3Data();
+
+								selectedNodesIds.forEach(function(id){
+									var node = networkData.getNodeById(id);
+									if(node)
+										selectedNodesObj.push(node);
+								})
+								metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
+							}
+						}]
+					});
+
 				}
 				else
 				{
@@ -477,10 +488,12 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                     });
 				}
 			}
-			
+			var a=viz.CtxMenu.items.items.filter(menu=>!menu.hidden);
+
 			// positionner le menu au niveau de la souris
 			if(viz.CtxMenu!=undefined)
-				viz.CtxMenu.showAt(e.clientX, e.clientY);
+				if(a.length>0)
+					viz.CtxMenu.showAt(e.clientX, e.clientY);
 		});	
 	}
 

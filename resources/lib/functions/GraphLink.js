@@ -2171,6 +2171,33 @@ metExploreD3.GraphLink = {
         });
         //
         metExploreD3.GraphCaption.drawCaptionEditMode();
+
+        var pathways = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(node){
+                return node.getBiologicalType()==="pathway";
+            });
+
+        links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link");
+        var pathwayLinks = null;
+        pathways.each(function(path){
+            console.log(path);
+            pathwayLinks = links.filter(function (link) {
+                return path.getId()===link.getTarget().getId() || path.getId()===link.getSource().getId();
+            });
+        });
+        if(pathwayLinks!=null){
+            pathwayLinks
+                .attr("fill", function (d) {
+                    if (d.interaction == "out")
+                        return metExploreD3.getLinkStyle().getMarkerOutColor();
+                    else
+                        return metExploreD3.getLinkStyle().getMarkerInColor();
+                })
+                .attr("d", function(link){  return metExploreD3.GraphLink.funcPath3(link, panel, this.id);})
+                .style("stroke-linejoin", "bevel");
+        }
+
     },
 
     /*******************************************
