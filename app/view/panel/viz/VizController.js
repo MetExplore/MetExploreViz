@@ -488,7 +488,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                     });
 				}
 			}
-			var a=viz.CtxMenu.items.items.filter(function (menu) { return menu.hidden; });
+			var a=viz.CtxMenu.items.items.filter(function (menu) { return !menu.hidden; });
 
 			// positionner le menu au niveau de la souris
 			if(viz.CtxMenu!=undefined)

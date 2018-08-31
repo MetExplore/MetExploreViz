@@ -2159,7 +2159,10 @@ metExploreD3.GraphNetwork = {
                 networkData.getPathwayByName(pathwayName).getColor(),
                 pathwaySize*3/10
             );
-
+        node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
+            .filter(function(d) { return d.getId() === identifier; })
+            .addNodeText(metaboliteStyle);
+        
         node.filter(function(d) { return d.getBiologicalType() == 'pathway'; })
             .filter(function(d) { return d.getId() == identifier; })
             .on("mouseover", function(d) {
@@ -2291,9 +2294,8 @@ metExploreD3.GraphNetwork = {
 
         nodesLink.data()
             .forEach(function (linkNode) {
-                var theLink =networkData.addLink("identifier", linkNode, newNode, "out", false);
-                console.log(theLink);
-                metExploreD3.GraphNetwork.addLinkInDrawing("identifier", linkNode, newNode, "out", false, "viz")
+                var theLink =networkData.addLink(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false);
+                metExploreD3.GraphNetwork.addLinkInDrawing(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false, "viz")
             });
 
         nodesToRemove.data()
