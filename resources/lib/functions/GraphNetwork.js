@@ -2327,7 +2327,7 @@ metExploreD3.GraphNetwork = {
             .selectAll("g.node");
         var link = d3.select("#viz").select("#graphComponent").selectAll("path.link");
 
-        var networkData = metExploreViz.getGlobals().sessions['viz'].getD3Data();
+        var networkData = _metExploreViz.getSessionById('viz').getD3Data();
         var nodes = networkData.getNodes();
         var links = networkData.getLinks();
 
