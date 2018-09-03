@@ -1776,19 +1776,24 @@ metExploreD3.GraphNetwork = {
                 {
                     links.filter(function(link){return d.getId()==link.getSource().getId();})
                         .style("stroke", "red")
-                        .style("stroke-width", "1.5");
+                        .style("stroke-width", "1.5")
+                        .style("opacity", 1);
 
                     links.filter(function(link){return d.getId()==link.getTarget().getId();})
                         .style("stroke", "green")
-                        .style("stroke-width", "1.5");
+                        .style("stroke-width", "1.5")
+                        .style("opacity", 1);
                 }
             })
             .on("mouseover", function(d) {
                 var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 d3.select(this)
                     .each(function(node){
-                        var last = nodes[0][nodes.size()-1];
-                        this.parentNode.insertBefore(this, last);
+                        if(node.getBiologicalType()!=="pathway")
+                        {
+                            var last = nodes[0][nodes.size()-1];
+                            this.parentNode.insertBefore(this, last);
+                        }
                     });
 
                 d.fixed = true;
@@ -1827,12 +1832,14 @@ metExploreD3.GraphNetwork = {
                     d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                         .selectAll("path.link")
                         .filter(function(link){return d.getId()==link.getSource().getId();})
-                        .style("stroke", "red");
+                        .style("stroke", "red")
+                        .style("opacity", 1);
 
                     d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                         .selectAll("path.link")
                         .filter(function(link){return d.getId()==link.getTarget().getId();})
-                        .style("stroke", "green");
+                        .style("stroke", "green")
+                        .style("opacity", 1);
                 }
             })
             .on("mouseleave", function(d) {
@@ -2142,7 +2149,9 @@ metExploreD3.GraphNetwork = {
 
         //Node drawing
         node.enter()
-            .append("svg:g").attr("class", "node")//to avoid duplicating again
+            // .append("svg:g")
+            .insert("svg:g", ":first-child")
+			.attr("class", "node")//to avoid duplicating again
             .call(node_drag)
             .style("fill", "white");
         var pathwaySize = node.filter(function(n){return n.pathways.includes(pathwayName);})[0].length;
@@ -2169,8 +2178,11 @@ metExploreD3.GraphNetwork = {
                 var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 d3.select(this)
                     .each(function(node){
-                        var last = nodes[0][nodes.size()-1];
-                        this.parentNode.insertBefore(this, last);
+                        if(node.getBiologicalType()!=="pathway")
+                        {
+                            var last = nodes[0][nodes.size()-1];
+                            this.parentNode.insertBefore(this, last);
+                        }
                     });
 
                 d.fixed = true;
@@ -2209,12 +2221,14 @@ metExploreD3.GraphNetwork = {
                     d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                         .selectAll("path.link")
                         .filter(function(link){return d.getId()==link.getSource().getId();})
-                        .style("stroke", "red");
+                        .style("stroke", "red")
+                        .style("opacity", 1);
 
                     d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                         .selectAll("path.link")
                         .filter(function(link){return d.getId()==link.getTarget().getId();})
-                        .style("stroke", "green");
+                        .style("stroke", "green")
+                		.style("opacity", 1);
                 }
             })
             .on("mouseleave", function(d) {

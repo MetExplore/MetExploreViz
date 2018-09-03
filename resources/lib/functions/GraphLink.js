@@ -2198,7 +2198,8 @@ metExploreD3.GraphLink = {
                         return metExploreD3.getLinkStyle().getMarkerInColor();
                 })
                 .attr("d", function(link){ return metExploreD3.GraphLink.funcPath3(link, panel, this.id);})
-                .style("stroke-linejoin", "bevel");
+                .style("stroke-linejoin", "bevel")
+                .style("opacity", 0.2);
         }
 
     },

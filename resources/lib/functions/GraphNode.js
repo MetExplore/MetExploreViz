@@ -2284,8 +2284,11 @@ metExploreD3.GraphNode = {
 
                 d3.select(this)
                     .each(function(node){
-                        var last = nodes[0][nodes.size()-1];
-                        this.parentNode.insertBefore(this, last);
+                    	if(node.getBiologicalType()!=="pathway")
+						{
+							var last = nodes[0][nodes.size()-1];
+                            this.parentNode.insertBefore(this, last);
+                        }
                     });
 
                 d.fixed = true;
@@ -2442,8 +2445,11 @@ metExploreD3.GraphNode = {
                 var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 d3.select(this)
                     .each(function(node){
-                        var last = nodes[0][nodes.size()-1];
-                        this.parentNode.insertBefore(this, last);
+                        if(node.getBiologicalType()!=="pathway")
+                        {
+                            var last = nodes[0][nodes.size()-1];
+                            this.parentNode.insertBefore(this, last);
+                        }
                     });
 
                 d.fixed = true;
