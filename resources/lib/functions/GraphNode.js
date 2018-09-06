@@ -1513,6 +1513,9 @@ metExploreD3.GraphNode = {
 	},
 
 	unselectAll : function(me) {
+		console.log(_MyThisGraphNode.activePanel);
+		if(_MyThisGraphNode.activePanel===undefined || _MyThisGraphNode.activePanel==="")_MyThisGraphNode.activePanel=="viz";
+
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
         d3.select(me).select("#graphComponent")

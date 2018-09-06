@@ -1607,7 +1607,8 @@ metExploreD3.GraphNetwork = {
 				.enter()
 				.insert("path",":first-child")
 	        	.attr("class", String)
-				.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, panel);})
+				.attr("d", function(link){
+					return metExploreD3.GraphLink.funcPath4(link, panel);})
 				.attr("class", "link")
 				.attr("fill-rule", "evenodd")
 				.attr("fill", function (d) {
@@ -2099,7 +2100,7 @@ metExploreD3.GraphNetwork = {
         var newNode=networkData.addNode(
             pathwayName,
             "",
-            "DbIdentifier",
+            pathwayName,
             identifier,
             false,
             "pathway",
@@ -2139,10 +2140,39 @@ metExploreD3.GraphNetwork = {
         oldNode.each(function(){ isMapped = this.getAttribute("mapped"); });
 */
 
-        var nodesToRemove = metExploreD3.GraphNode.node.filter(function(n){return n.pathways.length==1 && n.pathways.includes(pathwayName);});
-        var nodesLink = metExploreD3.GraphNode.node.filter(function(n){
-        	return n.pathways.length>1 && n.pathways.includes(pathwayName);
+        var nodesToRemove = metExploreD3.GraphNode.node
+			.filter(function(n){return n.getBiologicalType()==="metabolite"})
+			.filter(function(n){
+				var pathWithTheNode = n.pathways.filter(function (t) {
+					return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
+				});
+				pathWithTheNode.length==1 && n.pathways.includes(pathwayName);
+        	}
+        );
+
+        var nodesLink = metExploreD3.GraphNode.node
+            .filter(function(n){return n.getBiologicalType()==="metabolite"})
+			.filter(function(n){
+				var pathWithTheNode = n.pathways.filter(function (t) {
+					return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
+				});
+				return pathWithTheNode.length>1 && n.pathways.includes(pathwayName);
+        	}
+        );
+
+        var pathLinks = [];
+        metExploreD3.GraphNode.node.filter(function(n){
+            node.filter(function(path){ return path.getBiologicalType()==="pathway"})
+                .each(function(path){
+                    if (n.pathways.includes(path.getId()) && n.pathways.includes(pathwayName))
+                        pathLinks.push(path);
+                });
         });
+
+        nodesToRemove.data()
+            .forEach(function (n) {
+                metExploreD3.GraphNetwork.hideANode(n, "viz")
+            });
 
         //Add it to the force
         node = node.data(force.nodes(), function(d) { return d.getId(); });
@@ -2306,16 +2336,16 @@ metExploreD3.GraphNetwork = {
             .attr("height", "40%");
 
 
-        nodesLink.data()
-            .forEach(function (linkNode) {
-                var theLink =networkData.addLink(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false);
-                metExploreD3.GraphNetwork.addLinkInDrawing(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false, "viz")
-            });
+        nodesLink.data().forEach(function (linkNode) {
+			networkData.addLink(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false);
+			metExploreD3.GraphNetwork.addLinkInDrawing(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false, "viz")
+		});
 
-        nodesToRemove.data()
-			.forEach(function (n) {
-                metExploreD3.GraphNetwork.hideANode(n, "viz")
-            });
+        pathLinks.forEach(function (path) {
+            networkData.addLink(path.getId()+"-"+newNode.getId(), path, newNode, "out", false);
+            metExploreD3.GraphNetwork.addLinkInDrawing(path.getId()+"-"+newNode.getId(), path, newNode, "out", false, "viz")
+        });
+
 
         var originalX = 100;
         var originalY = 100;
