@@ -6,7 +6,7 @@
 metExploreD3.GraphStyleEdition = {
 
     editMode: false,
-    curvedPath: true,
+    curvedPath: false,
     allDrawnCycles: [],
 
 
