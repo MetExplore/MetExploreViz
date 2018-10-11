@@ -891,30 +891,39 @@ metExploreD3.GraphNetwork = {
 						}
 						else
 						{	
-							if(componentDisplayed=="Pathways" && node.getPathways().length<2){
-						    	var group = session.getGroupByKey(node.getPathways()[0]);
+							var nodePathwayVisible = 
+								node.getPathways()
+									.filter(function(path){
+										var group = session.getD3Data().getPathwayByName(path);
+										if(group!=null)
+										{
+											return !group.hidden();
+										}
+										return false;
+									});
+
+							if(componentDisplayed=="Pathways" && nodePathwayVisible.length<2 && nodePathwayVisible.length>0){
 						    	// here you want to set center to the appropriate [x,y] coords
-						    	if(group!=null)
-						    	{
-						    		// var center = group.center;  
-						    		// d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.centroid")
-			    					// 	.filter(function(centroid){
-			    					// 		console.log(node.getPathways()[0]);
-			    					// 		console.log(centroid.id);
-			    					// 		return centroid.id == node.getPathways()[0];
-			    					// 	})
-			    					// 	.each(function(centroid){
-			    					// 		var center = {x:centroid.x, y:centroid.y};
-			    					// 	});
-			    					var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
-						    		var theCentroid = forceCentroids.nodes()
-						    			.find(function(centroid){
-						    				return centroid.id == node.getPathways()[0];
-						    			}
-						    		);	
-							    	node.x += (theCentroid.x - node.x) * k;
-							    	node.y += (theCentroid.y - node.y) * k;	
-							    }							
+						    	
+								// var center = group.center;  
+								// d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.centroid")
+								// 	.filter(function(centroid){
+								// 		console.log(node.getPathways()[0]);
+								// 		console.log(centroid.id);
+								// 		return centroid.id == node.getPathways()[0];
+								// 	})
+								// 	.each(function(centroid){
+								// 		var center = {x:centroid.x, y:centroid.y};
+								// 	});
+								var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
+								var theCentroid = forceCentroids.nodes()
+									.find(function(centroid){
+										return centroid.id == nodePathwayVisible[0];
+									}
+								);	
+								node.x += (theCentroid.x - node.x) * k;
+								node.y += (theCentroid.y - node.y) * k;	
+
 								
 							}
 						}
@@ -1056,9 +1065,13 @@ metExploreD3.GraphNetwork = {
 		}
 		else
 		{
-            networkData.getPathways().forEach(function(pathway){
-				components.push({"id":pathway.identifier,x:2,y:2});
-			});
+            networkData.getPathways()
+				.filter(function(pathway){
+					return !pathway.hidden();
+				})
+				.forEach(function(pathway){
+					components.push({"id":pathway.identifier,x:2,y:2});
+				});
 
 			var links = [];
             d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
@@ -1073,14 +1086,14 @@ metExploreD3.GraphNetwork = {
 								var targetIndex = components.findIndex(function(path){
 									return path.id==pathway2;
 								});
+								if(sourceIndex!==-1 && targetIndex!==-1){
+									var theLink = links.find(function(link){
+										return link.source==sourceIndex && link.target==targetIndex;
+									});
 
-								var theLink = links.find(function(link){
-									return link.source==sourceIndex && link.target==targetIndex;
-								});
-								
-								if(theLink==undefined)
-									links.push({"source":sourceIndex, "target":targetIndex});
-								
+									if(theLink==undefined)
+										links.push({"source":sourceIndex, "target":targetIndex});
+								}
 							}
 						});				
 					});
@@ -1113,7 +1126,6 @@ metExploreD3.GraphNetwork = {
 		// 	.style("stroke", "blue")
 		// 	.style("stroke-width", 6);
 
-		
 		force2
 			.nodes(components)
 			.links(links)
