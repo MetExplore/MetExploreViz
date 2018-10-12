@@ -11,12 +11,16 @@ Ext.define('metExploreViz.view.menu.viz_AlignMenu.Viz_AlignMenuController', {
 		view      	= me.getView();
 		
 		view.lookupReference('horizontalAlign').on({
-			click : metExploreD3.GraphFunction.horizontalAlign,
+			click :function () {
+                metExploreD3.GraphFunction.horizontalAlign("viz");
+            },
 			scope : me
 		});
 
         view.lookupReference('verticalAlign').on({
-			click : metExploreD3.GraphFunction.verticalAlign,
+            click :function () {
+                metExploreD3.GraphFunction.verticalAlign("viz");
+            },
 			scope : me
 		});
 	}
