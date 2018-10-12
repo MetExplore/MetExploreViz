@@ -208,24 +208,23 @@ metExploreD3.GraphCaption = {
             .attr('y', 15)
             .attr("transform", "translate(30,45)");
 
-
-        d3.select("#viz").select("#D3viz")
-            .append("svg:text")
-            .attr('id', 'metexplore')
-            .text('MetExploreViz')
-            .attr('x', $("#viz").width() - 130)
-            .attr('y', $("#viz").height() - 10);
-
-        d3.select("#viz")
+        var logo = d3.select("#viz")
             .select("#D3viz")
             .append("svg:g")
             .attr("class","logoViz").attr("id","logoViz")
-            .append("image")
+
+        logo.append("image")
             .attr("xlink:href", "resources/icons/metExploreViz_Logo.svg")
             .attr("width", "50")
             .attr("height", "50")
             .attr('x', $("#viz").width() - 110)
             .attr('y', $("#viz").height() - 75);
+
+        logo.append("svg:text")
+            .attr('id', 'metexplore')
+            .text('MetExploreViz')
+            .attr('x', $("#viz").width() - 130)
+            .attr('y', $("#viz").height() - 10);
 
         d3.select("#viz").select("#D3viz")
             .append("svg:rect")
@@ -438,26 +437,23 @@ metExploreD3.GraphCaption = {
             .attr('y', 15)
             .attr("transform", "translate(0,110)");
 
-
-
-        d3.select("#viz").select("#D3viz")
-            .append("svg:text")
-            .attr('id', 'metexplore')
-            .text('MetExploreViz')
-            .attr('x', $("#viz").width() - 130)
-            .attr('y', $("#viz").height() - 10);
-
-        d3.select("#viz")
+        var logo = d3.select("#viz")
             .select("#D3viz")
             .append("svg:g")
             .attr("class","logoViz").attr("id","logoViz")
-            .append("image")
+
+        logo.append("image")
             .attr("xlink:href", "resources/icons/metExploreViz_Logo.svg")
             .attr("width", "50")
             .attr("height", "50")
             .attr('x', $("#viz").width() - 110)
             .attr('y', $("#viz").height() - 75);
 
+        logo.append("svg:text")
+            .attr('id', 'metexplore')
+            .text('MetExploreViz')
+            .attr('x', $("#viz").width() - 130)
+            .attr('y', $("#viz").height() - 10);
 
         d3.select("#viz").select("#D3viz")
             .append("svg:rect")
