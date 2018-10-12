@@ -45,6 +45,15 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                 hidden:true
              },
              {
+                text: 'Reverse',
+                scale: 'large',
+                menu:{id:'vizIdReverseMenu',xtype: 'vizReverseMenu'},
+                id:'vizReverseMenuID',
+                reference:'vizReverseMenuID',
+                padding:'0 0 0 0',
+                iconCls:'horizontalreverse'
+             },
+             {
                  text: 'Duplicate side compounds',
                  reference:'duplicateSideCompounds',
                  tooltip:'Duplicate metabolites annotated as side compounds',

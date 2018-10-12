@@ -948,19 +948,32 @@ metExploreD3.GraphNode = {
             .on("keydown", function() {
                 _MyThisGraphNode.charKey = d3.event.keyCode;
                 _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+                _MyThisGraphNode.altKey = d3.event.altKey;
                 var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
                 //H	72
-                if(_MyThisGraphNode.charKey==72 && activesession.getSelectedNodes().length>0)
+                if(_MyThisGraphNode.charKey==72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length>0)
                 {
                     metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
                 }
 
+                if(_MyThisGraphNode.charKey==72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length>0)
+                {
+                    metExploreD3.GraphFunction.horizontalReverse(_MyThisGraphNode.activePanel);
+                }
+
                 //V 86
-                if(_MyThisGraphNode.charKey==86 && activesession.getSelectedNodes().length>0)
+                if(_MyThisGraphNode.charKey==86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length>0)
                 {
                     metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
                 }
+
+                if(_MyThisGraphNode.charKey==86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length>0)
+                {
+                    metExploreD3.GraphFunction.verticalReverse(_MyThisGraphNode.activePanel);
+                }
+
+
 
                 // 65=A
                 if(_MyThisGraphNode.charKey==65 && _MyThisGraphNode.ctrlKey)

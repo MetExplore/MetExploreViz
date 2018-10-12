@@ -257,6 +257,18 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.verticalreverse {
+     background-image: url(../icons/verticalreverse.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.horizontalreverse {
+     background-image: url(../icons/horizontalreverse.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .blackWhite {
      background-image: url(../icons/blackWhite.png);
     background-size: 100% 100%;
