@@ -16,6 +16,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
         'metExploreViz.view.menu.viz_ColorMenu.Viz_ColorMenu',
         'metExploreViz.view.menu.viz_LayoutMenu.Viz_LayoutMenu',
         'metExploreViz.view.menu.viz_AlignMenu.Viz_AlignMenu',
+        'metExploreViz.view.menu.viz_ReverseMenu.Viz_ReverseMenu',
         'metExploreViz.view.menu.viz_ExtractSubNetworkMenu.Viz_ExtractSubNetworkMenu',
         'metExploreViz.view.menu.viz_AlgorithmMenu.Viz_AlgorithmMenu',
         'metExploreViz.view.menu.viz_LoadMenu.Viz_LoadMenu',
