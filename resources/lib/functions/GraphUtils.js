@@ -572,12 +572,16 @@ metExploreD3.GraphUtils = {
 				var allElements;
 
 				var d3Clone = d3.select(clone);
+                var rectSvg = svg.parentNode.getBoundingClientRect();
+                var canvasWidth = rectSvg.width;
 
-				d3Clone.select(".logoViz")
+                var canvasHeight = rectSvg.height;
+
+                d3Clone.select(".logoViz")
 					.each(function(){
 						var url = this.firstChild.getAttribute("href");
 		      			if (window.XDomainRequest) {
-							xdr = new XDomainRequest(); 
+							xdr = new XDomainRequest();
 						} else if (window.XMLHttpRequest) {
 							var XMLrequest = new XMLHttpRequest(); // new XML request
 							XMLrequest.open("GET", url, false); // URL of the SVG file on server
@@ -585,58 +589,36 @@ metExploreD3.GraphUtils = {
 							if(XMLrequest.responseXML!=null){
 								var mySVG = XMLrequest.responseXML.getElementsByTagName("svg")[0];
 								if(this.firstChild.getAttribute('width')!=null){
-									
+
 									mySVG.setAttribute("x", this.firstChild.getAttribute("x"));
 									mySVG.setAttribute("y", this.firstChild.getAttribute("y"));
 									mySVG.setAttribute("width", this.firstChild.getAttribute("width").split('px')[0]);
 									mySVG.setAttribute("height", this.firstChild.getAttribute("height").split('px')[0]);
 									mySVG.setAttribute("class", "logoViz");
-									
+
 									var nodeChilds = mySVG.children;
-									
-									var parent = this.parentNode;
-									parent.removeChild(this);
-									parent.appendChild(mySVG);			        			
-								}
+
+									var parent = this;
+									parent.removeChild(this.firstChild);
+									parent.appendChild(mySVG);
+
+                                }
 							}
 						} else {
 							alert("Votre navigateur ne gère pas l'AJAX cross-domain !");
 						}
-					}
-					);
-					
+					});
+
 				d3Clone.selectAll(".locker, .fontSelected")
 					.each(function(){
 						this.parentNode.removeChild(this);
 					}
-					);	
+					);
 
 				var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 				var component = s_GeneralStyle.isDisplayedCaption();
-				
-				if(component=="Pathways"){
 
-					d3Clone.selectAll("path.convexhull")
-					    .classed(function(conv){
-                                var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
-                                if(component.hidden())
-                                    this.parentNode.removeChild(this);
-                                return "";
-						}
-						);
-				}
-				else
-				{
-			    	d3Clone.selectAll("path.convexhull")
-                        .classed(function(conv){
-                                var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
-                                if(component.hidden())
-                                    this.parentNode.removeChild(this);
-                                return "";
-                            }
-                        );
-
-				}
+				d3Clone.selectAll("path.convexhull.hide").remove();
 
 				var nbNodes = d3Clone.select("#graphComponent").selectAll("g.node").data().length;
 				if(nbNodes<1000){
@@ -661,7 +643,7 @@ metExploreD3.GraphUtils = {
 										mySVG.setAttribute("width", this.getAttribute("width").split('px')[0]);
 										mySVG.setAttribute("height", this.getAttribute("height").split('px')[0]);
 										mySVG.setAttribute("class", "structure_metabolite");
-										
+
 										var nodeChilds = mySVG.children;
 										for (var i = 0; i < nodeChilds.length; i++) {
 											nodeChilds[i].setAttribute("transform", "scale("+scale+")");
@@ -687,7 +669,7 @@ metExploreD3.GraphUtils = {
 						});
 				}
 
-				var rectSvg = svg.parentNode.getBoundingClientRect();
+
 
 				
 				// Version to catch all nodes in the picture
@@ -705,9 +687,7 @@ metExploreD3.GraphUtils = {
 				// 	});
 
 				rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
-
-				var canvasWidth = rectSvg.width;
-				if((rectSvg.width + rectGraphComponent.right - rectSvg.right +20 )>canvasWidth){
+                if((rectSvg.width + rectGraphComponent.right - rectSvg.right +20 )>canvasWidth){
 					canvasWidth = rectSvg.width + rectGraphComponent.right - rectSvg.right +20;					
 				}
 				else
@@ -719,22 +699,16 @@ metExploreD3.GraphUtils = {
 					// 	});
 				}
 				clone.setAttribute("width",  canvasWidth);
-
-				var canvasHeight = rectSvg.height;
-				if((rectSvg.height + rectGraphComponent.bottom - rectSvg.bottom +20 )>canvasHeight)
+                if((rectSvg.height + rectGraphComponent.bottom - rectSvg.bottom +20 )>canvasHeight)
 					canvasHeight = rectSvg.height + rectGraphComponent.bottom - rectSvg.bottom +20;
 				clone.setAttribute("height", canvasHeight);
-
-				d3Clone.select("#metexplore").text('MetExploreViz').attr('x',  clone.getAttribute("width") - 92).attr(
-					'y', clone.getAttribute("height") - 10);
-				
 
 				var rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
 				
 				var translateX = rectSvg.left+100 - rectGraphComponent.left;
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
 				d3Clone.select("#graphComponent").attr("transform",  d3.select(svg).select("#graphComponent").attr("transform"));
-				
+
 				// d3.select(clone).selectAll("path")
 				// 	.each(function(d){
 				// 		d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
