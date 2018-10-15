@@ -76,6 +76,7 @@ d3.selection.enter.prototype =
 			.attr("dy", ".4em")
 			.style("font-weight", 'bold')
 			.style("pointer-events", 'none')
+			.style("text-anchor", 'middle')
 			.attr("y",minDim/2+5);
 
 	};
