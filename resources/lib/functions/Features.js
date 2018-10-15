@@ -29,6 +29,7 @@ metExploreD3.Features = {
 	},
 
     isEnabled : function(feature, currentUser) {
+        console.log(this.features[feature]);
     	if(this.features[feature]!=undefined)
     	 	return this.isEnabledForUser(feature, currentUser) || this.isEnabledForAll(feature) ;
     	return false;
@@ -41,8 +42,9 @@ metExploreD3.Features = {
     },
 
     isEnabledForAll : function(feature) {
-    	if(this.features[feature]!=undefined)
-    		return this.features[feature].enabledTo.indexOf("all")!=-1;
+		console.log(this.features[feature]);
+    	if(this.features[feature]!==undefined)
+    		return this.features[feature].enabledTo.indexOf("all")!==-1;
     	return false;
     }
 }

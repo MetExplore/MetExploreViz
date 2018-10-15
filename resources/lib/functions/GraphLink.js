@@ -2127,6 +2127,7 @@ metExploreD3.GraphLink = {
             var exitingX = node.x - (enteringX - node.x);
             var exitingY = node.y - (enteringY - node.y);
 
+            var axe = "horizontal";
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
             enteringLinks.each(function (link) {
                 var path;
@@ -2139,12 +2140,17 @@ metExploreD3.GraphLink = {
                 }
                 else if (enteringY == node.y){
                     path = metExploreD3.GraphLink.computePathHorizontal(node, enteringX, enteringY, link.getSource());
+                    axe="horizontal";
                 }
                 else {
                     path = metExploreD3.GraphLink.computePathVertical(node, enteringX, enteringY, link.getSource());
+                    axe="vertical";
                 }
                 d3.select(this).attr("d", path)
                     .attr("fill", "none")
+                    .classed("horizontal", false)
+                    .classed("vertical", false)
+                    .classed(axe, true)
                     .style("opacity", 1);
             }).filter(function (link) {
                 return link.getTarget().getReactionReversibility();
@@ -2159,13 +2165,17 @@ metExploreD3.GraphLink = {
                 }
                 else if (exitingY == node.y){
                     path = metExploreD3.GraphLink.computePathHorizontal(node, exitingX, exitingY, link.getTarget());
-
+                    axe="horizontal";
                 }
                 else {
                     path = metExploreD3.GraphLink.computePathVertical(node, exitingX, exitingY, link.getTarget());
+                    axe="vertical";
                 }
                 d3.select(this).attr("d", path)
                     .attr("fill", "none")
+                    .classed("horizontal", false)
+                    .classed("vertical", false)
+                    .classed(axe, true)
                     .style("opacity", 1);
             }).attr("marker-end", "url(#markerExit)");
         });
