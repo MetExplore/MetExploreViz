@@ -52,6 +52,13 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenuController', {
             scope : me
 		});
 
+		view.lookupReference('highlightSource').on({
+            click :function () {
+                metExploreD3.GraphFunction.highlightSource("viz");
+            },
+            scope : me
+		});
+
 	},
 	highlightSubnetwork : function(){
 		metExploreD3.GraphFunction.highlightSubnetwork();

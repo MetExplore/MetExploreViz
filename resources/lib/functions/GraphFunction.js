@@ -114,15 +114,28 @@ metExploreD3.GraphFunction = {
         var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link");
 
         nodes
-            .filter(function(node){
-                return links.filter(function(link){
-                    return node.getId()==link.getSource()
-                })[0].length===0;
-            }).
-            each(function (node) {
+            .filter(function(node) {
+                var numberOfLinkWithoutSource = links.filter(function (link) {
+                    return node.getId() == link.getSource()
+                })[0].length;
+
+                var linkWithThisNode = links.filter(function (link) {
+                    return node.getId() == link.getSource() || node.getId() == link.getTarget();
+                });
+
+                var numberOfLinkWithThisNode = linkWithThisNode[0].length;
+
+                var numberOfReversibleLink = linkWithThisNode.filter(function (link) {
+                    return link.getSource().getReactionReversibility();
+                })[0].length;
+
+                return numberOfLinkWithoutSource===0 && (numberOfLinkWithThisNode===1 || numberOfReversibleLink===0);
+            })
+			.each(function (node) {
                 metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
             });
     },
+
     highlightSource : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
 
@@ -130,9 +143,21 @@ metExploreD3.GraphFunction = {
 
         nodes
             .filter(function(node){
-                return links.filter(function(link){
+                var numberOfLinkWithoutTarget = links.filter(function(link){
                     return node.getId()==link.getTarget()
-                })[0].length===0;
+                })[0].length;
+
+                var linkWithThisNode = links.filter(function(link){
+                    return node.getId()==link.getSource() || node.getId()==link.getTarget();
+                });
+
+                var numberOfLinkWithThisNode = linkWithThisNode[0].length;
+               
+                var numberOfReversibleLink = linkWithThisNode.filter(function(link){
+                    return link.getTarget().getReactionReversibility();
+                })[0].length;
+
+                return numberOfLinkWithoutTarget===0 && (numberOfLinkWithThisNode===1 || numberOfReversibleLink===0);
             })
 			.each(function (node) {
                 metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
