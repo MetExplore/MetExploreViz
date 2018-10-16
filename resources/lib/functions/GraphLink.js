@@ -2036,7 +2036,7 @@ metExploreD3.GraphLink = {
             .attr("refX", 9).attr("refY", 6)
             .attr("markerUnits", "userSpaceOnUse")
             .attr("markerWidth", 15).attr("markerHeight", 10)
-            .attr("orient", "auto")
+            .attr("orient", "auto-start-reverse")
             .attr("fill", "green").attr("stroke", "black")
             .append("path")
             .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
@@ -2046,7 +2046,7 @@ metExploreD3.GraphLink = {
             .attr("refX", 9).attr("refY", 6)
             .attr("markerUnits", "userSpaceOnUse")
             .attr("markerWidth", 15).attr("markerHeight", 10)
-            .attr("orient", "auto")
+            .attr("orient", "auto-start-reverse")
             .attr("fill", "red").attr("stroke", "black")
             .append("path")
             .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
@@ -2129,57 +2129,73 @@ metExploreD3.GraphLink = {
 
             var axe = "horizontal";
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
-            enteringLinks.each(function (link) {
-                var path;
-                // Handle the case where the link is a cycle arc or a sibling of cycle arc
-                if (link.partOfCycle === true){
-                    path = d3.select(this).attr("d");
-                }
-                else if (isCycleReaction === true){
-                    path = metExploreD3.GraphLink.computePathArcSibling(node, centroidSourceX, centroidSourceY, link.getSource(), enteringArcLink);
-                }
-                else if (enteringY == node.y){
-                    path = metExploreD3.GraphLink.computePathHorizontal(node, enteringX, enteringY, link.getSource());
-                    axe="horizontal";
-                }
-                else {
-                    path = metExploreD3.GraphLink.computePathVertical(node, enteringX, enteringY, link.getSource());
-                    axe="vertical";
-                }
-                d3.select(this).attr("d", path)
-                    .attr("fill", "none")
-                    .classed("horizontal", false)
-                    .classed("vertical", false)
-                    .classed(axe, true)
-                    .style("opacity", 1);
-            }).filter(function (link) {
-                return link.getTarget().getReactionReversibility();
-            }).attr("marker-end", "url(#markerEntry)");
-            exitingLinks.each(function (link) {
-                var path;
-                if (link.partOfCycle === true){
-                    path = d3.select(this).attr("d");
-                }
-                else if (isCycleReaction === true){
-                    path = metExploreD3.GraphLink.computePathArcSibling(node, centroidTargetX, centroidTargetY, link.getTarget(), exitingArcLink);
-                }
-                else if (exitingY == node.y){
-                    path = metExploreD3.GraphLink.computePathHorizontal(node, exitingX, exitingY, link.getTarget());
-                    axe="horizontal";
-                }
-                else {
-                    path = metExploreD3.GraphLink.computePathVertical(node, exitingX, exitingY, link.getTarget());
-                    axe="vertical";
-                }
-                d3.select(this).attr("d", path)
-                    .attr("fill", "none")
-                    .classed("horizontal", false)
-                    .classed("vertical", false)
-                    .classed(axe, true)
-                    .style("opacity", 1);
-            }).attr("marker-end", "url(#markerExit)");
+
+            enteringLinks
+                .each(function (link) {
+                    var path;
+                    // Handle the case where the link is a cycle arc or a sibling of cycle arc
+                    if (link.partOfCycle === true){
+                        path = d3.select(this).attr("d");
+                    }
+                    else if (isCycleReaction === true){
+                        path = metExploreD3.GraphLink.computePathArcSibling(node, centroidSourceX, centroidSourceY, link.getSource(), enteringArcLink);
+                    }
+                    else if (enteringY == node.y){
+                        path = metExploreD3.GraphLink.computePathHorizontal(node, enteringX, enteringY, link.getSource());
+                        axe="horizontal";
+                    }
+                    else {
+                        path = metExploreD3.GraphLink.computePathVertical(node, enteringX, enteringY, link.getSource());
+                        axe="vertical";
+                    }
+                    d3.select(this).attr("d", path)
+                        .attr("fill", "none")
+                        .classed("horizontal", false)
+                        .classed("vertical", false)
+                        .classed(axe, true)
+                        .style("opacity", 1);
+                })
+                .filter(function (link) {
+                    return link.getTarget().getReactionReversibility();
+                })
+                .attr("marker-end", "url(#markerEntry)")
+                .filter(function (link) {
+                    console.log(exitingLinks.data().length);
+                    return exitingLinks.data().length === 0;
+                })
+                .attr("marker-start", "url(#markerExit)");
+
+            exitingLinks
+                .each(function (link) {
+                    var path;
+                    if (link.partOfCycle === true){
+                        path = d3.select(this).attr("d");
+                    }
+                    else if (isCycleReaction === true){
+                        path = metExploreD3.GraphLink.computePathArcSibling(node, centroidTargetX, centroidTargetY, link.getTarget(), exitingArcLink);
+                    }
+                    else if (exitingY == node.y){
+                        path = metExploreD3.GraphLink.computePathHorizontal(node, exitingX, exitingY, link.getTarget());
+                        axe="horizontal";
+                    }
+                    else {
+                        path = metExploreD3.GraphLink.computePathVertical(node, exitingX, exitingY, link.getTarget());
+                        axe="vertical";
+                    }
+                    d3.select(this).attr("d", path)
+                        .attr("fill", "none")
+                        .classed("horizontal", false)
+                        .classed("vertical", false)
+                        .classed(axe, true)
+                        .style("opacity", 1);
+                })
+                .attr("marker-end", "url(#markerExit)")
+                .filter(function (link) {
+                    console.log(enteringLinks.data().length);
+                    return link.getSource().getReactionReversibility() && enteringLinks.data().length === 0;
+                })
+                .attr("marker-start", "url(#markerEntry)");
         });
-        //
         metExploreD3.GraphCaption.drawCaptionEditMode();
     },
 
