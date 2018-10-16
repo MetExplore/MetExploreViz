@@ -108,6 +108,37 @@ metExploreD3.GraphFunction = {
         });
     },
 
+    highlightWall : function(panel) {
+        var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
+
+        var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link");
+
+        nodes
+            .filter(function(node){
+                return links.filter(function(link){
+                    return node.getId()==link.getSource()
+                })[0].length===0;
+            }).
+            each(function (node) {
+                metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
+            });
+    },
+    highlightSource : function(panel) {
+        var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
+
+        var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link");
+
+        nodes
+            .filter(function(node){
+                return links.filter(function(link){
+                    return node.getId()==link.getTarget()
+                })[0].length===0;
+            })
+			.each(function (node) {
+                metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
+            });
+    },
+
 	horizontalAlign : function(panel) {
 		metExploreD3.GraphNode.fixSelectedNode();
         var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
