@@ -55,6 +55,15 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 					view.lookupReference('vizAlignMenuID').setHidden(true);
 				}
 			},
+            render : function(){
+                if(metExploreD3.Features.isEnabled('align', metExploreD3.getUser())){
+                    view.lookupReference('vizAlignMenuID').setHidden(false);
+                }
+                else
+                {
+                    view.lookupReference('vizAlignMenuID').setHidden(true);
+                }
+            },
 			scope : me
 		});
 

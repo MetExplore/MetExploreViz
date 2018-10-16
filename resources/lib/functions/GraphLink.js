@@ -2127,7 +2127,9 @@ metExploreD3.GraphLink = {
             var exitingX = node.x - (enteringX - node.x);
             var exitingY = node.y - (enteringY - node.y);
 
+            var axe = "horizontal";
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
+
             enteringLinks
                 .each(function (link) {
                     var path;

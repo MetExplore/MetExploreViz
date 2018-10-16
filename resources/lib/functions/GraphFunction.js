@@ -37,6 +37,133 @@ metExploreD3.GraphFunction = {
 		return graph;          
 	},
 
+    alignWallSource : function(){
+        function launch(fun){
+            var nodes=d3.select("#viz").select("#D3viz").selectAll("g.node");
+
+            var links=d3.select("#viz").select("#D3viz").selectAll("path.link");
+
+            var lonelyNode = nodes
+                .filter(function(node){
+                    return links.filter(function(link){
+                        return node.getId()==link.getTarget() || node.getId()==link.getSource()
+                    })[0].length==1;
+                });
+
+            lonelyNode.each(function(node, i){
+                links.filter(function(link){
+                    return node.getId()==link.getTarget() || node.getId()==link.getSource();
+                })
+                    .each(function(link){
+
+                        var coords = this.getAttribute('d').replace("M","").split(/Q|L|C/);
+
+                        var start = coords[0].split(",");
+                        var startX = parseFloat(start[0]);
+                        var startY= parseFloat(start[1]);
+
+                        var end = coords[1].split(",");
+                        var endX = parseFloat(end[0]);
+                        var endY= parseFloat(end[1]);
+
+                        var refNode;
+                        if(node.getId()==link.getTarget())
+                            refNode=link.getSource();
+                        else
+                            refNode=link.getTarget();
+
+                        if(this.classList.contains('vertical'))
+                        {
+                            node.x = refNode.x;
+                            if(startY<endY)
+                                node.y = refNode.y+40;
+                            else
+                                node.y = refNode.y-40;
+
+
+                        }
+
+                        if(this.classList.contains('horizontal'))
+                        {
+                            node.y = refNode.y
+                            if(startX<endX)
+                                node.x = refNode.x+40;
+                            else
+                                node.x = refNode.x-40;
+
+
+                        }
+                    });
+                if(i==lonelyNode[0].length-1){
+                    metExploreD3.GraphNetwork.tick('viz');
+                    if(fun)
+                        fun()
+                }
+            });
+
+        }
+
+        launch(function(){
+            launch();
+        });
+    },
+
+    highlightWall : function(panel) {
+        var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
+
+        var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link");
+
+        nodes
+            .filter(function(node) {
+                var numberOfLinkWithoutSource = links.filter(function (link) {
+                    return node.getId() == link.getSource()
+                })[0].length;
+
+                var linkWithThisNode = links.filter(function (link) {
+                    return node.getId() == link.getSource() || node.getId() == link.getTarget();
+                });
+
+                var numberOfLinkWithThisNode = linkWithThisNode[0].length;
+
+                var numberOfReversibleLink = linkWithThisNode.filter(function (link) {
+                    return link.getSource().getReactionReversibility();
+                })[0].length;
+
+                return numberOfLinkWithoutSource===0 && (numberOfLinkWithThisNode===1 || numberOfReversibleLink===0);
+            })
+			.each(function (node) {
+                metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
+            });
+    },
+
+    highlightSource : function(panel) {
+        var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
+
+        var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link");
+
+        nodes
+            .filter(function(node){
+                var numberOfLinkWithoutTarget = links.filter(function(link){
+                    return node.getId()==link.getTarget()
+                })[0].length;
+
+                var linkWithThisNode = links.filter(function(link){
+                    return node.getId()==link.getSource() || node.getId()==link.getTarget();
+                });
+
+                var numberOfLinkWithThisNode = linkWithThisNode[0].length;
+               
+                var numberOfReversibleLink = linkWithThisNode.filter(function(link){
+                    return link.getTarget().getReactionReversibility();
+                })[0].length;
+
+                return numberOfLinkWithoutTarget===0 && (numberOfLinkWithThisNode===1 || numberOfReversibleLink===0);
+            })
+			.each(function (node) {
+                metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
+            });
+    },
+
 	horizontalAlign : function(panel) {
 		metExploreD3.GraphNode.fixSelectedNode();
         var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();

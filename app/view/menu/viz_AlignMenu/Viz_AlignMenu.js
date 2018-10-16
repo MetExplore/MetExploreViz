@@ -27,6 +27,11 @@ Ext.define('metExploreViz.view.menu.viz_AlignMenu.Viz_AlignMenu', {
                 text: 'Vertical alignment  (Click V)',
                 reference:'verticalAlign',
                 iconCls:'verticalalign'
+            }, {
+                text: 'Align Wall & Source',
+                reference:'wsAlign',
+                iconCls:'verticalalign',
+                hidden:!metExploreD3.GraphStyleEdition.curvedPath
             }
         ]
 });
