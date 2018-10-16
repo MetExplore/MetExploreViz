@@ -1824,7 +1824,6 @@ metExploreD3.GraphLink = {
 // 			link.value = getRandomArbitrary(-4, 4);
 // 		else
 // 			link.value = getRandomArbitrary(0, 4);
-// 		console.log(link.value);
 // 	}); 
 // function getRandomArbitrary(min, max) {
 //   	return Math.random() * (max - min) + min;
@@ -2160,7 +2159,6 @@ metExploreD3.GraphLink = {
                 })
                 .attr("marker-end", "url(#markerEntry)")
                 .filter(function (link) {
-                    console.log(exitingLinks.data().length);
                     return exitingLinks.data().length === 0;
                 })
                 .attr("marker-start", "url(#markerExit)");
@@ -2191,7 +2189,6 @@ metExploreD3.GraphLink = {
                 })
                 .attr("marker-end", "url(#markerExit)")
                 .filter(function (link) {
-                    console.log(enteringLinks.data().length);
                     return link.getSource().getReactionReversibility() && enteringLinks.data().length === 0;
                 })
                 .attr("marker-start", "url(#markerEntry)");
