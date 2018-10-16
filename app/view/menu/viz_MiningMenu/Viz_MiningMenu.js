@@ -28,14 +28,28 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
                 iconCls:'algorithm',
                 hidden:true
              },
-             {
-                 text: 'Highlight Subnetwork',
-                 reference :'highlightSubnetwork',
-                 id :'highlightSubnetwork',
-                 tooltip:'Highlight sub-network based on node selection or mapped nodes',
-                 iconCls:'highlightSubnetwork',
-                 hidden:true
-             },{
+            {
+                text: 'Highlight Subnetwork',
+                reference :'highlightSubnetwork',
+                id :'highlightSubnetwork',
+                tooltip:'Highlight sub-network based on node selection or mapped nodes',
+                iconCls:'highlightSubnetwork',
+                hidden:true
+            },
+            {
+                text: 'Highlight wall',
+                reference :'highlightWall',
+                id :'highlightWall',
+                tooltip:'Highlight Wall',
+                iconCls:'highlightWall'
+            },
+            {
+                text: 'Highlight source',
+                reference :'highlightSource',
+                id :'highlightSource',
+                tooltip:'Highlight Source',
+                iconCls:'highlightSource'
+            },{
                 text: 'Extract Subnetwork',
                 scale: 'large',
                 menu:{id:'vizIdExtractSubNetworkMenu',xtype: 'vizExtractSubNetworkMenu'},
