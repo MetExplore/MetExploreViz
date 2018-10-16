@@ -31,7 +31,7 @@ Ext.define('metExploreViz.view.menu.viz_AlignMenu.Viz_AlignMenu', {
                 text: 'Align Wall & Source',
                 reference:'wsAlign',
                 iconCls:'verticalalign',
-                hidden:!metExploreD3.GraphStyleEdition.curvedPath
+                hidden:false
             }
         ]
 });
