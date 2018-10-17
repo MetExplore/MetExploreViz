@@ -28,7 +28,7 @@ Ext.define('metExploreViz.view.menu.viz_AlignMenu.Viz_AlignMenu', {
                 reference:'verticalAlign',
                 iconCls:'verticalalign'
             }, {
-                text: 'Align Wall & Source',
+                text: 'Align Sink & Source',
                 reference:'wsAlign',
                 iconCls:'verticalalign',
                 hidden:false

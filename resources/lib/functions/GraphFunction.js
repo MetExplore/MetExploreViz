@@ -37,7 +37,7 @@ metExploreD3.GraphFunction = {
 		return graph;          
 	},
 
-    alignWallSource : function(){
+    alignSinkSource : function(){
         function launch(fun){
             var nodes=d3.select("#viz").select("#D3viz").selectAll("g.node");
 
@@ -108,7 +108,7 @@ metExploreD3.GraphFunction = {
         });
     },
 
-    highlightWall : function(panel) {
+    highlightSink : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
 
         var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link");
