@@ -45,9 +45,9 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenuController', {
 			scope : me
 		});
 
-		view.lookupReference('highlightWall').on({
+		view.lookupReference('highlightSink').on({
             click :function () {
-                metExploreD3.GraphFunction.highlightWall("viz");
+                metExploreD3.GraphFunction.highlightSink("viz");
             },
             scope : me
 		});

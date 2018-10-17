@@ -263,6 +263,18 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.highlightSink {
+     background-image: url(../icons/sink.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.highlightSource {
+     background-image: url(../icons/source.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .horizontalreverse {
      background-image: url(../icons/horizontalreverse.png);
     background-size: 100% 100%;

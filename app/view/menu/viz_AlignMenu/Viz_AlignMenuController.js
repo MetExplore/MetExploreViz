@@ -36,7 +36,7 @@ Ext.define('metExploreViz.view.menu.viz_AlignMenu.Viz_AlignMenuController', {
 
         view.lookupReference('wsAlign').on({
             click :function () {
-                metExploreD3.GraphFunction.alignWallSource();
+                metExploreD3.GraphFunction.alignSinkSource();
             },
 			scope : me
 		});
