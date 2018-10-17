@@ -37,11 +37,11 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
                 hidden:true
             },
             {
-                text: 'Highlight wall',
-                reference :'highlightWall',
-                id :'highlightWall',
-                tooltip:'Highlight Wall',
-                iconCls:'highlightWall'
+                text: 'Highlight sink',
+                reference :'highlightSink',
+                id :'highlightSink',
+                tooltip:'Highlight Sink',
+                iconCls:'highlightSink'
             },
             {
                 text: 'Highlight source',
