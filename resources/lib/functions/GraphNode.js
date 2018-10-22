@@ -900,47 +900,119 @@ metExploreD3.GraphNode = {
 	* @param {} selectedVal : The value of search field text
 	*/
 	searchNode : function(selectedVal) {
+        var mask = metExploreD3.createLoadMask("Search nodes", "viz");
+        metExploreD3.showMask(mask);
 	    //find the node
 		var upperCaseSelectedVal = selectedVal.toUpperCase();
-	   			
+
 	    var svg = d3.select('#viz').select('#D3viz').select('#graphComponent');
-	    
-        var selected = svg.selectAll("g.node").filter(function (d, i) {  
+
+        var selected = svg.selectAll("g.node").filter(function (d, i) {
 
         	var equalName = false;
-        	if(d.getName()!=undefined) 
+        	if(d.getName()!=undefined)
         		equalName = d.getName().toUpperCase().indexOf(upperCaseSelectedVal) > -1;
-			
-			if(d.getLabel()!=undefined) 
+
+			if(d.getLabel()!=undefined)
         		equalName = d.getLabel().toUpperCase().indexOf(upperCaseSelectedVal) > -1;
 
         	var equalEc = false;
-        	if(d.getEC()!=undefined) 
+        	if(d.getEC()!=undefined)
         		equalEc = d.getEC().toUpperCase().indexOf(upperCaseSelectedVal) > -1;
 
         	var equalDbId = false;
-        	if(d.getDbIdentifier()!=undefined) 
+        	if(d.getDbIdentifier()!=undefined)
         		equalDbId = d.getDbIdentifier().toUpperCase().indexOf(upperCaseSelectedVal) > -1;
 
         	var equalCompartment = false;
-        	if(d.getCompartment()!=undefined) 
+        	if(d.getCompartment()!=undefined)
         		equalCompartment = d.getCompartment().toUpperCase().indexOf(upperCaseSelectedVal) > -1;
 
         	var equalBiologicalType = false;
-        	if(d.getBiologicalType()!=undefined) 
+        	if(d.getBiologicalType()!=undefined)
         		equalBiologicalType = d.getBiologicalType().toUpperCase().indexOf(upperCaseSelectedVal) > -1;
 
             return equalName || equalEc || equalDbId || equalCompartment || equalBiologicalType;
         });
 
-		if(selected.size()==0)
-			metExploreD3.displayMessage("Warning", 'The node "' + selectedVal + '" doesn\'t exist.')
-        else
-        	selected.each(
-             	function(aSelectedNode){
-        			if(!aSelectedNode.isSelected())
-        				_MyThisGraphNode.selection(aSelectedNode, 'viz');
-        		});
+		if(selected.size()==0){
+            metExploreD3.hideMask(mask);
+            metExploreD3.displayMessage("Warning", 'The node "' + selectedVal + '" doesn\'t exist.')
+        }
+		else
+		{
+
+            var scaleViz = metExploreD3.getScaleById("viz");
+            var zoom = scaleViz.getZoom();
+
+            d3.select("#viz").select("#D3viz").select("#graphComponent")
+				.transition()
+				.duration(750)
+				.attr("transform", "translate(0,0)scale(1)")
+                .each('end', function(){
+                    zoom.translate([0,0]);
+
+                    scaleViz.setXScale(0);
+                    scaleViz.setYScale(0);
+                    zoom.scale(1);
+                    scaleViz.setZoomScale(1);
+
+					var maxX = -100000;
+					var	maxY = -100000;
+					var minX= 100000;
+					var	minY = 100000;
+
+					selected.each(
+						function(aSelectedNode){
+							if(maxX<aSelectedNode.x)
+								maxX=aSelectedNode.x;
+							if(maxY<aSelectedNode.y)
+								maxY=aSelectedNode.y;
+							if(minX>aSelectedNode.x)
+								minX=aSelectedNode.x;
+							if(minY>aSelectedNode.y)
+								minY=aSelectedNode.y;
+
+						});
+
+					var dx = maxX - minX,
+						dy = maxY - minY;
+
+
+					var rectPanel = d3.select("#viz").select("#D3viz").node().getBoundingClientRect();
+
+					var width = parseInt(metExploreD3.GraphPanel.getWidth("viz").replace("px",""));
+					var height = parseInt(metExploreD3.GraphPanel.getHeight("viz").replace("px",""));
+
+					// var scale = 1;
+					var scale =(Math.min(height/dy, width/dx))*0.7;
+
+					var transX = scale*(rectPanel.left - minX);
+					var transY = scale*(rectPanel.top - minY);
+
+
+					d3.select("#viz").select("#D3viz").select("#graphComponent")
+						.transition()
+						.duration(750)
+						.attr("transform", "translate("+transX+","+transY+")scale("+scale+")")
+						.each('end', function(){
+							metExploreD3.GraphLink.tick("viz", scale);
+							metExploreD3.GraphNode.tick("viz");
+							metExploreD3.hideMask(mask);
+						});
+
+					zoom.translate([transX,transY]);
+					zoom.scale(scale);
+					scaleViz.setZoomScale(scale);
+					scaleViz.setXScale(transX);
+					scaleViz.setYScale(transY);
+
+                    selected.each(
+                        function(aSelectedNode){
+                            _MyThisGraphNode.highlightANode(aSelectedNode, 'viz');
+                        });
+				});
+        }
 	},
 
     initShortCut: function () {
