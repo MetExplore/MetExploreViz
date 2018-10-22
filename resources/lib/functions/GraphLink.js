@@ -16,7 +16,7 @@ metExploreD3.GraphLink = {
 
     pathwaysOnLink: function (parent) {
 
-        d3.select(parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
+        d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
             .style("stroke-width","1px")
             .style("stroke-linecap","butt")
             .style("stroke",function(link){
