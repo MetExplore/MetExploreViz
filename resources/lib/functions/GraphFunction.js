@@ -166,123 +166,70 @@ metExploreD3.GraphFunction = {
 
 	horizontalAlign : function(panel) {
 		metExploreD3.GraphNode.fixSelectedNode();
-        var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
-        var arrayNodeByType = metExploreD3.GraphFunction.alignH(nodes, panel);
+		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
+		
+		var yRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).y;
+		var arrayNode = [];
+		
+		d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
+			.filter(function(node){
+				return nodes.indexOf(node.getId())!=-1;
+			})
+			.each(function(node){
+				arrayNode.push(node);
+				node.py = yRef ;
+				node.y = yRef ;
+			});
 
-        arrayNodeByType.forEach(function(nodeSameType){
-            if(nodeSameType.length>1)
-                metExploreD3.GraphFunction.alignV(nodeSameType, panel, true);
-        });
+		arrayNode.sort(function(node1, node2){
+		   return d3.ascending(node1.x, node2.x);
+		});
 
-        metExploreD3.GraphNetwork.tick(panel);
+		arrayNode.forEach(function(node, i){
+			if(i!=0){
+				if((node.x-arrayNode[i-1].x)<30){
+					node.px = arrayNode[i-1].x+30 ;
+					node.x = arrayNode[i-1].x+30  ;
+				}
+			}
+		})
+    
+     	metExploreD3.GraphNetwork.tick(panel);
 	},
 
 	verticalAlign : function(panel) {
-        metExploreD3.GraphNode.fixSelectedNode();
-        var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
-        var arrayNodeByType = metExploreD3.GraphFunction.alignV(nodes, panel);
+		metExploreD3.GraphNode.fixSelectedNode();
+		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
+		
+		var xRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).x;
+		
+		var arrayNode = [];
+		d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
+			.filter(function(node){
+				return nodes.indexOf(node.getId())!=-1;
+			})
+			.each(function(node){
+				arrayNode.push(node);
+				node.px = xRef ;
+				node.x = xRef ;
+			});
+		
+		arrayNode.sort(function(node1, node2){
+		   return d3.ascending(node1.y, node2.y);
+		});
 
-        arrayNodeByType.forEach(function(nodeSameType){
-            if(nodeSameType.length>1)
-                metExploreD3.GraphFunction.alignH(nodeSameType, panel, true);
-        });
-
-        metExploreD3.GraphNetwork.tick(panel);
-    },
-
-	alignH : function(nodes, panel, separateSameType){
-        var yRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).y;
-
-        var arrayNode = [];
-        var selectedNodeElements = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
-            .filter(function(node){
-                return nodes.indexOf(node.getId())!==-1;
-            });
-
-        selectedNodeElements.each(function(node){
-            arrayNode.push(node);
-        });
-
-        arrayNode.sort(function(node1, node2){
-            return d3.ascending(node1.x, node2.x);
-        });
-
-        var arrayNodeByType = [];
-        arrayNode.forEach(function(node, i){
-            node.py = yRef ;
-            node.y = yRef ;
-            if(i!==0){
-                if(node.getBiologicalType()!==arrayNode[i-1].getBiologicalType()){
-					if((node.x-arrayNode[i-1].x)<50){
-						node.px = arrayNode[i-1].x+50;
-						node.x = arrayNode[i-1].x+50;
-					}
-                	arrayNodeByType.push([node.getId()]);
-                }
-                else
-				{
-                    if(separateSameType)
-                    {
-                        if((node.x-arrayNode[i-1].x)<50){
-                            node.px = arrayNode[i-1].x+50;
-                            node.x = arrayNode[i-1].x+50;
-                        }
-                    }
-                    arrayNodeByType[arrayNodeByType.length-1].push(node.getId());
-                }
+		arrayNode.forEach(function(node, i){
+			if(i!=0){
+				if((node.y-arrayNode[i-1].y)<30){
+					node.py = arrayNode[i-1].y+30 ;
+					node.y = arrayNode[i-1].y+30  ;
+				}
 			}
-            else
-                arrayNodeByType.push([node.getId()]);
-        });
-        return arrayNodeByType;
+		})
+    
+     	metExploreD3.GraphNetwork.tick(panel);
 	},
 
-	alignV : function(nodes, panel, separateSameType){
-        var xRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).x;
-
-        var arrayNode = [];
-        var selectedNodeElements = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
-            .filter(function(node){
-                return nodes.indexOf(node.getId())!==-1;
-            });
-
-        selectedNodeElements.each(function(node){
-            arrayNode.push(node);
-        });
-
-        arrayNode.sort(function(node1, node2){
-            return d3.ascending(node1.y, node2.y);
-        });
-
-        var arrayNodeByType = [];
-        arrayNode.forEach(function(node, i){
-            node.px = xRef ;
-            node.x = xRef ;
-            if(i!==0){
-                if(node.getBiologicalType()!==arrayNode[i-1].getBiologicalType()){
-                    if((node.y-arrayNode[i-1].y)<50){
-                        node.py = arrayNode[i-1].y+50;
-                        node.y = arrayNode[i-1].y+50;
-                    }
-                    arrayNodeByType.push([node.getId()]);
-                }
-                else
-				{
-					if(separateSameType)
-					{
-						if((node.y-arrayNode[i-1].y)<50){
-							node.py = arrayNode[i-1].y+50;
-							node.y = arrayNode[i-1].y+50;
-						}
-					}
-                    arrayNodeByType[arrayNodeByType.length-1].push(node.getId());
-                }
-			}
-            else
-                arrayNodeByType.push([node.getId()]);
-        });
-        return arrayNodeByType;
-	},
 
     horizontalReverse : function(panel) {
         metExploreD3.GraphNode.fixSelectedNode();

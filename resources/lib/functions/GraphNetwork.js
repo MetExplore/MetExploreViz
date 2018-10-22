@@ -62,7 +62,7 @@ metExploreD3.GraphNetwork = {
 				var width = parseInt(metExploreD3.GraphPanel.getHeight(panel));
 				var height = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 
-				if(vizRect.top>graphComponentRect.top 
+				if(vizRect.top>graphComponentRect.top
 					|| vizRect.left>graphComponentRect.left 
 					|| vizRect.bottom<graphComponentRect.bottom 
 					|| vizRect.right<graphComponentRect.right)
@@ -134,7 +134,7 @@ metExploreD3.GraphNetwork = {
     */ 
 	zoom:function(panel) {
         var session = _metExploreViz.getSessionById(panel);
-        if(session.getScale().getZoomScale()<0.8) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+        if(d3.event.scale<0.3) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
         else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 
@@ -144,11 +144,10 @@ metExploreD3.GraphNetwork = {
 
         // if visualisation is actived we add item to menu
         if(session.isActive()){
+            var scale = metExploreD3.getScaleById(panel);
 
-			var scale = metExploreD3.getScaleById(panel);
 			d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 			var zoomListener = scale.getZoom();
-
 			// Firstly we changed the store which correspond to viz panel
 			scale.setZoomScale(d3.event.scale);
 			scale.setXScale(zoomListener.x());
@@ -202,7 +201,7 @@ metExploreD3.GraphNetwork = {
 		var session = _metExploreViz.getSessionById(panel);
 		var vizRect = document.getElementById(panel).getBoundingClientRect();
 		var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
-			
+
 		var zoomListener = scale.getZoom();
 		var width = parseInt(d3.select("#"+panel).select("#D3viz")
 			.style("width"));
@@ -210,9 +209,9 @@ metExploreD3.GraphNetwork = {
 			.style("height"));
 
     	zoomListener.scale(scale.getZoomScale()*0.9);
-	
-		zoomListener.event(d3.select("#"+panel).select("#D3viz"));		
-		
+
+		zoomListener.event(d3.select("#"+panel).select("#D3viz"));
+
 		scale.setXScale(zoomListener.x());
 		scale.setYScale(zoomListener.y());
 
@@ -964,33 +963,53 @@ metExploreD3.GraphNetwork = {
 	},
 
 	rescale : function(panel){
-		var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
-		var vizRect = document.getElementById(panel).getBoundingClientRect();
-		var hViz = vizRect.bottom - vizRect.top-20;
-		var hGC = graphComponentRect.bottom - graphComponentRect.top;
 
-		var scale = metExploreD3.getScaleById(panel);
-		var zoomListener = scale.getZoom();
+        var mask = metExploreD3.createLoadMask("Rescaling graph", panel);
+        metExploreD3.showMask(mask);
+        var scaleViz = metExploreD3.getScaleById("viz");
+        var zoom = scaleViz.getZoom();
 
-		var newScale = hViz*zoomListener.scale()/hGC;
+        d3.select("#viz").select("#D3viz").select("#graphComponent")
+			.transition()
+			.duration(750)
+			.attr("transform", "translate(0,0)scale(1)")
+			.each('end', function(){
+                zoom.translate([0,0]);
 
-		scale.setZoomScale(newScale);
+                scaleViz.setXScale(0);
+                scaleViz.setYScale(0);
+                zoom.scale(1);
+                scaleViz.setZoomScale(1);
+                var rectSvg = d3.select("#viz").select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                var rectPanel = d3.select("#viz").select("#D3viz").node().getBoundingClientRect();
 
-		var wGC = graphComponentRect.right-graphComponentRect.left;
-		var hGC = graphComponentRect.bottom-graphComponentRect.top;
+                var wSvg = rectSvg.width;
+                var hSvg = rectSvg.height;
 
-		var hViz = vizRect.bottom - vizRect.top-20;
-		var wViz = vizRect.right - vizRect.left-20;
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-		var zoom = scale.getZoom();
-		zoom.scale(newScale);
-		var dcx = (wViz/2-((wViz/2)*zoom.scale()));
-		var dcy = (hViz/2-((hViz/2)*zoom.scale()));
-		zoom.translate([dcx,dcy]);
-		d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform", "translate("+ dcx + "," + dcy +")scale(" + newScale + ")");
-		
-		metExploreD3.GraphLink.tick(panel, scale);
-		metExploreD3.GraphNode.tick(panel);
+                var width = parseInt(metExploreD3.GraphPanel.getWidth("viz").replace("px",""));
+                var height = parseInt(metExploreD3.GraphPanel.getHeight("viz").replace("px",""));
+
+                var scale =(Math.min(height/hSvg, width/wSvg))*0.9;
+
+                var transX = scale*(rectPanel.left - rectSvg.left);
+                var transY = scale*(rectPanel.top - rectSvg.top);
+
+                d3.select("#viz").select("#D3viz").select("#graphComponent")
+                    .transition()
+                    .duration(750)
+                    .attr("transform", "translate("+transX+","+transY+")scale("+scale+")")
+                    .each('end', function(){
+                        metExploreD3.GraphLink.tick(panel, scale);
+                        metExploreD3.GraphNode.tick(panel);
+                        metExploreD3.hideMask(mask);
+                    });
+
+                zoom.translate([transX,transY]);
+                zoom.scale(scale);
+                scaleViz.setZoomScale(scale);
+                scaleViz.setXScale(transX);
+                scaleViz.setYScale(transY);
+            });
 	},
 
 
