@@ -244,22 +244,6 @@ metExploreD3.GraphUtils = {
 		if(brush!=null)  
 		  brush.style("display", "none");
 
-		var buttonLink = d3.selectAll("#buttonLink");
-		if(buttonLink!=null)  
-		  buttonLink.style("display", "none");
-
-		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
-		if(buttonAlignMapping!=null)
-            buttonAlignMapping.style("display", "none");
-
-		var buttonImportCoordinates = d3.selectAll("#buttonImportCoordinates");
-		if(buttonImportCoordinates!=null)
-            buttonImportCoordinates.style("display", "none");
-
-		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
-		if(buttonExportCoordinates!=null)
-            buttonExportCoordinates.style("display", "none");
-
 		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
 		if(buttonZoomIn!=null)  
 		  buttonZoomIn.style("display", "none");
@@ -480,10 +464,6 @@ metExploreD3.GraphUtils = {
 		if(buttonImportCoordinates!=null)
             buttonImportCoordinates.style("display ", "inline");
 
-		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
-		if(buttonExportCoordinates!=null)
-            buttonExportCoordinates.style("display ", "inline");
-
 		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
 		if(buttonAlignMapping!=null)
             buttonAlignMapping.style("display ", "inline");
@@ -495,6 +475,10 @@ metExploreD3.GraphUtils = {
 		var buttonHand = d3.selectAll("#buttonHand");
 		if(buttonHand!=null)  
 		  buttonHand.style("display", "inline");
+
+        var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
+        if(buttonExportCoordinates!=null)
+            buttonExportCoordinates.style("display ", "inline");
 
 		var buttonRescale = d3.selectAll("#buttonRescale");
 		if(buttonRescale!=null)
@@ -557,6 +541,22 @@ metExploreD3.GraphUtils = {
 				var buttonAnim = clone.getElementById("buttonAnim");
 				if(buttonAnim!=null) 
 					buttonAnim.parentNode.removeChild(buttonAnim);
+
+                var buttonImportCoordinates = clone.getElementById("buttonImportCoordinates");
+                if(buttonImportCoordinates!=null)
+                    buttonImportCoordinates.parentNode.removeChild(buttonImportCoordinates);
+
+                var buttonLink = clone.getElementById("buttonLink");
+                if(buttonLink!=null)
+                    buttonLink.parentNode.removeChild(buttonLink);
+
+                var buttonAlignMapping = clone.getElementById("buttonAlignMapping");
+                if(buttonAlignMapping!=null)
+                    buttonAlignMapping.parentNode.removeChild(buttonAlignMapping);
+
+				var buttonExportCoordinates = clone.getElementById("buttonExportCoordinates");
+				if(buttonExportCoordinates!=null)
+                    buttonExportCoordinates.parentNode.removeChild(buttonExportCoordinates);
 
                 var buttonRescale = clone.getElementById("buttonRescale");
                 if(buttonRescale!=null)
@@ -1147,22 +1147,6 @@ metExploreD3.GraphUtils = {
 	exportSVGMain : function(){
 		d3.selectAll("#buttonAnim")
         	.style("display", "none");
-
-		var buttonAlignMapping = d3.selectAll("#buttonAlignMapping");
-		if(buttonAlignMapping!=null)
-            buttonAlignMapping.style("display", "none");
-
-		var buttonLink = d3.selectAll("#buttonLink");
-		if(buttonLink!=null)
-		  buttonLink.style("display", "none");
-
-		var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
-		if(buttonExportCoordinates!=null)
-            buttonExportCoordinates.style("display", "none");
-
-		var buttonImportCoordinates = d3.selectAll("#buttonImportCoordinates");
-		if(buttonImportCoordinates!=null)
-            buttonImportCoordinates.style("display", "none");
 
 		var brush = d3.selectAll("#brush");
 		if(brush!=null)  
