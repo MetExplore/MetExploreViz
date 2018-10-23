@@ -966,10 +966,10 @@ metExploreD3.GraphNetwork = {
 
         var mask = metExploreD3.createLoadMask("Rescaling graph", panel);
         metExploreD3.showMask(mask);
-        var scaleViz = metExploreD3.getScaleById("viz");
+        var scaleViz = metExploreD3.getScaleById(panel);
         var zoom = scaleViz.getZoom();
 
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
 			.transition()
 			.duration(750)
 			.attr("transform", "translate(0,0)scale(1)")
@@ -980,21 +980,21 @@ metExploreD3.GraphNetwork = {
                 scaleViz.setYScale(0);
                 zoom.scale(1);
                 scaleViz.setZoomScale(1);
-                var rectSvg = d3.select("#viz").select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
-                var rectPanel = d3.select("#viz").select("#D3viz").node().getBoundingClientRect();
+                var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                var rectPanel = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
 
                 var wSvg = rectSvg.width;
                 var hSvg = rectSvg.height;
 
-                var width = parseInt(metExploreD3.GraphPanel.getWidth("viz").replace("px",""));
-                var height = parseInt(metExploreD3.GraphPanel.getHeight("viz").replace("px",""));
+                var width = parseInt(metExploreD3.GraphPanel.getWidth(panel).replace("px",""));
+                var height = parseInt(metExploreD3.GraphPanel.getHeight(panel).replace("px",""));
 
                 var scale =(Math.min(height/hSvg, width/wSvg))*0.9;
 
                 var transX = scale*(rectPanel.left - rectSvg.left);
                 var transY = scale*(rectPanel.top - rectSvg.top);
 
-                d3.select("#viz").select("#D3viz").select("#graphComponent")
+                d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                     .transition()
                     .duration(750)
                     .attr("transform", "translate("+transX+","+transY+")scale("+scale+")")
