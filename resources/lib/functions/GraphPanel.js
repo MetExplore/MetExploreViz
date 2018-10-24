@@ -22,16 +22,25 @@ metExploreD3.GraphPanel = {
 
 	setActivePanel : function(panel){
 		var lastPanel = _MyThisGraphNode.activePanel;
-		if(lastPanel!==panel)
-		{
-			_MyThisGraphNode.activePanel=panel;
-			d3.select("#"+panel).select("#D3viz")
-				.style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
-
-
-            d3.select("#"+lastPanel).select("#D3viz")
-                .style("box-shadow", "");
+        if(!lastPanel)
+        {
+            _MyThisGraphNode.activePanel=panel;
+            d3.select("#"+panel).select("#D3viz")
+                .style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
         }
+        else
+		{
+            if(lastPanel!==panel)
+            {
+                _MyThisGraphNode.activePanel=panel;
+                d3.select("#"+panel).select("#D3viz")
+                    .style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
+
+
+                d3.select("#"+lastPanel).select("#D3viz")
+                    .style("box-shadow", "");
+            }
+		}
 
     },
 
