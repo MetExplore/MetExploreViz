@@ -138,9 +138,9 @@ metExploreD3.GraphNode = {
     */
 	dragstart : function(d, i) {
 		// Get the panel where brush is used
-		_MyThisGraphNode.activePanel = d3.event.sourceEvent.target.viewportElement.parentNode.id;
+		metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.viewportElement.parentNode.id);
 		if(_MyThisGraphNode.activePanel=="" || _MyThisGraphNode.activePanel.search("node")!=-1)
-			_MyThisGraphNode.activePanel = d3.event.sourceEvent.target.parentNode.viewportElement.parentNode.id;
+			metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.parentNode.viewportElement.parentNode.id);
 		
 		// Stop the propagation of the event to bypass moving graph
 		d3.event.sourceEvent.stopPropagation();
@@ -1610,7 +1610,7 @@ metExploreD3.GraphNode = {
 		var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
 		if(_MyThisGraphNode.dblClickable && d3.event.button==0){
-			_MyThisGraphNode.activePanel = this.parentNode.id;
+			metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
             _MyThisGraphNode.unselectAll(this);
 		}
 		else
@@ -1633,7 +1633,7 @@ metExploreD3.GraphNode = {
 		}
 
 		if(_MyThisGraphNode.dblClickable && d3.event.button==1){
-			_MyThisGraphNode.activePanel = this.parentNode.id;
+			metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
          	d3.select(this).select("#graphComponent")
 				.selectAll("g.node")
 		        .filter(function(d) { return d.isLocked(); })

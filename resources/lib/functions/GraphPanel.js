@@ -20,6 +20,21 @@ metExploreD3.GraphPanel = {
         return document.getElementById(panel).style.width;
 	},
 
+	setActivePanel : function(panel){
+		var lastPanel = _MyThisGraphNode.activePanel;
+		if(lastPanel!==panel)
+		{
+			_MyThisGraphNode.activePanel=panel;
+			d3.select("#"+panel).select("#D3viz")
+				.style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
+
+
+            d3.select("#"+lastPanel).select("#D3viz")
+                .style("box-shadow", "");
+        }
+
+    },
+
 	/*****************************************************
 	* To resize svg viz when layout is modified
 	*/
@@ -87,7 +102,7 @@ metExploreD3.GraphPanel = {
 
 						var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
-						_MyThisGraphNode.activePanel = this.parentNode.parentNode.id;
+						metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 
 						var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 

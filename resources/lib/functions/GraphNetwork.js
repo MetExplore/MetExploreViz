@@ -581,7 +581,7 @@ metExploreD3.GraphNetwork = {
 
 					var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
-					_MyThisGraphNode.activePanel = this.parentNode.parentNode.id;
+					metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 
 					var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 						
@@ -3355,7 +3355,7 @@ setTimeout(
 				.on("brushstart", function(d) {
 					var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
-					_MyThisGraphNode.activePanel = this.parentNode.parentNode.id;
+					metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 					var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 						
 					if(d3.event.sourceEvent.button!=1 && scrollable!="true"){
@@ -3717,7 +3717,7 @@ setTimeout(
 				.on("brushstart", function(d) {
 					var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
-					_MyThisGraphNode.activePanel = this.parentNode.parentNode.id;
+					metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 					var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 						
 					if(d3.event.sourceEvent.button!=1 && scrollable!="true"){
