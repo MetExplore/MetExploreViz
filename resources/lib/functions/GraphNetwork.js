@@ -2594,7 +2594,7 @@ metExploreD3.GraphNetwork = {
 	        metExploreD3.deferFunction(function() {
 
 				var vis = d3.select("#"+panel).select("#D3viz");
-				
+
 				if(session!=undefined) 
 				{
 					// We stop the previous animation
@@ -2629,6 +2629,35 @@ metExploreD3.GraphNetwork = {
 					.each(function(node){
 						metExploreD3.GraphNetwork.removeANode(node, panel);
 					});
+
+                // Time out to avoid lag
+                setTimeout(
+                    function() {
+                        var session = _metExploreViz.getSessionById(panel);
+                        if(session!=undefined)
+                        {
+                            if(session.isLinked()){
+
+                                var sessionsStore = _metExploreViz.getSessionsSet();
+
+                                for (var key in sessionsStore) {
+                                    if(sessionsStore[key].isLinked() && panel!=key)
+                                    {
+
+                                        var vis = d3.select("#"+key).select("#D3viz");
+                                        vis.selectAll("g.node")
+                                            .filter(function(d) {
+                                                return d.isSelected();
+                                            })
+                                            .each(function(node){
+                                                metExploreD3.GraphNetwork.removeANode(node, key);
+                                            });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    , 200);
 
 /*		var session = _metExploreViz.getSessionById(panel);
 
@@ -2808,7 +2837,28 @@ setTimeout(
 				}
 				metExploreD3.GraphNetwork.removeASelectedNode(theNode, panel);
 				metExploreD3.GraphNetwork.removeIsolatedNode(panel);
+				// Time out to avoid lag
+                setTimeout(
+                    function() {
+                        var session = _metExploreViz.getSessionById(panel);
+                        if(session!=undefined)
+                        {
+                            if(session.isLinked()){
 
+                                var sessionsStore = _metExploreViz.getSessionsSet();
+
+                                for (var key in sessionsStore) {
+                                    if(sessionsStore[key].isLinked() && panel!=key)
+                                    {
+                                    	var n = sessionsStore[key].getD3Data().getNodeByDbIdentifier(theNode.getDbIdentifier());
+                                        metExploreD3.GraphNetwork.removeASelectedNode(n, key);
+                                        metExploreD3.GraphNetwork.removeIsolatedNode(key);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    , 200);
 				if(session!=undefined)  
 				{
 					if(force!=undefined)  
@@ -2829,6 +2879,7 @@ setTimeout(
     * @param {} panel : The panel where are selected node
     */
     removeASelectedNode : function(theNodeElement, panel) {
+
 		var session = _metExploreViz.getSessionById(panel);
 
 		
@@ -2839,12 +2890,13 @@ setTimeout(
 
 	        
         	var vis = d3.select("#"+panel).select("#D3viz");
-			
-			if(session!=undefined) 
+            var sessionsStore = _metExploreViz.getSessionsSet();
+
+            if(session!=undefined)
 			{
 				// We stop the previous animation
 				if(session.isLinked()){
-					var session = metExploreD3.getSessionById(sessionsStore, 'viz');
+					var session = _metExploreViz.getSessionById(sessionsStore, 'viz');
 					if(session!=undefined)
 					{
 						var force = session.getForce();
@@ -2908,6 +2960,7 @@ setTimeout(
 
 		nodes
 			.filter(function(d) {
+
 				return theNode==d;
 			})
 			.transition().duration(1000)
