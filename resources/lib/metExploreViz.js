@@ -47,6 +47,29 @@ var metExploreD3 = {
         metExploreD3.fireEvent('highlightSubnetwork', "setUser");
     },
 
+    applyTolinkedNetwork:function(panel, func){
+        var session = _metExploreViz.getSessionById(panel);
+        func(panel, session);
+        setTimeout(
+            function() {
+                session = _metExploreViz.getSessionById(panel);
+                // If graphs are linked we move the same nodes
+                if(session.isLinked()){
+
+                    var sessionsStore = _metExploreViz.getSessionsSet();
+
+                    for (var key in sessionsStore) {
+                        if(sessionsStore[key].isLinked()  && panel!=key)
+                        {
+                            var sessionLinked = _metExploreViz.getSessionById(key);
+                            func(key, sessionLinked);
+                        }
+                    }
+                }
+            }
+            , 200);
+    },
+
     setUser:function(user){
         this.user = user;
         this.featureFlipping();

@@ -793,11 +793,11 @@ metExploreD3.GraphNode = {
             var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel())
             metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
             if (metExploreD3.GraphStyleEdition.editMode==true) {
-                metExploreD3.GraphStyleEdition.startDragLabel();
+                metExploreD3.GraphStyleEdition.startDragLabel(panel);
             }
             else {
-                metExploreD3.GraphStyleEdition.endDragLabel();
-                metExploreD3.GraphNode.applyEventOnNode('viz');
+                metExploreD3.GraphStyleEdition.endDragLabel(panel);
+                metExploreD3.GraphNode.applyEventOnNode(panel);
 			}
 
   		 	if( d.getSvg()!="undefined" && d.getSvg()!=undefined && d.getSvg()!=""){ 
@@ -846,11 +846,11 @@ metExploreD3.GraphNode = {
             var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
             metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
             if (metExploreD3.GraphStyleEdition.editMode==true) {
-                metExploreD3.GraphStyleEdition.startDragLabel();
+                metExploreD3.GraphStyleEdition.startDragLabel(panel);
             }
             else {
-                metExploreD3.GraphStyleEdition.endDragLabel();
-                metExploreD3.GraphNode.applyEventOnNode('viz');
+                metExploreD3.GraphStyleEdition.endDragLabel(panel);
+                metExploreD3.GraphNode.applyEventOnNode(panel);
             }
 		} 
 	},

@@ -350,8 +350,12 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                             {
                                                 text: 'Ok',
                                                 handler: function () {
-                                                    var fontType = Ext.getCmp('fontStyleWindow').getValue();
-                                                    metExploreD3.GraphStyleEdition.changeFontType(theNode, fontType);
+                                                    metExploreD3.applyTolinkedNetwork(
+                                                        "viz",
+                                                        function(panelLinked, sessionLinked) {
+                                                            var fontType = Ext.getCmp('fontStyleWindow').getValue();
+                                                            metExploreD3.GraphStyleEdition.changeFontType(theNode, fontType, panelLinked);
+                                                        });
                                                 }
                                             }
                                         ]
@@ -384,8 +388,12 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                             {
                                                 text: 'Ok',
                                                 handler: function () {
-                                                    var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
-                                                    metExploreD3.GraphStyleEdition.changeAllFontType(fontType ,"selection");
+                                                    metExploreD3.applyTolinkedNetwork(
+                                                        "viz",
+                                                        function(panelLinked, sessionLinked) {
+                                                            var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
+                                                            metExploreD3.GraphStyleEdition.changeAllFontType(fontType ,"selection", panelLinked);
+                                                        });
                                                 }
                                             }
                                         ]
@@ -399,14 +407,22 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             fontSizemenu: [{
                                 text: 'This node',
                                 handler: function () {
-                                    metExploreD3.GraphStyleEdition.changeFontSize(theNode)
+                                    metExploreD3.applyTolinkedNetwork(
+                                        "viz",
+                                        function(panelLinked, sessionLinked) {
+                                            metExploreD3.GraphStyleEdition.changeFontSize(theNode, panelLinked);
+                                        });
                                 }
                             },{
                                 text: 'All selected nodes',
                                 handler: function () {
                                     metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
                                         if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
-                                            metExploreD3.GraphStyleEdition.changeAllFontSize(text, "selection");
+                                            metExploreD3.applyTolinkedNetwork(
+                                                "viz",
+                                                function(panelLinked, sessionLinked) {
+                                                    metExploreD3.GraphStyleEdition.changeAllFontSize(text, "selection", panelLinked);
+                                                });
                                         }
                                     })
                                 }
@@ -421,19 +437,31 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     text: 'Bold',
                                     iconCls: "bold",
                                     handler: function () {
-                                        metExploreD3.GraphStyleEdition.changeFontBold(theNode)
+                                        metExploreD3.applyTolinkedNetwork(
+                                            "viz",
+                                            function(panelLinked, sessionLinked) {
+                                                metExploreD3.GraphStyleEdition.changeFontBold(theNode, panelLinked);
+                                            });
                                     }
                                 },{
                                     text: 'Italic',
                                     iconCls: "italic",
                                     handler: function () {
-                                        metExploreD3.GraphStyleEdition.changeFontItalic(theNode)
+                                        metExploreD3.applyTolinkedNetwork(
+                                            "viz",
+                                            function(panelLinked, sessionLinked) {
+                                                metExploreD3.GraphStyleEdition.changeFontItalic(theNode, panelLinked);
+                                            });
                                     }
                                 },{
                                     text: 'Underline',
                                     iconCls: "underline",
                                     handler: function () {
-                                        metExploreD3.GraphStyleEdition.changeFontUnderline(theNode)
+                                        metExploreD3.applyTolinkedNetwork(
+                                            "viz",
+                                            function(panelLinked, sessionLinked) {
+                                                metExploreD3.GraphStyleEdition.changeFontUnderline(theNode, panelLinked);
+                                            });
                                     }
                                 }]
                             },{
@@ -442,19 +470,31 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     text: 'Bold',
                                     iconCls: "bold",
                                     handler: function () {
-                                        metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection")
+                                        metExploreD3.applyTolinkedNetwork(
+                                            "viz",
+                                            function(panelLinked, sessionLinked) {
+                                                metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection", panelLinked);
+                                            });
                                     }
                                 },{
                                     text: 'Italic',
                                     iconCls: "italic",
                                     handler: function () {
-                                        metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection")
+                                        metExploreD3.applyTolinkedNetwork(
+                                            "viz",
+                                            function(panelLinked, sessionLinked) {
+                                                metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection", panelLinked);
+                                            });
                                     }
                                 },{
                                     text: 'Underline',
                                     iconCls: "underline",
                                     handler: function () {
-                                        metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection")
+                                        metExploreD3.applyTolinkedNetwork(
+                                            "viz",
+                                            function(panelLinked, sessionLinked) {
+                                                metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection", panelLinked);
+                                            });
                                     }
                                 }]
                             }]

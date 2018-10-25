@@ -829,20 +829,21 @@ metExploreD3.GraphPanel = {
 				}
 
 				for (var key in sessions) {
-					metExploreD3.GraphNetwork.refreshSvg(key);	
+					metExploreD3.GraphNetwork.refreshSvg(key);
+                    // set style of previous session from JSON
+                    var networkDataViz = new NetworkData(key);
+                    networkDataViz.cloneObject(sessions[key].d3Data);
+                    var nodesData = networkDataViz.getNodes();
+                    nodesData.forEach(function(node) {
+                        metExploreD3.GraphStyleEdition.setStartingStyle(node, key);
+                    });
+                    if (sessions[key].drawnCycles && Array.isArray(sessions[key].drawnCycles)) {
+                        for (var i=0; i<sessions[key].drawnCycles.length; i++){
+                            metExploreD3.GraphFunction.drawMetaboliteCycle(sessions[key].drawnCycles[i]);
+                        }
+                    }
 			    }
-                // set style of previous session from JSON
-                var networkDataViz = new NetworkData('viz');
-				networkDataViz.cloneObject(sessions['viz'].d3Data);
-                var nodesData = networkDataViz.getNodes();
-				nodesData.forEach(function(node) {
-					metExploreD3.GraphStyleEdition.setStartingStyle(node);
-				});
-				if (sessions['viz'].drawnCycles && Array.isArray(sessions['viz'].drawnCycles)) {
-					for (var i=0; i<sessions['viz'].drawnCycles.length; i++){
-                        metExploreD3.GraphFunction.drawMetaboliteCycle(sessions['viz'].drawnCycles[i]);
-					}
-                }
+
 
 				endFunc();
 			}
