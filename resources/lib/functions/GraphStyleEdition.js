@@ -19,15 +19,17 @@ metExploreD3.GraphStyleEdition = {
                     return n.getDbIdentifier()==node.getDbIdentifier();
                 }).select("text");
 
-            if (node.labelFont.font) { selection.style("font-family", node.labelFont.font); }
-            if (node.labelFont.fontSize) { selection.style("font-size", node.labelFont.fontSize); }
-            if (node.labelFont.fontBold) { selection.style("font-weight", node.labelFont.fontBold); }
-            if (node.labelFont.fontItalic) { selection.style("font-style", node.labelFont.fontItalic); }
-            if (node.labelFont.fontUnderline) { selection.style("text-decoration-line", node.labelFont.fontUnderline); }
-            if (node.labelFont.fontOpacity) { selection.attr("opacity", node.labelFont.fontOpacity); }
-            if (node.labelFont.fontX) { selection.attr("x", node.labelFont.fontX); }
-            if (node.labelFont.fontY) { selection.attr("y", node.labelFont.fontY); }
-            if (node.labelFont.fontTransform) { selection.attr("transform", node.labelFont.fontTransform); }
+            var elemtNode = d3.select(this);
+
+            if (elemtNode.style("font-family")) { selection.style("font-family", elemtNode.style("font-family")); }
+            if (elemtNode.style("font-size")) { selection.style("font-size", elemtNode.style("font-size")); }
+            if (elemtNode.style("font-weight")) { selection.style("font-weight", elemtNode.style("font-weight")); }
+            if (elemtNode.style("font-style")) { selection.style("font-style", elemtNode.style("font-style")); }
+            if (elemtNode.style("text-decoration-line")) { selection.style("text-decoration-line", elemtNode.style("text-decoration-line")); }
+            if (elemtNode.attr("opacity")) { selection.attr("opacity", elemtNode.attr("opacity")); }
+            if (elemtNode.attr("x")) { selection.attr("x", elemtNode.attr("x")); }
+            if (elemtNode.attr("y")) { selection.attr("y", elemtNode.attr("y")); }
+            if (elemtNode.attr("transform")) { selection.attr("transform", elemtNode.attr("transform")); }
         });
     },
     /*******************************************
