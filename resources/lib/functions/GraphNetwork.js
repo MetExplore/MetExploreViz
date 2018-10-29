@@ -336,7 +336,7 @@ metExploreD3.GraphNetwork = {
 		var session = _metExploreViz.getSessionById(panel);
 		var mainSession = _metExploreViz.getSessionById('viz');
 		var anim = metExploreD3.GraphNetwork.isAnimated("viz");
-
+        metExploreD3.GraphStyleEdition.applyLabelStyle(panel);
 
         d3.select("#"+panel).select("#D3viz").select("#buttonLink").attr("isLink", "true");
 		session.setLinked(true);

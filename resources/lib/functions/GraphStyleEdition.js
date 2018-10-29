@@ -9,7 +9,27 @@ metExploreD3.GraphStyleEdition = {
     curvedPath: false,
     allDrawnCycles: [],
 
+    applyLabelStyle : function(panelLinked){
+        var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 
+        GraphNodes.selectAll("text").each(function(node){
+            var selection=d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
+                .selectAll("g.node")
+                .filter(function(n){
+                    return n.getDbIdentifier()==node.getDbIdentifier();
+                }).select("text");
+
+            if (node.labelFont.font) { selection.style("font-family", node.labelFont.font); }
+            if (node.labelFont.fontSize) { selection.style("font-size", node.labelFont.fontSize); }
+            if (node.labelFont.fontBold) { selection.style("font-weight", node.labelFont.fontBold); }
+            if (node.labelFont.fontItalic) { selection.style("font-style", node.labelFont.fontItalic); }
+            if (node.labelFont.fontUnderline) { selection.style("text-decoration-line", node.labelFont.fontUnderline); }
+            if (node.labelFont.fontOpacity) { selection.attr("opacity", node.labelFont.fontOpacity); }
+            if (node.labelFont.fontX) { selection.attr("x", node.labelFont.fontX); }
+            if (node.labelFont.fontY) { selection.attr("y", node.labelFont.fontY); }
+            if (node.labelFont.fontTransform) { selection.attr("transform", node.labelFont.fontTransform); }
+        });
+    },
     /*******************************************
      * Enter or exit style edition mode
      */
@@ -35,7 +55,7 @@ metExploreD3.GraphStyleEdition = {
                             var sessionsStore = _metExploreViz.getSessionsSet();
 
                             for (var key in sessionsStore) {
-                                if(sessionsStore[key].isLinked() && "viz"!=key)
+                                if("viz"!=key)
                                 {
                                     metExploreD3.GraphNetwork.animationButtonOff(key);
                                     var force = _metExploreViz.getSessionById(key).getForce();
