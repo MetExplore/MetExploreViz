@@ -13,8 +13,6 @@ metExploreD3.GraphNode = {
 	taskClick :"",
 	charKey :"",
 	ctrlKey :"",
-	groups:"",
-	groupPath:"",
 	groupFill:"",
 	dblClickable:false,
 
@@ -1926,7 +1924,7 @@ metExploreD3.GraphNode = {
             .selectAll("rect")
             .style("stroke",metExploreD3.getCompartmentInBiosource()[i].getColor()); 
         }*/
-		metExploreD3.GraphNode.loadPath(metExploreD3.GraphNode.panelParent);
+		metExploreD3.GraphNode.loadPath(parent);
 
 		// metExploreD3.GraphNode.groupFill = function(d, i) { 
 		// 	// Sort compartiments store
@@ -2136,17 +2134,17 @@ metExploreD3.GraphNode = {
 			var metabolites = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(d) { return d.getBiologicalType() == 'metabolite'; });
 		
 			session.groups = metExploreD3.getCompartmentsGroup();
-			metExploreD3.GraphNetwork.initCentroids();
+			metExploreD3.GraphNetwork.initCentroids(parent);
 		}
 		else
 		{
-			session.groups = metExploreD3.getPathwaysGroup();
-			metExploreD3.GraphNetwork.initCentroids();
+			session.groups = metExploreD3.getPathwaysGroup(parent);
+			metExploreD3.GraphNetwork.initCentroids(parent);
 		}
 
-		
-        metExploreD3.GraphNode.groupPath = function(d) {
-        	var scale = metExploreD3.getScaleById("viz");
+
+        session.groupPath = function(d) {
+        	var scale = metExploreD3.getScaleById(parent);
 			if(d.values!=undefined)
 			{				
 				if(d.values.length>0)
@@ -2185,7 +2183,7 @@ metExploreD3.GraphNode = {
 
 			// Sort compartiments store
 			if(component=="Pathways")
-                var components = metExploreD3.getPathwaysSet();
+                var components = metExploreD3.getPathwaysSet(parent);
 			else
                 var components = metExploreD3.getCompartmentInBiosourceSet();
 

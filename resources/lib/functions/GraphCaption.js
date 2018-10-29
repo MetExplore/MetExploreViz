@@ -492,19 +492,19 @@ metExploreD3.GraphCaption = {
     /*****************************************************
      * Maj caption
      */
-    majCaption : function(){
+    majCaption : function(panel){
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
         var isDisplay = s_GeneralStyle.isDisplayedConvexhulls();
-        d3.select("#viz").select("#D3viz").selectAll('.iconHideComponent')
+        d3.select("#"+panel).select("#D3viz").selectAll('.iconHideComponent')
             .classed("hide", !isDisplay);
 
         var component = s_GeneralStyle.isDisplayedCaption();
         if(component=="Pathways"){
 
-            d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+            d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
                 .classed("hide", function(conv){
-                    var component = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(conv.key);
+                    var component = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
                     if(component)
                         return component.hidden();
                     return true;
@@ -512,7 +512,7 @@ metExploreD3.GraphCaption = {
         }
         else
         {
-            d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+            d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
                 .classed("hide", function(conv){
                     var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
                     if(component)
@@ -527,12 +527,11 @@ metExploreD3.GraphCaption = {
      * Maj caption color
      */
     majCaptionColor : function(components, selectedComponent){
-
         var generalStyle = _metExploreViz.getGeneralStyle();
         var isDisplay = generalStyle.isDisplayedConvexhulls();
 
         if(selectedComponent == isDisplay){
-            d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
+            d3.select(_MyThisGraphNode.activePanel).select("#D3viz").selectAll("path.convexhull")
                 .style("fill",
                     function(d){
                         var component = components.find(function(c){
@@ -597,14 +596,14 @@ metExploreD3.GraphCaption = {
      * @param {} top : top of the metabolite caption
      */
     colorPathwayLegend : function(){
-        var groups = metExploreD3.getPathwaysSet();
+        var groups = metExploreD3.getPathwaysSet('viz');
         var pathways = [];
 
         groups.forEach(function(path){
             pathways.push({"key":path});
         });
 
-        var phase = metExploreD3.getPathwaysLength();
+        var phase = metExploreD3.getPathwaysLength('viz');
         if (phase == undefined) phase = 0;
         center = 128;
         width = 127;

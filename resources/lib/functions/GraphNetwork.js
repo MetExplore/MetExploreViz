@@ -395,7 +395,7 @@ metExploreD3.GraphNetwork = {
 				metExploreD3.GraphNetwork.graphAlignment(panel, "viz");
 			}
 		}
-		metExploreD3.GraphNetwork.initCentroids();
+		metExploreD3.GraphNetwork.initCentroids(panel);
 	},
 	
 	/*******************************************
@@ -506,7 +506,7 @@ metExploreD3.GraphNetwork = {
 
         metExploreD3.GraphCaption.colorMetaboliteLegend();
 
-        metExploreD3.GraphCaption.majCaption();
+        metExploreD3.GraphCaption.majCaption(panel);
 
 		if(session.getScale()==undefined){
 		
@@ -956,7 +956,7 @@ metExploreD3.GraphNetwork = {
         var isDisplay = generalStyle.isDisplayedConvexhulls();
         
 
-		if(isDisplay && panel=="viz") metExploreD3.GraphLink.displayConvexhulls(panel);
+		if(isDisplay) metExploreD3.GraphLink.displayConvexhulls(panel);
 
 		session.setForce(force);
 	
@@ -971,7 +971,6 @@ metExploreD3.GraphNetwork = {
 	},
 
 	rescale : function(panel){
-
         var mask = metExploreD3.createLoadMask("Rescaling graph", panel);
         metExploreD3.showMask(mask);
         var scaleViz = metExploreD3.getScaleById(panel);
@@ -1002,29 +1001,36 @@ metExploreD3.GraphNetwork = {
                 var transX = scale*(rectPanel.left - rectSvg.left);
                 var transY = scale*(rectPanel.top - rectSvg.top);
 
-                d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                    .transition()
-                    .duration(750)
-                    .attr("transform", "translate("+transX+","+transY+")scale("+scale+")")
-                    .each('end', function(){
-                        metExploreD3.GraphLink.tick(panel, scale);
-                        metExploreD3.GraphNode.tick(panel);
-                        metExploreD3.hideMask(mask);
-                    });
 
-                zoom.translate([transX,transY]);
-                zoom.scale(scale);
-                scaleViz.setZoomScale(scale);
-                scaleViz.setXScale(transX);
-                scaleViz.setYScale(transY);
+                    metExploreD3.applyTolinkedNetwork(
+                        panel,
+                        function(panelLinked, sessionLinked) {
+                            d3.select("#" + panelLinked).select("#D3viz").select("#graphComponent")
+                                .transition()
+                                .duration(750)
+                                .attr("transform", "translate(" + transX + "," + transY + ")scale(" + scale + ")")
+                                .each('end', function () {
+                                    metExploreD3.GraphLink.tick(panelLinked, scale);
+                                    metExploreD3.GraphNode.tick(panelLinked);
+                                    metExploreD3.hideMask(mask);
+                                });
+
+                            var scaleViz = metExploreD3.getScaleById(panelLinked);
+                            var zoom = scaleViz.getZoom();
+                            zoom.translate([transX, transY]);
+                            zoom.scale(scale);
+                            scaleViz.setZoomScale(scale);
+                            scaleViz.setXScale(transX);
+                            scaleViz.setYScale(transY);
+                        });
+
             });
 	},
 
 
-	initCentroids : function(){
+	initCentroids : function(panel){
 		//d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1}).style("fill", 'red');
 
-		var panel = "viz";
 		var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
 		var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 		var linkStyle = metExploreD3.getLinkStyle();
@@ -1048,7 +1054,7 @@ metExploreD3.GraphNetwork = {
 
 			var links = [];
 
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+			d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
 				.filter(function(node){
 					return node.getBiologicalType()=="reaction";
 				})
@@ -1101,7 +1107,7 @@ metExploreD3.GraphNetwork = {
 				});
 
 			var links = [];
-            d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
+            d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
 				.each(function(node){
 					node.getPathways().forEach(function(pathway){
 
@@ -1127,8 +1133,8 @@ metExploreD3.GraphNetwork = {
 
 				});
 		}
-				
-		
+
+
 
 		// var lien = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("linkCentroid")
 		//       .data(links)
@@ -1156,34 +1162,6 @@ metExploreD3.GraphNetwork = {
 		force2
 			.nodes(components)
 			.links(links)
-			// .on("tick", function(e){
-			// 	d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-			// 		.selectAll("g.centroid")
-			// 		.attr("cx", function(d) {
-			// 			return d.x;
-			// 		})
-			// 		.attr("cy", function(d) {
-			// 			return d.y;
-			// 		})
-			// 		.attr("transform", function(d) {
-			// 			//  scale("+ +")
-			// 			var scale = 1;
-			// 			if(d3.select(this)!=null){
-			// 				var transformString = d3.select(this).attr("transform");
-			// 				if(d3.select(this).attr("transform")!=null){
-			// 					var indexOfScale = transformString.indexOf("scale(");
-			// 					if(indexOfScale!=-1)
-			// 						scale = parseInt(transformString.substring(indexOfScale+6, transformString.length-1));
-			// 				}
-			// 			}
-			// 			return "translate(" + d.x + "," + d.y + ") scale("+scale+")";
-			// 		});
-
-			// 	// lien.attr("x1", function(d) { return d.source.x; })
-			//  //        .attr("y1", function(d) { return d.source.y; })
-			//  //        .attr("x2", function(d) { return d.target.x; })
-			//  //        .attr("y2", function(d) { return d.target.y; });
-			// })
 			.start();
 	},
 
@@ -2303,7 +2281,7 @@ metExploreD3.GraphNetwork = {
 				}
 			}, 1);
 		}
-		metExploreD3.GraphNetwork.initCentroids();
+		metExploreD3.GraphNetwork.initCentroids(panel);
 	},
 	
 	/*******************************************
@@ -2347,7 +2325,7 @@ metExploreD3.GraphNetwork = {
 
 			}, 0);
 		}
-		metExploreD3.GraphNetwork.initCentroids();
+		metExploreD3.GraphNetwork.initCentroids(panel);
 	},
 
 	/*******************************************
@@ -2439,7 +2417,7 @@ metExploreD3.GraphNetwork = {
 				}
 			}, 0);
 		}
-		metExploreD3.GraphNetwork.initCentroids();
+		metExploreD3.GraphNetwork.initCentroids(panel);
 	},
 
 	/*******************************************
@@ -2528,7 +2506,7 @@ metExploreD3.GraphNetwork = {
 				}
 			}, 0);
 		}
-		metExploreD3.GraphNetwork.initCentroids();
+		metExploreD3.GraphNetwork.initCentroids(panel);
 	},
 
 	/*******************************************
@@ -2580,7 +2558,7 @@ metExploreD3.GraphNetwork = {
 					force.start();
 			}
 		}
-		metExploreD3.GraphNetwork.initCentroids();
+		metExploreD3.GraphNetwork.initCentroids(panel);
 	},
 
 	/*******************************************
@@ -2657,7 +2635,7 @@ metExploreD3.GraphNetwork = {
 				}
        		 }, 1);
        	}		
-       	metExploreD3.GraphNetwork.initCentroids();	
+       	metExploreD3.GraphNetwork.initCentroids(panel);
 	},
 
 	/*******************************************
@@ -2788,7 +2766,7 @@ metExploreD3.GraphNetwork = {
 			}
 	    	metExploreD3.hideMask(myMask);
 	    }
-	    metExploreD3.GraphNetwork.initCentroids();
+	    metExploreD3.GraphNetwork.initCentroids(panel);
 	},
 
 	/*******************************************
@@ -3106,7 +3084,7 @@ metExploreD3.GraphNetwork = {
 			});
 
         	metExploreD3.GraphNetwork.removeIsolatedNode("viz");	
-        	metExploreD3.GraphNetwork.initCentroids();
+        	metExploreD3.GraphNetwork.initCentroids("viz");
 	},
 
 	/*******************************************

@@ -207,8 +207,16 @@ NetworkData.prototype = {
     addPathway:function(name){
         if(this.pathways == undefined)
             this.pathways = [];
-        
+
         var object = new Pathway(this.pathways.length, name);
+        this.pathways.push(object);
+    },
+    copyPathway:function(path){
+        if(this.pathways == undefined)
+            this.pathways = [];
+
+
+        var object = new Pathway(this.pathways.length, path.name, path.hide, path.color);
         this.pathways.push(object);
     },
 
