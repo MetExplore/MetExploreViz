@@ -119,15 +119,15 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 		
 		s_GeneralStyle.setDisplayConvexhulls(false);
-		metExploreD3.GraphLink.displayConvexhulls('viz');
-		metExploreD3.GraphNetwork.tick('viz');	
+		metExploreD3.GraphLink.displayConvexhulls(_MyThisGraphNode.activePanel);
+		metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
 
 		s_GeneralStyle.setDisplayConvexhulls(component);
-		metExploreD3.GraphLink.displayConvexhulls('viz');
-		metExploreD3.GraphNetwork.tick('viz');	
+		metExploreD3.GraphLink.displayConvexhulls(_MyThisGraphNode.activePanel);
+		metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
 
 		s_GeneralStyle.setDisplayCaption(component);
-		metExploreD3.GraphCaption.majCaption();
+		metExploreD3.GraphCaption.majCaption(_MyThisGraphNode.activePanel);
 		
 		metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 		
@@ -141,11 +141,11 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 		
 		s_GeneralStyle.setDisplayConvexhulls(false);
-		metExploreD3.GraphLink.displayConvexhulls('viz');
-		metExploreD3.GraphNetwork.tick('viz');	
+		metExploreD3.GraphLink.displayConvexhulls(_MyThisGraphNode.activePanel);
+		metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
 
 		s_GeneralStyle.setDisplayCaption(false);
-		metExploreD3.GraphCaption.majCaption();
+		metExploreD3.GraphCaption.majCaption(_MyThisGraphNode.activePanel);
 
 		metExploreD3.fireEvent("generalStyleForm", "setGeneralStyle");
 		metExploreD3.fireEvent("vizIdDrawing", "disableMakeClusters");

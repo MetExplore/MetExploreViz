@@ -2820,7 +2820,7 @@ metExploreD3.GraphMapping = {
             var mouseenterEvent = new MouseEvent("mouseenter");
             this.parentNode.dispatchEvent(mouseenterEvent);
         });
-        var drag = metExploreD3.GraphStyleEdition.createDragBehavior();
+        var drag = metExploreD3.GraphStyleEdition.createDragBehavior(panel);
         image.call(drag);
         metExploreD3.GraphMapping.applyResizeHandle(image);
 

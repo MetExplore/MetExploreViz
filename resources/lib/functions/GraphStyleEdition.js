@@ -9,37 +9,106 @@ metExploreD3.GraphStyleEdition = {
     curvedPath: false,
     allDrawnCycles: [],
 
+    applyLabelStyle : function(panelLinked){
+        var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 
+        GraphNodes.selectAll("text").each(function(node){
+            var selection=d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
+                .selectAll("g.node")
+                .filter(function(n){
+                    return n.getDbIdentifier()==node.getDbIdentifier();
+                }).select("text");
+
+            var elemtNode = d3.select(this);
+
+            if (elemtNode.style("font-family")) { selection.style("font-family", elemtNode.style("font-family")); }
+            if (elemtNode.style("font-size")) { selection.style("font-size", elemtNode.style("font-size")); }
+            if (elemtNode.style("font-weight")) { selection.style("font-weight", elemtNode.style("font-weight")); }
+            if (elemtNode.style("font-style")) { selection.style("font-style", elemtNode.style("font-style")); }
+            if (elemtNode.style("text-decoration-line")) { selection.style("text-decoration-line", elemtNode.style("text-decoration-line")); }
+            if (elemtNode.attr("opacity")) { selection.attr("opacity", elemtNode.attr("opacity")); }
+            if (elemtNode.attr("x")) { selection.attr("x", elemtNode.attr("x")); }
+            if (elemtNode.attr("y")) { selection.attr("y", elemtNode.attr("y")); }
+            if (elemtNode.attr("transform")) { selection.attr("transform", elemtNode.attr("transform")); }
+        });
+    },
     /*******************************************
      * Enter or exit style edition mode
      */
     toggleEditMode : function () {
         // Enter edition mode, revealing the editModePanel, stopping force layout, and initiating label dragging, or leave the edition Mode
-        var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         if (metExploreD3.GraphStyleEdition.editMode==false) {
             metExploreD3.GraphStyleEdition.editMode=true;
+
             metExploreD3.GraphNetwork.animationButtonOff('viz');
             var force = _metExploreViz.getSessionById("viz").getForce();
             force.stop();
             d3.select("#viz").select("#buttonAnim").select("image").remove();
-            metExploreD3.GraphStyleEdition.startDragLabel();
-            var component = Ext.getCmp('editModePanel');
+            metExploreD3.GraphStyleEdition.startDragLabel("viz");
+
+            // Time out to avoid lag
+            setTimeout(
+                function() {
+                    var session = _metExploreViz.getSessionById("viz");
+                    if(session!=undefined)
+                    {
+                        if(session.isLinked()){
+
+                            var sessionsStore = _metExploreViz.getSessionsSet();
+
+                            for (var key in sessionsStore) {
+                                if("viz"!=key)
+                                {
+                                    metExploreD3.GraphNetwork.animationButtonOff(key);
+                                    var force = _metExploreViz.getSessionById(key).getForce();
+                                    force.stop();
+                                    d3.select("#"+key).select("#buttonAnim").select("image").remove();
+                                    metExploreD3.GraphStyleEdition.startDragLabel(key);
+                                }
+                            }
+                        }
+                    }
+                }
+                , 200);
         }
         else {
             metExploreD3.GraphStyleEdition.editMode=false;
-            metExploreD3.GraphNetwork.animationButtonOff('viz');
-            metExploreD3.GraphStyleEdition.endDragLabel();
-            metExploreD3.GraphNode.applyEventOnNode('viz');
+            metExploreD3.GraphNetwork.animationButtonOff("viz");
+            metExploreD3.GraphStyleEdition.endDragLabel("viz");
+            metExploreD3.GraphNode.applyEventOnNode("viz");
+            // Time out to avoid lag
+            setTimeout(
+                function() {
+                    var session = _metExploreViz.getSessionById("viz");
+                    if(session!=undefined)
+                    {
+                        if(session.isLinked()){
+
+                            var sessionsStore = _metExploreViz.getSessionsSet();
+
+                            for (var key in sessionsStore) {
+                                if(sessionsStore[key].isLinked() && "viz"!=key)
+                                {
+                                    metExploreD3.GraphStyleEdition.editMode=false;
+                                    metExploreD3.GraphNetwork.animationButtonOff(key);
+                                    metExploreD3.GraphStyleEdition.endDragLabel(key);
+                                    metExploreD3.GraphNode.applyEventOnNode(key);
+                                }
+                            }
+                        }
+                    }
+                }
+                , 200);
         }
     },
 
     /*******************************************
      * Allow moving of node label on drag
      */
-    startDragLabel : function () {
+    startDragLabel : function (panel) {
         // Apply drag event on node labels
-        var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
-        var labelDrag = metExploreD3.GraphStyleEdition.createDragBehavior();
+        var GraphNodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var labelDrag = metExploreD3.GraphStyleEdition.createDragBehavior(panel);
         if (metExploreD3.GraphStyleEdition.editMode){
             GraphNodes.selectAll("text").style("pointer-events", "auto");
             GraphNodes.selectAll("text").call(labelDrag);
@@ -49,9 +118,9 @@ metExploreD3.GraphStyleEdition = {
     /*******************************************
      * End moving of node label on drag
      */
-    endDragLabel : function () {
+    endDragLabel : function (panel) {
         // Remove drag event on node labels
-        var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var GraphNodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
         if (!metExploreD3.GraphStyleEdition.editMode) {
             GraphNodes.selectAll("text").style("pointer-events", "none");
         }
@@ -62,7 +131,7 @@ metExploreD3.GraphStyleEdition = {
     /*******************************************
      * Create drag-and-drop behavior
      */
-    createDragBehavior : function () {
+    createDragBehavior : function (panel) {
         var deltaX;
         var deltaY;
         var element;
@@ -82,15 +151,31 @@ metExploreD3.GraphStyleEdition = {
                     });
             })
             .on("drag", function (d,i) {
-                if (d3.select(this).attr("transform")) {
-                    var transformScale = d3.transform(d3.select(this).attr("transform")).scale;
-                    d3.select(this).attr("transform", "translate(" + (d3.event.x + deltaX) + ", " + (d3.event.y + deltaY) + ") scale(" + transformScale[0] + ", " + transformScale[1] + ")");
-                }
-                else{
-                    d3.select(this).attr("transform", "translate(" + (d3.event.x + deltaX) + ", " + (d3.event.y + deltaY) + ")");
-                }
-                d3.select(this).attr("x", d3.mouse(element)[0] + deltaX);
-                d3.select(this).attr("y", d3.mouse(element)[1] + deltaY);
+                var me=this;
+                var d3mouse0 = d3.mouse(element)[0];
+                var d3mouse1 = d3.mouse(element)[1];
+                var d3eventx = d3.event.x;
+                var d3eventy = d3.event.y;
+
+                metExploreD3.applyTolinkedNetwork(
+                    panel,
+                    function(panelLinked, sessionLinked) {
+                        var theD3Node=d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
+                            .selectAll("g.node")
+                            .filter(function(node){
+                                return d.getDbIdentifier()==node.getDbIdentifier();
+                            }).select("text");
+
+                        if (theD3Node.attr("transform")) {
+                            var transformScale = d3.transform(theD3Node.attr("transform")).scale;
+                            theD3Node.attr("transform", "translate(" + (d3eventx + deltaX) + ", " + (d3eventy + deltaY) + ") scale(" + transformScale[0] + ", " + transformScale[1] + ")");
+                        }
+                        else{
+                            theD3Node.attr("transform", "translate(" + (d3eventx + deltaX) + ", " + (d3eventy + deltaY) + ")");
+                        }
+                        theD3Node.attr("x", d3mouse0 + deltaX);
+                        theD3Node.attr("y", d3mouse1 + deltaY);
+                    });
             })
             .on("dragend", function (d,i) {
                 d3.selectAll("#D3viz")
@@ -140,13 +225,13 @@ metExploreD3.GraphStyleEdition = {
      * Change the font size of a node label
      * @param {Object} node : The node whose label will be modified
      */
-    changeFontSize : function (node) {
+    changeFontSize : function (node, panel) {
         // Change the font size of the node label
         metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
             if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
-                d3.select("#viz").select("#D3viz").select("#graphComponent")
+                d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                     .selectAll("g.node")
-                    .filter(function(d){return d.getId()==node.getId();})
+                    .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
                     .select("text")
                     .style("font-size",text+"px");
             }
@@ -158,10 +243,10 @@ metExploreD3.GraphStyleEdition = {
      * @param {String} text : The new font size of the node label
      * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
-    changeAllFontSize : function (text, targets) {
+    changeAllFontSize : function (text, targets, panel) {
         // Change the font size of all the targeted nodes labels
         targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
                 if (targets === "all"){
@@ -182,11 +267,11 @@ metExploreD3.GraphStyleEdition = {
      * @param {Object} node : The node whose label will be modified
      * @param {String} text : The new font of the node label
      */
-    changeFontType : function (node, text) {
+    changeFontType : function (node, text, panel) {
         // Change the font of the node label
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
+            .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
             .select("text")
             .style("font-family",text);
     },
@@ -196,10 +281,10 @@ metExploreD3.GraphStyleEdition = {
      * @param {String} text : The new font of the node label
      * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
-    changeAllFontType : function (text, targets) {
+    changeAllFontType : function (text, targets, panel) {
         // Change the font of all the targeted nodes labels
         targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
                 if (targets === "all"){
@@ -220,11 +305,11 @@ metExploreD3.GraphStyleEdition = {
      * Change whether the font of a node label is bold or not
      * @param {Object} node : The node whose label will be modified
      */
-    changeFontBold : function (node) {
+    changeFontBold : function (node, panel) {
         // Change the font boldness of the node label
-        var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
+        var nodeLabel = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
+            .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
             .select("text");
         if (nodeLabel.style("font-weight") < 700){
             nodeLabel.style("font-weight", "bold");
@@ -239,11 +324,11 @@ metExploreD3.GraphStyleEdition = {
      * @param {Boolean} bool : True to change the font to bold, false to change back to normal
      * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
-    changeAllFontBold : function (bool, targets) {
+    changeAllFontBold : function (bool, targets, panel) {
         // Change the font boldness of all the targeted nodes labels
         targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
         var boldOrNot = (bool) ? "bold" : "normal";
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
+        d3.select("#"+ panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
                 if (targets === "all"){
@@ -264,11 +349,11 @@ metExploreD3.GraphStyleEdition = {
      * Change whether the font of a node label is italic or not
      * @param {Object} node : The node whose label will be modified
      */
-    changeFontItalic : function (node) {
+    changeFontItalic : function (node, panel) {
         // Italicize the font of the node label or revert to normal
-        var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
+        var nodeLabel = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
+            .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
             .select("text");
         if (nodeLabel.style("font-style") != "italic"){
             nodeLabel.style("font-style", "italic");
@@ -283,11 +368,11 @@ metExploreD3.GraphStyleEdition = {
      * @param {Boolean} bool : True to change the font to italic, false to change back to normal
      * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
-    changeAllFontItalic : function (bool, targets) {
+    changeAllFontItalic : function (bool, targets, panel) {
         // Italicize the font of all the targeted nodes labels or revert to normal
         targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
         var italicOrNot = (bool) ? "italic" : "normal";
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
                 if (targets === "all"){
@@ -308,11 +393,11 @@ metExploreD3.GraphStyleEdition = {
      * Change whether a node label is underlined or not
      * @param {Object} node : The node whose label will be modified
      */
-    changeFontUnderline : function (node) {
+    changeFontUnderline : function (node, panel) {
         // Underline the font of the node label or revert to normal
-        var nodeLabel = d3.select("#viz").select("#D3viz").select("#graphComponent")
+        var nodeLabel = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
+            .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
             .select("text");
         if (nodeLabel.style("text-decoration-line") != "underline"){
             nodeLabel.style("text-decoration-line", "underline");
@@ -327,11 +412,11 @@ metExploreD3.GraphStyleEdition = {
      * @param {Boolean} bool : True to add underline to the label, false to remove them
      * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
      */
-    changeAllFontUnderline : function (bool, targets) {
+    changeAllFontUnderline : function (bool, targets, panel) {
         // Underline the font of all the targeted nodes labels or revert to normal
         targets = (typeof targets !== 'undefined' && typeof targets === "string") ? targets.toLowerCase() : "all";
         var underlineOrNot = (bool) ? "underline" : "none";
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
                 if (targets === "all"){
@@ -353,10 +438,10 @@ metExploreD3.GraphStyleEdition = {
      * @param {Number} labelOpacity : New opacity value
      * @param {"all"/"selection"/"metabolite"/"reaction"} flag : The nodes whose label will be modified
      */
-    setAllFontOpacity: function (labelOpacity, flag) {
+    setAllFontOpacity: function (labelOpacity, flag, panel) {
         var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
         var s_ReactionStyle = metExploreD3.getReactionStyle();
-        d3.select("#viz").select("#D3viz").select("#graphComponent")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function (node) {
                 if (flag === "all"){
@@ -385,12 +470,12 @@ metExploreD3.GraphStyleEdition = {
      * Apply label style if style data are associated to the node
      * @param {Object} node : The node whose label will be modified
      */
-    setStartingStyle : function (node) {
+    setStartingStyle : function (node, panel) {
         if (node.labelFont) {
-            var selection = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            var selection = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                 .selectAll("g.node")
                 .filter(function (d) {
-                    return d.getId() == node.getId();
+                    return d.getDbIdentifier() == node.getDbIdentifier();
                 })
                 .select("text");
             if (node.labelFont.font) { selection.style("font-family", node.labelFont.font); }
@@ -412,7 +497,7 @@ metExploreD3.GraphStyleEdition = {
     createLabelStyleObject : function (node, panel) {
         var nodeLabel = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
+            .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
             .select("text");
         if(nodeLabel.length>0){
             var labelStyle = {
@@ -437,7 +522,7 @@ metExploreD3.GraphStyleEdition = {
     createImageStyleObject : function (node, panel) {
         var nodeImage = d3.select("#"+ panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
-            .filter(function(d){return d.getId()==node.getId();})
+            .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
             .select(".imageNode");
         if (!nodeImage.empty()) {
             var imageStyle = {
@@ -452,4 +537,4 @@ metExploreD3.GraphStyleEdition = {
             return undefined;
         }
     }
-}
+};
