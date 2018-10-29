@@ -133,28 +133,41 @@ metExploreD3.GraphNetwork = {
     * @param {} panel : The panel to refresh
     */ 
 	zoom:function(panel) {
-        var session = _metExploreViz.getSessionById(panel);
-        if(d3.event.scale<0.3) d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-        else d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+        var d3EventScale = d3.event.scale;
+        var d3EventTranslate = d3.event.translate;
+        var d3EventSourceEvent = d3.event.sourceEvent;
+        metExploreD3.applyTolinkedNetwork(
+            panel,
+            function(panelLinked, sessionLinked) {
+                var scale = metExploreD3.getScaleById(panelLinked);
+                var session = _metExploreViz.getSessionById(panelLinked);
+				if(d3EventScale<0.3) d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+				else d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 
-        if(d3.event.sourceEvent !=null)
-            if(d3.event.sourceEvent.type=='wheel')
-                session.setResizable(false);
+				if(d3EventSourceEvent !=null)
+					if(d3EventSourceEvent.type=='wheel')
+						session.setResizable(false);
 
-        // if visualisation is actived we add item to menu
-        if(session.isActive()){
-            var scale = metExploreD3.getScaleById(panel);
+				// if visualisation is actived we add item to menu
+				if(session.isActive()){
+					var transX = d3EventTranslate[0];
+					var transY = d3EventTranslate[1];
 
-			d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-			var zoomListener = scale.getZoom();
-			// Firstly we changed the store which correspond to viz panel
-			scale.setZoomScale(d3.event.scale);
-			scale.setXScale(zoomListener.x());
-			scale.setYScale(zoomListener.y());
+					d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
+						.attr("transform", "translate("+transX+","+transY+")scale(" + d3EventScale + ")");
+					var zoomListener = scale.getZoom();
+					zoomListener.translate([transX,transY]);
+					zoomListener.scale(d3EventScale);
+					// Firstly we changed the store which correspond to viz panel
+					scale.setZoomScale(d3EventScale);
+					scale.setXScale(transX);
+					scale.setYScale(transY);
 
-			metExploreD3.GraphLink.tick(panel, scale);
-        }
+					metExploreD3.GraphLink.tick(panelLinked, scale);
+				}
+
+            });
 	},
 
 	/*******************************************
