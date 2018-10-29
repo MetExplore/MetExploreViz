@@ -1855,9 +1855,10 @@ metExploreD3.GraphLink = {
      * @param {} scale = Ext.getStore('S_Scale').getStoreByGraphName(panel);
      */
     tick : function(panel, scale) {
+
         // If you want to use selection on compartments path
-        d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").selectAll("path.convexhull")
-            .attr("d", metExploreD3.GraphNode.groupPath)
+        d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
+            .attr("d", _metExploreViz.getSessionById(panel).groupPath)
             .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
         if (metExploreD3.GraphStyleEdition.curvedPath == true){
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
@@ -1924,94 +1925,10 @@ metExploreD3.GraphLink = {
                 metExploreD3.GraphNode.loadPath(panel, isDisplay);
 
             convexHullPath
-                .attr("d", metExploreD3.GraphNode.groupPath)
+                .attr("d", _metExploreViz.getSessionById(panel).groupPath)
                 .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
         }
     },
-
-    // /*******************************************
-    // * Init the visualization of links
-    // * @param {} parent : The panel where the action is launched
-    // * @param {} session : Store which contains global characteristics of session
-    // * @param {} linkStyle : Store which contains links style
-    // * @param {} metaboliteStyle : Store which contains metabolites style
-    // */
-    // loadLink : function(parent, session, linkStyle, metaboliteStyle) {
-
-    // 	metExploreD3.GraphLink.panelParent = "#"+parent;
-    // 	var networkData=session.getD3Data();
-
-    // 	var size=20;
-    // 	// The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-    // 	var refY = linkStyle.getMarkerWidth() / 2;
-    // 	// The x-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-    // 	// var refX = linkStyle.getMarkerHeight / 2;
-
-    //   // Adding arrow on links
-    // 	d3.select("#"+parent).select("#D3viz").select("#graphComponent").append("svg:defs").selectAll("marker")
-    // 		.data(["in", "out"])
-    // 		.enter().append("svg:marker")
-    // 		.attr("id", String)
-    // 		.attr("viewBox", "0 0 "+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight())
-    // 		.attr("refY", refY)
-    // 		.attr("markerWidth", linkStyle.getMarkerWidth())
-    // 		.attr("markerHeight", linkStyle.getMarkerHeight())
-    // 		.attr("orient", "auto")
-    // 		.append("svg:path")
-    // 		.attr("class", String)
-    // 		.attr("d", "M0,0L"+linkStyle.getMarkerWidth()+","+linkStyle.getMarkerHeight()/2+"L0,"+linkStyle.getMarkerWidth()+"Z")
-    // 		.style("visibility", "hidden");
-
-    // 		// .attr("d", "M"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+" L"+linkStyle.getMarkerWidth()/2+" "+(3*linkStyle.getMarkerHeight()/4)+" A"+linkStyle.getMarkerHeight()+" "+linkStyle.getMarkerHeight()+" 0 0 0 "+linkStyle.getMarkerWidth()/2+" "+(1*linkStyle.getMarkerHeight()/4)+" L"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+"Z")
-
-
-    // 	// Append link on panel
-    // 	metExploreD3.GraphLink.link=d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
-    // 		.data(networkData.getLinks())
-    // 		.enter()
-    // 		.append("path")
-    // 		.attr("class", "link")//it comes from resources/css/networkViz.css
-    // 		.attr("marker-end", function (d) {
-    // 			if (d.interaction=="out")
-    // 			{
-    // 			   d3.select("#"+parent).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
-    // 				.attr("refX", (metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2  + (linkStyle.getMarkerWidth() ))
-    // 				.style("fill", linkStyle.getMarkerOutColor())
-    // 					.style("stroke",linkStyle.getMarkerStrokeColor())
-    // 					.style("stroke-width",linkStyle.getMarkerStrokeWidth());
-
-    // 			   return "url(#" + d.interaction + ")";
-    // 			}
-    // 			else
-    // 			{
-    // 			  return "none";
-    // 			}
-
-    // 			})
-    // 		.attr("marker-start", function (d) {
-    // 			if (d.interaction=="out")
-    // 			{
-    // 			   return "none";
-    // 			}
-    // 			else
-    // 			{
-    // 			  d3.select("#"+parent).select("#D3viz").select("#graphComponent").select("#" + d.interaction)
-    // 				.attr("refX",-((metaboliteStyle.getWidth()+metaboliteStyle.getHeight())/2/2 ))
-    // 				.style("fill", linkStyle.getMarkerInColor())
-    // 				.style("stroke",linkStyle.getMarkerStrokeColor())
-    // 					.style("stroke-width",linkStyle.getMarkerStrokeWidth());
-
-    // 			  return "url(#" + d.interaction + ")";
-    // 			}
-    // 			})
-    // 		.style("stroke",linkStyle.getStrokeColor());
-
-    // 	metExploreD3.GraphLink.link
-    // 		.filter(function(link){
-    // 			return link.getInteraction()=="hiddenForce";
-    // 		})
-    // 		.style("opacity",0);
-    // }
 
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction.

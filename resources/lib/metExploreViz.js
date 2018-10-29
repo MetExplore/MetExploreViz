@@ -47,6 +47,29 @@ var metExploreD3 = {
         metExploreD3.fireEvent('highlightSubnetwork', "setUser");
     },
 
+    applyTolinkedNetwork:function(panel, func){
+        var session = _metExploreViz.getSessionById(panel);
+        func(panel, session);
+        setTimeout(
+            function() {
+                session = _metExploreViz.getSessionById(panel);
+                // If graphs are linked we move the same nodes
+                if(session.isLinked()){
+
+                    var sessionsStore = _metExploreViz.getSessionsSet();
+
+                    for (var key in sessionsStore) {
+                        if(sessionsStore[key].isLinked()  && panel!=key)
+                        {
+                            var sessionLinked = _metExploreViz.getSessionById(key);
+                            func(key, sessionLinked);
+                        }
+                    }
+                }
+            }
+            , 200);
+    },
+
     setUser:function(user){
         this.user = user;
         this.featureFlipping();
@@ -303,19 +326,19 @@ var metExploreD3 = {
     },
 
     // CompartmentInBioSource
-    getPathwaysSet : function(){
-        return _metExploreViz.getSessionById("viz").getD3Data().getPathways();
+    getPathwaysSet : function(panel){
+        return _metExploreViz.getSessionById(panel).getD3Data().getPathways();
     },
-    getPathwayByName : function(name){
-        return _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(name);
+    getPathwayByName : function(name, panel){
+        return _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(name);
     },
-    getPathwaysGroup : function(){
+    getPathwaysGroup : function(panel){
         var pathwayGroup = [];
 
-        var sqrt = Math.ceil(Math.sqrt(metExploreD3.getPathwaysLength()));
+        var sqrt = Math.ceil(Math.sqrt(metExploreD3.getPathwaysLength(panel)));
 
-        var h = parseInt(metExploreD3.GraphPanel.getHeight("viz"));
-        var w = parseInt(metExploreD3.GraphPanel.getWidth("viz"));
+        var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+        var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 
         var hDiv = h/sqrt;
         var wDiv = w/sqrt;
@@ -325,9 +348,9 @@ var metExploreD3 = {
 
         var alt = -1;
 
-        metExploreD3.getPathwaysSet()
+        metExploreD3.getPathwaysSet(panel)
             .forEach(function(pathway){
-                var mod = metExploreD3.getPathwaysSet().indexOf(pathway)%sqrt;
+                var mod = metExploreD3.getPathwaysSet(panel).indexOf(pathway)%sqrt;
                 if(mod==0)
                     alt++;
 
@@ -347,7 +370,7 @@ var metExploreD3 = {
                     pathway.values.push(node);
             }
         }
-        _metExploreViz.getSessionById("viz").getD3Data().getLinks()
+        _metExploreViz.getSessionById(panel).getD3Data().getLinks()
             .forEach(function(d){
                 var source = d.source;
                 var target = d.target;
@@ -406,11 +429,11 @@ var metExploreD3 = {
 
         return pathwayGroup;
     },
-    sortPathways : function(){
-        _metExploreViz.getSessionById("viz").getD3Data().sortPathways();
+    sortPathways : function(panel){
+        _metExploreViz.getSessionById(panel).getD3Data().sortPathways();
     },
-    getPathwaysLength : function(){
-        return _metExploreViz.getSessionById("viz").getD3Data().getPathwaysLength();
+    getPathwaysLength : function(panel){
+        return _metExploreViz.getSessionById(panel).getD3Data().getPathwaysLength();
     },
 
     // Scale
@@ -977,7 +1000,7 @@ metExploreViz.prototype = {
         var newSession = new NetworkVizSession();
         newSession.reset();
         
-        var n, name, comp, dbId, ec, id, rev, sc, bt, sel, lv, svg, svgW, svgH;
+        var n, name, comp, pathw, dbId, ec, id, rev, sc, bt, sel, lv, svg, svgW, svgH, locked, alias, label;
 
         // for (var j=0; j<this.initialData.nodes.length; j++) {
         //     n = this.initialData.nodes[j];
@@ -987,11 +1010,31 @@ metExploreViz.prototype = {
             else
                 name = undefined;
             
+            if(n.getPathways()!=undefined)
+                pathw = n.getPathways().valueOf();
+            else
+                pathw = undefined;
+
+            if(n.isLocked()!=undefined)
+                locked = n.isLocked().valueOf();
+            else
+                locked = undefined;
+
+            if(n.getAlias()!=undefined)
+                alias = n.getAlias().valueOf();
+            else
+                alias = undefined;
+
+            if(n.getLabel()!=undefined)
+                label = n.getLabel().valueOf();
+            else
+                label = undefined;
+
             if(n.getCompartment()!=undefined)
                 comp = n.getCompartment().valueOf();
             else
                 comp = undefined;
-            
+
             if(n.getDbIdentifier()!=undefined)
                 dbId = n.getDbIdentifier().valueOf();
             else
@@ -1060,7 +1103,11 @@ metExploreViz.prototype = {
                 isDuplicated = false;
 
 
-            var node = newSession.d3Data.addNode(name,comp,dbId,id,rev,bt,sel,lv,svg,svgW,svgH,sc,ec,isDuplicated,identif);
+            var node = newSession.d3Data.addNode(name,comp,dbId,id,rev,bt,sel,lv,svg,svgW,svgH,sc,ec,isDuplicated,identif,pathw,locked,alias,label);
+        });
+
+        mainSession.getD3Data().getPathways().forEach(function(p){
+            newSession.d3Data.copyPathway(p);
         });
 
         mainSession.getD3Data().getLinks().forEach(function(link){

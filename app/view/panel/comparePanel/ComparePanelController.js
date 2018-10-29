@@ -213,9 +213,9 @@ Ext.define( 'metExploreViz.view.panel.comparePanel.ComparePanelController',{
 				function() {
 					that.onSessionStart(panelId);
 					that.initiateViz(panelId);
-					metExploreD3.GraphNetwork.setAnimated(panelId, true);
+					// metExploreD3.GraphNetwork.setAnimated(panelId, true);
 					metExploreD3.GraphNetwork.refreshSvg(panelId);
-					
+                    metExploreD3.GraphNetwork.link(panelId);
 					myMask.hide();
 		    }, 100);
 		}

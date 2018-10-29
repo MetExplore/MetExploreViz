@@ -13,8 +13,6 @@ metExploreD3.GraphNode = {
 	taskClick :"",
 	charKey :"",
 	ctrlKey :"",
-	groups:"",
-	groupPath:"",
 	groupFill:"",
 	dblClickable:false,
 
@@ -138,9 +136,9 @@ metExploreD3.GraphNode = {
     */
 	dragstart : function(d, i) {
 		// Get the panel where brush is used
-		_MyThisGraphNode.activePanel = d3.event.sourceEvent.target.viewportElement.parentNode.id;
+		metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.viewportElement.parentNode.id);
 		if(_MyThisGraphNode.activePanel=="" || _MyThisGraphNode.activePanel.search("node")!=-1)
-			_MyThisGraphNode.activePanel = d3.event.sourceEvent.target.parentNode.viewportElement.parentNode.id;
+			metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.parentNode.viewportElement.parentNode.id);
 		
 		// Stop the propagation of the event to bypass moving graph
 		d3.event.sourceEvent.stopPropagation();
@@ -793,11 +791,11 @@ metExploreD3.GraphNode = {
             var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel())
             metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
             if (metExploreD3.GraphStyleEdition.editMode==true) {
-                metExploreD3.GraphStyleEdition.startDragLabel();
+                metExploreD3.GraphStyleEdition.startDragLabel(panel);
             }
             else {
-                metExploreD3.GraphStyleEdition.endDragLabel();
-                metExploreD3.GraphNode.applyEventOnNode('viz');
+                metExploreD3.GraphStyleEdition.endDragLabel(panel);
+                metExploreD3.GraphNode.applyEventOnNode(panel);
 			}
 
   		 	if( d.getSvg()!="undefined" && d.getSvg()!=undefined && d.getSvg()!=""){ 
@@ -846,11 +844,11 @@ metExploreD3.GraphNode = {
             var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
             metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
             if (metExploreD3.GraphStyleEdition.editMode==true) {
-                metExploreD3.GraphStyleEdition.startDragLabel();
+                metExploreD3.GraphStyleEdition.startDragLabel(panel);
             }
             else {
-                metExploreD3.GraphStyleEdition.endDragLabel();
-                metExploreD3.GraphNode.applyEventOnNode('viz');
+                metExploreD3.GraphStyleEdition.endDragLabel(panel);
+                metExploreD3.GraphNode.applyEventOnNode(panel);
             }
 		} 
 	},
@@ -1610,7 +1608,7 @@ metExploreD3.GraphNode = {
 		var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
 		if(_MyThisGraphNode.dblClickable && d3.event.button==0){
-			_MyThisGraphNode.activePanel = this.parentNode.id;
+			metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
             _MyThisGraphNode.unselectAll(this);
 		}
 		else
@@ -1633,7 +1631,7 @@ metExploreD3.GraphNode = {
 		}
 
 		if(_MyThisGraphNode.dblClickable && d3.event.button==1){
-			_MyThisGraphNode.activePanel = this.parentNode.id;
+			metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
          	d3.select(this).select("#graphComponent")
 				.selectAll("g.node")
 		        .filter(function(d) { return d.isLocked(); })
@@ -1926,7 +1924,7 @@ metExploreD3.GraphNode = {
             .selectAll("rect")
             .style("stroke",metExploreD3.getCompartmentInBiosource()[i].getColor()); 
         }*/
-		metExploreD3.GraphNode.loadPath(metExploreD3.GraphNode.panelParent);
+		metExploreD3.GraphNode.loadPath(parent);
 
 		// metExploreD3.GraphNode.groupFill = function(d, i) { 
 		// 	// Sort compartiments store
@@ -2136,17 +2134,17 @@ metExploreD3.GraphNode = {
 			var metabolites = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(d) { return d.getBiologicalType() == 'metabolite'; });
 		
 			session.groups = metExploreD3.getCompartmentsGroup();
-			metExploreD3.GraphNetwork.initCentroids();
+			metExploreD3.GraphNetwork.initCentroids(parent);
 		}
 		else
 		{
-			session.groups = metExploreD3.getPathwaysGroup();
-			metExploreD3.GraphNetwork.initCentroids();
+			session.groups = metExploreD3.getPathwaysGroup(parent);
+			metExploreD3.GraphNetwork.initCentroids(parent);
 		}
 
-		
-        metExploreD3.GraphNode.groupPath = function(d) {
-        	var scale = metExploreD3.getScaleById("viz");
+
+        session.groupPath = function(d) {
+        	var scale = metExploreD3.getScaleById(parent);
 			if(d.values!=undefined)
 			{				
 				if(d.values.length>0)
@@ -2185,7 +2183,7 @@ metExploreD3.GraphNode = {
 
 			// Sort compartiments store
 			if(component=="Pathways")
-                var components = metExploreD3.getPathwaysSet();
+                var components = metExploreD3.getPathwaysSet(parent);
 			else
                 var components = metExploreD3.getCompartmentInBiosourceSet();
 

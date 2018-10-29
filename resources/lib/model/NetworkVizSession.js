@@ -14,6 +14,7 @@ var NetworkVizSession = function(){
     this.force = undefined;
     this.forceCentroids = undefined;
     this.groups = [];
+    this.groupPath = "";
     this.id = "";
     this.linked = false;
     this.mapped = "none";

@@ -20,6 +20,30 @@ metExploreD3.GraphPanel = {
         return document.getElementById(panel).style.width;
 	},
 
+	setActivePanel : function(panel){
+		var lastPanel = _MyThisGraphNode.activePanel;
+        if(!lastPanel)
+        {
+            _MyThisGraphNode.activePanel=panel;
+            d3.select("#"+panel).select("#D3viz")
+                .style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
+        }
+        else
+		{
+            if(lastPanel!==panel)
+            {
+                _MyThisGraphNode.activePanel=panel;
+                d3.select("#"+panel).select("#D3viz")
+                    .style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
+
+
+                d3.select("#"+lastPanel).select("#D3viz")
+                    .style("box-shadow", "");
+            }
+		}
+
+    },
+
 	/*****************************************************
 	* To resize svg viz when layout is modified
 	*/
@@ -87,7 +111,7 @@ metExploreD3.GraphPanel = {
 
 						var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
-						_MyThisGraphNode.activePanel = this.parentNode.parentNode.id;
+						metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 
 						var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
@@ -805,20 +829,21 @@ metExploreD3.GraphPanel = {
 				}
 
 				for (var key in sessions) {
-					metExploreD3.GraphNetwork.refreshSvg(key);	
+					metExploreD3.GraphNetwork.refreshSvg(key);
+                    // set style of previous session from JSON
+                    var networkDataViz = new NetworkData(key);
+                    networkDataViz.cloneObject(sessions[key].d3Data);
+                    var nodesData = networkDataViz.getNodes();
+                    nodesData.forEach(function(node) {
+                        metExploreD3.GraphStyleEdition.setStartingStyle(node, key);
+                    });
+                    if (sessions[key].drawnCycles && Array.isArray(sessions[key].drawnCycles)) {
+                        for (var i=0; i<sessions[key].drawnCycles.length; i++){
+                            metExploreD3.GraphFunction.drawMetaboliteCycle(sessions[key].drawnCycles[i]);
+                        }
+                    }
 			    }
-                // set style of previous session from JSON
-                var networkDataViz = new NetworkData('viz');
-				networkDataViz.cloneObject(sessions['viz'].d3Data);
-                var nodesData = networkDataViz.getNodes();
-				nodesData.forEach(function(node) {
-					metExploreD3.GraphStyleEdition.setStartingStyle(node);
-				});
-				if (sessions['viz'].drawnCycles && Array.isArray(sessions['viz'].drawnCycles)) {
-					for (var i=0; i<sessions['viz'].drawnCycles.length; i++){
-                        metExploreD3.GraphFunction.drawMetaboliteCycle(sessions['viz'].drawnCycles[i]);
-					}
-                }
+
 
 				endFunc();
 			}

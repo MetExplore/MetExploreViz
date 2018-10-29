@@ -100,7 +100,7 @@ metExploreD3.GraphPath = {
 	  // d3.select("#"+metExploreD3.GraphNode.panelParent).select("#D3viz").select("graphComponent").selectAll("path")
 	  d3.select("#"+panel).select("#D3viz").selectAll("path")
 		  .filter(function(d){return d!="linkCaptionRev"})
-		  .attr("d", metExploreD3.GraphPath.groupPath)
+		  .attr("d", _metExploreViz.getSessionById(panel).groupPath)
 		  .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform")); 
 	},
 
@@ -116,9 +116,9 @@ metExploreD3.GraphPath = {
 		var metabolites = metExploreD3.GraphPath.node.filter(function(d){return d.getBiologicalType()=='metabolite'});
 
 		session.groups = d3.nest().key(function(d) { return d.getCompartment(); }).entries(metabolites.data());
-        
-        metExploreD3.GraphPath.groupPath = function(d) {
-        	var scale = metExploreD3.getScaleById("viz");
+
+        _metExploreViz.getSessionById(parent).groupPath = function(d) {
+        	var scale = metExploreD3.getScaleById(parent);
 			if(d.values.length>0)
 			{				
 				if(d.values.length>2)

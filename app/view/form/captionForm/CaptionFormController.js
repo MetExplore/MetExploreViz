@@ -35,7 +35,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
         // We add form corresponding to the component data type
         var captionForm = view;
         if(view.getTitle()=="Pathways")
-            var components = metExploreD3.getPathwaysSet()
+            var components = metExploreD3.getPathwaysSet('viz')
         else
             var components = metExploreD3.getCompartmentInBiosourceSet();
 
@@ -83,20 +83,28 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                             checked: !component.hidden(),
                                             listeners: {
                                                 change: function (that, newValue, oldValue) {
-                                                    if(view.getTitle()=="Pathways")
-                                                        var comp = metExploreD3.getPathwayByName(component.getName());
-                                                    else
-                                                        var comp = metExploreD3.getCompartmentByName(component.getName());
 
-                                                    comp.setHidden(!newValue);
-                                                    d3.select("#viz").select("#D3viz").selectAll("path.convexhull")
-                                                        .classed("hide", function(conv){
-                                                            if(view.getTitle()=="Pathways")
-                                                                var com = metExploreD3.getPathwayByName(conv.key);
+                                                    var activePanel = _MyThisGraphNode.activePanel;
+                                                    if(!activePanel) activePanel='viz';
+
+                                                    metExploreD3.applyTolinkedNetwork(
+                                                        activePanel,
+                                                        function(panelLinked, sessionLinked) {
+                                                            if (view.getTitle() == "Pathways")
+                                                                var comp = metExploreD3.getPathwayByName(component.getName(), panelLinked);
                                                             else
-                                                                var com = metExploreD3.getCompartmentByName(conv.key);
-                                                            return com.hidden();
-                                                        })
+                                                                var comp = metExploreD3.getCompartmentByName(component.getName());
+
+                                                            comp.setHidden(!newValue);
+                                                            d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
+                                                                .classed("hide", function (conv) {
+                                                                    if (view.getTitle() == "Pathways")
+                                                                        var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
+                                                                    else
+                                                                        var com = metExploreD3.getCompartmentByName(conv.key);
+                                                                    return com.hidden();
+                                                                });
+                                                        });
                                                 }
                                             }
                                         },
