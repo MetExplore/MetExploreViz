@@ -351,7 +351,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                                 text: 'Ok',
                                                 handler: function () {
                                                     metExploreD3.applyTolinkedNetwork(
-                                                        "viz",
+                                                        _MyThisGraphNode.activePanel,
                                                         function(panelLinked, sessionLinked) {
                                                             var fontType = Ext.getCmp('fontStyleWindow').getValue();
                                                             metExploreD3.GraphStyleEdition.changeFontType(theNode, fontType, panelLinked);
@@ -389,7 +389,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                                 text: 'Ok',
                                                 handler: function () {
                                                     metExploreD3.applyTolinkedNetwork(
-                                                        "viz",
+                                                        _MyThisGraphNode.activePanel,
                                                         function(panelLinked, sessionLinked) {
                                                             var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
                                                             metExploreD3.GraphStyleEdition.changeAllFontType(fontType ,"selection", panelLinked);
@@ -408,7 +408,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 text: 'This node',
                                 handler: function () {
                                     metExploreD3.applyTolinkedNetwork(
-                                        "viz",
+                                        _MyThisGraphNode.activePanel,
                                         function(panelLinked, sessionLinked) {
                                             metExploreD3.GraphStyleEdition.changeFontSize(theNode, panelLinked);
                                         });
@@ -419,7 +419,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
                                         if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
                                             metExploreD3.applyTolinkedNetwork(
-                                                "viz",
+                                                _MyThisGraphNode.activePanel,
                                                 function(panelLinked, sessionLinked) {
                                                     metExploreD3.GraphStyleEdition.changeAllFontSize(text, "selection", panelLinked);
                                                 });
@@ -438,7 +438,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     iconCls: "bold",
                                     handler: function () {
                                         metExploreD3.applyTolinkedNetwork(
-                                            "viz",
+                                            _MyThisGraphNode.activePanel,
                                             function(panelLinked, sessionLinked) {
                                                 metExploreD3.GraphStyleEdition.changeFontBold(theNode, panelLinked);
                                             });
@@ -448,7 +448,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     iconCls: "italic",
                                     handler: function () {
                                         metExploreD3.applyTolinkedNetwork(
-                                            "viz",
+                                            _MyThisGraphNode.activePanel,
                                             function(panelLinked, sessionLinked) {
                                                 metExploreD3.GraphStyleEdition.changeFontItalic(theNode, panelLinked);
                                             });
@@ -458,7 +458,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     iconCls: "underline",
                                     handler: function () {
                                         metExploreD3.applyTolinkedNetwork(
-                                            "viz",
+                                            _MyThisGraphNode.activePanel,
                                             function(panelLinked, sessionLinked) {
                                                 metExploreD3.GraphStyleEdition.changeFontUnderline(theNode, panelLinked);
                                             });
@@ -471,7 +471,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     iconCls: "bold",
                                     handler: function () {
                                         metExploreD3.applyTolinkedNetwork(
-                                            "viz",
+                                            _MyThisGraphNode.activePanel,
                                             function(panelLinked, sessionLinked) {
                                                 metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection", panelLinked);
                                             });
@@ -481,7 +481,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     iconCls: "italic",
                                     handler: function () {
                                         metExploreD3.applyTolinkedNetwork(
-                                            "viz",
+                                            _MyThisGraphNode.activePanel,
                                             function(panelLinked, sessionLinked) {
                                                 metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection", panelLinked);
                                             });
@@ -491,7 +491,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     iconCls: "underline",
                                     handler: function () {
                                         metExploreD3.applyTolinkedNetwork(
-                                            "viz",
+                                            _MyThisGraphNode.activePanel,
                                             function(panelLinked, sessionLinked) {
                                                 metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection", panelLinked);
                                             });

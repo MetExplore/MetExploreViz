@@ -19,7 +19,7 @@ Ext.define('metExploreViz.view.form.allLabelStyleForm.AllLabelStyleFormControlle
         view.lookupReference('refreshLabelStyle').on({
             click: function () {
                 metExploreD3.applyTolinkedNetwork(
-                    "viz",
+                    _MyThisGraphNode.activePanel,
                     function(panelLinked, sessionLinked) {
                         var flag = targetObjects.rawValue.toLowerCase();
                         var fontType = view.lookupReference('chooseFontType').getValue();
