@@ -318,13 +318,12 @@ metExploreD3.GraphNetwork = {
 		var mainSession = _metExploreViz.getSessionById('viz');
 		if(session!=undefined)  
 		{
-			var force = session.getForce();
 			var linked = d3.select(this).attr("isLink");
 			d3.select(this).select("image").remove();
 			if (linked == "false") {
-				metExploreD3.GraphNetwork.link(that);
+				metExploreD3.GraphNetwork.link(panel);
 			} else {
-				metExploreD3.GraphNetwork.unLink(that);
+				metExploreD3.GraphNetwork.unLink(panel);
 			}
 		}
 	},
@@ -333,14 +332,13 @@ metExploreD3.GraphNetwork = {
     * Link the main graph and the selected graph  
     * @param {} panel : The panel to link
     */
-    link :function(that){
-		var panel = that.parentNode.parentNode.id;
+    link :function(panel){
 		var session = _metExploreViz.getSessionById(panel);
 		var mainSession = _metExploreViz.getSessionById('viz');
 		var anim = metExploreD3.GraphNetwork.isAnimated("viz");
 
 
-		d3.select(that).attr("isLink", "true");
+        d3.select("#"+panel).select("#D3viz").select("#buttonLink").attr("isLink", "true");
 		session.setLinked(true);
 		mainSession.setLinked(true);
 
@@ -348,11 +346,9 @@ metExploreD3.GraphNetwork = {
 			metExploreD3.GraphNetwork.animationButtonOn(panel);
 		else
 			metExploreD3.GraphNetwork.animationButtonOff(panel);
-		
 
-		var linked = d3.select(that).attr("isLink");
-		d3.select(that).select("image").remove();
-		d3.select(that).append("image")
+        d3.select("#"+panel).select("#D3viz").select("#buttonLink").select("image").remove();
+        d3.select("#"+panel).select("#D3viz").select("#buttonLink").append("image")
 			.attr("xlink:href",document.location.href.split("index.html")[0] + "resources/icons/link.svg")
 			.attr("width", "50")
 			.attr("height", "50")
@@ -393,17 +389,16 @@ metExploreD3.GraphNetwork = {
     * Unlink the main graph and the selected graph  
     * @param {} panel : The panel to unlink
     */
-    unLink :function(that){
-		var panel = that.parentNode.parentNode.id;
+    unLink :function(panel){
 		var session = _metExploreViz.getSessionById(panel);
 
-		d3.select(that).append("image")
+        d3.select("#"+panel).select("#D3viz").select("#buttonLink").append("image")
 			.attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/unlink.svg")
 			.attr("width", "50")
 			.attr("height", "50")
 			.attr("transform", "translate(10,50) scale(.5)");
-		
-		d3.select(that).attr("isLink", "false");
+
+        d3.select("#"+panel).select("#D3viz").select("#buttonLink").attr("isLink", "false");
 		session.setLinked(false);
 		metExploreD3.GraphNetwork.looksLinked();
 
