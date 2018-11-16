@@ -14,7 +14,64 @@ metExploreD3.GraphLink = {
         metExploreD3.GraphLink.panelParent = parent;
     },
 
-    
+    pathwaysOnLink: function (parent) {
+
+        d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
+            .style("stroke-width","1px")
+            .style("stroke-linecap","butt")
+            .style("stroke",function(link){
+                var me = this;
+                var cols = [];
+                var reaction;
+                if(link.getSource().getBiologicalType()==="reaction")
+                    reaction=link.getSource();
+                else
+                    reaction=link.getTarget();
+                if(reaction.getPathways().length>1)
+                {
+                    var color="#000000";
+                    reaction.getPathways().forEach(function(path){
+                        var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(path);
+                        if(pathw!==null && !pathw.hidden()){
+                            var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
+                            col["o"]=0.15;
+                            cols.push(pathw.getColor());
+
+                            if(color==="#000000"){
+                                color=col;
+                            }
+                        }
+                    });
+                    if(cols.length>1){
+                        var percent = 100 / cols.length;
+                        cols.forEach(function(couleur, i){
+                            var newelemt = me.cloneNode(true);
+                            me.parentNode.appendChild(newelemt);
+                            var size = 8;
+                            d3.select(newelemt)
+                                .style("stroke-width","3px")
+                                .style("stroke-dasharray", size+","+size*(cols.length-1))
+                                .style("stroke-dashoffset", size*i)
+                                .style("stroke", couleur);
+                        })
+                        me.parentNode.removeChild(me);
+                    }
+                    if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
+                    return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
+                }
+                else
+                {
+                    var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(reaction.getPathways()[0]);
+                    if(pathw!==null && !pathw.hidden()){
+                        d3.select(me).style("stroke-width","3px")
+                        return pathw.getColor();
+                    }
+                    return "#000000";
+                }
+
+                return "#000000";
+            });
+    },
 
     //arrayValue already scale
     funcPathForFlux: function (link, panel, linkId) {
