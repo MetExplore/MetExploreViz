@@ -16,10 +16,8 @@ metExploreD3.GraphLink = {
 
     pathwaysOnLink: function (parent) {
 
-        d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
-            .style("stroke-width","1px")
-            .style("stroke-linecap","butt")
-            .style("stroke",function(link){
+        d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
+            .each(function(link){
                 var me = this;
                 var cols = [];
                 var reaction;
@@ -27,7 +25,8 @@ metExploreD3.GraphLink = {
                     reaction=link.getSource();
                 else
                     reaction=link.getTarget();
-                if(reaction.getPathways().length>1)
+
+                if(reaction.getPathways().length>0)
                 {
                     var color="#000000";
                     reaction.getPathways().forEach(function(path){
@@ -42,34 +41,28 @@ metExploreD3.GraphLink = {
                             }
                         }
                     });
-                    if(cols.length>1){
+                    if(cols.length>0){
                         var percent = 100 / cols.length;
                         cols.forEach(function(couleur, i){
                             var newelemt = me.cloneNode(true);
                             me.parentNode.appendChild(newelemt);
                             var size = 8;
-                            d3.select(newelemt)
+
+                            d3.select(newelemt).datum(link)
+                                .classed("reaction", false)
+                                .classed("pathway", true)
+                                .classed("hide", true)
                                 .style("stroke-width","3px")
                                 .style("stroke-dasharray", size+","+size*(cols.length-1))
                                 .style("stroke-dashoffset", size*i)
                                 .style("stroke", couleur);
-                        })
-                        me.parentNode.removeChild(me);
-                    }
-                    if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
-                    return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
-                }
-                else
-                {
-                    var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(reaction.getPathways()[0]);
-                    if(pathw!==null && !pathw.hidden()){
-                        d3.select(me).style("stroke-width","3px")
-                        return pathw.getColor();
-                    }
-                    return "#000000";
-                }
 
-                return "#000000";
+                        })
+                        //me.parentNode.removeChild(me);
+                    }
+                    //if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
+                   // return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
+                }
             });
     },
 
@@ -1351,7 +1344,7 @@ metExploreD3.GraphLink = {
         // 	.style("visibility", "hidden");
         // .attr("d", "M"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+" L"+linkStyle.getMarkerWidth()/2+" "+(3*linkStyle.getMarkerHeight()/4)+" A"+linkStyle.getMarkerHeight()+" "+linkStyle.getMarkerHeight()+" 0 0 0 "+linkStyle.getMarkerWidth()/2+" "+(1*linkStyle.getMarkerHeight()/4)+" L"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+"Z")
         // Append link on panel
-        metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
+        metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(networkData.getLinks())
             .enter()
             .append("svg:path")
@@ -1359,7 +1352,7 @@ metExploreD3.GraphLink = {
             .attr("d", function (link) {
                 return metExploreD3.GraphLink.funcPath1(link, parent);
             })
-            .attr("class", "link")
+            .attr("class", "link").classed("reaction", true)
             .attr("fill-rule", "evenodd")
             .attr("fill", function (d) {
                 if (d.interaction == "out")
@@ -1395,7 +1388,7 @@ metExploreD3.GraphLink = {
             .selectAll(".linkGroup")
             .remove();
 
-        d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
+        d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(networkData.getLinks())
             .enter()
             .insert("svg:g", ":first-child")
@@ -1405,7 +1398,7 @@ metExploreD3.GraphLink = {
             .attr("d", function (link) {
                 return metExploreD3.GraphLink.funcPath3(link, parent, this.id, 3);
             })
-            .attr("class", "link")
+            .attr("class", "link").classed("reaction", true)
             .attr("fill-rule", "evenodd")
             .attr("fill", function (d) {
                 if (d.interaction == "out")
@@ -1432,14 +1425,14 @@ metExploreD3.GraphLink = {
         // 	.style("pointer-events", 'none')
         // 	.text('eeee');
 
-        metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
+        metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
     },
 
     loadLinksForFlux: function (parent, networkData, linkStyle, metaboliteStyle, showValues, conditionName) {
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup").remove();
         _metExploreViz.getSessionById(parent).setMappingDataType("Flux");
 
-        var divs = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link")
+        var divs = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(networkData.getLinks())
             .enter()
             .insert("svg:g", ":first-child")
@@ -1452,7 +1445,7 @@ metExploreD3.GraphLink = {
                 .attr("d", function (link) {
                     return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id);
                 })
-                .attr("class", "link")
+                .attr("class", "link").classed("reaction", true)
                 .attr("fill-rule", "evenodd")
                 .attr("id", "link")
                 .style("stroke", linkStyle.getStrokeColor())
@@ -1465,7 +1458,7 @@ metExploreD3.GraphLink = {
                 .attr("d", function (link) {
                     return metExploreD3.GraphLink.funcPathForFlux(link, parent, this.id);
                 })
-                .attr("class", "link")
+                .attr("class", "link").classed("reaction", true)
                 .attr("fill-rule", "evenodd")
                 .style("stroke", linkStyle.getStrokeColor())
                 .style("stroke-width", 0.5);
@@ -1618,13 +1611,13 @@ metExploreD3.GraphLink = {
         }
     },
     reloadLinks : function(panel, networkData, linkStyle, metaboliteStyle){
-        d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(networkData.getLinks())
             .enter()
             .insert("path",":first-child")
             .attr("class", String)
             .attr("d", function(link){ return metExploreD3.GraphLink.funcPath3(link, parent, this.id, 3);})
-            .attr("class", "link")
+            .attr("class", "link").classed("reaction", true)
             .attr("fill-rule", "evenodd")
             .attr("fill", function (d) {
                 if (d.interaction=="out")
@@ -1668,7 +1661,7 @@ metExploreD3.GraphLink = {
                 var reacTgt = {};
 
                 d3.select("#viz").select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link")
+                    .selectAll("path.link.reaction")
                     .filter(function(link){
                         return link.getInteraction()!="hiddenForce";
                     })
@@ -1820,13 +1813,13 @@ metExploreD3.GraphLink = {
         var linkStyle = metExploreD3.getLinkStyle();
         var force = session.getForce();
 
-        link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
+        link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link.reaction")
             .data(force.links(), function(d) {
                 return d.source.id + "-" + d.target.id;
             })
             .enter()
             .insert("path",":first-child")
-            .attr("class", "link")//it comes from resources/css/networkViz.css
+            .attr("class", "link").classed("reaction", true)//it comes from resources/css/networkViz.css
             .style("stroke",linkStyle.getStrokeColor())
             .style("opacity",0);
     },
@@ -1847,7 +1840,7 @@ metExploreD3.GraphLink = {
         var linksToRemove = [];
         var force = session.getForce();
 
-        var link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
+        var link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link.reaction")
             .filter(function(link){
                 return link.getInteraction()=="hiddenForce";
             })
@@ -1875,7 +1868,7 @@ metExploreD3.GraphLink = {
 //   	return Math.random() * (max - min) + min;
 // }
 
-// d3.select("#viz").select("#D3viz").selectAll("path.link")
+// d3.select("#viz").select("#D3viz").selectAll("path.link.reaction")
 // 	.each(function(link){
 // 		if(link.getSource().getReactionReversibility() || link.getTarget().getReactionReversibility())
 // 			link.value = getRandomArbitrary(-4, 4);
@@ -1886,7 +1879,7 @@ metExploreD3.GraphLink = {
 //   	return Math.random() * (max - min) + min;
 // }
 
-// d3.select("#viz").select("#D3viz").selectAll("path.link")
+// d3.select("#viz").select("#D3viz").selectAll("path.link.reaction")
 // 	.each(function(link){
 // 		if(link.getSource().getReactionReversibility() || link.getTarget().getReactionReversibility())
 // 			link.value = getRandomArbitrary(-4, 4);
@@ -1922,13 +1915,7 @@ metExploreD3.GraphLink = {
             if(flux) {
                 funcPath = metExploreD3.GraphLink.funcPathForFlux;
                 d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link")
-                    .attr("fill", function (d) {
-                        if (d.interaction == "out")
-                            return metExploreD3.getLinkStyle().getMarkerOutColor();
-                        else
-                            return metExploreD3.getLinkStyle().getMarkerInColor();
-                    })
+                    .selectAll("path.link.reaction")
                     .attr("d", function(link){  return funcPath(link, panel, this.id);})
                     .style("stroke-linejoin", "bevel");
             }
@@ -1952,13 +1939,16 @@ metExploreD3.GraphLink = {
 
             d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                 .selectAll("path.link")
-                .attr("fill", function (d) {
+                .attr("d", function(link){
+
+                    return funcPath(link, panel, this.id);
+                })
+                .select('reaction').attr("fill", function (d) {
                     if (d.interaction == "out")
                         return metExploreD3.getLinkStyle().getMarkerOutColor();
                     else
                         return metExploreD3.getLinkStyle().getMarkerInColor();
                 })
-                .attr("d", function(link){  return funcPath(link, panel, this.id);})
                 .style("stroke-linejoin", "bevel");
         }
     },
@@ -2468,7 +2458,7 @@ metExploreD3.GraphLink = {
      * @param {} exitingLinks : All the links going from the node to a product.
      */
     computeCentroid : function (node, enteringLinks, exitingLinks) {
-        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
 
         // For each node, compute the centroid of the source nodes of the arcs entering that node
         var sourceX = 0;

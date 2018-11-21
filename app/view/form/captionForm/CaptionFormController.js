@@ -104,6 +104,22 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                                         var com = metExploreD3.getCompartmentByName(conv.key);
                                                                     return com.hidden();
                                                                 });
+                                                            if (view.getTitle() == "Pathways"){
+                                                                d3.select("#" + panelLinked).select("#D3viz").selectAll("path.link.pathway")
+                                                                    .filter(function(link){
+                                                                        var reaction;
+                                                                        if(link.getSource().getBiologicalType()==="reaction")
+                                                                            reaction=link.getSource();
+                                                                        else
+                                                                            reaction=link.getTarget();
+
+                                                                        return reaction.getPathways().indexOf(component.getName())!==-1;
+
+                                                                    })
+                                                                    .classed("hide", function () {
+                                                                        return comp.hidden();
+                                                                    });
+                                                            }
                                                         });
                                                 }
                                             }

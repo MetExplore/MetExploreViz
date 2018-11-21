@@ -509,6 +509,15 @@ metExploreD3.GraphCaption = {
                         return component.hidden();
                     return true;
                 })
+
+            d3.select("#"+panel).select("#D3viz").selectAll("path.link.pathway")
+                .classed("hide", function(conv){
+                    var component = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
+                    if(component)
+                        return component.hidden();
+                    return true;
+                })
+
         }
         else
         {

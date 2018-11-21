@@ -52,7 +52,7 @@ metExploreD3.GraphPath = {
 			.data(networkData.getLinks())
 			.enter()
 			.append("line")
-			.attr("class", "link")//it comes from resources/css/networkViz.css
+			.attr("class", "link").classed("reaction", true)//it comes from resources/css/networkViz.css
 			.attr("marker-end", function (d) {
 				if (d.interaction=="out")
 				{

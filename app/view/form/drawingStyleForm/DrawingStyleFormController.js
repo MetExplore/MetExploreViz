@@ -56,7 +56,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleFormController'
 		// 				}
 		// 				else
 		// 				{
-		// 					d3.selectAll("path.link").remove();
+		// 					d3.selectAll("path.link.reaction").remove();
 		// 				}
 		// 				metExploreD3.GraphLink.tick("viz",metExploreD3.getScaleById("viz"));
 		// 			}
