@@ -663,6 +663,7 @@ metExploreD3.GraphPanel = {
 						jsonParsed.generalStyle.displayLabelsForOpt,
 						jsonParsed.generalStyle.displayLinksForOpt,
 						jsonParsed.generalStyle.displayConvexhulls,
+						jsonParsed.generalStyle.displayPathwaysOnLinks,
 						jsonParsed.generalStyle.clustered,
 						jsonParsed.generalStyle.displayCaption,
 						oldGeneralStyle.hasEventForNodeInfo(),

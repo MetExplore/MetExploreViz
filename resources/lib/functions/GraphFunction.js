@@ -41,7 +41,7 @@ metExploreD3.GraphFunction = {
         function launch(fun){
             var nodes=d3.select("#viz").select("#D3viz").selectAll("g.node");
 
-            var links=d3.select("#viz").select("#D3viz").selectAll("path.link");
+            var links=d3.select("#viz").select("#D3viz").selectAll("path.link.reaction");
 
             var lonelyNode = nodes
                 .filter(function(node){
@@ -111,7 +111,7 @@ metExploreD3.GraphFunction = {
     highlightSink : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
 
-        var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link");
+        var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link.reaction");
 
         nodes
             .filter(function(node) {
@@ -139,7 +139,7 @@ metExploreD3.GraphFunction = {
     highlightSource : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
 
-        var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link");
+        var links=d3.select("#"+panel).select("#D3viz").selectAll("path.link.reaction");
 
         nodes
             .filter(function(node){
@@ -982,7 +982,7 @@ metExploreD3.GraphFunction = {
 				graph.addNode(node.getId());
 			});
 
-		vis.selectAll("path.link")
+		vis.selectAll("path.link.reaction")
 			.each(function(link){
 				var source = link.source;
 				var target = link.target;
@@ -1018,7 +1018,7 @@ metExploreD3.GraphFunction = {
 				graph.addNode(node.getId());
 			});
 
-		vis.selectAll("path.link")
+		vis.selectAll("path.link.reaction")
 			.each(function(link){
 				var source = link.source;
 				var target = link.target;
@@ -1327,7 +1327,7 @@ metExploreD3.GraphFunction = {
 								.duration(4000).style("opacity", 0.25);// .style("stroke-width","2");
 
 						vis
-								.selectAll("path.link")
+								.selectAll("path.link.reaction")
 								.filter(
 										function(d) {
 											var source = d.source.getId();
@@ -1354,7 +1354,7 @@ metExploreD3.GraphFunction = {
 								.style("opacity", 1);// .style("stroke-width","2");
 
 						vis
-								.selectAll("path.link")
+								.selectAll("path.link.reaction")
 								.filter(
 										function(d) {
 											var source = d.source.getId();
@@ -1715,7 +1715,7 @@ metExploreD3.GraphFunction = {
 		// (graph.nodes[id].inSubNet||graph.nodes[backID].inSubNet)})
 		// .selectAll("rect")
 		// .transition().duration(4000).style("stroke","red").style("stroke-width","2");
-		// vis.selectAll("path.link")
+		// vis.selectAll("path.link.reaction")
 		// .filter(function(d){
 		// var source=d.source.getId();
 		// var target=d.target.getId();
@@ -1783,7 +1783,7 @@ metExploreD3.GraphFunction = {
         }
         // Side compounds are not included in the new graph structures
         // From each edges exiting or entering from a reversible reaction, a new edge between the same vertices but going into the opposite direction is created
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .style("stroke", "black")
             .style("stroke-width", "0.5")
             .filter(function (d) {
@@ -1939,7 +1939,7 @@ metExploreD3.GraphFunction = {
     removeInvalidCycles : function (cyclesList) {
         // New data structure to efficiently get back the edges from vertex id
         var verticesPairsToLinks = {};
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .filter(function (d) {
                 return (d.getSource().isSideCompound !== true && d.getTarget().isSideCompound !== true)
             })
@@ -2019,7 +2019,7 @@ metExploreD3.GraphFunction = {
      */
     highlightCycle: function (cycle) {
         d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("path.link")
+            .selectAll("path.link.reaction")
             .style("stroke", "black")
             .style("stroke-width", "0.5");
         var cycleLinks = metExploreD3.GraphFunction.getLinksFromCycle(cycle);
@@ -2028,7 +2028,7 @@ metExploreD3.GraphFunction = {
             nodesCycle.push(cycleLinks[i].source);
             nodesCycle.push(cycleLinks[i].target);
         }
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .filter(function (d) {
                 return (cycleLinks.includes(d));
             }).style("stroke", "blue")
@@ -2050,7 +2050,7 @@ metExploreD3.GraphFunction = {
             nodesCycle.push(cycleLinks[i].source);
             nodesCycle.push(cycleLinks[i].target);
         }
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .filter(function (d) {
                 return (cycleLinks.includes(d));
             }).style("stroke", "black")
@@ -2067,7 +2067,7 @@ metExploreD3.GraphFunction = {
      */
     getLinksFromCycle : function(cycle) {
         var cycleLinks = [];
-        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
         var tmpList = [];
         for (var i=0; i<cycle.length; i++){
             tmpList.push([]);
@@ -2388,7 +2388,7 @@ metExploreD3.GraphFunction = {
      * @param {String} panel: The panel containing the node.
      */
     checkIfPartOfCycle: function (node, panel) {
-        var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+        var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .filter(function (d) {
                 if (d.getSource() === node || d.getTarget() === node){
                     return (d.partOfCycle === true);
@@ -2402,11 +2402,11 @@ metExploreD3.GraphFunction = {
      * @param {String} panel: The panel.
      */
     checkIfCycleInPanel: function (panel) {
-    	var linkViz = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link")
+    	var linkViz = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
 			.filter(function (d) {
                 return (d.partOfCycle === true);
             });
-        var linksPanel = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+        var linksPanel = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
 			.filter(function (d) {
 				var flag = true;
 				linkViz.each(function (dViz) {

@@ -444,7 +444,8 @@ metExploreD3.GraphNetwork = {
     	var networkData = _metExploreViz.getSessionById(panel).getD3Data();
     	var nodes = networkData.getNodes();
 
-    	metExploreD3.fireEventParentWebSite("refreshCart", nodes);
+        metExploreD3.GraphPanel.setActivePanel(panel);
+		metExploreD3.fireEventParentWebSite("refreshCart", nodes);
 
     	var optArray = [];
 		for (var i = 0; i < nodes.length - 1; i++) {
@@ -550,7 +551,7 @@ metExploreD3.GraphNetwork = {
 
 		force.on("start", function(){
 			if (networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())
-				d3.selectAll("path.link").remove();
+				d3.selectAll("path.link.reaction").remove();
 		});
 
 		force.on("end", function(){
@@ -965,7 +966,8 @@ metExploreD3.GraphNetwork = {
  		
  		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
 
-		// reinitialize
+        metExploreD3.GraphLink.pathwaysOnLink(panel);
+        // reinitialize
 		metExploreD3.GraphStyleEdition.allDrawnCycles = [];
 
 	},
@@ -1471,7 +1473,7 @@ metExploreD3.GraphNetwork = {
 		var map = {};
 
 		if(flux){
-			d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+			d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
 				.filter(function(link){
 					if(source.getBiologicalType()=="metabolite"){
 						return(link.getSource().getId()==source.getIdentifier() || link.getSource().getId()==target.getId())
@@ -1510,7 +1512,7 @@ metExploreD3.GraphNetwork = {
 					};
 				});			
 
-			var divs=d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link")
+			var divs=d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
 			.data(force.links(), function(d) { return d.source.id + "-" + d.target.id;})
 			.enter()
 			.insert("svg:g",":first-child");
@@ -1533,7 +1535,7 @@ metExploreD3.GraphNetwork = {
 					.append("svg:path")
 					.attr("class", String)
 					.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, panel, this.id);})
-					.attr("class", "link")
+					.attr("class", "link").classed("reaction", true)
 					.attr("fill-rule", "evenodd")
 					.style("stroke",linkStyle.getStrokeColor())
 					.style("stroke-width",0.5)
@@ -1579,7 +1581,7 @@ metExploreD3.GraphNetwork = {
 					.attr("class", String)
 					.attr("id", "linkRev")
 					.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, panel, this.id);})
-					.attr("class", "link")
+					.attr("class", "link").classed("reaction", true)
 					.attr("fill-rule", "evenodd")
 					.style("stroke",linkStyle.getStrokeColor())
 					.style("stroke-width",0.5)
@@ -1611,13 +1613,13 @@ metExploreD3.GraphNetwork = {
 		}
 		else
 		{
-			link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link")
+			link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link.reaction")
 				.data(force.links(), function(d) { return d.source.id + "-" + d.target.id;})
 				.enter()
 				.insert("path",":first-child")
 	        	.attr("class", String)
 				.attr("d", function(link){return metExploreD3.GraphLink.funcPath4(link, panel);})
-				.attr("class", "link")
+				.attr("class", "link").classed("reaction", true)
 				.attr("fill-rule", "evenodd")
 				.attr("fill", function (d) {
 					if (d.interaction=="out")
@@ -1768,7 +1770,7 @@ metExploreD3.GraphNetwork = {
                     }
                 }
 
-                var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link");
+                var links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
 
                 if(d.getBiologicalType()=="reaction"){
 
@@ -1821,24 +1823,24 @@ metExploreD3.GraphNetwork = {
 
                 if(d.getBiologicalType()=="reaction"){
                     d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
+                        .selectAll("path.link.reaction")
                         .filter(function(link){return d.getId()==link.getSource().getId();})
                         .style("stroke", "green");
 
                     d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
+                        .selectAll("path.link.reaction")
                         .filter(function(link){return d.getId()==link.getTarget().getId();})
                         .style("stroke", "red");
                 }
                 else
                 {
                     d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
+                        .selectAll("path.link.reaction")
                         .filter(function(link){return d.getId()==link.getSource().getId();})
                         .style("stroke", "red");
 
                     d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
+                        .selectAll("path.link.reaction")
                         .filter(function(link){return d.getId()==link.getTarget().getId();})
                         .style("stroke", "green");
                 }
@@ -1882,7 +1884,7 @@ metExploreD3.GraphNetwork = {
 
 
                 d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link")
+                    .selectAll("path.link.reaction")
                     .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
                     .style("stroke",linkStyle.getStrokeColor())
                     .style("stroke-width", "0.5");
@@ -2134,7 +2136,7 @@ metExploreD3.GraphNetwork = {
 
 		//Create the list of nodes to duplicate.
 		//Two tables are created, one when side compounds are substrates and one when they are products
-         vis.selectAll("path.link")
+         vis.selectAll("path.link.reaction")
          	.filter(function(link){
 				return link.getInteraction()!="hiddenForce";
 			})
@@ -2782,7 +2784,7 @@ metExploreD3.GraphNetwork = {
 		var linksToRemove = [];
 		var vis = d3.select("#"+panel).select("#D3viz");
 		
-		vis.selectAll("path.link")
+		vis.selectAll("path.link.reaction")
 			.filter(function(d) {
 				var source = d.source;
 				var target = d.target;
@@ -2931,7 +2933,7 @@ metExploreD3.GraphNetwork = {
 		
 	// 	nodes.filter(function(node){
 	// 		var haveALink=false;
-	// 		vis.selectAll("path.link")
+	// 		vis.selectAll("path.link.reaction")
 	// 			.each(function(link){
 	// 				var src = link.source;
 	// 				var tgt = link.target;
@@ -3025,7 +3027,7 @@ metExploreD3.GraphNetwork = {
 		});
 
 		var haveALink=false;
-		vis.selectAll("path.link")
+		vis.selectAll("path.link.reaction")
 			.each(function(link){
 				var src = link.source;
 				var tgt = link.target;
