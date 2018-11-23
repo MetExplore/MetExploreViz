@@ -444,7 +444,8 @@ metExploreD3.GraphNetwork = {
     	var networkData = _metExploreViz.getSessionById(panel).getD3Data();
     	var nodes = networkData.getNodes();
 
-    	metExploreD3.fireEventParentWebSite("refreshCart", nodes);
+        metExploreD3.GraphPanel.setActivePanel(panel);
+		metExploreD3.fireEventParentWebSite("refreshCart", nodes);
 
     	var optArray = [];
 		for (var i = 0; i < nodes.length - 1; i++) {

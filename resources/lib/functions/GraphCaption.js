@@ -505,18 +505,27 @@ metExploreD3.GraphCaption = {
             d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
                 .classed("hide", function(conv){
                     var component = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
-                    if(component)
+                    if(component){
+                        d3.select("#" + panel).select("#D3viz").selectAll("path.link.pathway")
+                            .filter(function(link){
+                                var reaction;
+                                if(link.getSource().getBiologicalType()==="reaction")
+                                    reaction=link.getSource();
+                                else
+                                    reaction=link.getTarget();
+
+                                return reaction.getPathways().indexOf(component.getName())!==-1;
+
+                            })
+                            .classed("hide", function () {
+                                return component.hidden();
+                            });
                         return component.hidden();
+                    }
+
                     return true;
                 })
 
-            d3.select("#"+panel).select("#D3viz").selectAll("path.link.pathway")
-                .classed("hide", function(conv){
-                    var component = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
-                    if(component)
-                        return component.hidden();
-                    return true;
-                })
 
         }
         else

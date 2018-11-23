@@ -113,7 +113,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                                         else
                                                                             reaction=link.getTarget();
 
-                                                                        return reaction.getPathways().indexOf(component.getName())!==-1;
+                                                                        return reaction.getPathways().indexOf(component.getName())!==-1 && this.getAttribute("id")===component.getName().replace(/[.*+?^${}()|[\]\-\\]/g, "");
 
                                                                     })
                                                                     .classed("hide", function () {

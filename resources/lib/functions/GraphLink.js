@@ -34,28 +34,29 @@ metExploreD3.GraphLink = {
                         if(pathw!==null && !pathw.hidden()){
                             var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
                             col["o"]=0.15;
-                            cols.push(pathw.getColor());
+                            cols.push(pathw);
 
                             if(color==="#000000"){
                                 color=col;
                             }
                         }
                     });
+
                     if(cols.length>0){
                         var percent = 100 / cols.length;
-                        cols.forEach(function(couleur, i){
+                        cols.forEach(function(pathw, i){
                             var newelemt = me.cloneNode(true);
                             me.parentNode.appendChild(newelemt);
                             var size = 8;
-
                             d3.select(newelemt).datum(link)
                                 .classed("reaction", false)
                                 .classed("pathway", true)
+                                .attr('id', pathw.getName().replace(/[.*+?^${}()|[\]\-\\]/g, ""))
                                 .classed("hide", true)
                                 .style("stroke-width","3px")
                                 .style("stroke-dasharray", size+","+size*(cols.length-1))
                                 .style("stroke-dashoffset", size*i)
-                                .style("stroke", couleur);
+                                .style("stroke", pathw.getColor());
 
                         })
                         //me.parentNode.removeChild(me);
