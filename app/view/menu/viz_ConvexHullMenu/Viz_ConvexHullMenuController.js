@@ -71,10 +71,17 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 			click : me.checkHandler,
 			scope : me
 		});
+
+        view.lookupReference('highlightPathwaysLink').on({
+			click : me.pathwaysOnLinkDrawing,
+			scope : me
+		});
 	},
 	checkHandler: function (item, checked){
         var checkboxC=Ext.getCmp('highlightCheckboxCompartments');
         var checkboxP=Ext.getCmp('highlightCheckboxPathways');
+        var checkboxLinkP=Ext.getCmp('highlightCheckboxPathwaysLink');
+
         var me 		= this;
         if(item.checked){
             var checkbox = Ext.getCmp('highlightCheckbox'+item.text);
@@ -86,7 +93,7 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
             Ext.getCmp('captionForm'+item.text).expand();
             item.parentMenu.items.items
                 .filter(function(anItem){
-                    return anItem!=item;
+                    return anItem!=item && anItem.text!=="PathwaysLink";
                 })
                 .forEach(function(anItem){
                     anItem.setChecked(false);
@@ -106,6 +113,30 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
             checkboxP.resumeEvent('change');
             checkboxC.resumeEvent('change');
             me.hideComponents();
+		}
+
+
+    },
+	pathwaysOnLinkDrawing : function (item, checked){
+
+        var checkboxLinkP=Ext.getCmp('highlightCheckboxPathwaysLink');
+
+        var me 		= this;
+        if(item.checked){
+            var checkbox = Ext.getCmp('highlightCheckboxPathwaysLink');
+            checkbox.suspendEvent('change');
+            checkbox.setValue(true);
+            checkbox.resumeEvent('change');
+            me.highlightPathwaysOnLink();
+            Ext.getCmp('comparisonSidePanel').expand();
+            Ext.getCmp('captionFormPathways').expand();
+        }
+        else
+        {
+            me.hidePathwaysOnLink();
+            checkboxLinkP.suspendEvent('change');
+            checkboxLinkP.setValue(false);
+            checkboxLinkP.resumeEvent('change');
 		}
 
 
@@ -132,12 +163,27 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 		
 	},
-    hideComponents : function(){
+    highlightPathwaysOnLink : function(){
 
     	var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 
+		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+
+		s_GeneralStyle.setDisplayPathwaysOnLinks(true);
+
+		metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
+
+		s_GeneralStyle.setDisplayCaption("Pathways");
+        metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+	},
+
+    hideComponents : function(){
+
+    	var me 		= this,
+		viewModel   = me.getViewModel(),
+		view      	= me.getView();
 		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 		
 		s_GeneralStyle.setDisplayConvexhulls(false);
@@ -149,5 +195,17 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 
 		metExploreD3.fireEvent("generalStyleForm", "setGeneralStyle");
 		metExploreD3.fireEvent("vizIdDrawing", "disableMakeClusters");
+	},
+
+    hidePathwaysOnLink  : function(){
+
+        var me 		= this,
+            viewModel   = me.getViewModel(),
+            view      	= me.getView();
+
+        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+
+        s_GeneralStyle.setDisplayPathwaysOnLinks(false);
+        metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 	}
 });
