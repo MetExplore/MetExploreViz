@@ -612,7 +612,7 @@ metExploreD3.GraphMapping = {
 
 		          	metExploreD3.hideMask(myMask);
 
-		          	d3.select("#viz").select("#D3viz").selectAll("path.link")
+		          	d3.select("#viz").select("#D3viz").selectAll("path.link.reaction")
 						.style("fill", function(link){
 							var reaction, metabolite;
 							if(link.getSource().getBiologicalType()=='reaction'){
@@ -910,7 +910,7 @@ metExploreD3.GraphMapping = {
 
 		          	metExploreD3.hideMask(myMask);
 
-		          	d3.select("#viz").select("#D3viz").selectAll("path.link")
+		          	d3.select("#viz").select("#D3viz").selectAll("path.link.reaction")
 						.style("fill", function(link){
 							var reaction, metabolite;
 							if(link.getSource().getBiologicalType()=='reaction'){

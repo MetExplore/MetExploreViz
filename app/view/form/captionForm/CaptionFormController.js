@@ -104,6 +104,9 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                                         var com = metExploreD3.getCompartmentByName(conv.key);
                                                                     return com.hidden();
                                                                 });
+                                                            if (view.getTitle() == "Pathways"){
+                                                                metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+                                                            }
                                                         });
                                                 }
                                             }
@@ -156,7 +159,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                 bodyBorder: false,
                 xtype: 'panel',
                 layout: {
-                    type: 'hbox',
+                    type: 'vbox',
                     align: 'stretch'
                 }
             });
@@ -191,6 +194,31 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             });
             newConditionPanel.add(highlightCheckbox);
 
+            if(view.getTitle()=="Pathways"){
+                // Create checkbox to display convex hull around each components
+                var highlightLinkCheckbox = Ext.create('Ext.form.field.Checkbox', {
+                    tooltip: 'Display convex hull around each ' + view.getTitle(),
+                    boxLabel: 'Highlight '+view.getTitle().toLowerCase() +' on links' ,
+                    margin: '0 0 20 10',
+                    id: 'highlightCheckbox' + view.getTitle() + "Link"
+                });
+
+                highlightLinkCheckbox.on({
+                    change : function (that, newV, oldVV, e) {
+
+                        switch (view.getTitle()) {
+                            case "Pathways":
+                                Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink').setChecked(newV);
+                                Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink')
+                                    .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink'));
+                                break;
+                            default:
+                        }
+                    },
+                    scope:highlightLinkCheckbox
+                });
+                newConditionPanel.add(highlightLinkCheckbox);
+            }
 
 
             // Add component caption to captionForm panel

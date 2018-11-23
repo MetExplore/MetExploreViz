@@ -27,6 +27,10 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenu', {
                 text: 'Pathways',
                 checked: false,
                 reference:'highlightPathways'
+            }, {
+                text: 'PathwaysLink',
+                checked: false,
+                reference:'highlightPathwaysLink'
             }
         ]
 });

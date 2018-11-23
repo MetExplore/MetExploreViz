@@ -6,7 +6,7 @@
  /**
  * General style
  */
-var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, clust, dispCaption, eventForNodeInfo, loadButtonHidden, windowsAlertDisable){
+var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, dispPathwaysOnLinks, clust, dispCaption, eventForNodeInfo, loadButtonHidden, windowsAlertDisable){
     this.websiteName = siteName;
     this.colorMinMappingContinuous = minContinuous;
     this.colorMaxMappingContinuous = maxContinuous;
@@ -14,6 +14,7 @@ var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLab
     this.displayLabelsForOpt = dispLabel;
     this.displayLinksForOpt = dispLink;
     this.displayConvexhulls = dispConvexhull;
+    this.displayPathwaysOnLinks = dispPathwaysOnLinks;
     this.displayCaption = dispCaption;
     this.eventForNodeInfo=eventForNodeInfo;
     this.loadButtonHidden=false;
@@ -72,7 +73,10 @@ GeneralStyle.prototype = {
 
     isDisplayedConvexhulls:function(){return this.displayConvexhulls;},
     setDisplayConvexhulls:function(dispConvexhull){this.displayConvexhulls = dispConvexhull;},
- 
+
+    isDisplayedPathwaysOnLinks:function(){return this.displayPathwaysOnLinks;},
+    setDisplayPathwaysOnLinks:function(dispPathwaysOnLinks){this.displayPathwaysOnLinks = dispPathwaysOnLinks;},
+
     isDisplayedCaption:function(){return this.displayCaption;},
     setDisplayCaption:function(dispCaption){this.displayCaption = dispCaption;},
  
