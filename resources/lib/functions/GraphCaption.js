@@ -493,40 +493,34 @@ metExploreD3.GraphCaption = {
      * Maj caption
      */
     majCaption : function(panel){
-        var activePanel = _MyThisGraphNode.activePanel;
-        if(!activePanel) activePanel='viz';
 
-       metExploreD3.applyTolinkedNetwork(
-            activePanel,
-            function(panelLinked, sessionLinked) {
-                var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
-                var component = s_GeneralStyle.isDisplayedCaption();
+        var component = s_GeneralStyle.isDisplayedCaption();
 
 
-                if(component=="Pathways") {
-                    d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
-                        .classed("hide", function (conv) {
-                            var component = _metExploreViz.getSessionById(panelLinked).getD3Data().getPathwayByName(conv.key);
-                            if (component) {
-                                return component.hidden();
-                            }
+        if(component=="Pathways") {
+            d3.select("#" + panel).select("#D3viz").selectAll("path.convexhull")
+                .classed("hide", function (conv) {
+                    var component = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
+                    if (component) {
+                        return component.hidden();
+                    }
 
-                            return true;
-                        });
-                }
-                else
-                {
-                    d3.select("#"+panelLinked).select("#D3viz").selectAll("path.convexhull")
-                        .classed("hide", function(conv){
-                            var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
-                            if(component)
-                                var hidden = component.hidden();
-                            else	var hidden = true;
-                            return hidden;
-                        });
-                }
-            });
+                    return true;
+                });
+        }
+        else
+        {
+            d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
+                .classed("hide", function(conv){
+                    var component = _metExploreViz.getSessionById("viz").getD3Data().getCompartmentByName(conv.key);
+                    if(component)
+                        var hidden = component.hidden();
+                    else	var hidden = true;
+                    return hidden;
+                });
+        }
     },
 
     /*****************************************************
@@ -559,32 +553,39 @@ metExploreD3.GraphCaption = {
     /*****************************************************
      * Maj caption color
      */
-    majCaptionColor : function(components, selectedComponent){
+    majCaptionColor : function(components, selectedComponent, panel){
         var generalStyle = _metExploreViz.getGeneralStyle();
         var isDisplay = generalStyle.isDisplayedConvexhulls();
 
-        if(selectedComponent == isDisplay){
-            d3.select(_MyThisGraphNode.activePanel).select("#D3viz").selectAll("path.convexhull")
-                .style("fill",
-                    function(d){
+        if(selectedComponent === isDisplay){
+             d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
+                    .style("fill",
+                        function(d){
+                            var component = components.find(function(c){
+                                return c.name===d.key;
+                            });
+                            return component.color;
+                        }
+                    )
+                    .style("stroke", function(d){
                         var component = components.find(function(c){
-                            return c.name==d.key;
+                            return c.name===d.key;
                         });
-                        return component.color;
-                    }
-                )
-                .style("stroke", function(d){
-                    var component = components.find(function(c){
-                        return c.name==d.key;
-                    });
 
-                    return component.color;
-                });
+                        return component.color;
+                    });
         }
 
         switch(selectedComponent) {
             case "Compartments":
                 metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+                break;
+            case "Pathways":
+                d3.select("#" + panel).select("#D3viz").selectAll("path.link.pathway")
+                    .style("stroke", function () {
+                        var comp = _metExploreViz.getSessionById(panel).getD3Data().getPathwayById(this.getAttribute("id"));
+                        return comp.color;
+                    });
                 break;
             default:
             // generalStyle.setDisplayCaption(false);

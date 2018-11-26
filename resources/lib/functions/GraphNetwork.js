@@ -367,7 +367,7 @@ metExploreD3.GraphNetwork = {
 			.attr("height", "50")
 			.attr("transform","translate(10,50) scale(.5)");
 
-		if(session!=undefined)  
+		if(session!=undefined)
 		{
 			if(mainSession.getDuplicatedNodesCount()>0){
 
@@ -967,6 +967,7 @@ metExploreD3.GraphNetwork = {
  		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
 
         metExploreD3.GraphLink.pathwaysOnLink(panel);
+        metExploreD3.GraphCaption.majCaptionPathwayOnLink();
         // reinitialize
 		metExploreD3.GraphStyleEdition.allDrawnCycles = [];
 
