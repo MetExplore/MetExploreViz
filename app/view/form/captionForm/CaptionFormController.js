@@ -35,7 +35,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
         // We add form corresponding to the component data type
         var captionForm = view;
         if(view.getTitle()=="Pathways")
-            var components = metExploreD3.getPathwaysSet('viz')
+            var components = metExploreD3.getPathwaysSet('viz');
         else
             var components = metExploreD3.getCompartmentInBiosourceSet();
 
@@ -125,9 +125,19 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                             value: component.getColor(),
                                             listeners: {
                                                 change: function (that) {
+
+                                                    var activePanel = _MyThisGraphNode.activePanel;
+                                                    if(!activePanel) activePanel='viz';
+
                                                     this.lastValue = that.value;
-                                                    component.setColor(that.value);
-                                                    metExploreD3.GraphCaption.majCaptionColor(components, view.getTitle());
+                                                    metExploreD3.applyTolinkedNetwork(
+                                                        activePanel,
+                                                        function(panelLinked, sessionLinked) {
+                                                            var componentsLinked = metExploreD3.getPathwaysSet(panelLinked);
+                                                            var comp = _metExploreViz.getSessionById(panelLinked).getD3Data().getPathwayById(component.getId());
+                                                            comp.setColor(that.value);
+                                                            metExploreD3.GraphCaption.majCaptionColor(componentsLinked, view.getTitle(), panelLinked);
+                                                        });
                                                 }
                                             }
                                         },

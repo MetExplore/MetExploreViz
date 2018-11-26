@@ -39,7 +39,15 @@ Ext.define('metExploreViz.view.form.selectComponent.SelectComponentController', 
             default:
                 var generalStyle = _metExploreViz.getGeneralStyle();
                 generalStyle.setDisplayCaption(false);
-                metExploreD3.GraphCaption.majCaption(_MyThisGraphNode.activePanel);
+
+                var activePanel = _MyThisGraphNode.activePanel;
+                if(!activePanel) activePanel='viz';
+                metExploreD3.applyTolinkedNetwork(
+                    activePanel,
+                    function(panelLinked, sessionLinked) {
+                        metExploreD3.GraphCaption.majCaption(panelLinked);
+                    });
+
         }
     },
 

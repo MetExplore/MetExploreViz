@@ -148,21 +148,29 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		view      	= me.getView();
 
 		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-		
-		s_GeneralStyle.setDisplayConvexhulls(false);
-		metExploreD3.GraphLink.displayConvexhulls(_MyThisGraphNode.activePanel);
-		metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
 
-		s_GeneralStyle.setDisplayConvexhulls(component);
-		metExploreD3.GraphLink.displayConvexhulls(_MyThisGraphNode.activePanel);
-		metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
+		var activePanel = _MyThisGraphNode.activePanel;
+        if(!activePanel) activePanel='viz';
+        metExploreD3.applyTolinkedNetwork(
+            activePanel,
+            function(panelLinked, sessionLinked) {
+                metExploreD3.GraphCaption.majCaption(panelLinked);
 
-		s_GeneralStyle.setDisplayCaption(component);
-		metExploreD3.GraphCaption.majCaption(_MyThisGraphNode.activePanel);
-		
-		metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
-		
-	},
+				s_GeneralStyle.setDisplayConvexhulls(false);
+				metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+				metExploreD3.GraphNetwork.tick(panelLinked);
+
+				s_GeneralStyle.setDisplayConvexhulls(component);
+				metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+				metExploreD3.GraphNetwork.tick(panelLinked);
+
+				s_GeneralStyle.setDisplayCaption(component);
+				metExploreD3.GraphCaption.majCaption(panelLinked);
+
+            });
+        metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
+
+    },
     highlightPathwaysOnLink : function(){
 
     	var me 		= this,
@@ -187,11 +195,19 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 		
 		s_GeneralStyle.setDisplayConvexhulls(false);
-		metExploreD3.GraphLink.displayConvexhulls(_MyThisGraphNode.activePanel);
-		metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
 
-		s_GeneralStyle.setDisplayCaption(false);
-		metExploreD3.GraphCaption.majCaption(_MyThisGraphNode.activePanel);
+        var activePanel = _MyThisGraphNode.activePanel;
+        if(!activePanel) activePanel='viz';
+        metExploreD3.applyTolinkedNetwork(
+            activePanel,
+            function(panelLinked, sessionLinked) {
+                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                metExploreD3.GraphNetwork.tick(panelLinked);
+
+                s_GeneralStyle.setDisplayCaption(false);
+                metExploreD3.GraphCaption.majCaption(panelLinked);
+            });
+
 
 		metExploreD3.fireEvent("generalStyleForm", "setGeneralStyle");
 		metExploreD3.fireEvent("vizIdDrawing", "disableMakeClusters");
