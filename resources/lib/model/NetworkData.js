@@ -208,7 +208,7 @@ NetworkData.prototype = {
         if(this.pathways == undefined)
             this.pathways = [];
 
-        var object = new Pathway(name.replace(/[.*+?^${}()|[\]\-\\]/g, ""), name);
+        var object = new Pathway(name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), name);
         this.pathways.push(object);
     },
     copyPathway:function(path){
@@ -216,7 +216,7 @@ NetworkData.prototype = {
             this.pathways = [];
 
 
-        var object = new Pathway(path.name.replace(/[.*+?^${}()|[\]\-\\]/g, ""), path.name, path.hide, path.color);
+        var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color);
         this.pathways.push(object);
     },
 

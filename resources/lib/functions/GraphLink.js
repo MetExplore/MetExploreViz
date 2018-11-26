@@ -31,7 +31,7 @@ metExploreD3.GraphLink = {
                     var color="#000000";
                     reaction.getPathways().forEach(function(path){
                         var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(path);
-                        if(pathw!==null && !pathw.hidden()){
+                        if(pathw!==null){
                             var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
                             col["o"]=0.15;
                             cols.push(pathw);
@@ -51,7 +51,7 @@ metExploreD3.GraphLink = {
                             d3.select(newelemt).datum(link)
                                 .classed("reaction", false)
                                 .classed("pathway", true)
-                                .attr('id', pathw.getName().replace(/[.*+?^${}()|[\]\-\\]/g, ""))
+                                .attr('id', pathw.getName().replace(/[.*+?^${} ()|[\]\-\\]/g, ""))
                                 .classed("hide", true)
                                 .style("stroke-width","3px")
                                 .style("stroke-dasharray", size+","+size*(cols.length-1))
