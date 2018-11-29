@@ -492,8 +492,8 @@ metExploreD3.GraphNode = {
 	dragend : function(d, i) {
 		var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 		var mainSession = _metExploreViz.getSessionById("viz");
-		
-		if(session!=undefined)  
+
+		if(session!=undefined)
 		{
 			if(session.isLinked()){
 
@@ -1596,12 +1596,23 @@ metExploreD3.GraphNode = {
 	},
 
 	unselectAll : function(me) {
+		console.log(_MyThisGraphNode.activePanel);
+		if(_MyThisGraphNode.activePanel===undefined || _MyThisGraphNode.activePanel==="")_MyThisGraphNode.activePanel=="viz";
+
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+
         d3.select(me).select("#graphComponent")
             .selectAll("g.node")
             .filter(function(d) {  return d.isSelected(); })
             .each(function(d) { _MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel); });
         session.removeAllSelectedNodes();
+
+        d3.select(me).selectAll("path.convexhull")
+            .style("stroke", metExploreD3.GraphNode.groupFill)
+            .style("stroke-width", 40)
+            .style("stroke-linejoin", "round");
+
+        session.removeAllSelectedPathways();
 	},
 
 	unselectIfDBClick : function() {
@@ -2205,18 +2216,60 @@ metExploreD3.GraphNode = {
 		d3.select("#"+parent).select("#D3viz").selectAll("path.convexhull")
 		    .data(session.groups)
 		    .enter()
-		    	.insert("path", ":first-child")
+			.insert("path", ":first-child")
 			.attr("class", String)
 		    .attr("d", function(d){ return pathTab; })
-				.attr("class", function(d){ return d.key; })
-				.classed("convexhull", true)
-				.attr("id", function(d){ return d.key; })
-				.style("fill", metExploreD3.GraphNode.groupFill)
-				.style("stroke", metExploreD3.GraphNode.groupFill)
-				.style("stroke-width", 40)
-				.style("stroke-linejoin", "round")
-				.style("opacity", .15)
-
+			.attr("class", function(d){ return d.key; })
+			.classed("convexhull", true)
+			.attr("id", function(d){ return d.key; })
+			.style("fill", metExploreD3.GraphNode.groupFill)
+			.style("stroke", metExploreD3.GraphNode.groupFill)
+			.style("stroke-width", 40)
+			.style("stroke-linejoin", "round")
+			.style("opacity", .15)
+			.on("mouseup", function(d) {
+				console.log(d3.event.which);
+				if(d3.event.which!==3){
+                    var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
+                    if(extent[1][0]-extent[0][0]<20 && extent[1][1]-extent[0][1]<20)
+					{
+						if(d.isSelected){
+							d.isSelected=false;
+							session.removeSelectedPathway(d.key);
+							d3.select(this)
+								.style("stroke", metExploreD3.GraphNode.groupFill)
+								.style("stroke-width", 40)
+								.style("stroke-linejoin", "round")
+						}
+						else
+						{
+							d.isSelected=true;
+							session.addSelectedPathway(d.key);
+							d3.select(this)
+								.style("stroke", "black")
+								.style("stroke-width", 10)
+								.style("stroke-linejoin", "round")
+						}
+                    }
+            	}
+            	else
+				{
+                    if(d3.event.which===3){
+                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
+                        if(extent[1][0]-extent[0][0]<20 && extent[1][1]-extent[0][1]<20)
+                        {
+                            if(!d.isSelected){
+                                d.isSelected=true;
+                                session.addSelectedPathway(d.key);
+                                d3.select(this)
+                                    .style("stroke", "black")
+                                    .style("stroke-width", 10)
+                                    .style("stroke-linejoin", "round")
+                            }
+                        }
+                    }
+				}
+			})
 	},
 	
 	/*******************************************
@@ -2336,8 +2389,11 @@ metExploreD3.GraphNode = {
 
                 d3.select(this)
                     .each(function(node){
-                        var last = nodes[0][nodes.size()-1];
-                        this.parentNode.insertBefore(this, last);
+                    	if(node.getBiologicalType()!=="pathway")
+						{
+							var last = nodes[0][nodes.size()-1];
+                            this.parentNode.insertBefore(this, last);
+                        }
                     });
 
                 d.fixed = true;
@@ -2532,8 +2588,11 @@ metExploreD3.GraphNode = {
                 var nodes = d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 d3.select(this)
                     .each(function(node){
-                        var last = nodes[0][nodes.size()-1];
-                        this.parentNode.insertBefore(this, last);
+                        if(node.getBiologicalType()!=="pathway")
+                        {
+                            var last = nodes[0][nodes.size()-1];
+                            this.parentNode.insertBefore(this, last);
+                        }
                     });
 
                 d.fixed = true;

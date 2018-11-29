@@ -94,7 +94,7 @@ metExploreD3.GraphPanel = {
 			// scale
 			// 	.getStoreByGraphName(panel)
 			// 	.setScale(xScale, yScale, 1, 1, 1, metExploreD3.GraphNetwork.zoomListener.scale(), metExploreD3.GraphNetwork.zoomListener);
-			// var brushing = false;
+			// metExploreD3.GraphNetwork.brushing = false;
 
 			d3.select("#"+panel).select('#D3viz').select('#brush')
 				.call(d3.svg.brush()
@@ -143,7 +143,7 @@ metExploreD3.GraphPanel = {
 								}
 							}
 
-							brushing = true;
+							metExploreD3.GraphNetwork.brushing = true;
 							d3.select("#"+panel).select("#brush").classed("hide", false);
 							d3.select("#"+panel).select("#D3viz").on("mousedown.zoom", null);
 							nodeBrushed = d3.select("#"+panel).select("#graphComponent").selectAll("g.node");
@@ -165,7 +165,7 @@ metExploreD3.GraphPanel = {
 						}
 					})
 					.on("brushend", function() {
-						if(d3.event.sourceEvent.button!=1 && brushing){
+						if(d3.event.sourceEvent.button!=1 && metExploreD3.GraphNetwork.brushing){
 							var extent = d3.event.target.extent();
 							if(extent[1][0]-extent[0][0]>20 || extent[1][1]-extent[0][1]>20){
 
@@ -231,7 +231,7 @@ metExploreD3.GraphPanel = {
 													}
 											}
 										}
-										brushing = false;
+										metExploreD3.GraphNetwork.brushing = false;
 							        }, 100);
 								}
 							}
