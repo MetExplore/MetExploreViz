@@ -2228,7 +2228,6 @@ metExploreD3.GraphNode = {
 			.style("stroke-linejoin", "round")
 			.style("opacity", .15)
 			.on("mouseup", function(d) {
-				console.log(d3.event.which);
 				if(d3.event.which!==3){
                     var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
                     if(extent[1][0]-extent[0][0]<20 && extent[1][1]-extent[0][1]<20)
@@ -2254,20 +2253,19 @@ metExploreD3.GraphNode = {
             	}
             	else
 				{
-                    if(d3.event.which===3){
-                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
-                        if(extent[1][0]-extent[0][0]<20 && extent[1][1]-extent[0][1]<20)
-                        {
-                            if(!d.isSelected){
-                                d.isSelected=true;
-                                session.addSelectedPathway(d.key);
-                                d3.select(this)
-                                    .style("stroke", "black")
-                                    .style("stroke-width", 10)
-                                    .style("stroke-linejoin", "round")
-                            }
-                        }
-                    }
+					var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
+					if(extent[1][0]-extent[0][0]<20 && extent[1][1]-extent[0][1]<20)
+					{
+						if(!d.isSelected){
+							d.isSelected=true;
+							session.addSelectedPathway(d.key);
+							d3.select(this)
+								.style("stroke", "black")
+								.style("stroke-width", 10)
+								.style("stroke-linejoin", "round")
+						}
+					}
+
 				}
 			})
 	},
