@@ -2368,12 +2368,12 @@ metExploreD3.GraphNetwork = {
 */
 
         var nodesToRemove = metExploreD3.GraphNode.node
-			.filter(function(n){return n.getBiologicalType()==="metabolite"})
 			.filter(function(n){
 				var pathWithTheNode = n.pathways.filter(function (t) {
 					return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
 				});
-				pathWithTheNode.length==1 && n.pathways.includes(pathwayName);
+
+                return pathWithTheNode.length===1 && n.pathways.includes(pathwayName);
         	}
         );
 
@@ -2572,11 +2572,7 @@ metExploreD3.GraphNetwork = {
             networkData.addLink(path.getId()+"-"+newNode.getId(), path, newNode, "out", false);
             metExploreD3.GraphNetwork.addLinkInDrawing(path.getId()+"-"+newNode.getId(), path, newNode, "out", false, "viz")
         });
-
-
-        var originalX = 100;
-        var originalY = 100;
-
+		
         if (metExploreD3.GraphNetwork.isAnimated("viz")==true || metExploreD3.GraphNetwork.isAnimated("viz")=="true") {
             force.start();
         }
@@ -2584,9 +2580,9 @@ metExploreD3.GraphNetwork = {
 		{
             force.start();
             force.stop();
-            metExploreD3.GraphNetwork.tick("viz");
 		}
 
+        metExploreD3.GraphNetwork.tick("viz");
         return newNode;
     },
 
