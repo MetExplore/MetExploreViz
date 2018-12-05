@@ -89,8 +89,6 @@ metExploreD3.GraphNetwork = {
 					zoomListener.event(d3.select("#"+panel).select("#D3viz"));	
 	            	
 	            	scale.setZoomScale(newScale);
-					scale.setXScale(zoomListener.x());
-					scale.setYScale(zoomListener.y());	
 				}
 				else
 				{
@@ -120,8 +118,6 @@ metExploreD3.GraphNetwork = {
 						zoomListener.event(d3.select("#"+panel).select("#D3viz"));	
 		            	
 		            	scale.setZoomScale(newScale);
-						scale.setXScale(zoomListener.x());
-						scale.setYScale(zoomListener.y());	
 					}
 				}
 			}
@@ -161,8 +157,6 @@ metExploreD3.GraphNetwork = {
 					zoomListener.scale(d3EventScale);
 					// Firstly we changed the store which correspond to viz panel
 					scale.setZoomScale(d3EventScale);
-					scale.setXScale(transX);
-					scale.setYScale(transY);
 
 					metExploreD3.GraphLink.tick(panelLinked, scale);
 				}
@@ -192,9 +186,6 @@ metExploreD3.GraphNetwork = {
 
 		
 		zoomListener.event(d3.select("#"+panel).select("#D3viz"));		
-		
-		scale.setXScale(zoomListener.x());
-		scale.setYScale(zoomListener.y());
 
 		// Firstly we changed the store which correspond to viz panel
 		scale.setZoomScale(scale.getZoomScale()*1.1);
@@ -224,7 +215,6 @@ metExploreD3.GraphNetwork = {
     	zoomListener.scale(scale.getZoomScale()*0.9);
 
 		zoomListener.event(d3.select("#"+panel).select("#D3viz"));
-
 		scale.setXScale(zoomListener.x());
 		scale.setYScale(zoomListener.y());
 
@@ -986,8 +976,6 @@ metExploreD3.GraphNetwork = {
 			.each('end', function(){
                 zoom.translate([0,0]);
 
-                scaleViz.setXScale(0);
-                scaleViz.setYScale(0);
                 zoom.scale(1);
                 scaleViz.setZoomScale(1);
                 var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
@@ -1023,8 +1011,6 @@ metExploreD3.GraphNetwork = {
                             zoom.translate([transX, transY]);
                             zoom.scale(scale);
                             scaleViz.setZoomScale(scale);
-                            scaleViz.setXScale(transX);
-                            scaleViz.setYScale(transY);
                         });
 
             });
