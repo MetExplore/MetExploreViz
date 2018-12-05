@@ -950,8 +950,6 @@ metExploreD3.GraphNode = {
                 .each('end', function(){
                     zoom.translate([0,0]);
 
-                    scaleViz.setXScale(0);
-                    scaleViz.setYScale(0);
                     zoom.scale(1);
                     scaleViz.setZoomScale(1);
 
@@ -1002,8 +1000,6 @@ metExploreD3.GraphNode = {
 					zoom.translate([transX,transY]);
 					zoom.scale(scale);
 					scaleViz.setZoomScale(scale);
-					scaleViz.setXScale(transX);
-					scaleViz.setYScale(transY);
 
                     selected.each(
                         function(aSelectedNode){
