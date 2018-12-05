@@ -1181,6 +1181,8 @@ metExploreD3.GraphNetwork = {
  		metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
 
         metExploreD3.GraphLink.pathwaysOnLink(panel);
+        metExploreD3.GraphNetwork.initPathways(panel);
+
         metExploreD3.GraphCaption.majCaptionPathwayOnLink();
         // reinitialize
 		metExploreD3.GraphStyleEdition.allDrawnCycles = [];
@@ -1675,7 +1677,9 @@ metExploreD3.GraphNetwork = {
     * @param {} reversible : Reversibility of link
     * @param {} panel : The panel where is the new link
     */
-    addLinkInDrawing:function(identifier,source,target,interaction,reversible,panel){
+    addLinkInDrawing:function(identifier,source,target,interaction,reversible,panel, hide){
+    	if(!hide)
+    		hide=false;
 		var session = _metExploreViz.getSessionById(panel);
 		var networkData = session.getD3Data();
 		networkData.addLink(identifier,source,target,interaction,reversible);
@@ -1750,7 +1754,7 @@ metExploreD3.GraphNetwork = {
 					.append("svg:path")
 					.attr("class", String)
 					.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, panel, this.id);})
-					.attr("class", "link").classed("reaction", true)
+					.attr("class", "link").classed("reaction", true).classed("hide", hide)
 					.attr("fill-rule", "evenodd")
 					.style("stroke",linkStyle.getStrokeColor())
 					.style("stroke-width",0.5)
@@ -1796,7 +1800,7 @@ metExploreD3.GraphNetwork = {
 					.attr("class", String)
 					.attr("id", "linkRev")
 					.attr("d", function(link){return metExploreD3.GraphLink.funcPathForFlux(link, panel, this.id);})
-					.attr("class", "link").classed("reaction", true)
+					.attr("class", "link").classed("reaction", true).classed("hide", hide)
 					.attr("fill-rule", "evenodd")
 					.style("stroke",linkStyle.getStrokeColor())
 					.style("stroke-width",0.5)
@@ -1836,7 +1840,9 @@ metExploreD3.GraphNetwork = {
 
 				.attr("d", function(link){
 					return metExploreD3.GraphLink.funcPath4(link, panel);})
-				.attr("class", "link").classed("reaction", true)
+				.attr("class", "link")
+				.classed("reaction", true)
+				.classed("hide", hide)
 				.attr("fill-rule", "evenodd")
 				.attr("fill", function (d) {
 					if (d.interaction=="out")
@@ -1846,11 +1852,11 @@ metExploreD3.GraphNetwork = {
 				})
 				.style("stroke",linkStyle.getStrokeColor())
 				.style("stroke-width",0.5)
-	           .style("opacity",0.5)
-	           .attr("x1", source.x)
-	           .attr("y1", source.y)
-	           .attr("x2", target.x)
-	           .attr("y2", target.y);
+				.style("opacity",0.5)
+				.attr("x1", source.x)
+				.attr("y1", source.y)
+				.attr("x2", target.x)
+				.attr("y2", target.y);
 		}
 
 	},
@@ -2297,6 +2303,43 @@ metExploreD3.GraphNetwork = {
         return newNode;
 	},
 
+	initPathways:function(panel){
+        _metExploreViz.getSessionById('viz').getD3Data().getPathways().forEach(function (path) {
+            var newNode = metExploreD3.GraphNetwork.addPathwayNode(path.getName());
+            metExploreD3.GraphNetwork.addPathwayLinks(newNode);
+        })
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var force = session.getForce();
+
+        var node = d3.select("#viz")
+            .select("#D3viz")
+            .select("#graphComponent")
+            .selectAll("g.node");
+
+        force.nodes(force.nodes().filter(function (n) {
+            return n.getBiologicalType()!=="pathway";
+        }));
+
+        //Add it to the force
+        node.data(force.nodes(), function(d) { return d.getId(); });
+
+        var link = d3.select("#viz")
+            .select("#D3viz")
+            .select("#graphComponent")
+            .selectAll("path.link");
+
+        force.links(force.links().filter(function(l){
+            return l.getSource().getBiologicalType()!=="pathway" && l.getTarget().getBiologicalType()!=="pathway";
+        }));
+
+        //Add it to the force
+        link.data(force.links().filter(function(l){
+        	return l.getSource().getBiologicalType()!=="pathway" && l.getTarget().getBiologicalType()!=="pathway"
+		}), function(d) { return d.getId(); });
+
+    },
+
     /*******************************************
      * identifier parameter is used if there is a new parameter to add.
      * @param {} panel : The panel to unlink
@@ -2304,14 +2347,13 @@ metExploreD3.GraphNetwork = {
      * @param {} panel : The panel to unlink
      * @returns {} newNode : The created node
      */
-    addPathwayInDrawing: function(pathwayName){
+    addPathwayNode: function(pathwayName){
         var panel = "viz";
         var identifier = pathwayName;
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
         var force = session.getForce();
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-        var generalStyle = metExploreD3.getGeneralStyle();
 
         /***************************/
         // Var which permit to drag
@@ -2320,8 +2362,6 @@ metExploreD3.GraphNetwork = {
             .on("dragstart",_MyThisGraphNode.dragstart)
             .on("drag",_MyThisGraphNode.dragmove)
             .on("dragend", _MyThisGraphNode.dragend);
-
-        var scale = metExploreD3.getScaleById("viz");
 
         //create the node in the data structure
         var newNode=networkData.addNode(
@@ -2367,40 +2407,6 @@ metExploreD3.GraphNetwork = {
         oldNode.each(function(){ isMapped = this.getAttribute("mapped"); });
 */
 
-        var nodesToRemove = metExploreD3.GraphNode.node
-			.filter(function(n){
-				var pathWithTheNode = n.pathways.filter(function (t) {
-					return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
-				});
-
-                return pathWithTheNode.length===1 && n.pathways.includes(pathwayName);
-        	}
-        );
-
-        var nodesLink = metExploreD3.GraphNode.node
-            .filter(function(n){return n.getBiologicalType()==="metabolite"})
-			.filter(function(n){
-				var pathWithTheNode = n.pathways.filter(function (t) {
-					return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
-				});
-				return pathWithTheNode.length>1 && n.pathways.includes(pathwayName);
-        	}
-        );
-
-        var pathLinks = [];
-        metExploreD3.GraphNode.node.filter(function(n){
-            node.filter(function(path){ return path.getBiologicalType()==="pathway"})
-                .each(function(path){
-                    if (n.pathways.includes(path.getId()) && n.pathways.includes(pathwayName))
-                        pathLinks.push(path);
-                });
-        });
-
-        nodesToRemove.data()
-            .forEach(function (n) {
-                metExploreD3.GraphNetwork.hideANode(n, "viz")
-            });
-
         //Add it to the force
         node = node.data(force.nodes(), function(d) { return d.getId(); });
 
@@ -2425,12 +2431,14 @@ metExploreD3.GraphNetwork = {
                 networkData.getPathwayByName(pathwayName).getColor(),
                 pathwaySize*3/10
             );
+
         node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
             .filter(function(d) { return d.getId() === identifier; })
             .addNodeText(metaboliteStyle);
 
-        node.filter(function(d) { return d.getBiologicalType() == 'pathway'; })
-            .filter(function(d) { return d.getId() == identifier; })
+        node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
+            .classed('hide', true)
+            .filter(function(d) { return d.getId() === identifier; })
             .on("mouseover", function(d) {
                 var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 d3.select(this)
@@ -2562,17 +2570,6 @@ metExploreD3.GraphNetwork = {
             .attr("width", "40%")
             .attr("height", "40%");
 
-
-        nodesLink.data().forEach(function (linkNode) {
-			networkData.addLink(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false);
-			metExploreD3.GraphNetwork.addLinkInDrawing(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false, "viz")
-		});
-
-        pathLinks.forEach(function (path) {
-            networkData.addLink(path.getId()+"-"+newNode.getId(), path, newNode, "out", false);
-            metExploreD3.GraphNetwork.addLinkInDrawing(path.getId()+"-"+newNode.getId(), path, newNode, "out", false, "viz")
-        });
-		
         if (metExploreD3.GraphNetwork.isAnimated("viz")==true || metExploreD3.GraphNetwork.isAnimated("viz")=="true") {
             force.start();
         }
@@ -2586,20 +2583,215 @@ metExploreD3.GraphNetwork = {
         return newNode;
     },
 
-	collapsePathway: function(pathwayName){
+    /*******************************************
+     * identifier parameter is used if there is a new parameter to add.
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @returns {} newNode : The created node
+     */
+    showPathwayNode: function(pathwayName){
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var force = session.getForce();
+
+        networkData.getPathwayByName(pathwayName).setCollapsed(true);
 
         var node = d3.select("#viz")
             .select("#D3viz")
             .select("#graphComponent")
             .selectAll("g.node");
-        var link = d3.select("#viz").select("#graphComponent").selectAll("path.link");
 
-        var networkData = _metExploreViz.getSessionById('viz').getD3Data();
-        var nodes = networkData.getNodes();
-        var links = networkData.getLinks();
 
-        metExploreD3.GraphNetwork.addPathwayInDrawing(pathwayName);
+        force.nodes(networkData.getNodes());
 
+        //Add it to the force
+        node.data(force.nodes(), function(d) { return d.getId(); });
+        node
+			.filter(function (n) { return n.getId() === pathwayName; })
+			.classed("hide", false);
+
+
+
+        var link = d3.select("#viz")
+            .select("#D3viz")
+            .select("#graphComponent")
+            .selectAll("path.link");
+
+        link
+            .filter(function (l) {
+                return !(l.getSource().getBiologicalType()==="pathway" && l.getTarget().getBiologicalType()==="pathway");
+            })
+			.filter(function (l) {
+				return l.getSource().getId()===pathwayName || l.getTarget().getId()===pathwayName;
+			})
+			.classed("hide", false);
+
+        link
+            .filter(function (l) {
+                return l.getSource().getBiologicalType()==="pathway" && l.getTarget().getBiologicalType()==="pathway";
+            })
+            .filter(function (l) {
+                return l.getSource().getId()===pathwayName || l.getTarget().getId()===pathwayName;
+            })
+            .filter(function (l) {
+                return networkData.getPathwayByName(l.getSource().getName()).isCollapsed()
+					&& networkData.getPathwayByName(l.getTarget().getName()).isCollapsed();
+            })
+            .classed("hide", false);
+
+        force.links(networkData.getLinks());
+
+        //Add it to the force
+        link.data(force.links().filter(function(l){
+            return l.getSource().getBiologicalType()!=="pathway" && l.getTarget().getBiologicalType()!=="pathway"
+        }), function(d) { return d.getId(); });
+    },
+
+    /*******************************************
+     * identifier parameter is used if there is a new parameter to add.
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @returns {} newNode : The created node
+     */
+    addPathwayLinks: function(newNode){
+        var panel = "viz";
+        var pathwayName = newNode.getName();
+        var identifier = pathwayName;
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var force = session.getForce();
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+
+        /***************************/
+        // Var which permit to drag
+        /***************************/
+        var node_drag = d3.behavior.drag()
+            .on("dragstart",_MyThisGraphNode.dragstart)
+            .on("drag",_MyThisGraphNode.dragmove)
+            .on("dragend", _MyThisGraphNode.dragend);
+
+        //newNode.index = networkData.getNodes().indexOf(newNode);
+/*
+        if(theNode.getMappingDatasLength()!=0){
+            theNode.getMappingDatas().forEach(function(mapping){
+                networkData.getNodeById(identifier).addMappingData(new MappingData(theNode, mapping.getMappingName(), mapping.getConditionName(), mapping.getMapValue()));
+            });
+        }
+*/
+
+/*
+        var isMapped = false;
+        var oldNode = node
+            .filter(function(d){
+                return d.getId()==theNodeId;
+            });
+
+        oldNode.each(function(){ isMapped = this.getAttribute("mapped"); });
+*/
+
+        var nodesLink = networkData.getNodes()
+            .filter(function(n){return n.getBiologicalType()==="metabolite"})
+            .filter(function(n){
+                    return n.pathways.length>1 && n.pathways.includes(pathwayName);
+                }
+            );
+		var hide = true;
+        nodesLink.forEach(function (linkNode) {
+			networkData.addLink(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false);
+			metExploreD3.GraphNetwork.addLinkInDrawing(linkNode.getDbIdentifier()+"-"+newNode.getId(), linkNode, newNode, "out", false, "viz", hide)
+		});
+
+        var pathLinks = [];
+        networkData.getNodes()
+            .forEach(function (n) {
+                var node = d3.select("#viz")
+                    .select("#D3viz")
+                    .select("#graphComponent")
+                    .selectAll("g.node");
+
+                node.data()
+					.filter(function (n){ return n.getBiologicalType()==="pathway"; })
+					.filter(function(p){ return n.pathways.includes(p.getId()) && n.pathways.includes(pathwayName) && p.getId()!==pathwayName && !pathLinks.includes(p)})
+					.forEach(function (p){
+						pathLinks.push(p);
+					});
+            });
+
+        pathLinks.forEach(function (path) {
+            networkData.addLink(path.getId()+"-"+newNode.getId(), path, newNode, "out", false);
+            metExploreD3.GraphNetwork.addLinkInDrawing(path.getId()+"-"+newNode.getId(), path, newNode, "out", false, "viz", hide)
+        });
+
+        if (metExploreD3.GraphNetwork.isAnimated("viz")==true || metExploreD3.GraphNetwork.isAnimated("viz")=="true") {
+            force.start();
+        }
+		else
+		{
+            force.start();
+            force.stop();
+		}
+
+        metExploreD3.GraphNetwork.tick("viz");
+    },
+
+    /*******************************************
+     * identifier parameter is used if there is a new parameter to add.
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @returns {} newNode : The created node
+     */
+    collapsePathway: function(pathwayName){
+        var panel = "viz";
+        var identifier = pathwayName;
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var force = session.getForce();
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+
+
+        metExploreD3.GraphNetwork.showPathwayNode(pathwayName);
+
+        var nodesToRemove = networkData.getNodes()
+        	.filter(function(n){
+				return n.getBiologicalType()!=="pathway";
+        	})
+			.filter(function(n){
+				var pathWithTheNode = n.pathways.filter(function (t) {
+					return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
+				});
+
+                return pathWithTheNode.length===1 && n.pathways.includes(pathwayName);
+        	}
+        );
+
+        var nodesToRemoveNodeFromConvexHull = metExploreD3.GraphNode.node
+            .filter(function(n){
+                    var pathWithTheNode = n.pathways.filter(function (t) {
+                        return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
+                    });
+                    return pathWithTheNode.length>1 && n.pathways.includes(pathwayName);
+                }
+            );
+
+        nodesToRemoveNodeFromConvexHull.each(function (theNode) {
+            metExploreD3.GraphNetwork.removeNodeFromAConvexHull(theNode, "viz", pathwayName);
+        });
+
+        nodesToRemove
+            .forEach(function (n) {
+                metExploreD3.GraphNetwork.hideANode(n, "viz")
+            });
+
+
+        //Add it to the force
+        //node = node.data(force.nodes(), function(d) { return d.getId(); });
+
+        // var newNode = metExploreD3.GraphNetwork.showPathwayNode(pathwayName);
+
+        //return newNode;
     },
 
 	/*******************************************
@@ -3410,6 +3602,74 @@ metExploreD3.GraphNetwork = {
         // metExploreD3.GraphNetwork.tick('viz');
     },
 
+    /*******************************************
+     * Remove a node from convex hull (pathway or compartment)
+     * @param {} theNode : The node to remove
+     * @param {} panel : The panel
+     * @param {} setdata : The panel
+     * @param {} component : The component (pathway or compartment) to remove
+     */
+    removeNodeFromAConvexHull : function(theNode, panel, component) {
+
+        var session = _metExploreViz.getSessionById(panel);
+        // Remove the node from group to draw convex hulls
+
+        var group = session.groups.find(function (path) {
+            return path.key === component;
+        });
+
+        if(group){
+            var nodeToRemove = group.values.find(function (node) {
+                return theNode.getId() === node.getId();
+            });
+
+            if(nodeToRemove!==null){
+
+                var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
+
+                var index = group.values.indexOf(nodeToRemove);
+                group.values.splice(index, 1);
+                if(componentDisplayed==="Compartments") {
+
+
+                    var metabolitesInCompartment = group.values.filter(function getMetabolite(node) {
+                        return node.getBiologicalType() == "metabolite";
+                    });
+
+                    if (metabolitesInCompartment.length == 0) {
+                        index = session.groups.indexOf(group);
+                        if (index != -1) {
+                            d3.select("#" + panel).select("#D3viz")
+                                .selectAll("path.convexhull")
+                                .filter(function (conv) {
+                                    return conv.key == group.key;
+                                })
+                                .remove();
+                        }
+                    }
+                }
+                else {
+
+                    var reactionsInPathway = group.values.filter(function getReaction(node) {
+                        return node.getBiologicalType() === "reaction";
+                    });
+
+                    if (reactionsInPathway.length === 0) {
+                        index = session.groups.indexOf(group);
+                        if (index !== -1) {
+                            d3.select("#" + panel).select("#D3viz")
+                                .selectAll("path.convexhull")
+                                .filter(function (conv) {
+                                    return conv.key === group.key;
+                                })
+                                .remove();
+                        }
+                    }
+                }
+            }
+        }
+    },
+
 	/*******************************************
     * Remove a node from convex hull (pathway or compartment)
     * @param {} theNode : The node to remove
@@ -3424,10 +3684,11 @@ metExploreD3.GraphNetwork = {
 
 
             var nodeToRemove = group.values.find(function (node) {
-                return theNode.getId() == node.getId();
+                return theNode.getId() === node.getId();
             });
 
             if(nodeToRemove!=null){
+
                 var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
 
 				var index = group.values.indexOf(nodeToRemove);

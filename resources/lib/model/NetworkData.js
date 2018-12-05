@@ -211,12 +211,13 @@ NetworkData.prototype = {
         var object = new Pathway(name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), name);
         this.pathways.push(object);
     },
+
     copyPathway:function(path){
         if(this.pathways == undefined)
             this.pathways = [];
 
 
-        var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color);
+        var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color, path.collapsed);
         this.pathways.push(object);
     },
 
@@ -321,6 +322,7 @@ NetworkData.prototype = {
 
       var object = new LinkData(id, source, target, interaction, reversible);
       this.links.push(object);
+      return object;
     },
 
     getDataNodes:function(){

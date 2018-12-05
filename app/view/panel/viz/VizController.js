@@ -55,10 +55,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							hidden : networkVizSessionStore.getSelectedPathways().length===0,
 							iconCls:"removeNode",
 							handler :function(){
-								console.log("pass");
 								var sessionStore = _metExploreViz.getSessionById("viz");
-								sessionStore.getSelectedPathways().forEach(function (path) {
-									metExploreD3.GraphNetwork.collapsePathway(path);
+								sessionStore.getSelectedPathways().forEach(function (path, i) {
+								    setTimeout(function(){metExploreD3.GraphNetwork.collapsePathway(path)}, i*1000);
 								});
 								sessionStore.removeAllSelectedPathways();
 							}
