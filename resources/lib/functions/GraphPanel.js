@@ -102,7 +102,7 @@ metExploreD3.GraphPanel = {
 					.y(yScale)
 					.on("brushstart", function(d) {
 						document.addEventListener("mousedown", function(e) {
-							if (e.button === 1) {
+							if (e.button === 1 || e.button === 2 ) {
 								e.stopPropagation();
 								e.preventDefault();
 								e.stopImmediatePropagation();
@@ -116,41 +116,41 @@ metExploreD3.GraphPanel = {
 						var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
 						if(d3.event.sourceEvent.button!=1 && scrollable!="true"){
+                            if(d3.event.sourceEvent.button!==2) {
+                                if (session != undefined) {
+                                    // We stop the previous animation
+                                    if (session.isLinked()) {
+                                        var sessionMain = _metExploreViz.getSessionById('viz');
+                                        if (sessionMain != undefined) {
+                                            var force = sessionMain.getForce();
+                                            if (force != undefined) {
+                                                force.stop();
+                                            }
+                                        }
+                                    }
+                                    else {
 
-							if(session!=undefined)
-							{
-								// We stop the previous animation
-								if(session.isLinked()){
-									var sessionMain = _metExploreViz.getSessionById('viz');
-									if(sessionMain!=undefined)
-									{
-										var force = sessionMain.getForce();
-										if(force!=undefined)
-										{
-											force.stop();
-										}
-									}
-								}
-								else
-								{
+                                        var force = session.getForce();
+                                        if (force != undefined) {
+                                            force.stop();
 
-									var force = session.getForce();
-									if(force!=undefined)
-									{
-										force.stop();
+                                        }
+                                    }
+                                }
 
-									}
-								}
-							}
-
-							metExploreD3.GraphNetwork.brushing = true;
-							d3.select("#"+panel).select("#brush").classed("hide", false);
-							d3.select("#"+panel).select("#D3viz").on("mousedown.zoom", null);
-							nodeBrushed = d3.select("#"+panel).select("#graphComponent").selectAll("g.node");
-							nodeBrushed.each(function(d) {
-									d.previouslySelected = d.isSelected();
-								}
-							);
+                                metExploreD3.GraphNetwork.brushing = true;
+                                d3.select("#" + panel).select("#brush").classed("hide", false);
+                                d3.select("#" + panel).select("#D3viz").on("mousedown.zoom", null);
+                                nodeBrushed = d3.select("#" + panel).select("#graphComponent").selectAll("g.node");
+                                nodeBrushed.each(function (d) {
+                                        d.previouslySelected = d.isSelected();
+                                    }
+                                );
+                            }
+                            else
+                            {
+                                d3.selectAll("#brush").classed("hide", true);
+                            }
 						}
 						else
 						{
@@ -165,7 +165,7 @@ metExploreD3.GraphPanel = {
 						}
 					})
 					.on("brushend", function() {
-						if(d3.event.sourceEvent.button!=1 && metExploreD3.GraphNetwork.brushing){
+						if(d3.event.sourceEvent.button!==2 && d3.event.sourceEvent.button!=1 && metExploreD3.GraphNetwork.brushing){
 							var extent = d3.event.target.extent();
 							if(extent[1][0]-extent[0][0]>20 || extent[1][1]-extent[0][1]>20){
 

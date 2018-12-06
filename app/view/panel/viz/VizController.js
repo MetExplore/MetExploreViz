@@ -62,6 +62,16 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								sessionStore.removeAllSelectedPathways();
 							}
 						},{
+							text : 'Select all nodes of selected pathway(s)',
+							hidden : networkVizSessionStore.getSelectedPathways().length===0,
+							iconCls:"removeNode",
+							handler :function(){
+								var sessionStore = _metExploreViz.getSessionById("viz");
+								sessionStore.getSelectedPathways().forEach(function (path, i) {
+                                    metExploreD3.GraphNode.selectNodesOfPathway(path, "viz");
+								});
+							}
+						},{
 							text : 'Remove selected nodes',
 							hidden : networkVizSessionStore.getSelectedNodes().length===0,
 							iconCls:"removeNode",

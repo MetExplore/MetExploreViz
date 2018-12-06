@@ -83,6 +83,22 @@ metExploreD3.GraphNode = {
                 }
             });
     },
+    /*******************************************
+     * Permit to select all nodes of a pathway
+     * @param {} d : a node
+     */
+    selectNodesOfPathway: function (pathway, panel) {
+
+        d3.select("#"+panel).select("#D3viz")
+            .selectAll("g.node")
+            .filter(function (d) {
+                return d.pathways.includes(pathway);
+            })
+            .each(function (d) {
+                if (!d.isSelected())
+                    _MyThisGraphNode.selection(d, "viz")
+            });
+    },
 
     /*******************************************
      * Permit to set name of a node
@@ -2283,7 +2299,7 @@ metExploreD3.GraphNode = {
             .style("stroke-linejoin", "round")
             .style("opacity", .15)
             .on("mouseup", function (d) {
-                if (d3.event.which !== 3) {
+                if (d3.event.button !== 2) {
                     var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
                     if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
                         if (d.isSelected) {
@@ -2299,7 +2315,7 @@ metExploreD3.GraphNode = {
                             session.addSelectedPathway(d.key);
                             d3.select(this)
                                 .style("stroke", "black")
-                                .style("stroke-width", 10)
+                                .style("stroke-width", 20)
                                 .style("stroke-linejoin", "round")
                         }
                     }
@@ -2312,7 +2328,7 @@ metExploreD3.GraphNode = {
                             session.addSelectedPathway(d.key);
                             d3.select(this)
                                 .style("stroke", "black")
-                                .style("stroke-width", 10)
+                                .style("stroke-width", 20)
                                 .style("stroke-linejoin", "round")
                         }
                     }
