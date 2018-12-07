@@ -149,10 +149,39 @@ metExploreD3.GraphNode = {
      * @param {} d : Color in byte
      */
     dragstart: function (d, i) {
+    var elmt = this;
+        function isChildOf(child, parent) {
+            var node = child.parentNode;
+            while (node != null) {
+                if (node == parent) {
+                    return true;
+                }
+                node = node.parentNode;
+            }
+            return false;
+        }
+
+        var sessions = Object.keys(_metExploreViz.getSessionsSet());
         // Get the panel where brush is used
-        metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.viewportElement.parentNode.id);
-        if (_MyThisGraphNode.activePanel == "" || _MyThisGraphNode.activePanel.search("node") != -1)
-            metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.parentNode.viewportElement.parentNode.id);
+        if(sessions.includes(d3.event.sourceEvent.target.viewportElement.parentNode.id)){
+            metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.viewportElement.parentNode.id);
+        }
+        else
+        {
+            if(sessions.includes(d3.event.sourceEvent.target.parentNode.viewportElement.parentNode.id)){
+                metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.parentNode.viewportElement.parentNode.id);
+            }
+            else
+            {
+                var panel = undefined;
+                var i = 0;
+                while(!panel && i<sessions.length-1){
+                    if(isChildOf(elmt, d3.select("#"+sessions[i]).node()))
+                        panel=sessions[i];
+                }
+                metExploreD3.GraphPanel.setActivePanel(panel);
+            }
+        }
 
         // Stop the propagation of the event to bypass moving graph
         d3.event.sourceEvent.stopPropagation();

@@ -839,10 +839,6 @@ metExploreD3.GraphNetwork = {
                                 }
                             );
                         }
-                        else
-                        {
-                            d3.selectAll("#brush").classed("hide", true);
-                        }
 					}
 					else
 					{
