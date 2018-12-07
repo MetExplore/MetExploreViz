@@ -1269,7 +1269,10 @@ metExploreD3.GraphNode = {
                     node.getPathways(),
                     node.isLocked(),
                     node.getAlias(),
-                    node.getLabel());
+                    node.getLabel(),
+                    node.getLabelFont(),
+                    node.isHidden()
+                );
 
                 metExploreD3.fireEventParentWebSite("sideCompound", clone);
             })

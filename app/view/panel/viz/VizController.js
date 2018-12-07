@@ -138,6 +138,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 					var theNode = metExploreD3.GraphNode.selectNodeData(e.target);
 					var mappedImage = metExploreD3.GraphMapping.selectMappedImages(theNode);
 					var isMetabolite = (theNode.getBiologicalType()=="metabolite");
+					var isPathway = (theNode.getBiologicalType()=="pathway");
 					var isPartOfCycle = metExploreD3.GraphFunction.checkIfPartOfCycle(theNode, "viz");
 
                     viz.selectMenu = new Ext.menu.Menu({
@@ -218,6 +219,13 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
                     viz.CtxMenu = new Ext.menu.Menu({
                         items: [{
+                            text: 'Expand pathway',
+                            hidden: !isPathway,
+                            iconCls: "duplicate-sideCompounds",
+                            handler: function () {
+                                metExploreD3.GraphNetwork.expandPathwayNode(theNode.getName(), "viz");
+                            }
+                        }, {
                             text: 'Remove nodes',
                             hidden: false,
                             iconCls: "removeNode",

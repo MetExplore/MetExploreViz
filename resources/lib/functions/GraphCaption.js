@@ -576,6 +576,17 @@ metExploreD3.GraphCaption = {
                     });
         }
 
+        d3.select("#"+panel).select("#D3viz").selectAll("g.node")
+            .select(".pathway")
+            .filter(function (n) { return n.getBiologicalType()==="pathway"; })
+            .style("stroke", function(d){
+                var component = components.find(function(c){
+                    return c.name===d.name;
+                });
+
+                return component.color;
+            });
+
         switch(selectedComponent) {
             case "Compartments":
                 metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);

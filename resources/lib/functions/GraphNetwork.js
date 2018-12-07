@@ -1905,7 +1905,9 @@ metExploreD3.GraphNetwork = {
             networkData.getNodeById(reactionId).getPathways(),
             false,
             theNode.getAlias(),
-            theNode.getLabel());
+            theNode.getLabel(),
+			undefined,
+			false);
 
         //newNode.index = networkData.getNodes().indexOf(newNode);
 
@@ -2379,7 +2381,10 @@ metExploreD3.GraphNetwork = {
             pathwayName,
             false,
             "",//theNode.getAlias(),
-            pathwayName);//theNode.getLabel());
+            pathwayName,//theNode.getLabel());
+			undefined,
+			true
+			);
 
         //newNode.index = networkData.getNodes().indexOf(newNode);
 /*
@@ -2605,7 +2610,8 @@ metExploreD3.GraphNetwork = {
         node.data(force.nodes(), function(d) { return d.getId(); });
         node
 			.filter(function (n) { return n.getId() === pathwayName; })
-			.classed("hide", false);
+			.classed("hide", false)
+            .each(function(n){ console.log(n); n.show();});
 
 
 
@@ -2642,6 +2648,95 @@ metExploreD3.GraphNetwork = {
         link.data(force.links().filter(function(l){
             return l.getSource().getBiologicalType()!=="pathway" && l.getTarget().getBiologicalType()!=="pathway"
         }), function(d) { return d.getId(); });
+    },
+
+    /*******************************************
+     * identifier parameter is used if there is a new parameter to add.
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @returns {} newNode : The created node
+     */
+    expandPathwayNode: function(pathwayName, panel){
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var force = session.getForce();
+
+        networkData.getPathwayByName(pathwayName).setCollapsed(false);
+
+        var node = d3.select("#viz")
+            .select("#D3viz")
+            .select("#graphComponent")
+            .selectAll("g.node");
+
+
+        force.nodes(networkData.getNodes().filter(function (n) {return n.getId() !== pathwayName; }));
+
+        //Add it to the force
+        node.data(force.nodes(), function(d) { return d.getId(); });
+        node
+			.filter(function (n) { return n.getId() === pathwayName; })
+			.classed("hide", true)
+			.each(function(n){n.hide();});
+		
+        var link = d3.select("#viz")
+            .select("#D3viz")
+            .select("#graphComponent")
+            .selectAll("path.link");
+
+        link
+            .filter(function (l) {
+                return !(l.getSource().getBiologicalType()==="pathway" && l.getTarget().getBiologicalType()==="pathway");
+            })
+			.filter(function (l) {
+				return l.getSource().getId()===pathwayName || l.getTarget().getId()===pathwayName;
+			})
+			.classed("hide", true);
+
+        // link
+        //     .filter(function (l) {
+        //         return l.getSource().getBiologicalType()==="pathway" && l.getTarget().getBiologicalType()==="pathway";
+        //     })
+        //     .filter(function (l) {
+        //         return l.getSource().getId()===pathwayName || l.getTarget().getId()===pathwayName;
+        //     })
+        //     .filter(function (l) {
+        //         return networkData.getPathwayByName(l.getSource().getName()).isCollapsed()
+			// 		&& networkData.getPathwayByName(l.getTarget().getName()).isCollapsed();
+        //     })
+        //     .classed("hide", true);
+
+        force.links(networkData.getLinks());
+
+        //Add it to the force
+        link.data(force.links().filter(function(l){
+            return l.getSource().getBiologicalType()!=="pathway" && l.getTarget().getBiologicalType()!=="pathway"
+        }), function(d) { return d.getId(); });
+
+        var nodesToAdd = networkData.getNodes()
+            .filter(function(n){
+                return n.getBiologicalType()!=="pathway";
+            })
+            .filter(function(n){
+				return n.pathways.includes(pathwayName);
+			})
+			.forEach(function (n) {
+                metExploreD3.GraphNetwork.showANode(n, "viz")
+            });
+
+        // var nodesToRemoveNodeFromConvexHull = metExploreD3.GraphNode.node
+        //     .filter(function(n){
+        //             var pathWithTheNode = n.pathways.filter(function (t) {
+        //                 return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
+        //             });
+        //             return pathWithTheNode.length>1 && n.pathways.includes(pathwayName);
+        //         }
+        //     );
+        //
+        // nodesToRemoveNodeFromConvexHull.each(function (theNode) {
+        //     metExploreD3.GraphNetwork.removeNodeFromAConvexHull(theNode, "viz", pathwayName);
+        // });
+
     },
 
     /*******************************************
@@ -3595,6 +3690,47 @@ metExploreD3.GraphNetwork = {
                 metExploreD3.GraphNetwork.removeNodeFromConvexHull(theNode, panel, false);
             }
             , 1);
+        // metExploreD3.GraphNetwork.tick('viz');
+    },
+
+	showANode : function(theNode, panel) {
+        var session = _metExploreViz.getSessionById(panel);
+
+        // var force = session.getForce();
+        // var networkData = session.getD3Data();
+        // var linksToAdd = [];
+        var vis = d3.select("#"+panel).select("#D3viz");
+
+        var nodes = vis.selectAll("g.node");
+
+        nodes
+            .filter(function(d) {
+                return theNode==d;
+            })
+            .classed("hide", false);
+
+        vis.selectAll("path.link")
+            .filter(function(d) {
+                var source = d.source;
+                var target = d.target;
+                //if(source==theNode || target==theNode) linksToAdd.push(d);
+                return (source==theNode || target==theNode);
+            })
+            .filter(function(d) {
+                var source = d.source;
+                var target = d.target;
+                return !(source.getBiologicalType()==="pathway" && source.isHidden())
+					&& !(target.getBiologicalType()==="pathway" && target.isHidden());
+            })
+            .classed("hide", false);
+
+
+
+        // setTimeout(
+        //     function() {
+        //         metExploreD3.GraphNetwork.removeNodeFromConvexHull(theNode, panel, false);
+        //     }
+        //     , 1);
         // metExploreD3.GraphNetwork.tick('viz');
     },
 

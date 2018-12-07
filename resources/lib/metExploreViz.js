@@ -1000,7 +1000,7 @@ metExploreViz.prototype = {
         var newSession = new NetworkVizSession();
         newSession.reset();
         
-        var n, name, comp, pathw, dbId, ec, id, rev, sc, bt, sel, lv, svg, svgW, svgH, locked, alias, label;
+        var n, name, comp, pathw, dbId, ec, id, rev, sc, bt, sel, lv, svg, svgW, svgH, locked, alias, label, hidden;
 
         // for (var j=0; j<this.initialData.nodes.length; j++) {
         //     n = this.initialData.nodes[j];
@@ -1019,6 +1019,11 @@ metExploreViz.prototype = {
                 locked = n.isLocked().valueOf();
             else
                 locked = undefined;
+
+            if(n.isHidden()!=undefined)
+                hidden = n.isHidden().valueOf();
+            else
+                hidden = undefined;
 
             if(n.getAlias()!=undefined)
                 alias = n.getAlias().valueOf();
@@ -1103,7 +1108,7 @@ metExploreViz.prototype = {
                 isDuplicated = false;
 
 
-            var node = newSession.d3Data.addNode(name,comp,dbId,id,rev,bt,sel,lv,svg,svgW,svgH,sc,ec,isDuplicated,identif,pathw,locked,alias,label);
+            var node = newSession.d3Data.addNode(name,comp,dbId,id,rev,bt,sel,lv,svg,svgW,svgH,sc,ec,isDuplicated,identif,pathw,locked,alias,label, undefined, hidden);
         });
 
         mainSession.getD3Data().getPathways().forEach(function(p){

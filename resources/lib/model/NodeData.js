@@ -23,7 +23,8 @@ var NodeData = function(
         lock, 
         alias, 
         label,
-        labelFont
+        labelFont,
+        hidden
     ) {
         this.name=name;
         this.dbIdentifier = dbIdentifier ;
@@ -59,6 +60,9 @@ var NodeData = function(
         this.locked = lock;
         this.label= label;
         this.labelFont = labelFont;
+        this.hidden = hidden;
+        if(lock==undefined)
+            this.hidden=false;
 };
 
 
@@ -96,6 +100,17 @@ NodeData.prototype = {
 
     setIsDuplicated : function(b){
       this.duplicated = b;
+    },
+
+    isHidden :function(){
+      return this.hidden;
+    },
+
+    hide: function(){
+      this.hidden = true;
+    },
+    show: function(){
+      this.hidden = false;
     },
 
     getIsSideCompound : function(){
@@ -165,6 +180,14 @@ NodeData.prototype = {
 
     setLabel : function(b){
       this.label = b;
+    },
+    getLabelFont:function()
+    {
+      return this.labelFont;
+    },
+
+    setLabelFont : function(b){
+      this.labelFont = b;
     },
 
     getId:function()
