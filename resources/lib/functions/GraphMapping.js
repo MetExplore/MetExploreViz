@@ -2813,6 +2813,10 @@ metExploreD3.GraphMapping = {
      * @param {} image : The g element containing the image on which to apply the event.
      */
     applyEventOnImage : function (image) {
+    	var panel = _MyThisGraphNode.activePanel;
+    	if(!panel)
+    		panel="viz";
+
         image.on("mouseenter", function () {
             var mouseleaveEvent = new MouseEvent("mouseleave");
             this.parentNode.dispatchEvent(mouseleaveEvent);
