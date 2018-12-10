@@ -156,15 +156,11 @@ metExploreD3.GraphStyleEdition = {
                 var d3mouse1 = d3.mouse(element)[1];
                 var d3eventx = d3.event.x;
                 var d3eventy = d3.event.y;
-
+                var me = this;
                 metExploreD3.applyTolinkedNetwork(
                     panel,
                     function(panelLinked, sessionLinked) {
-                        var theD3Node=d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
-                            .selectAll("g.node")
-                            .filter(function(node){
-                                return d.getDbIdentifier()==node.getDbIdentifier();
-                            }).select("text");
+                        var theD3Node=d3.select(me);
 
                         if (theD3Node.attr("transform")) {
                             var transformScale = d3.transform(theD3Node.attr("transform")).scale;
