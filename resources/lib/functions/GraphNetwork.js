@@ -1322,10 +1322,12 @@ metExploreD3.GraphNetwork = {
 				});
 
 			var links = [];
-            d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1})
+            d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+				.selectAll("g.node")
+				.filter(function(node){return node.getBiologicalType()=="reaction" || node.getBiologicalType()=="metabolite" ;})
+				.filter(function(node){return node.getPathways().length>1})
 				.each(function(node){
 					node.getPathways().forEach(function(pathway){
-
 						node.getPathways().forEach(function(pathway2){
 							if(pathway!=pathway2){
 								var sourceIndex = components.findIndex(function(path){
@@ -2440,7 +2442,7 @@ metExploreD3.GraphNetwork = {
         node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
             .classed('hide', true)
             .filter(function(d) { return d.getId() === identifier; })
-            .on("mouseover", function(d) {
+			.on("mouseover", function(d) {
                 var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 d3.select(this)
                     .each(function(node){
@@ -2597,6 +2599,7 @@ metExploreD3.GraphNetwork = {
         var force = session.getForce();
 
         networkData.getPathwayByName(pathwayName).setCollapsed(true);
+        networkData.getPathwayByName(pathwayName).setHidden(true);
 
         var node = d3.select("#viz")
             .select("#D3viz")
@@ -2611,7 +2614,7 @@ metExploreD3.GraphNetwork = {
         node
 			.filter(function (n) { return n.getId() === pathwayName; })
 			.classed("hide", false)
-            .each(function(n){ console.log(n); n.show();});
+            .each(function(n){ n.show();});
 
 
 
@@ -2663,6 +2666,7 @@ metExploreD3.GraphNetwork = {
         var force = session.getForce();
 
         networkData.getPathwayByName(pathwayName).setCollapsed(false);
+        networkData.getPathwayByName(pathwayName).setHidden(false);
 
         var node = d3.select("#viz")
             .select("#D3viz")
@@ -2688,10 +2692,19 @@ metExploreD3.GraphNetwork = {
             .filter(function (l) {
                 return !(l.getSource().getBiologicalType()==="pathway" && l.getTarget().getBiologicalType()==="pathway");
             })
-			.filter(function (l) {
-				return l.getSource().getId()===pathwayName || l.getTarget().getId()===pathwayName;
-			})
-			.classed("hide", true);
+            .filter(function (l) {
+                return l.getSource().getId()===pathwayName || l.getTarget().getId()===pathwayName;
+            })
+            .classed("hide", true);
+
+        link
+            .filter(function (l) {
+                return l.getSource().getBiologicalType()==="pathway" && l.getTarget().getBiologicalType()==="pathway";
+            })
+            .filter(function (l) {
+                return l.getSource().getId()===pathwayName || l.getTarget().getId()===pathwayName;
+            })
+            .classed("hide", true);
 
         // link
         //     .filter(function (l) {
@@ -2721,8 +2734,31 @@ metExploreD3.GraphNetwork = {
 				return n.pathways.includes(pathwayName);
 			})
 			.forEach(function (n) {
-                metExploreD3.GraphNetwork.showANode(n, "viz")
+                metExploreD3.GraphNetwork.showANode(n, "viz");
             });
+
+        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+
+        var activePanel = _MyThisGraphNode.activePanel;
+        if(!activePanel) activePanel='viz';
+        metExploreD3.applyTolinkedNetwork(
+            activePanel,
+            function(panelLinked, sessionLinked) {
+                metExploreD3.GraphCaption.majCaption(panelLinked);
+
+                s_GeneralStyle.setDisplayConvexhulls(false);
+                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                metExploreD3.GraphNetwork.tick(panelLinked);
+
+                s_GeneralStyle.setDisplayConvexhulls("Pathways");
+                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                metExploreD3.GraphNetwork.tick(panelLinked);
+
+                s_GeneralStyle.setDisplayCaption("Pathways");
+                metExploreD3.GraphCaption.majCaption(panelLinked);
+
+            });
+        metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
         // var nodesToRemoveNodeFromConvexHull = metExploreD3.GraphNode.node
         //     .filter(function(n){
@@ -3719,10 +3755,53 @@ metExploreD3.GraphNetwork = {
             .filter(function(d) {
                 var source = d.source;
                 var target = d.target;
+
+
                 return !(source.getBiologicalType()==="pathway" && source.isHidden())
 					&& !(target.getBiologicalType()==="pathway" && target.isHidden());
             })
+            .filter(function(d) {
+                var source = d.source;
+                var target = d.target;
+
+                var reactionPathwayCollapsed = false;
+
+                if (source.getBiologicalType() === "reaction")
+                    reaction = source;
+                else
+				{
+					if (target.getBiologicalType() === "reaction")
+                        reaction = target;
+                }
+
+                if(reaction.getName()==="R_AHC")
+                	console.log("-----------------------------------------------");
+                if(reaction)
+				{
+					if(reaction.getName()==="R_AHC")
+                    	console.log(reaction.getPathways());
+                    reaction.getPathways().forEach(function(pathway){
+                        if(reaction.getName()==="R_AHC")
+                            console.log(pathway);
+
+                        var thePath = session.getD3Data().getPathwayByName(pathway);
+                        if(reaction.getName()==="R_AHC")
+                            console.log(thePath);
+                        if(thePath)
+                        {
+                            if(thePath.isCollapsed()) {
+                                reactionPathwayCollapsed=true;
+                            }
+                        }
+                    });
+                }
+                if(reaction.getName()==="R_AHC")
+                    console.log("-----------------------------------------------");
+
+                return !reaction || (reaction && !reactionPathwayCollapsed)
+            })
             .classed("hide", false);
+
 
 
 

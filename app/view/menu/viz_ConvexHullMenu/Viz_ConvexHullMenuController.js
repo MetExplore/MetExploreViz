@@ -142,7 +142,7 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 
     },
     highlightComponents : function(component){
-
+		console.log(component);
     	var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();

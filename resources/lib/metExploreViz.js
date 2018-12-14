@@ -401,29 +401,32 @@ var metExploreD3 = {
                 }
                 else
                 {
-                    target.getPathways()
-                        .forEach(function(pathway){
+                    if(target.getBiologicalType()=="reaction")
+                    {
+                        target.getPathways()
+                            .forEach(function(pathway){
 
-                            addNodeInGroup(
-                                source,
-                                pathwayGroup
-                                    .find(function(pathw)
-                                    {
-                                        return pathw.key==pathway;
-                                    }
-                                )
-                            );
-                            addNodeInGroup(
-                                target,
-                                pathwayGroup
-                                    .find(function(pathw)
-                                    {
-                                        return pathw.key==pathway;
-                                    }
-                                )
-                            );
-                        }
-                    );
+                                addNodeInGroup(
+                                    source,
+                                    pathwayGroup
+                                        .find(function(pathw)
+                                        {
+                                            return pathw.key==pathway;
+                                        }
+                                    )
+                                );
+                                addNodeInGroup(
+                                    target,
+                                    pathwayGroup
+                                        .find(function(pathw)
+                                        {
+                                            return pathw.key==pathway;
+                                        }
+                                    )
+                                );
+                            }
+                        );
+                    }
                 }
             });
 

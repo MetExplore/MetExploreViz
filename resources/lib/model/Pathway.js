@@ -15,7 +15,7 @@ var Pathway = function(id, name, hide, color, collapsed){
     if(collapsed)
         this.collapsed = collapsed;
     else
-        this.collapsed = "";
+        this.collapsed = false;
 };
 
 Pathway.prototype = {
@@ -51,10 +51,10 @@ Pathway.prototype = {
     },
     isCollapsed:function()
     {
-      return this.hide;
+      return this.collapsed;
     },
     setCollapsed:function(bool)
     {
-      return this.hide = bool;
+      return this.collapsed = bool;
     }
 };

@@ -493,7 +493,7 @@ metExploreD3.GraphCaption = {
      * Maj caption
      */
     majCaption : function(panel){
-
+console.log("majCaption");
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
         var component = s_GeneralStyle.isDisplayedCaption();
