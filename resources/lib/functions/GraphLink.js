@@ -1856,7 +1856,7 @@ metExploreD3.GraphLink = {
 
                     var index = force.links().indexOf(link);
 
-                    if(index!=-1)
+                    if(index!==-1)
                         force.links().splice(index, 1);
                 }
             }
@@ -1874,8 +1874,8 @@ metExploreD3.GraphLink = {
         d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
             .attr("d", _metExploreViz.getSessionById(panel).groupPath)
             .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
-        if (metExploreD3.GraphStyleEdition.curvedPath == true){
-            var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
+        if (metExploreD3.GraphStyleEdition.curvedPath === true){
+            var flux = _metExploreViz.getSessionById(panel).getMappingDataType()==="Flux";
             if(flux) {
                 funcPath = metExploreD3.GraphLink.funcPathForFlux;
                 d3.select("#"+panel).select("#D3viz").select("#graphComponent")
