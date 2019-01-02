@@ -1809,7 +1809,6 @@ metExploreD3.GraphLink = {
         var session = _metExploreViz.getSessionById(panel);
         var networkData = session.getD3Data();
         networkData.addLink(identifier,source,target,"hiddenForce",false);
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         var linkStyle = metExploreD3.getLinkStyle();
         var force = session.getForce();
 
@@ -1919,7 +1918,6 @@ metExploreD3.GraphLink = {
     },
 
     displayConvexhulls : function(panel){
-
 
         var generalStyle = _metExploreViz.getGeneralStyle();
 
