@@ -1839,7 +1839,7 @@ metExploreD3.GraphLink = {
         var linksToRemove = [];
         var force = session.getForce();
 
-        var link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link.reaction")
+        d3.select("#"+panel).select("#graphComponent").selectAll("path.link.reaction")
             .filter(function(link){
                 return link.getInteraction()=="hiddenForce";
             })
