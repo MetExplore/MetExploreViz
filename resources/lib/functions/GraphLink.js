@@ -23,46 +23,49 @@ metExploreD3.GraphLink = {
                 var reaction;
                 if(link.getSource().getBiologicalType()==="reaction")
                     reaction=link.getSource();
-                else
+
+                if(link.getTarget().getBiologicalType()==="reaction")
                     reaction=link.getTarget();
 
-                if(reaction.getPathways().length>0)
-                {
-                    var color="#000000";
-                    reaction.getPathways().forEach(function(path){
-                        var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(path);
-                        if(pathw!==null){
-                            var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
-                            col["o"]=0.15;
-                            cols.push(pathw);
+                if(reaction){
+                    if(reaction.getPathways().length>0)
+                    {
+                        var color="#000000";
+                        reaction.getPathways().forEach(function(path){
+                            var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(path);
+                            if(pathw!==null){
+                                var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
+                                col["o"]=0.15;
+                                cols.push(pathw);
 
-                            if(color==="#000000"){
-                                color=col;
+                                if(color==="#000000"){
+                                    color=col;
+                                }
                             }
+                        });
+
+                        if(cols.length>0){
+                            var percent = 100 / cols.length;
+                            cols.forEach(function(pathw, i){
+                                var newelemt = me.cloneNode(true);
+                                me.parentNode.appendChild(newelemt);
+                                var size = 8;
+                                d3.select(newelemt).datum(link)
+                                    .classed("reaction", false)
+                                    .classed("pathway", true)
+                                    .attr('id', pathw.getName().replace(/[.*+?^${} ()|[\]\-\\]/g, ""))
+                                    .classed("hide", true)
+                                    .style("stroke-width","3px")
+                                    .style("stroke-dasharray", size+","+size*(cols.length-1))
+                                    .style("stroke-dashoffset", size*i)
+                                    .style("stroke", pathw.getColor());
+
+                            })
+                            //me.parentNode.removeChild(me);
                         }
-                    });
-
-                    if(cols.length>0){
-                        var percent = 100 / cols.length;
-                        cols.forEach(function(pathw, i){
-                            var newelemt = me.cloneNode(true);
-                            me.parentNode.appendChild(newelemt);
-                            var size = 8;
-                            d3.select(newelemt).datum(link)
-                                .classed("reaction", false)
-                                .classed("pathway", true)
-                                .attr('id', pathw.getName().replace(/[.*+?^${} ()|[\]\-\\]/g, ""))
-                                .classed("hide", true)
-                                .style("stroke-width","3px")
-                                .style("stroke-dasharray", size+","+size*(cols.length-1))
-                                .style("stroke-dashoffset", size*i)
-                                .style("stroke", pathw.getColor());
-
-                        })
-                        //me.parentNode.removeChild(me);
+                        //if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
+                        // return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
                     }
-                    //if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
-                   // return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
                 }
             });
     },
@@ -1389,8 +1392,21 @@ metExploreD3.GraphLink = {
             .selectAll(".linkGroup")
             .remove();
 
+        var linkWithoutPathway = networkData.getLinks().filter(function (link) {
+            var target, source;
+            target = link.getTarget();
+            source = link.getSource();
+            if(!target instanceof NodeData){
+                target = networkData.getNodes()[link.getTarget()];
+            }
+            if(!source instanceof NodeData){
+                source = networkData.getNodes()[link.getSource()];
+            }
+            return source.getBiologicalType()!=="pathway" && target.getBiologicalType()!=="pathway"
+        });
+
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .data(networkData.getLinks())
+            .data(linkWithoutPathway)
             .enter()
             .insert("svg:g", ":first-child")
             .attr("class", "linkGroup")

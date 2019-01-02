@@ -497,29 +497,56 @@ NetworkData.prototype = {
                 }
                 else
                 {
-
-                    that.addNode(
+                    if(node.biologicalType=="pathway") {
+                        that.addNode(
+                            node.name,
+                            undefined,
+                            node.dbIdentifier,
+                            node.id,
+                            node.reactionReversibility,
+                            'pathway',
+                            false,
+                            true,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            node.ec,
+                            false,
+                            undefined,
+                            node.pathways,
+                            node.locked,
+                            node.alias,
+                            node.label,
+                            node.labelFont,
+                            node.hidden
+                        );
+                    }
+                    else
+                    {
+                        that.addNode(
                         node.name,
-                        node.compartment, 
+                        node.compartment,
                         node.dbIdentifier,
-                        node.id, 
+                        node.id,
                         undefined,
-                        'metabolite', 
-                        false, 
-                        true, 
+                        'metabolite',
+                        false,
+                        true,
                         node.svg,
-                        node.svgWidth, 
+                        node.svgWidth,
                         node.svgHeight,
                         node.isSideCompound,
-                        undefined, 
-                        node.duplicated, 
-                        node.identifier, 
-                        node.pathways, 
-                        node.locked, 
-                        node.alias, 
+                        undefined,
+                        node.duplicated,
+                        node.identifier,
+                        node.pathways,
+                        node.locked,
+                        node.alias,
                         node.label,
                         node.labelFont,
                         node.hidden);
+                    }
                 }
                 if(node.mappingDatas!=undefined){
                     if(node.mappingDatas.length>0){

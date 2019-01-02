@@ -733,11 +733,13 @@ metExploreD3.GraphPanel = {
                             }
 						else
 						{
-							node.getPathways().forEach(function(pathway){
-									if(networkData.getPathwayByName(pathway)==null)
-										networkData.addPathway(pathway);
-								});
+                            if(node.getBiologicalType()=="reaction") {
+                                node.getPathways().forEach(function (pathway) {
+                                    if (networkData.getPathwayByName(pathway) == null)
+                                        networkData.addPathway(pathway);
+                                });
                             }
+						}
 
 						if(node.getMappingDatasLength()>0)
 						{

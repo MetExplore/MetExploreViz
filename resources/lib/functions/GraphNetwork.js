@@ -2895,6 +2895,9 @@ metExploreD3.GraphNetwork = {
         );
 
         var nodesToRemoveNodeFromConvexHull = metExploreD3.GraphNode.node
+        	.filter(function(n){
+				return n.getBiologicalType()!=="pathway";
+        	})
             .filter(function(n){
                     var pathWithTheNode = n.pathways.filter(function (t) {
                         return d3.selectAll("path.convexhull:not(.hide)").filter(function(n){return n.key===t}).data().length===1;
