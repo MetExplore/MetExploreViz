@@ -1631,7 +1631,6 @@ metExploreD3.GraphLink = {
             .style("stroke-linejoin", "bevel");
     },
 
-    // A n'appliquer que sur les petits graphes
     linkTypeOfMetabolite : function(){
         _metExploreViz.setLinkedByTypeOfMetabolite(true);
         var panel = "viz";
