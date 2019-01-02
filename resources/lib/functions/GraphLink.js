@@ -1426,20 +1426,6 @@ metExploreD3.GraphLink = {
             .style("opacity", 1)
             .style("stroke-dasharray", null);
 
-        // d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup")
-        //     .append("svg:text")
-        //     .style("font-size",'6px')
-        //     .attr("class", "linklabel")
-        //    // .classed('hide', true)
-        // 	.style("paint-order","stroke")
-        // 	.style("stroke-width",  1)
-        // 	.style("stroke", "white")
-        // 	.style("stroke-opacity", "0.7")
-        // 	.attr("dy", ".4em")
-        // 	.style("font-weight", 'bold')
-        // 	.style("pointer-events", 'none')
-        // 	.text('eeee');
-
         metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
     },
 
