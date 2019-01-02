@@ -1864,41 +1864,6 @@ metExploreD3.GraphLink = {
             , 100);
     },
 
-// 	function getRandomArbitrary(min, max) {
-//   	return Math.random() * (max - min) + min;
-// }
-
-// d3.select("#viz").select("#D3viz").selectAll("path.link.reaction")
-// 	.each(function(link){
-// 		if(link.getSource().getReactionReversibility() || link.getTarget().getReactionReversibility())
-// 			link.value = getRandomArbitrary(-4, 4);
-// 		else
-// 			link.value = getRandomArbitrary(0, 4);
-// 	}); 
-// function getRandomArbitrary(min, max) {
-//   	return Math.random() * (max - min) + min;
-// }
-
-// d3.select("#viz").select("#D3viz").selectAll("path.link.reaction")
-// 	.each(function(link){
-// 		if(link.getSource().getReactionReversibility() || link.getTarget().getReactionReversibility())
-// 			link.value = getRandomArbitrary(-4, 4);
-// 		else
-// 			link.value = getRandomArbitrary(0, 4);
-
-// 		if(link.getSource().value==undefined)
-// 			link.getSource().value = link.value;
-// 		else
-// 			if(Math.abs(link.getSource().value)<Math.abs(link.value))
-// 				link.getSource().value = link.value;
-
-// 		if(link.getTarget().value==undefined)
-// 			link.getTarget().value = link.value;
-// 		else
-// 			if(Math.abs(link.getTarget().value)<Math.abs(link.value))
-// 				link.getTarget().value = link.value;
-// 	}); 
-
     /*******************************************
      * Tick function of links
      * @param {} panel : The panel where the action is launched
