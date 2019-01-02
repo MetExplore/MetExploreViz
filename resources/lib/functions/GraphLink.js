@@ -1385,8 +1385,6 @@ metExploreD3.GraphLink = {
         var size = 20;
         // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
         var refY = linkStyle.getMarkerWidth() / 2;
-        // The x-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-        // var refX = linkStyle.getMarkerHeight / 2;
 
         d3.select("#" + parent).select("#D3viz").select("#graphComponent")
             .selectAll(".linkGroup")
