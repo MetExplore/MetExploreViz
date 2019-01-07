@@ -493,7 +493,6 @@ metExploreD3.GraphCaption = {
      * Maj caption
      */
     majCaption : function(panel){
-console.log("majCaption");
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
         var component = s_GeneralStyle.isDisplayedCaption();
@@ -641,36 +640,45 @@ console.log("majCaption");
      * @param {} top : top of the metabolite caption
      */
     colorPathwayLegend : function(){
+
         var groups = metExploreD3.getPathwaysSet('viz');
         var pathways = [];
-
-        groups.forEach(function(path){
-            pathways.push({"key":path});
-        });
-
-        var phase = metExploreD3.getPathwaysLength('viz');
-        if (phase == undefined) phase = 0;
-        center = 128;
-        width = 127;
-        frequency = Math.PI*2*0.95/phase;
-
-        pathways.sort(function(a,b){
-            if(a.key < b.key) return -1;
-            if(a.key > b.key) return 1;
-            return 0;
-        });
-
-        for (var i = 0; i < phase; i++)
-        {
-
-            red   = Math.sin(frequency*i+2+phase) * width + center;
-            green = Math.sin(frequency*i+0+phase) * width + center;
-            blue  = Math.sin(frequency*i+4+phase) * width + center;
-
-            var pathway = pathways[i].key;
-            pathway.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));
+        console.log(groups[0].getColor());
+        if(groups[0].getColor()){
+            metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
         }
-        metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
+        else
+        {
+            groups.forEach(function(path){
+                pathways.push({"key":path});
+            });
+
+
+
+            var phase = metExploreD3.getPathwaysLength('viz');
+            if (phase == undefined) phase = 0;
+            center = 128;
+            width = 127;
+            frequency = Math.PI*2*0.95/phase;
+
+            pathways.sort(function(a,b){
+                if(a.key < b.key) return -1;
+                if(a.key > b.key) return 1;
+                return 0;
+            });
+
+            for (var i = 0; i < phase; i++)
+            {
+
+                red   = Math.sin(frequency*i+2+phase) * width + center;
+                green = Math.sin(frequency*i+0+phase) * width + center;
+                blue  = Math.sin(frequency*i+4+phase) * width + center;
+
+                var pathway = pathways[i].key;
+                pathway.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));
+            }
+            metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
+        }
     }
-}
+};
     

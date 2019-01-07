@@ -1394,12 +1394,13 @@ metExploreD3.GraphLink = {
             var target, source;
             target = link.getTarget();
             source = link.getSource();
-            if(!target instanceof NodeData){
+            if(!(target instanceof NodeData)){
                 target = networkData.getNodes()[link.getTarget()];
             }
-            if(!source instanceof NodeData){
+            if(!(source instanceof NodeData)){
                 source = networkData.getNodes()[link.getSource()];
             }
+
             return source.getBiologicalType()!=="pathway" && target.getBiologicalType()!=="pathway"
         });
 

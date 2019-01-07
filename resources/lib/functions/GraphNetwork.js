@@ -2304,10 +2304,48 @@ metExploreD3.GraphNetwork = {
 	},
 
 	initPathways:function(panel){
-        _metExploreViz.getSessionById('viz').getD3Data().getPathways().forEach(function (path) {
+    	var networkData = _metExploreViz.getSessionById('viz').getD3Data();
+    	var listPathway =
+            networkData.getNodes()
+            .filter(function (node) {
+                return node.getBiologicalType()==="pathway";
+            })
+            .map(function (node) {
+                return node.getName();
+            });
+
+        networkData.getPathways().forEach(function (path) {
+			if(!listPathway.includes(path.getName())){
+				//create the node in the data structure
+				var newNode=networkData.addNode(
+                    path.getName(),
+					"",
+                    path.getName(),
+                    path.getName(),
+					false,
+					"pathway",
+					false,
+					"true",//theNode.getLabelVisible(),
+					"",
+					"",
+					"",
+					false,
+					undefined,
+					true,
+                    path.getName(),//theNodeId,
+                    path.getName(),
+					false,
+					"",//theNode.getAlias(),
+                    path.getName(),//theNode.getLabel());
+					undefined,
+					true
+				);
+            }
+
             var newNode = metExploreD3.GraphNetwork.addPathwayNode(path.getName());
             metExploreD3.GraphNetwork.addPathwayLinks(newNode);
-        })
+        });
+
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
         var force = session.getForce();
@@ -2338,6 +2376,14 @@ metExploreD3.GraphNetwork = {
         	return l.getSource().getBiologicalType()!=="pathway" && l.getTarget().getBiologicalType()!=="pathway"
 		}), function(d) { return d.getId(); });
 
+
+        networkData.getPathways().forEach(function (path) {
+            if(path.isCollapsed()){
+                metExploreD3.GraphNetwork.collapsePathway(path.getName());
+
+            }
+        });
+
     },
 
     /*******************************************
@@ -2349,7 +2395,6 @@ metExploreD3.GraphNetwork = {
      */
     addPathwayNode: function(pathwayName){
         var panel = "viz";
-        var identifier = pathwayName;
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
         var force = session.getForce();
@@ -2363,31 +2408,7 @@ metExploreD3.GraphNetwork = {
             .on("drag",_MyThisGraphNode.dragmove)
             .on("dragend", _MyThisGraphNode.dragend);
 
-        //create the node in the data structure
-        var newNode=networkData.addNode(
-            pathwayName,
-            "",
-            pathwayName,
-            identifier,
-            false,
-            "pathway",
-            false,
-            "true",//theNode.getLabelVisible(),
-            "",
-            "",
-            "",
-            false,
-            undefined,
-            true,
-            pathwayName,//theNodeId,
-            pathwayName,
-            false,
-            "",//theNode.getAlias(),
-            pathwayName,//theNode.getLabel());
-			undefined,
-			true
-			);
-
+        var newNode = networkData.getNodeById(pathwayName);
         //newNode.index = networkData.getNodes().indexOf(newNode);
 /*
         if(theNode.getMappingDatasLength()!=0){
@@ -2424,7 +2445,7 @@ metExploreD3.GraphNetwork = {
 
         // For each metabolite we append a division of the class "rect" with the metabolite style by default or create by the user
         node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
-            .filter(function(d) { return d.getId() === identifier; })
+            .filter(function(d) { return d.getId() === pathwayName; })
             .style("stroke-opacity",0.5)
             .addNodeForm(
                 pathwaySize*3,
@@ -2436,12 +2457,12 @@ metExploreD3.GraphNetwork = {
             );
 
         node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
-            .filter(function(d) { return d.getId() === identifier; })
+            .filter(function(d) { return d.getId() === pathwayName; })
             .addNodeText(metaboliteStyle);
 
         node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
             .classed('hide', true)
-            .filter(function(d) { return d.getId() === identifier; })
+            .filter(function(d) { return d.getId() === pathwayName; })
 			.on("mouseover", function(d) {
                 var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 d3.select(this)
@@ -2537,7 +2558,7 @@ metExploreD3.GraphNetwork = {
 
         // Lock Image definition
         var box = node
-            .filter(function(d) { return d.getId() == identifier })
+            .filter(function(d) { return d.getId() == pathwayName })
             .insert("svg", ":first-child")
             .attr(
                 "viewBox",

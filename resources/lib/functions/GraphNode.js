@@ -1184,10 +1184,13 @@ metExploreD3.GraphNode = {
 
         var scale = metExploreD3.getScaleById(parent);
 
+        var nodesWithoutPathways = networkData.getNodes().filter(function (node) {
+                return node.getBiologicalType()!=="pathway";
+        })
 
         // For each node we append a division of the class "node"
         metExploreD3.GraphNode.node = d3.select("#" + metExploreD3.GraphNode.panelParent).select("#D3viz").select("#graphComponent").selectAll("g.node")
-            .data(networkData.getNodes()).enter()
+            .data(nodesWithoutPathways).enter()
             .append("svg:g").attr("class", "node")
             .attr("id", function (node) {
                 return "node" + node.getId();

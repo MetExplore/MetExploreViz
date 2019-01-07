@@ -49,6 +49,15 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
 
             var that = this;
 
+            components=components.sort(function (comp, comp2) {
+                if (comp.getName()<comp2.getName())
+                    return -1;
+                if (comp.getName()>comp2.getName())
+                    return 1;
+                // a doit être égal à b
+                return 0;
+            });
+
             // For each value we add corresponding color caption
             components.forEach(function (component, i) {
                     var colorName = component.getName();

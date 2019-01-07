@@ -216,7 +216,6 @@ NetworkData.prototype = {
         if(this.pathways == undefined)
             this.pathways = [];
 
-
         var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color, path.collapsed);
         this.pathways.push(object);
     },
@@ -455,113 +454,118 @@ NetworkData.prototype = {
 
     cloneObject : function(obj){
         var that = this;
-        
 
         // if(obj.compartments==undefined)
         // {
-           obj.links.forEach(function(link){
-           that.addLink(link.id,
-                        link.source,
-                        link.target,
-                        link.interaction, 
-                        link.reversible);
-            });
+        obj.links.forEach(function(link){
+        that.addLink(link.id,
+                    link.source,
+                    link.target,
+                    link.interaction,
+                    link.reversible);
+        });
 
-            obj.nodes.forEach(function(node){
-                if(node.biologicalType=="reaction"){
-               
+        if(obj.pathways){
+           obj.pathways.forEach(function(pathway){
+               that.copyPathway(pathway);
+           });
+        }
+
+        obj.nodes.forEach(function(node){
+            if(node.biologicalType=="reaction"){
+
+                that.addNode(
+                    node.name,
+                    undefined,
+                    node.dbIdentifier,
+                    node.id,
+                    node.reactionReversibility,
+                    'reaction',
+                    false,
+                    true,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    node.ec,
+                    false,
+                    undefined,
+                    node.pathways,
+                    node.locked,
+                    node.alias,
+                    node.label,
+                    node.labelFont,
+                    node.hidden
+                    );
+
+            }
+            else
+            {
+                if(node.biologicalType=="pathway") {
                     that.addNode(
                         node.name,
-                        undefined, 
-                        node.dbIdentifier,
-                        node.id, 
-                        node.reactionReversibility,
-                        'reaction', 
-                        false, 
-                        true,
                         undefined,
-                        undefined, 
-                        undefined,
-                        undefined,
-                        node.ec, 
-                        false, 
-                        undefined, 
-                        node.pathways, 
-                        node.locked, 
-                        node.alias,
-                        node.label,
-                        node.labelFont,
-                        node.hidden
-                        );
-
-                }
-                else
-                {
-                    if(node.biologicalType=="pathway") {
-                        that.addNode(
-                            node.name,
-                            undefined,
-                            node.dbIdentifier,
-                            node.id,
-                            node.reactionReversibility,
-                            'pathway',
-                            false,
-                            true,
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            node.ec,
-                            false,
-                            undefined,
-                            node.pathways,
-                            node.locked,
-                            node.alias,
-                            node.label,
-                            node.labelFont,
-                            node.hidden
-                        );
-                    }
-                    else
-                    {
-                        that.addNode(
-                        node.name,
-                        node.compartment,
                         node.dbIdentifier,
                         node.id,
-                        undefined,
-                        'metabolite',
+                        node.reactionReversibility,
+                        'pathway',
                         false,
                         true,
-                        node.svg,
-                        node.svgWidth,
-                        node.svgHeight,
-                        node.isSideCompound,
                         undefined,
-                        node.duplicated,
-                        node.identifier,
+                        undefined,
+                        undefined,
+                        undefined,
+                        node.ec,
+                        false,
+                        undefined,
                         node.pathways,
                         node.locked,
                         node.alias,
                         node.label,
                         node.labelFont,
-                        node.hidden);
-                    }
+                        node.hidden
+                    );
                 }
-                if(node.mappingDatas!=undefined){
-                    if(node.mappingDatas.length>0){
-                        node.mappingDatas.forEach(function(mappingData){
-                            var map = new MappingData(mappingData.node, mappingData.mappingName, mappingData.conditionName, mappingData.mapValue);
-                            that.nodes[that.nodes.length-1].addMappingData(map);
-                        });
-                    }
+                else
+                {
+                    that.addNode(
+                    node.name,
+                    node.compartment,
+                    node.dbIdentifier,
+                    node.id,
+                    undefined,
+                    'metabolite',
+                    false,
+                    true,
+                    node.svg,
+                    node.svgWidth,
+                    node.svgHeight,
+                    node.isSideCompound,
+                    undefined,
+                    node.duplicated,
+                    node.identifier,
+                    node.pathways,
+                    node.locked,
+                    node.alias,
+                    node.label,
+                    node.labelFont,
+                    node.hidden);
                 }
-                if (node.imagePosition != undefined){
-                    that.nodes[that.nodes.length-1].imagePosition = node.imagePosition;
+            }
+            if(node.mappingDatas!=undefined){
+                if(node.mappingDatas.length>0){
+                    node.mappingDatas.forEach(function(mappingData){
+                        var map = new MappingData(mappingData.node, mappingData.mappingName, mappingData.conditionName, mappingData.mapValue);
+                        that.nodes[that.nodes.length-1].addMappingData(map);
+                    });
                 }
+            }
+            if (node.imagePosition != undefined){
+                that.nodes[that.nodes.length-1].imagePosition = node.imagePosition;
+            }
 
-                that.nodes[that.nodes.length-1].x = node.x;
-                that.nodes[that.nodes.length-1].y = node.y;
-            });
+            that.nodes[that.nodes.length-1].x = node.x;
+            that.nodes[that.nodes.length-1].y = node.y;
+        });
     }
 };
