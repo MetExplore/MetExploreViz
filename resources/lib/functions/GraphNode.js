@@ -7,6 +7,7 @@ metExploreD3.GraphNode = {
 
     node: "",
     _MyThisGraphNode: "",
+    updatedNodes: "",
     panelParent: "",
     activePanel: "",
     taskClick: "",
@@ -376,7 +377,6 @@ metExploreD3.GraphNode = {
             .attr(
                 "viewBox",
                 function (d) {
-                    console.log(minDim);
                     return "0 0 " + minDim
                         + " " + minDim;
                 }
@@ -1141,15 +1141,6 @@ metExploreD3.GraphNode = {
      */
     refreshNode: function (parent) {
 
-        // Load user's preferences
-        var reactionStyle = metExploreD3.getReactionStyle();
-
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-        var generalStyle = metExploreD3.getGeneralStyle();
-
-        var session = _metExploreViz.getSessionById(parent);
-        var sessionMain = _metExploreViz.getSessionById('viz');
-
         document.addEventListener("keydown", function (e) {
             // 83=S
             if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
@@ -1159,6 +1150,15 @@ metExploreD3.GraphNode = {
         }, false);
 
         this.initShortCut();
+
+        // Load user's preferences
+        var reactionStyle = metExploreD3.getReactionStyle();
+
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var generalStyle = metExploreD3.getGeneralStyle();
+
+        var session = _metExploreViz.getSessionById(parent);
+        var sessionMain = _metExploreViz.getSessionById('viz');
 
         metExploreD3.GraphNode.panelParent = parent;
 
@@ -1174,63 +1174,47 @@ metExploreD3.GraphNode = {
 
 
         var networkData = session.getD3Data();
-        var h = parseInt(metExploreD3.GraphPanel.getHeight(_MyThisGraphNode.panelParent));
-        var w = parseInt(metExploreD3.GraphPanel.getWidth(_MyThisGraphNode.panelParent));
 
         // Create function to manage double click
         d3.selectAll("#D3viz")
             .on("mouseup", this.unselectIfDBClick);
 
+        var visibleNodes = networkData.getNodes()
+            .filter(function (node) {
+                return !node.isHidden();
+            });
 
-        var scale = metExploreD3.getScaleById(parent);
+        metExploreD3.GraphNode.updatedNodes = d3.select("#" + metExploreD3.GraphNode.panelParent).select("#D3viz").select("#graphComponent").selectAll("g.node")
+            .data(visibleNodes, function keyFunc(d, i) { return d.getId() })
+            .enter()
+            .append("svg:g").attr("class", "node");
 
-        var nodesWithoutPathways = networkData.getNodes().filter(function (node) {
-                return node.getBiologicalType()!=="pathway";
-        })
-
-        // For each node we append a division of the class "node"
-        metExploreD3.GraphNode.node = d3.select("#" + metExploreD3.GraphNode.panelParent).select("#D3viz").select("#graphComponent").selectAll("g.node")
-            .data(nodesWithoutPathways).enter()
-            .append("svg:g").attr("class", "node")
+        metExploreD3.GraphNode.updatedNodes
+            .style("fill", "white")
             .attr("id", function (node) {
                 return "node" + node.getId();
             })
-            .call(node_drag)
-            .style("fill", "white");
-        // Here it's the position by default for the beginning of force algorithm
-        // .on("click", selection)
-        // .style(
-        // 	"stroke-dasharray", function(d) {
-        // 		if (d.getReactionReversibility()) {
-        // 			return "2,2";
-        // 		} else {
-        // 			return "";
-        // 		}
-        // 	}
-        // );
+            .call(node_drag);
+
+        metExploreD3.GraphNode.node = d3.select("#" + metExploreD3.GraphNode.panelParent)
+            .select("#D3viz").select("#graphComponent").selectAll("g.node");
+
+
+         var visiblePathwayNodes = visibleNodes.filter(function (node) {
+             return node.getBiologicalType()==="pathway";
+         });
 
         metExploreD3.GraphNode.applyEventOnNode(parent);
 
-        // d3.selection.prototype.test = function() {
-        //     this.append("rect")
-        // 	.attr("class", function(d) { return d.getBiologicalType(); })
-        // 	.attr("id", function(d) { return d.getId(); })
-        // 	.attr("identifier", function(d) { return d.getId(); })
-        // 	.attr("width", metaboliteStyle.getWidth())
-        // 	.attr("height", metaboliteStyle.getHeight())
-        // 	.attr("rx", metaboliteStyle.getRX())
-        // 	.attr("ry", metaboliteStyle.getRY())
-        // 	.attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
-        // 							+ metaboliteStyle.getHeight() / 2
-        // 							+ ")")
-        // 	.style("stroke", metaboliteStyle.getStrokeColor())
-        // 	.style("stroke-width", metaboliteStyle.getStrokeWidth());
-        // };
+        visiblePathwayNodes.forEach(function (t) {
+            metExploreD3.GraphNetwork.addPathwayNode(t.getName());
+        });
 
         // For each metabolite we append a division of the class "rect" with the metabolite style by default or create by the user
-        metExploreD3.GraphNode.node.filter(function (d) {
-            return d.getBiologicalType() == 'metabolite'
-        })
+        metExploreD3.GraphNode.updatedNodes
+            .filter(function (d) {
+                return d.getBiologicalType() == 'metabolite'
+            })
             .filter(function (d) {
                 return !d.isDuplicated();
             })
@@ -1244,9 +1228,10 @@ metExploreD3.GraphNode = {
             );
 
         // Duplicated metabolites
-        metExploreD3.GraphNode.node.filter(function (d) {
-            return d.getBiologicalType() == 'metabolite'
-        })
+        metExploreD3.GraphNode.updatedNodes
+            .filter(function (d) {
+                return d.getBiologicalType() == 'metabolite'
+            })
             .filter(function (d) {
                 return d.isDuplicated();
             })
@@ -1291,7 +1276,7 @@ metExploreD3.GraphNode = {
 
         // For each reaction we append a division of the class "rect" with the reaction style by default or create by the user
         // For each reaction we append a division of the class "rect" with the reaction style by default or create by the user
-        metExploreD3.GraphNode.node
+        metExploreD3.GraphNode.updatedNodes
             .filter(function (d) {
                 return d.getBiologicalType() == 'reaction'
             })
@@ -1308,7 +1293,7 @@ metExploreD3.GraphNode = {
         if (networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt()) {
             var minDim = Math.min(metaboliteStyle.getWidth(), metaboliteStyle.getHeight());
             // We define the text for a metabolie WITHOUT the coresponding SVG image
-            metExploreD3.GraphNode.node
+            metExploreD3.GraphNode.updatedNodes
                 .filter(function (d) {
                     return d.getLabelVisible() == true;
                 })
@@ -1322,7 +1307,7 @@ metExploreD3.GraphNode = {
 
             // We define the text for a metabolie WITH the coresponding SVG image
             // Text definition
-            metExploreD3.GraphNode.node
+            metExploreD3.GraphNode.updatedNodes
                 .filter(function (d) {
                     return d.getLabelVisible() == true;
                 })
@@ -1335,7 +1320,7 @@ metExploreD3.GraphNode = {
                 .addNodeText(metaboliteStyle);
 
             // Image definition
-            metExploreD3.GraphNode.node
+            metExploreD3.GraphNode.updatedNodes
                 .filter(
                     function (d) {
                         return (d.getBiologicalType() == 'metabolite' && d.getSvg() != "undefined" && d.getSvg() != undefined && d.getSvg() != "");
@@ -1366,7 +1351,7 @@ metExploreD3.GraphNode = {
 
 
             // Lock Image definition
-            var box = metExploreD3.GraphNode.node
+            var box = metExploreD3.GraphNode.updatedNodes
                 .insert("svg", ":first-child")
                 .attr(
                     "viewBox",
@@ -1446,7 +1431,7 @@ metExploreD3.GraphNode = {
                 .attr("height", "40%");
 
             // We define the text for a reaction
-            metExploreD3.GraphNode.node
+            metExploreD3.GraphNode.updatedNodes
                 .filter(function (d) {
                     return d.getLabelVisible() == true;
                 })
@@ -1455,9 +1440,10 @@ metExploreD3.GraphNode = {
                 })
                 .addNodeText(reactionStyle);
 
+
         }
 
-        metExploreD3.GraphNode.node
+        metExploreD3.GraphNode.updatedNodes
             .filter(function (d) {
                 return d.isSelected();
             })
@@ -1466,7 +1452,7 @@ metExploreD3.GraphNode = {
             });
 
 
-        metExploreD3.GraphNode.node
+        metExploreD3.GraphNode.updatedNodes
             .filter(function (d) {
                 return d.isLocked();
             })
@@ -1474,7 +1460,7 @@ metExploreD3.GraphNode = {
                 d.fixed = true;
             });
 
-        metExploreD3.GraphNode.node
+        metExploreD3.GraphNode.updatedNodes
             .filter(function (node) {
                 return node.getMappingDatasLength() > 0 && session.getActiveMapping() != "";
             })
@@ -1584,6 +1570,395 @@ metExploreD3.GraphNode = {
         // console.log("----Viz: FINISH refresh/ all "+timeall);
     },
 
+    updateNodes: function (parent) {
+
+        // Load user's preferences
+        var reactionStyle = metExploreD3.getReactionStyle();
+
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var generalStyle = metExploreD3.getGeneralStyle();
+
+        var session = _metExploreViz.getSessionById(parent);
+
+        metExploreD3.GraphNode.panelParent = parent;
+
+        _MyThisGraphNode = metExploreD3.GraphNode;
+
+        /***************************/
+        // Var which permit to drag
+        /***************************/
+        var node_drag = d3.behavior.drag()
+            .on("dragstart", _MyThisGraphNode.dragstart)
+            .on("drag", _MyThisGraphNode.dragmove)
+            .on("dragend", _MyThisGraphNode.dragend);
+
+
+        var networkData = session.getD3Data();
+
+        var visibleNodes = networkData.getNodes()
+            .filter(function (node) {
+                return !node.isHidden();
+            });
+
+        var nodes = d3.select("#" + metExploreD3.GraphNode.panelParent)
+            .select("#D3viz").select("#graphComponent").selectAll("g.node")
+            .data(visibleNodes, function keyFunc(d, i) { return d.getId() });
+
+
+        var removedNodes = nodes.exit().remove();
+      
+        metExploreD3.GraphNode.updatedNodes =
+            nodes.enter()
+                .append("svg:g").attr("class", "node")
+                .style("fill", "white");
+
+        metExploreD3.GraphNode.updatedNodes
+            .attr("id", function (node) {
+                return "node" + node.getId();
+            })
+            .call(node_drag);
+
+        metExploreD3.GraphNode.node = d3.select("#" + metExploreD3.GraphNode.panelParent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+
+        var visiblePathwayNodes = visibleNodes.filter(function (node) {
+            return node.getBiologicalType()==="pathway";
+        });
+
+        visiblePathwayNodes.forEach(function (t) {
+            metExploreD3.GraphNetwork.addPathwayNode(t.getName());
+        });
+
+        metExploreD3.GraphNode.applyEventOnNode(parent);
+
+        // For each metabolite we append a division of the class "rect" with the metabolite style by default or create by the user
+        metExploreD3.GraphNode.updatedNodes
+            .filter(function (d) {
+                return d.getBiologicalType() == 'metabolite'
+            })
+            .filter(function (d) {
+                return !d.isDuplicated();
+            })
+            .addNodeForm(
+                metaboliteStyle.getWidth(),
+                metaboliteStyle.getHeight(),
+                metaboliteStyle.getRX(),
+                metaboliteStyle.getRY(),
+                metaboliteStyle.getStrokeColor(),
+                metaboliteStyle.getStrokeWidth()
+            );
+
+        // Duplicated metabolites
+        metExploreD3.GraphNode.updatedNodes
+            .filter(function (d) {
+                return d.getBiologicalType() == 'metabolite'
+            })
+            .filter(function (d) {
+                return d.isDuplicated();
+            })
+            .style("stroke-opacity", 0.5)
+            .each(function (node) {
+                var clone = new NodeData(
+                    node.getName(),
+                    node.getCompartment(),
+                    node.getDbIdentifier(),
+                    node.getEC(),
+                    node.getIdentifier(),
+                    node.getReactionReversibility(),
+                    node.getIsSideCompound(),
+                    node.getBiologicalType(),
+                    node.isSelected(),
+                    node.getLabelVisible(),
+                    node.getSvg(),
+                    node.getSvgWidth(),
+                    node.getSvgHeight(),
+                    undefined,
+                    node.isDuplicated(),
+                    node.getIdentifier(),
+                    node.getPathways(),
+                    node.isLocked(),
+                    node.getAlias(),
+                    node.getLabel(),
+                    node.getLabelFont(),
+                    node.isHidden()
+                );
+
+                metExploreD3.fireEventParentWebSite("sideCompound", clone);
+            })
+            .addNodeForm(
+                metaboliteStyle.getWidth() / 2,
+                metaboliteStyle.getHeight() / 2,
+                metaboliteStyle.getRX() / 2,
+                metaboliteStyle.getRY() / 2,
+                metaboliteStyle.getStrokeColor(),
+                metaboliteStyle.getStrokeWidth() / 2
+            );
+
+
+        // For each reaction we append a division of the class "rect" with the reaction style by default or create by the user
+        // For each reaction we append a division of the class "rect" with the reaction style by default or create by the user
+        metExploreD3.GraphNode.updatedNodes
+            .filter(function (d) {
+                return d.getBiologicalType() == 'reaction'
+            })
+            .addNodeForm(
+                reactionStyle.getWidth(),
+                reactionStyle.getHeight(),
+                reactionStyle.getRX(),
+                reactionStyle.getRY(),
+                reactionStyle.getStrokeColor(),
+                reactionStyle.getStrokeWidth()
+            );
+
+
+        if (networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt()) {
+            var minDim = Math.min(metaboliteStyle.getWidth(), metaboliteStyle.getHeight());
+            // We define the text for a metabolie WITHOUT the coresponding SVG image
+            metExploreD3.GraphNode.updatedNodes
+                .filter(function (d) {
+                    return d.getLabelVisible() == true;
+                })
+                .filter(function (d) {
+                    return d.getBiologicalType() == 'metabolite';
+                })
+                .filter(function (d) {
+                    return d.getSvg() == "undefined" || d.getSvg() == undefined || d.getSvg() == "";
+                })
+                .addNodeText(metaboliteStyle);
+
+            // We define the text for a metabolie WITH the coresponding SVG image
+            // Text definition
+            metExploreD3.GraphNode.updatedNodes
+                .filter(function (d) {
+                    return d.getLabelVisible() == true;
+                })
+                .filter(function (d) {
+                    return d.getBiologicalType() == 'metabolite';
+                })
+                .filter(function (d) {
+                    return d.getSvg() != "undefined" && d.getSvg() != undefined && d.getSvg() != "";
+                })
+                .addNodeText(metaboliteStyle);
+
+            // Image definition
+            metExploreD3.GraphNode.updatedNodes
+                .filter(
+                    function (d) {
+                        return (d.getBiologicalType() == 'metabolite' && d.getSvg() != "undefined" && d.getSvg() != undefined && d.getSvg() != "");
+                    })
+                .append("svg")
+                .attr(
+                    "viewBox",
+                    function (d) {
+                        return "0 0 " + minDim
+                            + " " + minDim;
+                    })
+                .attr("width", minDim * 8 / 10 + "px")
+                .attr("height", minDim * 8 / 10 + "px")
+                .attr("x", (-minDim / 2) + (minDim * 1 / 10))
+                .attr("preserveAspectRatio", "xMinYMin")
+                .attr("y", (-minDim / 2) + (minDim * 1 / 10))
+                .attr("class", "structure_metabolite")
+                .append("image")
+                .attr(
+                    "xlink:href",
+                    function (d) {
+                        //return "resources/images/structure_metabolite/"
+                        return "resources/images/structure_metabolite/"
+                            + d.getSvg();
+                    })
+                .attr("width", "100%")
+                .attr("height", "100%");
+
+
+            // Lock Image definition
+            var box = metExploreD3.GraphNode.updatedNodes
+                .filter(function (d) {
+                    return d.getBiologicalType() == 'metabolite' ||  d.getBiologicalType() == 'reaction';
+                })
+                .insert("svg", ":first-child")
+                .attr(
+                    "viewBox",
+                    function (d) {
+                        +" " + minDim;
+                    }
+                )
+                .attr("width", function (node) {
+                    if (node.getBiologicalType() == "metabolite")
+                        return metaboliteStyle.getWidth();
+                    if (node.getBiologicalType() == "reaction")
+                        return reactionStyle.getWidth();
+                })
+                .attr("height", function (node) {
+                    if (node.getBiologicalType() == "metabolite")
+                        return metaboliteStyle.getHeight();
+                    if (node.getBiologicalType() == "reaction")
+                        return reactionStyle.getHeight();
+                })
+                .attr("preserveAspectRatio", "xMinYMin")
+                .attr("y", function (node) {
+                    if (node.getBiologicalType() == "metabolite")
+                        return -metaboliteStyle.getHeight();
+                    if (node.getBiologicalType() == "reaction")
+                        return -reactionStyle.getHeight();
+                })
+                .attr("x", function (node) {
+                    if (node.getBiologicalType() == "metabolite")
+                        return -metaboliteStyle.getWidth();
+                    if (node.getBiologicalType() == "reaction")
+                        return -reactionStyle.getWidth();
+                })
+                .attr("class", "locker")
+                .classed('hide', true);
+
+            box.append("svg:path")
+                .attr("class", "backgroundlocker")
+                .attr("d", function (node) {
+                    if (node.getBiologicalType() == "metabolite") {
+                        var pathBack = "M" + metaboliteStyle.getWidth() + "," + metaboliteStyle.getHeight() +
+                            " L0," + metaboliteStyle.getHeight() +
+                            " L0," + metaboliteStyle.getRY() * 2 +
+                            " A" + metaboliteStyle.getRX() * 2 + "," + metaboliteStyle.getRY() * 2 + ",0 0 1 " + metaboliteStyle.getRX() * 2 + ",0" +
+                            " L" + metaboliteStyle.getWidth() + ",0";
+                        return pathBack;
+
+                    }
+                    if (node.getBiologicalType() == "reaction") {
+                        var pathBack = "M" + reactionStyle.getWidth() + "," + reactionStyle.getHeight() +
+                            " L0," + reactionStyle.getHeight() +
+                            " L0," + reactionStyle.getRY() * 2 +
+                            " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
+                            " L" + reactionStyle.getWidth() + ",0";
+                        return pathBack;
+
+                    }
+
+                })
+                .attr("opacity", "0.20")
+                .attr("fill", "black");
+
+            box.append("image")
+                .attr("class", "iconlocker")
+                .attr("y", function (node) {
+                    if (node.getBiologicalType() == "metabolite")
+                        return metaboliteStyle.getHeight() / 4 - (metaboliteStyle.getHeight() - metaboliteStyle.getRY() * 2) / 8;
+                    if (node.getBiologicalType() == "reaction")
+                        return reactionStyle.getHeight() / 4 - (reactionStyle.getHeight() - reactionStyle.getRY() * 2) / 8;
+                })
+                .attr("x", function (node) {
+                    if (node.getBiologicalType() == "metabolite")
+                        return metaboliteStyle.getWidth() / 4 - (metaboliteStyle.getWidth() - metaboliteStyle.getRX() * 2) / 8;
+                    if (node.getBiologicalType() == "reaction")
+                        return reactionStyle.getWidth() / 4 - (reactionStyle.getWidth() - reactionStyle.getRX() * 2) / 8;
+                })
+                .attr("width", "40%")
+                .attr("height", "40%");
+
+            // We define the text for a reaction
+            metExploreD3.GraphNode.updatedNodes
+                .filter(function (d) {
+                    return d.getLabelVisible() == true;
+                })
+                .filter(function (d) {
+                    return d.getBiologicalType() == 'reaction';
+                })
+                .addNodeText(reactionStyle);
+
+
+        }
+
+        metExploreD3.GraphNode.updatedNodes
+            .filter(function (d) {
+                return d.isSelected();
+            })
+            .each(function (aSelectedNode) {
+                _MyThisGraphNode.fixNodeOnRefresh(aSelectedNode, parent);
+            });
+
+
+        metExploreD3.GraphNode.updatedNodes
+            .filter(function (d) {
+                return d.isLocked();
+            })
+            .each(function (d) {
+                d.fixed = true;
+            });
+
+        metExploreD3.GraphNode.updatedNodes
+            .filter(function (node) {
+                return node.getMappingDatasLength() > 0 && session.getActiveMapping() != "";
+            })
+            .filter(function (node) {
+                var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
+                return (mappingData != null && session.getColorMappingById(mappingData.getMapValue()) != null);
+            })
+            .attr("mapped", function (node) {
+                var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
+
+                if (session.getMappingDataType() == "Continuous") {
+                    if (session.getColorMappingsSet()[0] < session.getColorMappingsSet()[1]) {
+                        maxValue = session.getColorMappingsSet()[1];
+                        minValue = session.getColorMappingsSet()[0];
+                    }
+                    else {
+                        maxValue = session.getColorMappingsSet()[0];
+                        minValue = session.getColorMappingsSet()[1];
+                    }
+
+                    var generalStyle = _metExploreViz.getGeneralStyle();
+                    var colorMin = generalStyle.getColorMinMappingContinuous();
+                    var colorMax = generalStyle.getColorMaxMappingContinuous();
+
+                    var colorScale = d3.scale.linear()
+                        .domain([parseFloat(minValue), parseFloat(maxValue)])
+                        .range([colorMin, colorMax]);
+
+                    return colorScale(parseFloat(mappingData.getMapValue()));
+                }
+
+                var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
+                return color;
+            })
+            .style("fill", function (node) {
+                var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
+                d3.select(this)
+                    .insert("rect", ":first-child")
+                    .attr("class", "stroke")
+                    .attr("width", parseInt(d3.select(this).select("." + node.getBiologicalType()).attr("width")) + 10)
+                    .attr("height", parseInt(d3.select(this).select("." + node.getBiologicalType()).attr("height")) + 10)
+                    .attr("rx", parseInt(d3.select(this).select("." + node.getBiologicalType()).attr("rx")) + 5)
+                    .attr("ry", parseInt(d3.select(this).select("." + node.getBiologicalType()).attr("ry")) + 5)
+                    .attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select("." + node.getBiologicalType()).attr("width")) + 10) / 2 + ",-"
+                        + parseInt(parseInt(d3.select(this).select("." + node.getBiologicalType()).attr("height")) + 10) / 2
+                        + ")")
+                    .style("opacity", '0.5')
+                    .style("fill", 'red');
+                if (session.getMappingDataType() == "Continuous") {
+                    if (parseFloat(session.getColorMappingsSet()[0].getName()) < parseFloat(session.getColorMappingsSet()[1].getName())) {
+                        maxValue = parseFloat(session.getColorMappingsSet()[1].getName());
+                        minValue = parseFloat(session.getColorMappingsSet()[0].getName());
+                    }
+                    else {
+                        maxValue = parseFloat(session.getColorMappingsSet()[0].getName());
+                        minValue = parseFloat(session.getColorMappingsSet()[1].getName());
+                    }
+
+                    var generalStyle = _metExploreViz.getGeneralStyle();
+                    var colorMin = generalStyle.getColorMinMappingContinuous();
+                    var colorMax = generalStyle.getColorMaxMappingContinuous();
+
+                    var colorScale = d3.scale.linear()
+                        .domain([parseFloat(minValue), parseFloat(maxValue)])
+                        .range([colorMin, colorMax]);
+
+                    return colorScale(parseFloat(mappingData.getMapValue()));
+
+                }
+                var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
+                return color;
+            });
+
+    },
+
     /*******************************************
      * Fonction call for each update
      * @param {} panel : The panel where the action is launched
@@ -1683,7 +2058,6 @@ metExploreD3.GraphNode = {
     },
 
     unselectAll: function (me) {
-        console.log(_MyThisGraphNode.activePanel);
         if (_MyThisGraphNode.activePanel === undefined || _MyThisGraphNode.activePanel === "") _MyThisGraphNode.activePanel == "viz";
 
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
@@ -2510,13 +2884,13 @@ metExploreD3.GraphNode = {
             .on("mouseover", function (d) {
                 var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 
-                d3.select(this)
-                    .each(function (node) {
-                        if (node.getBiologicalType() !== "pathway") {
-                            var last = nodes[0][nodes.size() - 1];
-                            this.parentNode.insertBefore(this, last);
-                        }
-                    });
+                // d3.select(this)
+                //     .each(function (node) {
+                //         if (node.getBiologicalType() !== "pathway") {
+                //             var last = nodes[0][nodes.size() - 1];
+                //             this.parentNode.insertBefore(this, last);
+                //         }
+                //     });
 
                 d.fixed = true;
                 if (parent == "viz") {
@@ -2539,7 +2913,6 @@ metExploreD3.GraphNode = {
                 }
             })
             .on("mouseleave", function (d) {
-
                 metExploreD3.GraphNode.node
                     .filter(function (node) {
                         return node == d
@@ -2592,11 +2965,12 @@ metExploreD3.GraphNode = {
                         return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
                     })
                     .style("stroke", linkStyle.getStrokeColor())
-                    .style("stroke-width", "0.5").each(function () {
-                    var linksover = d3.select(this.parentNode).selectAll("path.link");
-                    var first = linksover[0][0];
-                    this.parentNode.insertBefore(this, first);
-                });
+                    .style("stroke-width", "0.5")
+                    // .each(function () {
+                    //     var linksover = d3.select(this.parentNode).selectAll("path.link");
+                    //     var first = linksover[0][0];
+                    //     this.parentNode.insertBefore(this, first);
+                    // });
 
 
                 if (d.getBiologicalType() == "reaction") {
@@ -2711,13 +3085,13 @@ metExploreD3.GraphNode = {
             })
             .on("mouseover", function (d) {
                 var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-                d3.select(this)
-                    .each(function (node) {
-                        if (node.getBiologicalType() !== "pathway") {
-                            var last = nodes[0][nodes.size() - 1];
-                            this.parentNode.insertBefore(this, last);
-                        }
-                    });
+                // d3.select(this)
+                //     .each(function (node) {
+                //         if (node.getBiologicalType() !== "pathway") {
+                //             var last = nodes[0][nodes.size() - 1];
+                //             this.parentNode.insertBefore(this, last);
+                //         }
+                //     });
 
                 d.fixed = true;
                 if (parent == "viz") {
@@ -2821,11 +3195,11 @@ metExploreD3.GraphNode = {
                     })
                     .style("stroke", linkStyle.getStrokeColor())
                     .style("stroke-width", "0.5")
-                    .each(function () {
-                        var linksover = d3.select(this.parentNode).selectAll("path.link");
-                        var first = linksover[0][0];
-                        this.parentNode.insertBefore(this, first);
-                    });
+                    // .each(function () {
+                    //     var linksover = d3.select(this.parentNode).selectAll("path.link");
+                    //     var first = linksover[0][0];
+                    //     this.parentNode.insertBefore(this, first);
+                    // });
 
                 if (d.getBiologicalType() == "reaction") {
                     d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()

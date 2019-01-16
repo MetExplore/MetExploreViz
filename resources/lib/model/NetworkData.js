@@ -216,7 +216,7 @@ NetworkData.prototype = {
         if(this.pathways == undefined)
             this.pathways = [];
 
-        var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color, path.collapsed);
+        var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color, path.collapsed, path.nodes);
         this.pathways.push(object);
     },
 
@@ -528,6 +528,7 @@ NetworkData.prototype = {
                 }
                 else
                 {
+                    //console.log(node.labelFont);
                     that.addNode(
                     node.name,
                     node.compartment,

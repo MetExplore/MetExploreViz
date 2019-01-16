@@ -57,7 +57,10 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							handler :function(){
 								var sessionStore = _metExploreViz.getSessionById("viz");
 								sessionStore.getSelectedPathways().forEach(function (path, i) {
-								    setTimeout(function(){metExploreD3.GraphNetwork.collapsePathway(path)}, i*1000);
+								    setTimeout(function(){
+                                        metExploreD3.GraphNetwork.collapsePathway(path);
+                                        metExploreD3.GraphNetwork.initPathway(path);
+                                    }, i*1000);
 								});
 								sessionStore.removeAllSelectedPathways();
 							}

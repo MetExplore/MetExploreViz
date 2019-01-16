@@ -1070,6 +1070,7 @@ metExploreD3.GraphFunction = {
 	 */
 	keepOnlySubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
+        var networkData = session.getD3Data();
 		//console.log("------keep only sub-network------"
 		// )
 
@@ -1153,10 +1154,43 @@ metExploreD3.GraphFunction = {
 									}
 								})
 								.each(function(node){
-									metExploreD3.GraphNetwork.removeANode(node,"viz");
+                                    networkData.removeNode(node);
 								});
 						}
 					}
+
+
+                    metExploreD3.GraphNode.updateNodes(panel);
+
+                    var linkStyle = metExploreD3.getLinkStyle();
+                    metExploreD3.GraphLink.refreshLink(panel, session, linkStyle);
+
+
+                    var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+
+                    var activePanel = _MyThisGraphNode.activePanel;
+                    if(!activePanel) activePanel='viz';
+                    metExploreD3.applyTolinkedNetwork(
+                        activePanel,
+                        function(panelLinked, sessionLinked) {
+                            metExploreD3.GraphCaption.majCaption(panelLinked);
+
+                            s_GeneralStyle.setDisplayConvexhulls(false);
+                            metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                            metExploreD3.GraphNetwork.tick(panelLinked);
+
+                            s_GeneralStyle.setDisplayConvexhulls("Pathways");
+                            metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                            metExploreD3.GraphNetwork.tick(panelLinked);
+
+                            s_GeneralStyle.setDisplayCaption("Pathways");
+                            metExploreD3.GraphCaption.majCaption(panelLinked);
+
+                        });
+
+                    metExploreD3.GraphNetwork.tick(panel);
+                    metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
+
 					if(session!=undefined)
 					{
 						if(force!=undefined)

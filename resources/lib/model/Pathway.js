@@ -1,11 +1,17 @@
-var Pathway = function(id, name, hide, color, collapsed){
+var Pathway = function(id, name, hide, color, collapsed, nodes){
 	this.id = id;
 	this.identifier = name;
 	this.name = name;
+
 	if(color)
 	    this.color = color;
 	else
 	    this.color = "";
+
+	if(nodes)
+	    this.nodes = nodes;
+	else
+        this.nodes = [];
 
     if(hide)
         this.hide = hide;
@@ -19,7 +25,21 @@ var Pathway = function(id, name, hide, color, collapsed){
 };
 
 Pathway.prototype = {
-		
+
+    addNode:function(node)
+    {
+        this.nodes.push(node);
+    },
+    getNodes:function()
+    {
+        return this.nodes;
+    },
+
+    removeNode:function(node)
+    {
+        var index = this.nodes.indexOf(node);
+        if(index!=-1) this.nodes.splice(index, 1);
+    },
 
    	getId:function()
     {
@@ -47,7 +67,7 @@ Pathway.prototype = {
     },
     setHidden:function(bool)
     {
-      return this.hide = bool;
+      this.hide = bool;
     },
     isCollapsed:function()
     {
@@ -55,6 +75,6 @@ Pathway.prototype = {
     },
     setCollapsed:function(bool)
     {
-      return this.collapsed = bool;
+      this.collapsed = bool;
     }
 };

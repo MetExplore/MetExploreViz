@@ -685,10 +685,10 @@ metExploreD3.GraphMapping = {
 										.style("stroke", "black")
 										.style("stroke-width", 0.5)
 										.style("stroke-dasharray", "2,3")
-										.each(function(link){
-											var first = links[0][0];
-											this.parentNode.insertBefore(this, first);
-										});
+										// .each(function(link){
+										// 	var first = links[0][0];
+										// 	this.parentNode.insertBefore(this, first);
+										// });
 		                    	}
 								else
 								{
@@ -721,10 +721,10 @@ metExploreD3.GraphMapping = {
 										.style("stroke", "black")
 										.style("stroke-width", 0.5)
 										.style("stroke-dasharray", "2,3") 
-										.each(function(link){
-											var first = links[0][0];
-											this.parentNode.insertBefore(this, first);
-										});
+										// .each(function(link){
+										// 	var first = links[0][0];
+										// 	this.parentNode.insertBefore(this, first);
+										// });
 								}
 								else
 								{
@@ -968,10 +968,10 @@ metExploreD3.GraphMapping = {
 									.style("stroke", "black")
 									.style("stroke-width", 0.5)
 									.style("stroke-dasharray", "2,3")
-									.each(function(link){
-										var first = links[0][0];
-										this.parentNode.insertBefore(this, first);
-									});
+									// .each(function(link){
+									// 	var first = links[0][0];
+									// 	this.parentNode.insertBefore(this, first);
+									// });
 	                    	}
 							else
 							{

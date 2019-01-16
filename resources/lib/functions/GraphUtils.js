@@ -1479,6 +1479,11 @@ metExploreD3.GraphUtils = {
                         else
                             networkJSON+="\"duplicated\":false,";
 
+                        if(node.isHidden()!=undefined)
+                            networkJSON+="\"hidden\":"+JSON.stringify(node.isHidden())+",";
+                        else
+                            networkJSON+="\"hidden\":false,";
+
                         networkJSON+="\"labelVisible\":"+JSON.stringify(node.getLabelVisible())+",";
 
                         if(node.getSvg()!=undefined){
@@ -1487,7 +1492,9 @@ metExploreD3.GraphUtils = {
                             networkJSON+="\"svgHeight\":"+JSON.stringify(node.getSvgHeight())+",";
                         }
 
-                        networkJSON+="\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node, key))+",";
+						if(node.getLabelFont()!=undefined)
+                        	networkJSON+="\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node, key))+",";
+                        
                         var imagePosition = metExploreD3.GraphStyleEdition.createImageStyleObject(node, key);
                         if (imagePosition != undefined) {
                             networkJSON += "\"imagePosition\":" + JSON.stringify(imagePosition) + ",";

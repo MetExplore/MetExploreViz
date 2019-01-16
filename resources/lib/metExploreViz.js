@@ -370,10 +370,19 @@ var metExploreD3 = {
                     pathway.values.push(node);
             }
         }
-        _metExploreViz.getSessionById(panel).getD3Data().getLinks()
+        var networkData = _metExploreViz.getSessionById(panel).getD3Data();
+        networkData.getLinks()
             .forEach(function(d){
-                var source = d.source;
-                var target = d.target;
+                var target, source;
+                target = d.getTarget();
+                source = d.getSource();
+                if(!(target instanceof NodeData)){
+                    target = networkData.getNodes()[d.getTarget()];
+                }
+                if(!(source instanceof NodeData)){
+                    source = networkData.getNodes()[d.getSource()];
+                }
+
                 if(source.getBiologicalType()=="reaction"){
                     source.getPathways()
                         .forEach(function(pathway){
@@ -985,7 +994,7 @@ metExploreViz.prototype = {
             var id = networkData.links[j].getId().valueOf(); 
             var src = networkData.links[j].getSource();
             var source = newData.nodes[src];
-            
+
             var tgt = networkData.links[j].getTarget();
             var target = newData.nodes[tgt];
        

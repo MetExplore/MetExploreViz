@@ -61,7 +61,7 @@ var NodeData = function(
         this.label= label;
         this.labelFont = labelFont;
         this.hidden = hidden;
-        if(lock==undefined)
+        if(hidden==undefined)
             this.hidden=false;
 };
 

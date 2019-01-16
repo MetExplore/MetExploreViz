@@ -501,9 +501,9 @@ metExploreD3.GraphCaption = {
         if(component=="Pathways") {
             d3.select("#" + panel).select("#D3viz").selectAll("path.convexhull")
                 .classed("hide", function (conv) {
-                    var component = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
-                    if (component) {
-                        return component.hidden();
+                    var thecomponent = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
+                    if (thecomponent) {
+                        return thecomponent.hidden() || thecomponent.isCollapsed();
                     }
 
                     return true;
@@ -643,7 +643,6 @@ metExploreD3.GraphCaption = {
 
         var groups = metExploreD3.getPathwaysSet('viz');
         var pathways = [];
-        console.log(groups[0].getColor());
         if(groups[0].getColor()){
             metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
         }

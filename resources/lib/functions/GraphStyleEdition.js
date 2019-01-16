@@ -467,30 +467,6 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Apply label style if style data are associated to the node
-     * @param {Object} node : The node whose label will be modified
-     */
-    setStartingStyle : function (node, panel) {
-        if (node.labelFont) {
-            var selection = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                .selectAll("g.node")
-                .filter(function (d) {
-                    return d.getDbIdentifier() == node.getDbIdentifier();
-                })
-                .select("text");
-            if (node.labelFont.font) { selection.style("font-family", node.labelFont.font); }
-            if (node.labelFont.fontSize) { selection.style("font-size", node.labelFont.fontSize); }
-            if (node.labelFont.fontBold) { selection.style("font-weight", node.labelFont.fontBold); }
-            if (node.labelFont.fontItalic) { selection.style("font-style", node.labelFont.fontItalic); }
-            if (node.labelFont.fontUnderline) { selection.style("text-decoration-line", node.labelFont.fontUnderline); }
-            if (node.labelFont.fontOpacity) { selection.attr("opacity", node.labelFont.fontOpacity); }
-            if (node.labelFont.fontX) { selection.attr("x", node.labelFont.fontX); }
-            if (node.labelFont.fontY) { selection.attr("y", node.labelFont.fontY); }
-            if (node.labelFont.fontTransform) { selection.attr("transform", node.labelFont.fontTransform); }
-        }
-    },
-
-    /*******************************************
      * Create an object containing the label style data associated to a node
      * @param {Object} node : The node whose label syle data will be put in the object
      */
@@ -499,18 +475,20 @@ metExploreD3.GraphStyleEdition = {
             .selectAll("g.node")
             .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
             .select("text");
-        if(nodeLabel.length>0){
-            var labelStyle = {
-                font : nodeLabel.style("font-family"),
-                fontSize : nodeLabel.style("font-size"),
-                fontBold : nodeLabel.style("font-weight"),
-                fontItalic : nodeLabel.style("font-style"),
-                fontUnderline : nodeLabel.style("text-decoration-line"),
-                fontOpacity : nodeLabel.attr("opacity"),
-                fontX : nodeLabel.attr("x"),
-                fontY : nodeLabel.attr("y"),
-                fontTransform : nodeLabel.attr("transform")
-            };
+console.log(nodeLabel);
+        if(nodeLabel[0].length>0){
+            if(nodeLabel[0][0]!==null)
+                var labelStyle = {
+                    font : nodeLabel.style("font-family"),
+                    fontSize : nodeLabel.style("font-size"),
+                    fontBold : nodeLabel.style("font-weight"),
+                    fontItalic : nodeLabel.style("font-style"),
+                    fontUnderline : nodeLabel.style("text-decoration-line"),
+                    fontOpacity : nodeLabel.attr("opacity"),
+                    fontX : nodeLabel.attr("x"),
+                    fontY : nodeLabel.attr("y"),
+                    fontTransform : nodeLabel.attr("transform")
+                };
         }
         return labelStyle;
     },
