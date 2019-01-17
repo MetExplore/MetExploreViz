@@ -1,9 +1,17 @@
-var Compartment = function(id, name){
+var Compartment = function(id, name, hide, color){
 	this.id = id;
 	this.identifier = name;
 	this.name = name;
 	this.color = "";
-  this.hide = false;
+    if(hide)
+        this.hide = hide;
+    else
+        this.hide = false;
+
+    if(color)
+        this.color = color;
+    else
+        this.color = "";
 };
 
 Compartment.prototype = {

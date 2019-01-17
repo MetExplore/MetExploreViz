@@ -989,6 +989,10 @@ metExploreViz.prototype = {
             newData.addNode(name,comp,dbId,id,rev,bt,sel,lv,svg,svgW,svgH,sc,ec);
         }
 
+        networkData.getPathways().forEach(function(p){
+            newData.copyPathway(p);
+        });
+
         for (var j=0; j<networkData.links.length; j++) {
 
             var id = networkData.links[j].getId().valueOf(); 

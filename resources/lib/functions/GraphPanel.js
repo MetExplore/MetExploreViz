@@ -314,6 +314,8 @@ metExploreD3.GraphPanel = {
 		var sessionsStore = _metExploreViz.getSessionsSet();
 		var session = _metExploreViz.getSessionById(panel);
 		var h = $("#"+panel).height();
+		console.log($("#"+panel).height());
+		console.log(this.getHeight(panel));
 		var w = $("#"+panel).width();
 
 
@@ -751,13 +753,13 @@ metExploreD3.GraphPanel = {
 						}
 					});
 
+                    console.log(networkData.getPathways());
 					if(networkData.getPathwaysLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Pathways", data:networkData.getPathways()});
 
                     if(networkData.getCompartmentsLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Compartments", data:networkData.getCompartments()});
 
                     networkData.setId(key);
 
-					if(key=='viz') _metExploreViz.setInitialData(_metExploreViz.cloneNetworkData(networkData));
 					networkVizSession.setD3Data(networkData);
 
 					if(sessions[key].selectedNodes)
@@ -882,6 +884,7 @@ metExploreD3.GraphPanel = {
 
 			var networkData = new NetworkData('viz');
 			networkData.cloneObject(jsonParsed);
+
 			var nodes = networkData.getNodes();
 			nodes.forEach(function(node){
 				if(node.getBiologicalType()=="metabolite")
@@ -901,10 +904,10 @@ metExploreD3.GraphPanel = {
 
 			});
             networkData.setId('viz');
-			_metExploreViz.setInitialData(_metExploreViz.cloneNetworkData(networkData));
 			networkVizSession.setD3Data(networkData);
 
 		    metExploreD3.GraphNetwork.refreshSvg("viz");
+
 
 		    var oldCoodinates = _metExploreViz.getOldCoodinates();
 			if(oldCoodinates.length>0)

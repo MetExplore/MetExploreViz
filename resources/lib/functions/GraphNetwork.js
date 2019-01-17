@@ -1045,6 +1045,16 @@ metExploreD3.GraphNetwork = {
 
         metExploreD3.GraphNetwork.initPathwaysData();
 
+        // // Allows to display all pathway nodes
+        // networkData.getNodes()
+        //     .forEach(function (n) {
+        //         if(n.getBiologicalType()==="pathway"){
+        //             n.show();
+        //             var pathwayModel = networkData.getPathwayByName();
+        //             if(pathwayModel) pathwayModel.setCollapsed(true);
+        //         }
+        //         else n.hide();
+        //     });
         metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
 
         metExploreD3.GraphNode.refreshNode(panel);
@@ -1200,6 +1210,35 @@ metExploreD3.GraphNetwork = {
 
         // metExploreD3.GraphNetwork.initPathways(panel);
         metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+
+        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+
+        var activePanel = _MyThisGraphNode.activePanel;
+        if(!activePanel) activePanel='viz';
+        metExploreD3.applyTolinkedNetwork(
+            activePanel,
+            function(panelLinked, sessionLinked) {
+                metExploreD3.GraphCaption.majCaption(panelLinked);
+
+                s_GeneralStyle.setDisplayConvexhulls(false);
+                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                metExploreD3.GraphNetwork.tick(panelLinked);
+
+                s_GeneralStyle.setDisplayConvexhulls("Pathways");
+                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                metExploreD3.GraphNetwork.tick(panelLinked);
+
+                s_GeneralStyle.setDisplayCaption("Pathways");
+                metExploreD3.GraphCaption.majCaption(panelLinked);
+
+            });
+
+        metExploreD3.GraphNetwork.tick(panel);
+        metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
+
+        var networkDataInit = new NetworkData('viz');
+        networkDataInit.cloneObject(networkData);
+        _metExploreViz.setInitialData(networkDataInit);
 
         // reinitialize
         metExploreD3.GraphStyleEdition.allDrawnCycles = [];
@@ -1825,7 +1864,7 @@ metExploreD3.GraphNetwork = {
                     undefined,
                     true,
                     path.getName(),//theNodeId,
-                    path.getName(),
+                    [path.getName()],
                     false,
                     "",//theNode.getAlias(),
                     path.getName(),//theNode.getLabel());
@@ -1909,7 +1948,7 @@ metExploreD3.GraphNetwork = {
         thePathwayElement
             .style("stroke-opacity",0.5)
             .addNodeForm(
-                pathwaySize*3,
+                pathwaySize*3*2,
                 pathwaySize*3,
                 pathwaySize*3,
                 pathwaySize*3,
@@ -2060,11 +2099,6 @@ metExploreD3.GraphNetwork = {
 
         networkData.getPathwayByName(pathwayName).setCollapsed(false);
         networkData.getNodeByName(pathwayName).hide();
-
-        var link = d3.select("#viz")
-            .select("#D3viz")
-            .select("#graphComponent")
-            .selectAll("path.link");
 
         networkData.getPathwayByName(pathwayName).getNodes()
             .forEach(function (n) {
