@@ -1890,14 +1890,7 @@ metExploreD3.GraphNetwork = {
                 var newNode = networkData.getNodeByName(pathName);
                 newNode.show();
 
-                metExploreD3.GraphNode.updateNodes(panelLinked);
-
-                var linkStyle = metExploreD3.getLinkStyle();
-                metExploreD3.GraphLink.refreshLink(panelLinked, sessionLinked, linkStyle);
-
-                metExploreD3.GraphNetwork.tick(panelLinked);
-
-
+                metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
             });
     },
 
@@ -2093,7 +2086,7 @@ metExploreD3.GraphNetwork = {
      * @returns {} newNode : The created node
      */
     expandPathwayNode: function(pathwayName, panel){
-        var session = _metExploreViz.getSessionById("viz");
+        var session = _metExploreViz.getSessionById(panel);
         var networkData = session.getD3Data();
         var force = session.getForce();
 
@@ -2105,35 +2098,15 @@ metExploreD3.GraphNetwork = {
                 n.show();
             });
 
-        metExploreD3.GraphNode.updateNodes("viz");
-
-        var linkStyle = metExploreD3.getLinkStyle();
-        metExploreD3.GraphLink.refreshLink("viz", session, linkStyle);
-
-
-        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
         var activePanel = _MyThisGraphNode.activePanel;
         if(!activePanel) activePanel='viz';
         metExploreD3.applyTolinkedNetwork(
             activePanel,
             function(panelLinked, sessionLinked) {
-                metExploreD3.GraphCaption.majCaption(panelLinked);
+                metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
+            });
 
-                s_GeneralStyle.setDisplayConvexhulls(false);
-                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                metExploreD3.GraphNetwork.tick(panelLinked);
-
-                s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                metExploreD3.GraphNetwork.tick(panelLinked);
-
-                s_GeneralStyle.setDisplayCaption("Pathways");
-                metExploreD3.GraphCaption.majCaption(panelLinked);
-
-            });;
-
-        metExploreD3.GraphNetwork.tick('viz');
         metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
     },
 
@@ -2452,35 +2425,14 @@ metExploreD3.GraphNetwork = {
                 });
 
 
-                metExploreD3.GraphNode.updateNodes(panel);
-
-                var linkStyle = metExploreD3.getLinkStyle();
-                metExploreD3.GraphLink.refreshLink(panel, session, linkStyle);
-
-
-                var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-
                 var activePanel = _MyThisGraphNode.activePanel;
                 if(!activePanel) activePanel='viz';
                 metExploreD3.applyTolinkedNetwork(
                     activePanel,
                     function(panelLinked, sessionLinked) {
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls(false);
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayCaption("Pathways");
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
-
+                        metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
                     });
 
-                metExploreD3.GraphNetwork.tick(panel);
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
                 if(_metExploreViz.isLinkedByTypeOfMetabolite()){
                     metExploreD3.GraphLink.linkTypeOfMetabolite();
@@ -2574,35 +2526,14 @@ metExploreD3.GraphNetwork = {
                 });
 
 
-                metExploreD3.GraphNode.updateNodes(panel);
-
-                var linkStyle = metExploreD3.getLinkStyle();
-                metExploreD3.GraphLink.refreshLink(panel, session, linkStyle);
-
-
-                var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-
                 var activePanel = _MyThisGraphNode.activePanel;
                 if(!activePanel) activePanel='viz';
                 metExploreD3.applyTolinkedNetwork(
                     activePanel,
                     function(panelLinked, sessionLinked) {
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls(false);
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayCaption("Pathways");
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
-
+                        metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
                     });
 
-                metExploreD3.GraphNetwork.tick(panel);
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
 
@@ -2657,35 +2588,16 @@ metExploreD3.GraphNetwork = {
                 });
 
 
-                metExploreD3.GraphNode.updateNodes(panel);
-
-                var linkStyle = metExploreD3.getLinkStyle();
-                metExploreD3.GraphLink.refreshLink(panel, session, linkStyle);
-
-
-                var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
                 var activePanel = _MyThisGraphNode.activePanel;
                 if(!activePanel) activePanel='viz';
                 metExploreD3.applyTolinkedNetwork(
                     activePanel,
                     function(panelLinked, sessionLinked) {
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls(false);
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayCaption("Pathways");
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
+                        metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
 
                     });
 
-                metExploreD3.GraphNetwork.tick(panel);
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
                 if(_metExploreViz.isLinkedByTypeOfMetabolite()){
@@ -2777,35 +2689,15 @@ metExploreD3.GraphNetwork = {
                     // metExploreD3.GraphNetwork.removeANode(sideC, panel);
                 });
 
-                metExploreD3.GraphNode.updateNodes(panel);
-
-                var linkStyle = metExploreD3.getLinkStyle();
-                metExploreD3.GraphLink.refreshLink(panel, session, linkStyle);
-
-
-                var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
                 var activePanel = _MyThisGraphNode.activePanel;
                 if(!activePanel) activePanel='viz';
                 metExploreD3.applyTolinkedNetwork(
                     activePanel,
                     function(panelLinked, sessionLinked) {
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls(false);
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayCaption("Pathways");
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
-
+                        metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
                     });
 
-                metExploreD3.GraphNetwork.tick(panel);
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
 
@@ -2926,8 +2818,6 @@ metExploreD3.GraphNetwork = {
      */
     removeSelectedNode : function(panel) {
         var session = _metExploreViz.getSessionById(panel);
-        var force = session.getForce();
-
 
         var myMask = metExploreD3.createLoadMask("Remove in process...", panel);
         if(myMask!= undefined){
@@ -2949,7 +2839,7 @@ metExploreD3.GraphNetwork = {
                             if(force!=undefined)
                             {
                                 if(metExploreD3.GraphNetwork.isAnimated("viz")=="true")
-                                    force.stop();
+                                    force.resume();
                             }
                         }
                     }
@@ -2960,7 +2850,7 @@ metExploreD3.GraphNetwork = {
                         if(force!=undefined)
                         {
                             if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
-                                force.stop();
+                                force.resume();
 
                         }
                     }
@@ -2981,39 +2871,17 @@ metExploreD3.GraphNetwork = {
                             });
 
 
-                        metExploreD3.GraphNetwork.removeIsolatedNode(nodeToRemove, panel);
+                        metExploreD3.GraphNetwork.removeIsolatedNode(nodeToRemove, panelLinked);
 
                         nodeToRemove.forEach(function(node){
-                                nodeToRemove.push(node);
                                 networkData.removeNode(node);
                             });
 
-                        metExploreD3.hideMask(myMask);
 
-                        metExploreD3.GraphNode.updateNodes(panel);
-
-                        var linkStyle = metExploreD3.getLinkStyle();
-                        metExploreD3.GraphLink.refreshLink(panel, sessionLinked, linkStyle);
-
-
-                        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls(false);
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                        metExploreD3.GraphNetwork.tick(panelLinked);
-
-                        s_GeneralStyle.setDisplayCaption("Pathways");
-                        metExploreD3.GraphCaption.majCaption(panelLinked);
+                        metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
 
                     });
 
-                metExploreD3.GraphNetwork.tick(panel);
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
                 if(session!=undefined)
@@ -3024,6 +2892,8 @@ metExploreD3.GraphNetwork = {
                             force.start();
                     }
                 }
+
+                metExploreD3.hideMask(myMask);
             }, 1);
         }
         metExploreD3.GraphNetwork.initCentroids(panel);
@@ -3035,8 +2905,6 @@ metExploreD3.GraphNetwork = {
      */
     removeOnlyClickedNode : function(theNode, panel) {
         var session = _metExploreViz.getSessionById(panel);
-        var force = session.getForce();
-        var networkData = session.getD3Data();
 
         var myMask = metExploreD3.createLoadMask("Remove in process...", panel);
         if(myMask!= undefined){
@@ -3046,8 +2914,6 @@ metExploreD3.GraphNetwork = {
             // listMask.push(myMask);
 
             metExploreD3.deferFunction(function() {
-
-                var vis = d3.select("#"+panel).select("#D3viz");
 
                 if(session!=undefined)
                 {
@@ -3077,6 +2943,8 @@ metExploreD3.GraphNetwork = {
                     }
                 }
 
+                var activePanel = _MyThisGraphNode.activePanel;
+                if(!activePanel) activePanel='viz';
                 metExploreD3.applyTolinkedNetwork(
                     panel,
                     function(panelLinked, sessionLinked) {
@@ -3085,33 +2953,9 @@ metExploreD3.GraphNetwork = {
                         metExploreD3.GraphNetwork.removeIsolatedNode([n], panelLinked);
                         networkData.removeNode(n);
 
+                        metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
 
-                    metExploreD3.GraphNode.updateNodes(panelLinked);
-
-                    var linkStyle = metExploreD3.getLinkStyle();
-                        metExploreD3.GraphLink.refreshLink(panelLinked, sessionLinked, linkStyle);
-
-
-                    var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-
-                    var activePanel = _MyThisGraphNode.activePanel;
-                    if(!activePanel) activePanel='viz';
-                    metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                    s_GeneralStyle.setDisplayConvexhulls(false);
-                    metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                    metExploreD3.GraphNetwork.tick(panelLinked);
-
-                    s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                    metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                    metExploreD3.GraphNetwork.tick(panelLinked);
-
-                    s_GeneralStyle.setDisplayCaption("Pathways");
-                    metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                    metExploreD3.GraphNetwork.tick(panelLinked);
-                    metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
-                });
+                    });
 
                 if(session!=undefined)
                 {
@@ -3125,6 +2969,55 @@ metExploreD3.GraphNetwork = {
                 metExploreD3.hideMask(myMask);
             }, 100);
         }
+    },
+
+    updateNetwork : function(panelLinked, sessionLinked){
+        metExploreD3.GraphNode.updateNodes(panelLinked);
+
+        var linkStyle = metExploreD3.getLinkStyle();
+        metExploreD3.GraphLink.refreshLink(panelLinked, sessionLinked, linkStyle);
+
+        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+
+
+        metExploreD3.GraphCaption.majCaption(panelLinked);
+
+        s_GeneralStyle.setDisplayConvexhulls(false);
+        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+        metExploreD3.GraphNetwork.tick(panelLinked);
+
+        s_GeneralStyle.setDisplayConvexhulls("Pathways");
+        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+        metExploreD3.GraphNetwork.tick(panelLinked);
+
+        s_GeneralStyle.setDisplayCaption("Pathways");
+        metExploreD3.GraphCaption.majCaption(panelLinked);
+
+        var networkData = sessionLinked.getD3Data();
+        var force = sessionLinked.getForce();
+
+        // Get bound effect
+        // console.log(force.alpha());
+        var visibleLinks = networkData.getLinks()
+            .filter(function (link) {
+                var target, source;
+                target = link.getTarget();
+                source = link.getSource();
+
+                return !source.isHidden() && !target.isHidden();
+            });
+
+        var visibleNodes = networkData.getNodes()
+            .filter(function (node) {
+                return !node.isHidden();
+            });
+
+        force
+            .nodes(visibleNodes)
+            .links(visibleLinks);
+
+        metExploreD3.GraphNetwork.tick(panelLinked);
+        metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
     },
 
     /*******************************************
@@ -3277,32 +3170,12 @@ metExploreD3.GraphNetwork = {
                 networkData.removeNode(node);
             });
 
-        metExploreD3.GraphNode.updateNodes(panel);
-
-        var linkStyle = metExploreD3.getLinkStyle();
-        metExploreD3.GraphLink.refreshLink(panel, session, linkStyle);
-
-
-        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-
         var activePanel = _MyThisGraphNode.activePanel;
         if(!activePanel) activePanel='viz';
         metExploreD3.applyTolinkedNetwork(
             activePanel,
             function(panelLinked, sessionLinked) {
-                metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                s_GeneralStyle.setDisplayConvexhulls(false);
-                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                metExploreD3.GraphNetwork.tick(panelLinked);
-
-                s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                metExploreD3.GraphNetwork.tick(panelLinked);
-
-                s_GeneralStyle.setDisplayCaption("Pathways");
-                metExploreD3.GraphCaption.majCaption(panelLinked);
-
+                metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
             });
 
         metExploreD3.GraphNetwork.tick(panel);
