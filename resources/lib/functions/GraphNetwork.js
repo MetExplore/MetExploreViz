@@ -648,6 +648,61 @@ metExploreD3.GraphNetwork = {
             .attr("class", "brush")
             .call(metExploreD3.GraphNetwork.brushEvnt);
     },
+
+    initShortCut: function () {
+        d3.select("body")
+            .on("keydown", function () {
+                _MyThisGraphNode.charKey = d3.event.keyCode;
+                _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+                _MyThisGraphNode.altKey = d3.event.altKey;
+                var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+
+                //H	72
+                if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                    metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
+                }
+
+                if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                    metExploreD3.GraphFunction.horizontalReverse(_MyThisGraphNode.activePanel);
+                }
+
+                //V 86
+                if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                    metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
+                }
+
+                if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                    metExploreD3.GraphFunction.verticalReverse(_MyThisGraphNode.activePanel);
+                }
+
+
+                // 65=A
+                if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey) {
+                    d3.select("#" + _MyThisGraphNode.activePanel).select("#D3viz").select("#graphComponent").selectAll("g.node")
+                        .each(function (node) {
+                            if (!node.isSelected()) {
+                                _MyThisGraphNode.selection(node, _MyThisGraphNode.activePanel);
+                            }
+                        });
+                }
+            })
+            .on("keyup", function (e) {
+                // 46=Suppr
+                var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+                if (_MyThisGraphNode.charKey == 46 && activesession.getSelectedNodes().length > 0) {
+                    metExploreD3.displayMessageYesNo("Selected nodes", 'Do you want remove selected nodes?', function (btn) {
+                        if (btn == "yes") {
+                            metExploreD3.GraphNetwork.removeSelectedNode(_MyThisGraphNode.activePanel)
+                        }
+                    });
+                }
+
+                _MyThisGraphNode.charKey = 'none';
+                _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+            });
+    },
+
+
     /*******************************************
      * Refresh the graph data, it generate graph visualization
      * @param {} panel : The panel to refresh
@@ -655,6 +710,17 @@ metExploreD3.GraphNetwork = {
     refreshSvg : function(panel) {
         var startall = new Date().getTime();
         console.log("Refresh SVG");
+
+        document.addEventListener("keydown", function (e) {
+            // 83=S
+            if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+                e.preventDefault();
+                metExploreD3.GraphUtils.saveNetworkJSON();
+            }
+        }, false);
+
+        metExploreD3.GraphNetwork.initShortCut();
+
 
         var networkData = _metExploreViz.getSessionById(panel).getD3Data();
         var nodes = networkData.getNodes();
@@ -786,6 +852,10 @@ metExploreD3.GraphNetwork = {
         // Remove all sub-elements in the SVG that corresponds to the D3Viz part --- tenth mss
         var vis = d3.select("#"+panel);
         vis.svg = vis.select("#D3viz").selectAll("*").remove();
+
+        // Create function to manage double click
+        d3.selectAll("#D3viz")
+            .on("mouseup", metExploreD3.GraphNode.unselectIfDBClick);
 
         _metExploreViz.setLinkedByTypeOfMetabolite(false);
 
@@ -1045,16 +1115,17 @@ metExploreD3.GraphNetwork = {
 
         metExploreD3.GraphNetwork.initPathwaysData();
 
-        // // Allows to display all pathway nodes
-        // networkData.getNodes()
-        //     .forEach(function (n) {
-        //         if(n.getBiologicalType()==="pathway"){
-        //             n.show();
-        //             var pathwayModel = networkData.getPathwayByName();
-        //             if(pathwayModel) pathwayModel.setCollapsed(true);
-        //         }
-        //         else n.hide();
-        //     });
+        // Allows to display all pathway nodes
+        networkData.getNodes()
+            .forEach(function (n) {
+                if(n.getBiologicalType()==="pathway"){
+                    n.show();
+                    var pathwayModel = networkData.getPathwayByName();
+                    if(pathwayModel) pathwayModel.setCollapsed(true);
+                }
+                else n.hide();
+            });
+
         metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
 
         metExploreD3.GraphNode.refreshNode(panel);
@@ -2191,6 +2262,75 @@ metExploreD3.GraphNetwork = {
                 return link.getId();
             });
 
+        nodesLink.forEach(function (linkNode) {
+            var id = linkNode.getDbIdentifier()+"-"+newNode.getId();
+            if(!idOfLinkWithPathway.includes(id))
+                networkData.addLink(id, linkNode, newNode, "out", false);
+		});
+
+        var newPath = networkData.getPathwayByName(newNode.getName());
+
+        nodesData
+            .filter(function (n){ return n.getBiologicalType()==="pathway"; })
+            .forEach(function (p){
+                if(p.getName()!==newNode.getName())
+                {
+                    var pPathModel = networkData.getPathwayByName(p.getName());
+
+                    var metabInP = pPathModel.getNodes().filter(function (t) { return t.getBiologicalType()==="metabolite" && !t.getIsSideCompound(); })
+
+                    var metabInP2 = newPath.getNodes().filter(function (t) { return t.getBiologicalType()==="metabolite" && !t.getIsSideCompound(); })
+                    var intersection = metabInP.filter(function(x) { return metabInP2.includes(x);});
+                    if(intersection.length>0 ) {
+                        networkData.addLink(p.getId()+"-"+newNode.getId(), p, newNode, "out", false);
+                    }
+                }
+            });
+
+
+        metExploreD3.GraphNetwork.tick("viz");
+    },
+
+    /*******************************************
+     * identifier parameter is used if there is a new parameter to add.
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @returns {} newNode : The created node
+     */
+    addPathwayLinksDataSinkSource: function(newNode){
+        var pathwayName = newNode.getName();
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var force = session.getForce();
+
+        var nodesData = networkData.getNodes();
+        var nodesLink = nodesData
+            .filter(function(n){return n.getBiologicalType()==="metabolite"})
+            .filter(function(n){
+                    return n.pathways.length>1 && n.pathways.includes(pathwayName);
+                }
+            );
+
+        var idOfLinkWithPathway = [];
+        idOfLinkWithPathway = networkData.getLinks()
+            .filter(function (link) {
+                var target, source;
+                target = link.getTarget();
+                source = link.getSource();
+                if(!(target instanceof NodeData)){
+                    target = networkData.getNodes()[link.getTarget()];
+                }
+                if(!(source instanceof NodeData)){
+                    source = networkData.getNodes()[link.getSource()];
+                }
+
+                return source.getBiologicalType()==="pathway" || target.getBiologicalType()==="pathway";
+            })
+            .map(function (link) {
+                return link.getId();
+            });
+
         var hide = true;
         nodesLink.forEach(function (linkNode) {
             var id = linkNode.getDbIdentifier()+"-"+newNode.getId();
@@ -2972,7 +3112,7 @@ metExploreD3.GraphNetwork = {
     },
 
     updateNetwork : function(panelLinked, sessionLinked){
-        metExploreD3.GraphNode.updateNodes(panelLinked);
+        metExploreD3.GraphNode.refreshNode(panelLinked);
 
         var linkStyle = metExploreD3.getLinkStyle();
         metExploreD3.GraphLink.refreshLink(panelLinked, sessionLinked, linkStyle);
@@ -3017,6 +3157,14 @@ metExploreD3.GraphNetwork = {
             .links(visibleLinks);
 
         metExploreD3.GraphNetwork.tick(panelLinked);
+        if(sessionLinked!=undefined)
+        {
+            if(force!=undefined)
+            {
+                if(metExploreD3.GraphNetwork.isAnimated(panelLinked)=="true")
+                    force.start();
+            }
+        }
         metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
     },
 
@@ -3226,495 +3374,6 @@ metExploreD3.GraphNetwork = {
             force.stop();
             metExploreD3.GraphNetwork.setAnimated(session.getId(), false);
         }
-    },
-
-    /*******************************************
-     * Load the graph data, it generate graph visualization
-     * @param {} panel : The panel to load
-     */
-    loadSvg : function(sessionLoaded, panel) {
-        console.log("loadSvg");
-        // TROP LOURD
-        /*
-        console.log("sessionLoaded ", sessionLoaded);
-       console.log("sessionLoaded.getD3Data().data ", sessionLoaded.getD3Data().data);
-       sessionLoaded.data.d3Data=sessionLoaded.getD3Data().data;
-       console.log("sessionLoaded.data ", sessionLoaded.data);
-       console.log("toJSON ", JSON.stringify(sessionLoaded));
-       console.log("Ext.encode(sessionLoaded.data) ", Ext.encode(sessionLoaded.data));
-       var object = Ext.decode(Ext.encode(sessionLoaded.data));
-       console.log("object ", object);
-
-       var session = Ext.create('MetExplore.model.NetworkVizSession');
-       session.data = object;
-       console.log("session ", session);
-       */
-        // Get height and witdh of panel
-        var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
-        var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
-
-        var linkStyle = metExploreD3.getLinkStyle();
-
-
-        // Initiate the D3 force drawing algorithm
-        var force = sessionLoaded.getForce();
-        var scale = metExploreD3.getScaleById(panel);
-
-        // Call GraphCaption to draw the caption
-        if(panel=='viz')
-            metExploreD3.GraphCaption.drawCaption();
-
-        // var startall = new Date().getTime();
-        // var start = new Date().getTime();
-        // console.log("----Viz: START refresh/init Viz");
-
-        // Define the zoomListener and put it in a store
-
-        if(scale==undefined){
-
-            // Define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleSents
-            var that = metExploreD3.GraphNetwork;
-            metExploreD3.GraphNetwork.zoomListener = d3.behavior
-                .zoom()
-                .x( xScale )
-                .y( yScale )
-                .scaleExtent([ 0.01, 30 ])
-                .on("zoom", function(e){
-                    that.zoom(panel);
-                });
-
-            scale.add({
-                'graphName' : panel,
-                'xScale' : xScale,
-                'yScale' : yScale,
-                'zoomScale' : 1,
-                'xScaleCompare' : 1,
-                'yScaleCompare' : 1,
-                'zoomScaleCompare' : metExploreD3.GraphNetwork.zoomListener.scale(),
-                "zoom" : metExploreD3.GraphNetwork.zoomListener
-            });
-
-        }
-        else
-        {
-            var that = metExploreD3.GraphNetwork;
-
-            var xScale =
-                d3.scale.linear()
-                    .domain([0, w])
-                    .range([0, w]);
-
-            var yScale =
-                d3.scale.linear()
-                    .domain([h, 0])
-                    .range([h, 0]);
-
-            metExploreD3.GraphNetwork.zoomListener = d3.behavior
-                .zoom()
-                .x( xScale )
-                .y( yScale )
-                .scaleExtent([ 0.01, 30 ])
-                .on("zoom", function(e){
-                    that.zoom(this.parentNode.id);
-                });
-            scale
-                .setScale(xScale, yScale, 1, 1, 1, metExploreD3.GraphNetwork.zoomListener.scale(), metExploreD3.GraphNetwork.zoomListener);
-        }
-
-        // Remove all sub-elements in the SVG that corresponds to the D3Viz part --- tenth mss
-        var vis = d3.select("#"+panel);
-        vis.svg = vis.select("#D3viz").selectAll("*").remove();
-
-        metExploreD3.GraphNetwork.defineBrush(panel, xScale, yScale);
-
-        // Define zoomListener
-        vis.svg = d3.select("#"+panel).select("#D3viz")
-            .call(metExploreD3.GraphNetwork.zoomListener)
-            // Remove zoom on double click
-            .on("dblclick.zoom", null)
-            .attr("pointer-events", "all")
-            .append('svg:g')
-            .attr("class","graphComponent").attr("id","graphComponent");
-
-        // If a graph is already loaded
-        var session = _metExploreViz.getSessionById(panel);
-
-        if(session!=undefined)
-        {
-            // We stop the previous animation
-            var force = session.getForce();
-            if(force!=undefined)
-            {
-                force.stop();
-                metExploreD3.GraphNetwork.setAnimated(panel, false);
-            }
-
-            if(session.isResizable()!=undefined)
-                metExploreD3.GraphNetwork.task.cancel();
-
-            // Launch the task to resize the graph at the beginning ->tick function
-            session.setResizable(true);
-            metExploreD3.GraphNetwork.task = metExploreD3.createDelayedTask(
-                function(){
-                    session.setResizable(false);
-                }
-            );
-        }
-
-        var animated = false;
-        // Define play and stop button ->play function
-        this.defineBasalButtons(panel, animated);
-
-        // Refresh coresponding nodes and links
-        var session = _metExploreViz.getSessionById(panel);
-        var linkStyle = metExploreD3.getLinkStyle();
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-
-        metExploreD3.GraphLink.loadLink(panel, session, linkStyle, metaboliteStyle);
-        metExploreD3.GraphNode.loadNode(panel);
-
-
-        metExploreD3.GraphNetwork.looksLinked();
-        if(session.isLinked()){
-            metExploreD3.GraphNetwork.graphAlignment(panel, "viz");
-        }
-        metExploreD3.GraphNetwork.tick(panel);
-
-        // Sort compartiments store
-        metExploreD3.sortCompartmentInBiosource();
-
-
-        metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
-
-    },
-
-
-    /*******************************************
-     * Refresh the graph data, it generate graph visualization
-     * @param {} panel : The panel to refresh
-     */
-    loadSvgFromJSON : function(panel) {
-        console.log('loadSvgFromJSON');
-        // Get height and witdh of panel
-        var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
-        var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
-        var linkStyle = metExploreD3.getLinkStyle();
-
-        // Initiate the D3 force drawing algorithm
-        var force = d3.layout.force().friction(0.90).gravity(0.06)
-            .charge(-150).linkDistance(linkStyle.getSize()).size([ w, h ]);
-
-        var session = metExploreD3.getSessionById(panel);
-        session.setActivity(true);
-        session.setForce(force);
-
-
-        // Call GraphCaption to draw the caption
-        if(panel=='viz')
-            metExploreD3.GraphCaption.drawCaption();
-
-        // var startall = new Date().getTime();
-        // var start = new Date().getTime();
-        // console.log("----Viz: START refresh/init Viz");
-
-        // Define the zoomListener and put it in a store
-
-        var xScale =
-            d3.scale.linear()
-                .domain([0, w])
-                .range([0, w]);
-
-        var yScale =
-            d3.scale.linear()
-                .domain([h, 0])
-                .range([h, 0]);
-
-        if(metExploreD3.getScaleById(panel)==undefined){
-
-            // Define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleSents
-            var that = metExploreD3.GraphNetwork;
-            var scale = metExploreD3.getScaleById(panel);
-            var zoomListener = scale.getZoom();
-            zoomListener = d3.behavior
-                .zoom()
-                .x( xScale )
-                .y( yScale )
-                .scaleExtent([ 0.01, 30 ])
-                .on("zoom", function(e){
-                    that.zoom(panel);
-                });
-
-
-            scale.add({
-                'graphName' : panel,
-                'xScale' : xScale,
-                'yScale' : yScale,
-                'zoomScale' : 1,
-                'xScaleCompare' : 1,
-                'yScaleCompare' : 1,
-                'zoomScaleCompare' : zoomListener.scale(),
-                "zoom" : zoomListener
-            });
-
-        }
-        else
-        {
-            var that = metExploreD3.GraphNetwork;
-            var scale = metExploreD3.getScaleById(panel);
-            var zoomListener = scale.getZoom();
-            zoomListener = d3.behavior
-                .zoom()
-                .x( xScale )
-                .y( yScale )
-                .scaleExtent([ 0.01, 30 ])
-                .on("zoom", function(e){
-                    that.zoom(this.parentNode.id);
-                });
-            scale
-                .getStoreByGraphName(panel)
-                .setScale(xScale, yScale, 1, 1, 1, zoomListener.scale(), zoomListener);
-        }
-
-        // Remove all sub-elements in the SVG that corresponds to the D3Viz part --- tenth mss
-        var vis = d3.select("#"+panel);
-        vis.svg = vis.select("#D3viz").selectAll("*").remove();
-
-        metExploreD3.GraphNetwork.defineBrush(panel, xScale, yScale);
-
-        var scale = metExploreD3.getScaleById(panel);
-        var zoomListener = scale.getZoom();
-
-        // Define zoomListener
-        vis.svg = d3.select("#"+panel).select("#D3viz")
-            .call(zoomListener)
-            // Remove zoom on double click
-            .on("dblclick.zoom", null)
-            .attr("pointer-events", "all")
-            .append('svg:g')
-            .attr("class","graphComponent").attr("id","graphComponent");
-
-        // If a graph is already loaded
-        var session = _metExploreViz.getSessionById(panel);
-        if(session!=undefined)
-        {
-            // We stop the previous animation
-            var force = session.getForce();
-            if(force!=undefined)
-            {
-                force.stop();
-                metExploreD3.GraphNetwork.setAnimated(panel, false);
-            }
-
-            if(session.isResizable()!=undefined && session.isResizable()!=false)
-                metExploreD3.GraphNetwork.task.cancel();
-
-            // Launch the task to resize the graph at the beginning ->tick function
-            session.setResizable(true);
-            metExploreD3.GraphNetwork.task = metExploreD3.createDelayedTask(
-                function(){
-                    session.setResizable(false);
-                }
-            );
-        }
-
-        // Define play and stop button ->play function
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .attr("animation", "true")
-            .append("svg:g")
-            .attr("class","buttonAnim").attr("id","buttonAnim")
-            .on("click", metExploreD3.GraphNetwork.play)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/pause.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .attr("transform", "translate(10,10) scale(.5)");
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .append("svg:g")
-            .attr("class","buttonZoomIn").attr("id","buttonZoomIn")
-            .attr('x', (w-60))
-            .attr('y', 10)
-            .on("click", metExploreD3.GraphNetwork.zoomIn)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/zoomin.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .style("opacity", 0.2)
-            .attr("transform", "translate("+(w-60)+",10) scale(1)")
-            .on("mouseover", function(d) {
-                d3.select(this).transition().duration(500).style("opacity", 1);
-            })
-            .on("mouseout", function(d) {
-                d3.select(this).transition().duration(500).style("opacity", 0.2);
-            });
-
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .append("svg:g")
-            .attr("class","buttonZoomOut").attr("id","buttonZoomOut")
-            .attr('x', (w-110))
-            .attr('y', 10)
-            .on("click", metExploreD3.GraphNetwork.zoomOut)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/zoomout.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .style("opacity", 0.2)
-            .attr("transform", "translate("+(w-110)+",10) scale(1)")
-            .on("mouseover", function(d) {
-                d3.select(this).transition().duration(500).style("opacity", 1);
-            })
-            .on("mouseout", function(d) {
-                d3.select(this).transition().duration(500).style("opacity", 0.2);
-            });
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .append("svg:g")
-            .attr("class","buttonHand").attr("id","buttonHand")
-            .attr('x', (w-160))
-            .attr('y', 10)
-            .attr("scrollable", "false")
-            .on("click", metExploreD3.GraphNetwork.moveGraph)
-            .style("opacity", 1)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/handcursor.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .attr("transform", "translate("+(w-160)+",10) scale(1)");
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .select("buttonHand")
-            .style("opacity", 0);
-
-        d3.select('#'+panel)
-            .on("mouseover", function(){
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonZoomOut")
-                    .transition().duration(500).style("opacity", 1);
-
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonZoomIn")
-                    .transition().duration(500).style("opacity", 1);
-
-                var session = _metExploreViz.getSessionById(panel);
-                // if visualisation is actived we add item to menu
-                if(session.isActive()){
-                    var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
-                    if(scrollable == "false")
-                        d3.select("#"+panel)
-                            .select("#D3viz")
-                            .select("#buttonHand")
-                            .transition().duration(500).style("opacity", 0.2);
-                    else
-                        d3.select("#"+panel)
-                            .select("#D3viz")
-                            .select("#buttonHand")
-                            .transition().duration(500).style("opacity", 1);
-                }
-
-            })
-            .on("mouseout", function(){
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonZoomOut")
-                    .transition().duration(500).style("opacity", 0);
-
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonZoomIn")
-                    .transition().duration(500).style("opacity", 0);
-
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonHand")
-                    .transition().duration(500).style("opacity", 0);
-            })
-
-        // Start the animation
-        metExploreD3.GraphNetwork.setAnimated(panel, true);
-
-        // Refresh coresponding nodes and links
-        var session = _metExploreViz.getSessionById(panel);
-        var linkStyle = metExploreD3.getLinkStyle();
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-
-        metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
-        metExploreD3.GraphNode.refreshNode(panel);
-
-        var linked = d3.select(that).attr("isLink");
-        d3.select(that).select("image").remove();
-        d3.select(that).append("image")
-            .attr("xlink:href",document.location.href.split("index.html")[0] + "resources/icons/link.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .attr("transform","translate(10,50) scale(.5)");
-
-        session.setLinked(false);
-        // Define play and stop button ->play function
-        if(panel!="viz"){
-            this.defineInteractionButtons(panel);
-        }
-        else
-        {
-            metExploreD3.GraphNetwork.looksLinked();
-            if(session.isLinked()){
-                metExploreD3.GraphNetwork.graphAlignment(panel, "viz");
-            }
-        }
-
-        // 62771 ms for recon before refactoring
-        // 41465 ms now
-        // var endall = new Date().getTime();
-        // var timeall = endall - startall;
-        // console.log("----Viz: FINISH refresh/ all "+timeall);
-        var session = metExploreD3.getSessionById(panel);
-        var networkData = session.getD3Data();
-        var force = session.getForce();
-
-        /*var stringJSON="{\"nodes\":";
-        stringJSON+=Ext.encode(networkData.getNodes());
-        stringJSON+=",\n\"link\":";
-        stringJSON+=Ext.encode(networkData.getLinks());
-        stringJSON+='}\n';
-        console.log(stringJSON);*/
-
-
-        force
-            .nodes(networkData.getNodes())
-            .links(networkData.getLinks())
-            .on("tick", function(){
-                //if(force.alpha() < .08){
-                if(force.alpha() >= .005){
-                    setTimeout(metExploreD3.GraphNetwork.tick(panel), 0);
-                }
-                // }
-            })
-            .start();
-
-        session.setForce(force);
-
-        // Sort compartiments store
-        metExploreD3.sortCompartmentInBiosource();
-
-
-        metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
-
     },
 
     defineInteractionButtons : function(panel){
