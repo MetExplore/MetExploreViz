@@ -353,6 +353,79 @@ metExploreD3.GraphMapping = {
 														session.addMappedNode(d.getId());
 													}
 												}
+												else
+												{
+                                                    if(d.getBiologicalType() == 'pathway')
+                                                    {
+                                                        if(d.getMappingDataByNameAndCond(mapping.getName(), condition) != null){
+                                                            var metaboliteStyle = metExploreD3.getReactionStyle();
+
+                                                            _MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
+
+                                                            d3.select(this)
+                                                                .attr("mapped","true");
+
+															var mapData = d.getMappingDataByNameAndCond(mapping.getName(), condition);
+                                                            var pathwaySize = 10 + 100*mapData.getMapValue();
+
+                                                            var thePathwayElement = d3.select(this);
+
+                                                            var width = pathwaySize*3*2;
+                                                            var height = pathwaySize*3;
+                                                            var rx = pathwaySize*3;
+                                                            var ry = pathwaySize*3;
+                                                            var strokewidth = pathwaySize*3/10;
+
+                                                            thePathwayElement.select("rect.pathway")
+                                                                .attr("width", width)
+                                                                .attr("height", height)
+                                                                .attr("rx", rx)
+                                                                .attr("ry", ry)
+                                                                .attr("transform", "translate(-" + width/2 + ",-"
+                                                                    + height/2
+                                                                    + ")")
+                                                                .style("stroke-width", strokewidth);
+
+                                                            thePathwayElement.select("rect.fontSelected")
+                                                                .attr("width", width)
+                                                                .attr("height", height)
+                                                                .attr("rx", rx)
+                                                                .attr("ry", ry)
+                                                                .attr( "transform", "translate(-" + width/2 + ",-" + height/2 + ")");
+
+
+                                                            // Lock Image definition
+                                                            var box = thePathwayElement.select("locker")
+                                                                .attr("width",pathwaySize*3)
+                                                                .attr("height",pathwaySize*3)
+                                                                .attr("preserveAspectRatio", "xMinYMin")
+                                                                .attr("y",-pathwaySize*3)
+                                                                .attr("x",-pathwaySize*3);
+
+                                                            box
+                                                                .select("backgroundlocker")
+                                                                .attr("d", function(node){
+                                                                    var pathBack = "M"+pathwaySize*3+","+pathwaySize*3+
+                                                                        " L0,"+pathwaySize*3+
+                                                                        " L0,"+pathwaySize*3/2*2+
+                                                                        " A"+pathwaySize*3/2*2+","+pathwaySize*3/2*2+",0 0 1 "+pathwaySize*3/2*2+",0"+
+                                                                        " L"+pathwaySize*3+",0";
+                                                                    return pathBack;
+                                                                })
+                                                                .attr("opacity", "0.20")
+                                                                .attr("fill", "black");
+
+                                                            box
+                                                                .select("iconlocker")
+                                                                .attr("y",pathwaySize*3/2/4-(pathwaySize*3-pathwaySize*3*2)/8)
+                                                                .attr("x",pathwaySize*3/2/4-(pathwaySize*3-pathwaySize*3*2)/8)
+                                                                .attr("width", "40%")
+                                                                .attr("height", "40%");
+
+                                                            session.addMappedNode(d.getId());
+                                                        }
+                                                    }
+												}
 											}
 										}
 									)		
@@ -1490,7 +1563,7 @@ metExploreD3.GraphMapping = {
 							.selectAll("rect.stroke")
 							.remove();
 
-			          	conditions.forEach(
+			          	conditions.filter(function(cond){return cond==="PathwayCoverage";}).forEach(
 							function(condition)
 							{
 								stringJSON+="\n{\""+condition+"\":[";

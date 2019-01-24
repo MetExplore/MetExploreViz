@@ -2003,7 +2003,8 @@ metExploreD3.GraphNetwork = {
             newNode.py = avgY;
         }
 
-        var pathwaySize = pathwayModel.getNodes().filter(function (t) { return t.getBiologicalType()==="metabolite"; }).length;
+        // var pathwaySize = pathwayModel.getNodes().filter(function (t) { return t.getBiologicalType()==="metabolite"; }).length;
+        var pathwaySize = 10;
 
         var thePathwayElement =
             metExploreD3.GraphNode.node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
