@@ -731,8 +731,6 @@ metExploreD3.GraphLink = {
                 link.setSource(networkData.getNodes()[link.getSource()]);
         });
 
-        var session = _metExploreViz.getSessionById("viz");
-        var networkData = session.getD3Data();
         var link = networkData.getLinks();
         var unique = link.filter( onlyUnique );
 
@@ -1211,7 +1209,6 @@ metExploreD3.GraphLink = {
      * @param {} scale = Ext.getStore('S_Scale').getStoreByGraphName(panel);
      */
     tick : function(panel, scale) {
-
         // If you want to use selection on compartments path
         d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
             .attr("d", _metExploreViz.getSessionById(panel).groupPath)
@@ -1257,7 +1254,6 @@ metExploreD3.GraphLink = {
             d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                 .selectAll("path.link")
                 .attr("d", function(link){
-
                     return funcPath(link, panel, this.id);
                 })
                 .select('reaction').attr("fill", function (d) {
