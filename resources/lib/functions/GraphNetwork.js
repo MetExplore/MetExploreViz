@@ -2011,7 +2011,6 @@ metExploreD3.GraphNetwork = {
                 .filter(function(d) { return d.getName() === pathwayName; });
 
         thePathwayElement
-            .style("stroke-opacity",0.5)
             .addNodeForm(
                 pathwaySize*3,
                 pathwaySize*3,
