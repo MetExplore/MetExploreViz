@@ -1116,15 +1116,15 @@ metExploreD3.GraphNetwork = {
         metExploreD3.GraphNetwork.initPathwaysData();
 
         // Allows to display all pathway nodes
-        // networkData.getNodes()
-        //     .forEach(function (n) {
-        //         if(n.getBiologicalType()==="pathway"){
-        //             n.show();
-        //             var pathwayModel = networkData.getPathwayByName();
-        //             if(pathwayModel) pathwayModel.setCollapsed(true);
-        //         }
-        //         else n.hide();
-        //     });
+        networkData.getNodes()
+            .forEach(function (n) {
+                if(n.getBiologicalType()==="pathway"){
+                    n.show();
+                    var pathwayModel = networkData.getPathwayByName();
+                    if(pathwayModel) pathwayModel.setCollapsed(true);
+                }
+                else n.hide();
+            });
 
         metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
 
@@ -2004,7 +2004,7 @@ metExploreD3.GraphNetwork = {
         }
 
         // var pathwaySize = pathwayModel.getNodes().filter(function (t) { return t.getBiologicalType()==="metabolite"; }).length;
-        var pathwaySize = 10;
+        var pathwaySize = 20;
 
         var thePathwayElement =
             metExploreD3.GraphNode.node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
@@ -2013,16 +2013,24 @@ metExploreD3.GraphNetwork = {
         thePathwayElement
             .style("stroke-opacity",0.5)
             .addNodeForm(
-                pathwaySize*3*2,
+                pathwaySize*3,
                 pathwaySize*3,
                 pathwaySize*3,
                 pathwaySize*3,
                 networkData.getPathwayByName(pathwayName).getColor(),
-                pathwaySize*3/10
+                pathwaySize*3/5
             );
 
         thePathwayElement
+            .append('circle')
+            .classed('mapped-segment', true);
+
+        thePathwayElement
+            .append('circle')
+            .classed('notmapped-segment', true);
+        thePathwayElement
             .addNodeText(metaboliteStyle);
+
 
         thePathwayElement
             .on("mouseover", function(d) {

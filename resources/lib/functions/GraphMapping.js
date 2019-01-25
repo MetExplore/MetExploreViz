@@ -366,15 +366,15 @@ metExploreD3.GraphMapping = {
                                                                 .attr("mapped","true");
 
 															var mapData = d.getMappingDataByNameAndCond(mapping.getName(), condition);
-                                                            var pathwaySize = 10 + 100*mapData.getMapValue();
+                                                            var pathwaySize = 20 + 100*mapData.getMapValue();
 
                                                             var thePathwayElement = d3.select(this);
 
-                                                            var width = pathwaySize*3*2;
+                                                            var width = pathwaySize*3;
                                                             var height = pathwaySize*3;
                                                             var rx = pathwaySize*3;
                                                             var ry = pathwaySize*3;
-                                                            var strokewidth = pathwaySize*3/10;
+                                                            var strokewidth = pathwaySize*3/5;
 
                                                             thePathwayElement.select("rect.pathway")
                                                                 .attr("width", width)
@@ -423,6 +423,46 @@ metExploreD3.GraphMapping = {
                                                                 .attr("height", "40%");
 
                                                             session.addMappedNode(d.getId());
+
+
+															var mapped = thePathwayElement.select(".mapped-segment");
+															var notmapped = thePathwayElement.select(".notmapped-segment");
+
+															var coverage = mapData.getMapValue();
+															var nodeWidth = thePathwayElement.select("rect.pathway").attr("width");
+															var strokeWidth = thePathwayElement.select("rect.pathway").style("stroke-width").replace("px", "");
+															var radius = (nodeWidth-strokeWidth)/2;
+															var halfRadius = radius / 2;
+															var halfCircumference = 2 * Math.PI * halfRadius;
+
+															// 0deg drawn up to this point
+															var degreesDrawn = 0;
+
+															mapped
+																.attr('fill', 'transparent')
+																.attr('r', halfRadius)
+																.attr('stroke-width', radius)
+																.attr('stroke', "red")
+																.attr('stroke-dasharray',
+																	halfCircumference * coverage
+																	+ ' '
+																	+ halfCircumference)
+																.style('transform', 'rotate(' + degreesDrawn + 'deg)');
+
+															// 119.988deg drawn up to this point
+															degreesDrawn += 360 * coverage;
+
+															notmapped
+																.attr('fill', 'transparent')
+																.attr('r', halfRadius)
+																.attr('stroke-width', radius)
+																.attr('stroke', 'blue')
+																.attr('stroke-dasharray',
+																	halfCircumference * (1.0-coverage)
+																	+ ' '
+																	+ halfCircumference)
+																.style('transform', 'rotate(' + degreesDrawn + 'deg)');
+
                                                         }
                                                     }
 												}
