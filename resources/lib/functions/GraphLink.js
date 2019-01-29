@@ -828,7 +828,7 @@ metExploreD3.GraphLink = {
 
                 var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
                 var mapping = _metExploreViz.getMappingByName(mappingName);
-                var conditions = mapping.getConditions();
+                var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 
                 var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
                 var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
@@ -898,7 +898,7 @@ metExploreD3.GraphLink = {
 
                     var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
                     var mapping = _metExploreViz.getMappingByName(mappingName);
-                    var conditions = mapping.getConditions();
+                    var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 
                     var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
                     var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);

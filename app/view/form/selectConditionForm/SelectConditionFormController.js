@@ -172,7 +172,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		if(component){
 
         	// Remove mapping caption
-            mapping.getConditions().forEach(function (cond) {
+            mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" }).forEach(function (cond) {
 				var color = session.getColorSuggestionById(mapping.getName()+cond);
 
 				if(color!=null){

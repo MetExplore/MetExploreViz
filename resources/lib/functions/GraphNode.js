@@ -2135,6 +2135,23 @@ metExploreD3.GraphNode = {
                         if (node.getBiologicalType() !== "pathway") {
                             var last = nodes[0][nodes.size() - 1];
                             this.parentNode.insertBefore(this, last);
+                            this.parentNode.insertBefore(last, this);
+                        }
+                        else
+                        {
+                            var pathways = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                                .filter(function(node){
+                                    return !node.isHidden() && node.getBiologicalType() === "pathway"
+                                });
+
+                            var last = pathways[0][pathways.size() - 1];
+                            this.parentNode.insertBefore(this, last);
+                            this.parentNode.insertBefore(last, this);
+                            var mapData = d.getMappingDataByNameAndCond(mapping.getName(), condition);
+                            var tooltip =  d3.select("#"+panel).select('#tooltipPathways');
+
+                            tooltip.text("PathwaysInfo");
+                            tooltip.style("top", "55px").style("left","50px").style("visibility", "visible"); 
                         }
                     });
 

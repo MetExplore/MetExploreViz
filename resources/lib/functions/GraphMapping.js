@@ -78,7 +78,7 @@ metExploreD3.GraphMapping = {
 	        setTimeout(
 			function() {
 				var networkData = session.getD3Data();
-				var conditions = mapping.getConditions();
+				var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 				var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 				var node = undefined;
 				switch (mapping.getTargetLabel()) {
@@ -182,7 +182,7 @@ metExploreD3.GraphMapping = {
 	        setTimeout(
 			function() {
 				var networkData = session.getD3Data();
-				var conditions = mapping.getConditions();
+				var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 				var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 				var node = undefined;
 				switch (mapping.getTargetLabel()) {
@@ -924,7 +924,7 @@ metExploreD3.GraphMapping = {
 				  	var vis = d3.select("#viz").select("#D3viz");
 				  	var session = _metExploreViz.getSessionById('viz');
 		          	var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes(); 
-		          	var conditions = mapping.getConditions();	
+		          	var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 					var maxValue = undefined;
 		          	var minValue = undefined;
 		          	var mappingName = mapping.getName();
@@ -1176,7 +1176,7 @@ metExploreD3.GraphMapping = {
 
 				  	var session = _metExploreViz.getSessionById('viz');
 		          	var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes(); 
-		          	var conditions = mapping.getConditions();	
+		          	var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 					var maxValue = undefined;
 		          	var minValue = undefined;
 		          	var mappingName = mapping.getName();
@@ -1279,7 +1279,7 @@ metExploreD3.GraphMapping = {
 	        setTimeout(
 			function() {
 				var networkData = session.getD3Data();
-				var conditions = mapping.getConditions();
+				var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 				var node = undefined;
 				switch (mapping.getTargetLabel()) {
 				    case "reactionDBIdentifier":
@@ -1378,7 +1378,7 @@ metExploreD3.GraphMapping = {
 						var session = _metExploreViz.getSessionById('viz');
 						var force = session.getForce();
 						force.stop(); 
-						var conditions = mapping.getConditions();	
+						var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 						var nodes = session.getD3Data().getNodes(); 
 					  	
 						var values = [];
@@ -1606,7 +1606,7 @@ metExploreD3.GraphMapping = {
 					  	var vis = d3.select("#viz").select("#D3viz");
 					  	var session = _metExploreViz.getSessionById('viz');
 			          	var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes(); 
-			          	var conditions = mapping.getConditions();	
+			          	var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 						var maxValue = undefined;
 			          	var minValue = undefined;
 			          	var mappingName = mapping.getName();
@@ -1622,7 +1622,7 @@ metExploreD3.GraphMapping = {
 							.selectAll("rect.stroke")
 							.remove();
 
-			          	conditions.filter(function(cond){return cond==="PathwayCoverage";}).forEach(
+			          	conditions.forEach(
 							function(condition)
 							{
 								stringJSON+="\n{\""+condition+"\":[";
@@ -2140,7 +2140,7 @@ metExploreD3.GraphMapping = {
 						var session = _metExploreViz.getSessionById('viz');
 						var force = session.getForce();
 						force.stop();
-						var conditions = mapping.getConditions();
+						var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 						var nodes = session.getD3Data().getNodes();
 
 						var values = [];

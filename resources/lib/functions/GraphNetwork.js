@@ -142,8 +142,8 @@ metExploreD3.GraphNetwork = {
             function(panelLinked, sessionLinked) {
                 var scale = metExploreD3.getScaleById(panelLinked);
                 var session = _metExploreViz.getSessionById(panelLinked);
-                if(d3EventScale<0.3) d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
-                else d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
+                // if(d3EventScale<0.3) d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", true);
+                // else d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 
                 if(d3EventSourceEvent !=null)
@@ -3494,6 +3494,14 @@ metExploreD3.GraphNetwork = {
     },
 
     defineBasalButtons : function(panel, animated){
+        d3
+            .select("#"+panel)
+            .append("div")
+            .attr("id", "tooltipPathways")
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden");
+
         var tooltip = d3
             .select("#"+panel)
             .append("div")
