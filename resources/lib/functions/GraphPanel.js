@@ -901,6 +901,8 @@ metExploreD3.GraphPanel = {
 					});
 					if(networkData.getPathwaysLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Pathways", data:networkData.getPathways()});
 				}
+				node.x=1;
+				node.y=1;
 
 			});
             networkData.setId('viz');
