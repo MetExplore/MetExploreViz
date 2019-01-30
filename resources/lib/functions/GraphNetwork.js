@@ -1933,7 +1933,7 @@ metExploreD3.GraphNetwork = {
                     "",
                     false,
                     undefined,
-                    true,
+                    false,
                     path.getName(),//theNodeId,
                     [path.getName()],
                     false,
@@ -2031,89 +2031,6 @@ metExploreD3.GraphNetwork = {
             .addNodeText(metaboliteStyle);
 
 
-        thePathwayElement
-            .on("mouseover", function(d) {
-                var nodes = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node");
-
-                d.fixed = true;
-                if(panel=="viz")
-                {
-                    d3.select("#"+panel)
-                        .selectAll('g.node')
-                        .filter(function(node){return node==d})
-                        .select('.locker')
-                        //.classed('hide', metExploreD3.GraphStyleEdition.editMode)
-                        .classed('hide', false)
-                        .select('.iconlocker')
-                        .attr(
-                            "xlink:href",
-                            function(d) {
-                                if(d.isLocked())
-                                    return "resources/icons/lock_font_awesome.svg";
-                                else
-                                    return "resources/icons/unlock_font_awesome.svg";
-                            });
-                }
-
-                if(d.getBiologicalType()=="reaction"){
-                    d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .filter(function(link){return d.getId()==link.getSource().getId();})
-                        .style("stroke", "green");
-
-                    d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .filter(function(link){return d.getId()==link.getTarget().getId();})
-                        .style("stroke", "red");
-                }
-                else
-                {
-                    d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .filter(function(link){return d.getId()==link.getSource().getId();})
-                        .style("stroke", "red")
-                        .style("opacity", 1);
-
-                    d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link")
-                        .filter(function(link){return d.getId()==link.getTarget().getId();})
-                        .style("stroke", "green")
-                        .style("opacity", 1);
-                }
-            })
-            .on("mouseleave", function(d) {
-                d3.select(this).select('.locker').classed('hide', true);
-
-                if(!d.isLocked())
-                    d.fixed = false;
-                var linkStyle = metExploreD3.getLinkStyle();
-
-
-                d3.select("#"+panel).select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link")
-                    .filter(function(link){return d.getId()==link.getSource().getId() || d.getId()==link.getTarget().getId();})
-                    .style("stroke",linkStyle.getStrokeColor())
-                    .style("stroke-width", "0.5");
-
-                if(d.getBiologicalType()=="reaction"){
-                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
-                        .duration(750)
-                        .attr("width", reactionStyle.getWidth())
-                        .attr("height", reactionStyle.getHeight())
-                        .attr( "transform", "translate(-" + reactionStyle.getWidth() / 2 + ",-" + reactionStyle.getHeight() / 2 + ")");
-                }
-                else
-                {
-
-                    d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
-                        .duration(750)
-                        .attr("width", metaboliteStyle.getWidth())
-                        .attr("height", metaboliteStyle.getHeight())
-                        .attr("transform", "translate(-" + metaboliteStyle.getWidth() / 2 + ",-"
-                            + metaboliteStyle.getHeight() / 2
-                            + ")");
-                }
-            });
 
         var minDim = pathwaySize*3;
 
@@ -3494,19 +3411,45 @@ metExploreD3.GraphNetwork = {
     },
 
     defineBasalButtons : function(panel, animated){
-        d3
+        var tooltipPathways = d3
             .select("#"+panel)
-            .append("div")
+            .select("#D3viz")
+            .append("g")
             .attr("id", "tooltipPathways")
-            .style("position", "absolute")
-            .style("z-index", "10")
-            .style("visibility", "hidden");
+            .attr('dy', '20')
+            .style("position", "absolute");
+
+        tooltipPathways
+            .append("path")
+            .attr("id", "tooltipPathwaysPath")
+            .style("fill", "#005EFF")
+            .attr("d","M 0,0 L -10,-10 H -60 Q -70,-10 -70,-20 V -50 Q -70,-60 -60,-60 H 60 Q 70,-60 70,-50 V -20 Q 70,-10 60,-10 H 10 Z");
+
+        var tooltipText = tooltipPathways
+            .append("text")
+            .style("fill", "white")
+            .attr("id", "tooltipPathwaysText")
+            .attr("transform","translate(0, -40) scale(1,1)")
+            .style("text-anchor","middle");
+
+        tooltipText.text('');
+        var nameDOMFormat = $("<div/>").html("").text();
+        tooltipText.append('tspan')
+            .text(nameDOMFormat)
+            .attr('id', 'tooltipTextPathwayCoverage');
+
+        nameDOMFormat = $("<div/>").html("").text();
+
+        var tspan = tooltipText.append('tspan')
+            .attr('id', 'tooltipTextPathwayEnrichment')
+            .text(nameDOMFormat);
+        tspan.attr('x', '0')
+            .attr('dy', '20');
 
         var tooltip = d3
             .select("#"+panel)
             .append("div")
             .attr("id", "tooltipButtons")
-            .style("position", "absolute")
             .style("z-index", "10")
             .style("visibility", "hidden");
 

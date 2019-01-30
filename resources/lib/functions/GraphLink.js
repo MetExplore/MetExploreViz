@@ -1210,9 +1210,12 @@ metExploreD3.GraphLink = {
      */
     tick : function(panel, scale) {
         // If you want to use selection on compartments path
-        d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
+        var convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull");
+
+        convexHullPath
             .attr("d", _metExploreViz.getSessionById(panel).groupPath)
             .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
+
         if (metExploreD3.GraphStyleEdition.curvedPath === true){
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()==="Flux";
             if(flux) {

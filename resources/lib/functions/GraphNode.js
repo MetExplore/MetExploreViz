@@ -507,6 +507,35 @@ metExploreD3.GraphNode = {
 
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
+        if(d.getBiologicalType()==="pathway"){
+
+
+            var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+            var mappingName = session.getActiveMapping();
+
+            if(d.getMappingDatasLength() > 0 && mappingName !== "")
+            {
+                d3.select(this)
+                    .each(function (node) {
+                        var rectNodeElmt=d3.select(this).select('.pathway').node();
+
+                        var x = rectNodeElmt.getBoundingClientRect().left
+                            +(rectNodeElmt.getBoundingClientRect().right-rectNodeElmt.getBoundingClientRect().left)/2
+                            -d3.select("#"+_MyThisGraphNode.activePanel).select("#D3viz").node().getBoundingClientRect().left;
+
+                        var y = rectNodeElmt.getBoundingClientRect().top-d3.select("#"+_MyThisGraphNode.activePanel).select("#D3viz").node().getBoundingClientRect().top;
+
+                        var tooltipPathways = d3.select("#"+_MyThisGraphNode.activePanel).select('#tooltipPathways');
+
+                        tooltipPathways
+                            .attr('x', x)
+                            .attr('y', y)
+                            .attr('transform', 'translate('+x+','+y+')')
+                            .style("visibility", "visible");
+                    });
+            }
+        }
+
         // If graphs are linked we move the same nodes
         if (session.isLinked()) {
 
@@ -2130,6 +2159,8 @@ metExploreD3.GraphNode = {
             .on("mouseover", function (d) {
                 var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
 
+                var nodeElemt=this;
+
                 d3.select(this)
                     .each(function (node) {
                         if (node.getBiologicalType() !== "pathway") {
@@ -2147,11 +2178,41 @@ metExploreD3.GraphNode = {
                             var last = pathways[0][pathways.size() - 1];
                             this.parentNode.insertBefore(this, last);
                             this.parentNode.insertBefore(last, this);
-                            var mapData = d.getMappingDataByNameAndCond(mapping.getName(), condition);
-                            var tooltip =  d3.select("#"+panel).select('#tooltipPathways');
 
-                            tooltip.text("PathwaysInfo");
-                            tooltip.style("top", "55px").style("left","50px").style("visibility", "visible"); 
+                            var session = _metExploreViz.getSessionById(parent);
+                            var mappingName = session.getActiveMapping();
+
+                            if(node.getMappingDatasLength() > 0 && mappingName !== "")
+                            {
+                                var mapCov = d.getMappingDataByNameAndCond(mappingName, "PathwayCoverage");
+                                var mapPE = d.getMappingDataByNameAndCond(mappingName, "PathwayEnrichment");
+                                if(mapCov && mapPE){
+                                    var rectNodeElmt=d3.select(this).select('.pathway').node();
+                                    var tooltip = d3.select("#"+parent).select('#tooltipPathways');
+                                    var x = rectNodeElmt.getBoundingClientRect().left
+                                        +(rectNodeElmt.getBoundingClientRect().right-rectNodeElmt.getBoundingClientRect().left)/2
+                                        -d3.select("#"+parent).select("#D3viz").node().getBoundingClientRect().left;
+
+                                    var y = rectNodeElmt.getBoundingClientRect().top-d3.select("#"+parent).select("#D3viz").node().getBoundingClientRect().top;
+
+                                    tooltip
+                                        .attr('x', x)
+                                        .attr('y', y)
+                                        .attr('transform', 'translate('+x+','+y+')')
+                                        .style("visibility", "visible");
+                                    var tooltipText =  d3.select("#"+parent).select('#tooltipPathwaysText');
+
+
+                                    var covText = "Coverage : "+(mapCov.getMapValue()).toFixed(2);
+                                    var pValText = "p-value BH : "+(mapPE.getMapValue()).toFixed(4);
+
+                                    var nameDOMFormat = $("<div/>").html(covText).text();
+                                    tooltipText.select("#tooltipTextPathwayCoverage").text(nameDOMFormat);
+
+                                    nameDOMFormat = $("<div/>").html(pValText).text();
+                                    tooltipText.select("#tooltipTextPathwayEnrichment").text(nameDOMFormat);
+                                }
+                            }
                         }
                     });
 
@@ -2176,6 +2237,9 @@ metExploreD3.GraphNode = {
                 }
             })
             .on("mouseleave", function (d) {
+                var tooltip =  d3.select("#"+parent).select('#tooltipPathways');
+                tooltip.style("visibility", "hidden");
+
                 metExploreD3.GraphNode.node
                     .filter(function (node) {
                         return node == d
@@ -2347,6 +2411,8 @@ metExploreD3.GraphNode = {
                 }
             })
             .on("mouseover", function (d) {
+
+
                 var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
                 d3.select(this)
                     .each(function (node) {
