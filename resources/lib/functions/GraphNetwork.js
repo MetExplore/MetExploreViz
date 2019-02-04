@@ -1116,15 +1116,15 @@ metExploreD3.GraphNetwork = {
         metExploreD3.GraphNetwork.initPathwaysData();
 
         // Allows to display all pathway nodes
-        networkData.getNodes()
-            .forEach(function (n) {
-                if(n.getBiologicalType()==="pathway"){
-                    n.show();
-                    var pathwayModel = networkData.getPathwayByName();
-                    if(pathwayModel) pathwayModel.setCollapsed(true);
-                }
-                else n.hide();
-            });
+        // networkData.getNodes()
+        //     .forEach(function (n) {
+        //         if(n.getBiologicalType()==="pathway"){
+        //             n.show();
+        //             var pathwayModel = networkData.getPathwayByName();
+        //             if(pathwayModel) pathwayModel.setCollapsed(true);
+        //         }
+        //         else n.hide();
+        //     });
 
         metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
 

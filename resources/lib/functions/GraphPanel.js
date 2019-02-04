@@ -753,8 +753,7 @@ metExploreD3.GraphPanel = {
 						}
 					});
 
-                    console.log(networkData.getPathways());
-					if(networkData.getPathwaysLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Pathways", data:networkData.getPathways()});
+                    if(networkData.getPathwaysLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Pathways", data:networkData.getPathways()});
 
                     if(networkData.getCompartmentsLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Compartments", data:networkData.getCompartments()});
 

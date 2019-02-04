@@ -914,6 +914,9 @@ metExploreViz.prototype = {
     getParentWebSite : function(){
         return this.parentWebSite;
     },
+    setParentWebSite : function(parentWebSite){
+        this.parentWebSite = parentWebSite;
+    },
     cloneNetworkData : function(networkData){
         var newData = new NetworkData();
        
