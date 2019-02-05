@@ -1581,12 +1581,8 @@ metExploreD3.GraphNetwork = {
         that = this;
         var panel = this.parentNode.parentNode.id;
         var session = _metExploreViz.getSessionById(panel);
-        var nbMapped = d3.select('#viz').selectAll('g.node')
-            .filter(function(node){
-                return d3.select(this).style("fill")!="rgb(255, 255, 255)" || d3.select(this).attr("mapped")==="true";
-            })[0].length;
 
-        if(nbMapped!=0)
+        if(_metExploreViz.getMappingsLength()!==0 && _metExploreViz.getSessionById("viz").getActiveMapping()!=="")
         {
             var mainSession = _metExploreViz.getSessionById("viz");
             d3.select("#"+panel).select("#D3viz").select("#graphComponent")
