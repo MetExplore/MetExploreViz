@@ -30,14 +30,16 @@ metExploreD3.GraphLink = {
                 {
                     var color="#000000";
                     reaction.getPathways().forEach(function(path){
-                        var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(path);
+                        var pathw = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(path);
                         if(pathw!==null){
                             var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
-                            col["o"]=0.15;
-                            cols.push(pathw);
+                            if(col!==null) {
+                                col["o"] = 0.15;
+                                cols.push(pathw);
 
-                            if(color==="#000000"){
-                                color=col;
+                                if (color === "#000000") {
+                                    color = col;
+                                }
                             }
                         }
                     });
