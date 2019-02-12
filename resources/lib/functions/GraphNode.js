@@ -1620,7 +1620,11 @@ metExploreD3.GraphNode = {
         d3.select(me).selectAll("path.convexhull")
             .style("stroke", metExploreD3.GraphNode.groupFill)
             .style("stroke-width", 40)
-            .style("stroke-linejoin", "round");
+            .style("stroke-linejoin", "round")
+            .each(function (d) {
+                d.isSelected = false;
+            });
+
 
         session.removeAllSelectedPathways();
     },
@@ -2016,9 +2020,8 @@ metExploreD3.GraphNode = {
                                 .style("stroke-linejoin", "round")
                         }
                     }
-
                 }
-            })
+            });
         
         d3.select("#" + parent).select("#D3viz").selectAll("path.convexhull")
             .filter(function (comp) {
