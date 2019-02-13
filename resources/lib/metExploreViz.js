@@ -265,12 +265,12 @@ var metExploreD3 = {
         );
 
         function addNodeInGroup(node, compartment){
-            if(compartment!=undefined){
+            if(compartment!==undefined){
 
-                if(compartment.values==undefined)
+                if(compartment.values===undefined)
                         compartment.values=[];
 
-                if(compartment.values.indexOf(node)==-1)
+                if(compartment.values.indexOf(node)===-1)
                     compartment.values.push(node);
             }
         }
@@ -278,7 +278,7 @@ var metExploreD3 = {
             .forEach(function(d){
                 var source = d.source;
                 var target = d.target;
-                if(source.getBiologicalType()=="metabolite"){
+                if(source.getBiologicalType()==="metabolite" && target.getBiologicalType()==="reaction"){
 
 
                     addNodeInGroup(
@@ -286,7 +286,7 @@ var metExploreD3 = {
                         compartmentGroup
                             .find(function(compart)
                             {
-                                return compart.key==source.getCompartment();
+                                return compart.key===source.getCompartment();
                             }
                         )
                     );
@@ -295,31 +295,31 @@ var metExploreD3 = {
                         compartmentGroup
                             .find(function(compart)
                             {
-                                return compart.key==source.getCompartment();
+                                return compart.key===source.getCompartment();
                             }
                         )
                     );
                 }
                 else
                 {
-                    addNodeInGroup(
-                        source,
-                        compartmentGroup
-                            .find(function(compart)
-                            {
-                                return compart.key==target.getCompartment();
-                            }
-                        )
-                    );
-                    addNodeInGroup(
-                        target,
-                        compartmentGroup
-                            .find(function(compart)
-                            {
-                                return compart.key==target.getCompartment();
-                            }
-                        )
-                    );
+                    if(source.getBiologicalType()==="reaction" && target.getBiologicalType()==="metabolite") {
+                        addNodeInGroup(
+                            source,
+                            compartmentGroup
+                                .find(function (compart) {
+                                        return compart.key === target.getCompartment();
+                                    }
+                                )
+                        );
+                        addNodeInGroup(
+                            target,
+                            compartmentGroup
+                                .find(function (compart) {
+                                        return compart.key === target.getCompartment();
+                                    }
+                                )
+                        );
+                    }
                 }
             });
         return compartmentGroup;

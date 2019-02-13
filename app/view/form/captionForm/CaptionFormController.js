@@ -111,7 +111,9 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                                         var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
                                                                     else
                                                                         var com = metExploreD3.getCompartmentByName(conv.key);
-                                                                    return com.hidden();
+                                                                    if(com)
+                                                                        return com.hidden();
+                                                                    return false;
                                                                 });
                                                             if (view.getTitle() == "Pathways"){
                                                                 metExploreD3.GraphCaption.majCaptionPathwayOnLink();

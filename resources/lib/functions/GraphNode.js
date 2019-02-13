@@ -1906,9 +1906,9 @@ metExploreD3.GraphNode = {
             session.groups = metExploreD3.getPathwaysGroup(parent);
             metExploreD3.GraphNetwork.initCentroids(parent);
         }
-
-
         session.groupPath = function (d) {
+
+
             var scale = metExploreD3.getScaleById(parent);
             if (d.values != undefined) {
                 if (d.values.length > 0) {
@@ -1916,7 +1916,8 @@ metExploreD3.GraphNode = {
 
                         return "M" +
                             d3.geom.hull(d.values.map(function (i) {
-                                return [i.x, i.y];
+
+                                    return [i.x, i.y];
                             }))
                                 .join("L")
                             + "Z";
@@ -1966,7 +1967,7 @@ metExploreD3.GraphNode = {
         // 	.enter().insert("path", "g.node")
 
 
-        d3.select("#" + parent).select("#D3viz").selectAll("path.convexhull")
+        var convexHull = d3.select("#" + parent).select("#D3viz").selectAll("path.convexhull")
             .data(session.groups)
             .enter()
             .insert("path", ":first-child")
@@ -1985,43 +1986,48 @@ metExploreD3.GraphNode = {
             .style("stroke", metExploreD3.GraphNode.groupFill)
             .style("stroke-width", 40)
             .style("stroke-linejoin", "round")
-            .style("opacity", .15)
-            .on("mouseup", function (d) {
-                if (d3.event.button !== 2) {
-                    var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
-                    if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
-                        if (d.isSelected) {
-                            d.isSelected = false;
-                            session.removeSelectedPathway(d.key);
-                            d3.select(this)
-                                .style("stroke", metExploreD3.GraphNode.groupFill)
-                                .style("stroke-width", 40)
-                                .style("stroke-linejoin", "round")
-                        }
-                        else {
-                            d.isSelected = true;
-                            session.addSelectedPathway(d.key);
-                            d3.select(this)
-                                .style("stroke", "black")
-                                .style("stroke-width", 20)
-                                .style("stroke-linejoin", "round")
-                        }
-                    }
-                }
-                else {
-                    var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
-                    if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
-                        if (!d.isSelected) {
-                            d.isSelected = true;
-                            session.addSelectedPathway(d.key);
-                            d3.select(this)
-                                .style("stroke", "black")
-                                .style("stroke-width", 20)
-                                .style("stroke-linejoin", "round")
+            .style("opacity", .15);
+
+        if (component == "Compartments") {
+            convexHull
+                .on("mouseup", function (d) {
+                    if (d3.event.button !== 2) {
+                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
+                        if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
+                            if (d.isSelected) {
+                                d.isSelected = false;
+                                session.removeSelectedPathway(d.key);
+                                d3.select(this)
+                                    .style("stroke", metExploreD3.GraphNode.groupFill)
+                                    .style("stroke-width", 40)
+                                    .style("stroke-linejoin", "round")
+                            }
+                            else {
+                                d.isSelected = true;
+                                session.addSelectedPathway(d.key);
+                                d3.select(this)
+                                    .style("stroke", "black")
+                                    .style("stroke-width", 20)
+                                    .style("stroke-linejoin", "round")
+                            }
                         }
                     }
-                }
-            });
+                    else {
+                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
+                        if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
+                            if (!d.isSelected) {
+                                d.isSelected = true;
+                                session.addSelectedPathway(d.key);
+                                d3.select(this)
+                                    .style("stroke", "black")
+                                    .style("stroke-width", 20)
+                                    .style("stroke-linejoin", "round")
+                            }
+                        }
+                    }
+                });
+        }
+
         
         d3.select("#" + parent).select("#D3viz").selectAll("path.convexhull")
             .filter(function (comp) {

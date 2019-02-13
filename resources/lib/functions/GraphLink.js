@@ -566,7 +566,7 @@ metExploreD3.GraphLink = {
 
         metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(visibleLinks, function keyFunc(d, i) { return d.getId() });
-        
+
         metExploreD3.GraphLink.link.remove();
 
         metExploreD3.GraphLink.link.enter()
@@ -1100,13 +1100,12 @@ metExploreD3.GraphLink = {
 
 
         var isDisplay = generalStyle.isDisplayedConvexhulls();
-
         if(!isDisplay){
             convexHullPath.remove();
         }
         else
         {
-            if(convexHullPath[0].length==0)
+            if(convexHullPath[0].length===0)
                 metExploreD3.GraphNode.loadPath(panel, isDisplay);
 
             convexHullPath
