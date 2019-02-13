@@ -541,11 +541,23 @@ metExploreD3.GraphCaption = {
                         var comp = _metExploreViz.getSessionById(panelLinked).getD3Data().getPathwayById(this.getAttribute("id"));
 
                         if(comp){
-
                             return comp.hidden() || !isDisplayedPathwaysOnLinks;
                         }
                         return true
                     });
+                
+                d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                    .each(function(linkGroup){
+
+                        var size = 8;
+                        var visibleLinks = d3.select(this).selectAll("path.link.pathway:not(.hide)");
+
+                        visibleLinks
+                            .style("stroke-dasharray", size+","+size*(visibleLinks[0].length-1))
+                            .style("stroke-dashoffset", function(l, i){
+                                return size*i;
+                            })
+                    })
             });
     },
 
