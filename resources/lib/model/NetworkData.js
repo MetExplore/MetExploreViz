@@ -218,6 +218,7 @@ NetworkData.prototype = {
 
         var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color, path.collapsed, path.nodes);
         this.pathways.push(object);
+        return object;
     },
 
     containsNode: function(id)
@@ -457,19 +458,7 @@ NetworkData.prototype = {
 
         // if(obj.compartments==undefined)
         // {
-        obj.links.forEach(function(link){
-        that.addLink(link.id,
-                    link.source,
-                    link.target,
-                    link.interaction,
-                    link.reversible);
-        });
 
-        if(obj.pathways){
-           obj.pathways.forEach(function(pathway){
-               that.copyPathway(pathway);
-           });
-        }
 
         obj.nodes.forEach(function(node){
             if(node.biologicalType=="reaction"){
@@ -568,5 +557,48 @@ NetworkData.prototype = {
             that.nodes[that.nodes.length-1].x = node.x;
             that.nodes[that.nodes.length-1].y = node.y;
         });
+
+        obj.links.forEach(function(link){
+            var source = link.source;
+            var target = link.target;
+            if((source instanceof NodeData)){
+                source=that.nodes.find(function (n) {
+                    return source.getId()===n.getId();
+                })
+            }
+            if((target instanceof NodeData)){
+                target=that.nodes.find(function (n) {
+                    return target.getId()===n.getId();
+                })
+            }
+            that.addLink(link.id,
+                source,
+                target,
+                link.interaction,
+                link.reversible);
+        });
+
+        if(obj.pathways){
+            obj.pathways.forEach(function(pathway){
+                var newPath = that.copyPathway(pathway);
+                var arrayNewNodes = [];
+                newPath.nodes.forEach(function(node, i){
+                    var newNode = that.nodes.find(function (n) {
+                        return n.getId()===node.getId();
+                    });
+                    if(newNode)
+                    {
+                        arrayNewNodes.push(newNode);
+                    }
+                });
+                newPath.nodes=[];
+                arrayNewNodes.forEach(function(newNode){
+                    newPath.addNode(newNode);
+                });
+
+            });
+        }
+
+
     }
 };

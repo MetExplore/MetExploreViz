@@ -563,9 +563,13 @@ metExploreD3.GraphLink = {
                 return !source.isHidden() && !target.isHidden();
             });
 
+
         metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .data(visibleLinks)
-            .enter()
+            .data(visibleLinks, function keyFunc(d, i) { return d.getId() });
+        
+        metExploreD3.GraphLink.link.remove();
+
+        metExploreD3.GraphLink.link.enter()
             .insert("svg:g", ":first-child")
             .attr("class", "linkGroup")
             .append("svg:path")
