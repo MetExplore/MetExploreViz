@@ -1988,7 +1988,7 @@ metExploreD3.GraphNode = {
             .style("stroke-linejoin", "round")
             .style("opacity", .15);
 
-        if (component == "Compartments") {
+        if (component === "Pathways") {
             convexHull
                 .on("mouseup", function (d) {
                     if (d3.event.button !== 2) {
