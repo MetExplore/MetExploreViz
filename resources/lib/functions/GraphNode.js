@@ -2031,7 +2031,7 @@ metExploreD3.GraphNode = {
         
         d3.select("#" + parent).select("#D3viz").selectAll("path.convexhull")
             .filter(function (comp) {
-                var pathway = session.getD3Data().getPathwayByName(comp);
+                var pathway = session.getD3Data().getPathwayByName(comp.key);
                 if(pathway)
                     return pathway.isCollapsed();
 

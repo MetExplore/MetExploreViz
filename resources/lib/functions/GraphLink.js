@@ -20,18 +20,24 @@ metExploreD3.GraphLink = {
             .each(function(link){
                 var me = this;
                 var cols = [];
-                var reaction;
+                var component;
                 if(link.getSource().getBiologicalType()==="reaction")
-                    reaction=link.getSource();
+                    component=link.getSource();
 
                 if(link.getTarget().getBiologicalType()==="reaction")
-                    reaction=link.getTarget();
+                    component=link.getTarget();
 
-                if(reaction){
-                    if(reaction.getPathways().length>0)
+                if(link.getSource().getBiologicalType()==="pathway")
+                    component=link.getSource();
+
+                if(link.getTarget().getBiologicalType()==="pathway")
+                    component=link.getTarget();
+
+                if(component){
+                    if(component.getPathways().length>0)
                     {
                         var color="#000000";
-                        reaction.getPathways().forEach(function(path){
+                        component.getPathways().forEach(function(path){
                             var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(path);
                             if(pathw!==null){
                                 var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
@@ -589,6 +595,10 @@ metExploreD3.GraphLink = {
             .style("stroke-width", 0.5)
             .style("opacity", 1)
             .style("stroke-dasharray", null);
+
+        metExploreD3.GraphLink.pathwaysOnLink(parent);
+        if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
+            metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 
     },
 

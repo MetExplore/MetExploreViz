@@ -32,7 +32,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             viewModel   = me.getViewModel(),
             view      	= me.getView();
 
-        // We add form corresponding to the component data type
+            // We add form corresponding to the component data type
         var captionForm = view;
         if(view.getTitle()=="Pathways")
             var components = metExploreD3.getPathwaysSet('viz');
@@ -185,12 +185,18 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                 }
             });
 
+            var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+            var checkComponent = false;
+            if(s_GeneralStyle.isDisplayedConvexhulls()===view.getTitle())
+                checkComponent=true;
+
             // Create checkbox to display convex hull around each components
             var highlightCheckbox = Ext.create('Ext.form.field.Checkbox', {
                 tooltip: 'Display convex hull around each ' + view.getTitle(),
                 boxLabel: 'Highlight '+view.getTitle().toLowerCase(),
                 margin: '0 0 0 10',
-                id: 'highlightCheckbox' + view.getTitle()
+                id: 'highlightCheckbox' + view.getTitle(),
+                checked: checkComponent
             });
 
             highlightCheckbox.on({
@@ -216,12 +222,14 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             newConditionPanel.add(highlightCheckbox);
 
             if(view.getTitle()=="Pathways"){
+
                 // Create checkbox to display convex hull around each components
                 var highlightLinkCheckbox = Ext.create('Ext.form.field.Checkbox', {
                     tooltip: 'Display convex hull around each ' + view.getTitle(),
                     boxLabel: 'Highlight '+view.getTitle().toLowerCase() +' on links' ,
                     margin: '0 0 20 10',
-                    id: 'highlightCheckbox' + view.getTitle() + "Link"
+                    id: 'highlightCheckbox' + view.getTitle() + "Link",
+                    checked: s_GeneralStyle.isDisplayedPathwaysOnLinks()
                 });
 
                 highlightLinkCheckbox.on({

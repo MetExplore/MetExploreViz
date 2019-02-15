@@ -270,15 +270,67 @@ metExploreD3.GraphMapping = {
 		
 		metExploreD3.onloadMapping(mappingName, function(){
 
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+            d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
 				.filter(function(d){
 					if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
 					else return true;
 				})
 				.attr("mapped", "false")
 				.selectAll("rect.stroke")
-				.remove();		
+				.remove();
 
+            var session = _metExploreViz.getSessionById('viz');
+            d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+                .filter(function (n) { return n.getBiologicalType()==="pathway";})
+                .each(function (d) {
+                    var thePathwayElement = d3.select(this);
+
+                    thePathwayElement.select(".mapped-segment").classed("hide", true);
+                    thePathwayElement.select(".notmapped-segment").classed("hide", true);
+
+                    var pathwayModel = session.getD3Data().getPathwayByName(d.getName());
+                    var pathwaySize = 20;
+
+                    thePathwayElement.setNodeForm(
+                        pathwaySize*3,
+                        pathwaySize*3,
+                        pathwaySize*3,
+                        pathwaySize*3,
+                        pathwayModel.getColor(),
+                        pathwaySize*3/5
+                    );
+
+
+                    // Lock Image definition
+                    var box = thePathwayElement.select("locker")
+                        .attr("width", pathwaySize * 3)
+                        .attr("height", pathwaySize * 3)
+                        .attr("preserveAspectRatio", "xMinYMin")
+                        .attr("y", -pathwaySize * 3)
+                        .attr("x", -pathwaySize * 3);
+
+                    box
+                        .select("backgroundlocker")
+                        .attr("d", function (node) {
+                            var pathBack = "M" + pathwaySize * 3 + "," + pathwaySize * 3 +
+                                " L0," + pathwaySize * 3 +
+                                " L0," + pathwaySize * 3 / 2 * 2 +
+                                " A" + pathwaySize * 3 / 2 * 2 + "," + pathwaySize * 3 / 2 * 2 + ",0 0 1 " + pathwaySize * 3 / 2 * 2 + ",0" +
+                                " L" + pathwaySize * 3 + ",0";
+                            return pathBack;
+                        })
+                        .attr("opacity", "0.20")
+                        .attr("fill", "black");
+
+                    box
+                        .select("iconlocker")
+                        .attr("y", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
+                        .attr("x", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
+                        .attr("width", "40%")
+                        .attr("height", "40%");
+                });
+
+            session.nodesMap = [];
 			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
 			var mapping = _metExploreViz.getMappingByName(mappingName);
 			if(myMask!= undefined){
@@ -384,6 +436,19 @@ metExploreD3.GraphMapping = {
 
                                                             var pathwaySize = 20 + 100 * exposant;
 
+                                                            //interligne
+                                                            d3.select(this)
+                                                                .select("text")
+                                                                .style("stroke-width", 10)
+                                                                .style("font-weight", 'bold')
+                                                                .style("font-size",pathwaySize-40+"px")
+                                                                .each(function(text){
+                                                                    d3.select(this).selectAll("tspan")
+                                                                        .each(function(tspan, i){
+                                                                            if(i>0)
+                                                                                d3.select(this).attr("dy", pathwaySize-40);
+                                                                        });
+                                                                });
 
 															var thePathwayElement = d3.select(this);
 
@@ -412,7 +477,12 @@ metExploreD3.GraphMapping = {
 
 
 															// Lock Image definition
-															var box = thePathwayElement.select("locker")
+															var box = thePathwayElement.select(".locker").attr(
+																	"viewBox",
+																	function(d) {
+																		+ " " + pathwaySize * 3;
+																	}
+																)
 																.attr("width", pathwaySize * 3)
 																.attr("height", pathwaySize * 3)
 																.attr("preserveAspectRatio", "xMinYMin")
@@ -420,7 +490,7 @@ metExploreD3.GraphMapping = {
 																.attr("x", -pathwaySize * 3);
 
 															box
-																.select("backgroundlocker")
+																.select(".backgroundlocker")
 																.attr("d", function (node) {
 																	var pathBack = "M" + pathwaySize * 3 + "," + pathwaySize * 3 +
 																		" L0," + pathwaySize * 3 +
@@ -433,7 +503,7 @@ metExploreD3.GraphMapping = {
 																.attr("fill", "black");
 
 															box
-																.select("iconlocker")
+																.select(".iconlocker")
 																.attr("y", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
 																.attr("x", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
 																.attr("width", "40%")
@@ -447,6 +517,8 @@ metExploreD3.GraphMapping = {
                                                                 var mapped = thePathwayElement.select(".mapped-segment");
                                                                 var notmapped = thePathwayElement.select(".notmapped-segment");
 
+                                                                thePathwayElement.select(".mapped-segment").classed("hide", false);
+                                                                thePathwayElement.select(".notmapped-segment").classed("hide", false);
                                                                 var mapData = d.getMappingDataByNameAndCond(mapping.getName(), "PathwayCoverage");
 
                                                                 var coverage = mapData.getMapValue();
@@ -2568,153 +2640,151 @@ metExploreD3.GraphMapping = {
 	        });
 		}
     },
-    
+
 	generateMapping: function(mapping, nodeMappingByCondition){
 		var session = _metExploreViz.getSessionById('viz');
 		var networkData = session.getD3Data();
 
 		switch (mapping.getTargetLabel()) {
             case "reactionDBIdentifier":
-            	if(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"))
+                if(nodeMappingByCondition[0].name!=="undefined")
                 {
-                	nodeMappingByCondition.forEach(function(condition){
-    					condition.data
-	                		.filter(function(map){
-	    							return (!isNaN(map.value) && map.value!=null)
-	    					})
-	    					.forEach(function(map){
-								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-								mapping.addMap(mapData);
-	    						var node = networkData.getNodeByDbIdentifier(map.node);
-	    						if(node!=undefined){
-	    							var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-	    							node.addMappingData(mapNode);
-	    						}
-    	        		});	
-                 	 });
+                    nodeMappingByCondition.forEach(function(condition){
+                        condition.data
+                            .filter(function(map){
+                                return (!isNaN(map.value) && map.value!=null)
+                            })
+                            .forEach(function(map){
+                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+                                mapping.addMap(mapData);
+                                var node = networkData.getNodeByDbIdentifier(map.node);
+                                if(node!=undefined){
+                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+                                    node.addMappingData(mapNode);
+                                }
+                            });
+                    });
                 }
                 else
                 {
-                	nodeMappingByCondition[0].data
-                		.forEach(function(map){
-							var mapData = new MappingData(map.node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
-							mapping.addMap(mapData);
-							var node = networkData.getNodeByDbIdentifier(map.node);
-							if(node!=undefined){
-								var mapNode = new MappingData(node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
-								node.addMappingData(mapNode);
-							}
-		        		});	
+                    nodeMappingByCondition.forEach(function(condition){
+                        condition.data
+                            .forEach(function(map){
+                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+                                mapping.addMap(mapData);
+                                var node = networkData.getNodeByDbIdentifier(map.node);
+                                if(node!=undefined){
+                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+                                    node.addMappingData(mapNode);
+                                }
+                            });
+                    });
                 }
                 break;
             case "metaboliteDBIdentifier":
-	            if(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"))
-	            {	
-	                nodeMappingByCondition.forEach(function(condition){
-						condition.data
-							.filter(function(map){
-		    					return (!isNaN(map.value) && map.value!=null)
-		    				})
-							.forEach(function(map){   
-								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-								mapping.addMap(mapData); 
-								var node = networkData.getNodeByDbIdentifier(map.node);
-								if(node!=undefined){
-									var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-									node.addMappingData(mapNode);
-								}
-			        		});	
-	             	 });
-	            }
-	            else
-	            {
-	            	nodeMappingByCondition.forEach(function(condition){
-						condition.data
-							.forEach(function(map){   
-								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-								mapping.addMap(mapData); 
-								var node = networkData.getNodeByDbIdentifier(map.node);
-								if(node!=undefined){
-									var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-									node.addMappingData(mapNode);
-								}
-			        		});	
-	             	 });
-	            }
-                break;
-            case "reactionId":
-            	if(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"))
+                if(nodeMappingByCondition[0].name!=="undefined")
                 {
-                	nodeMappingByCondition.forEach(function(condition){
-    					condition.data
-		                	.filter(function(map){
-								return (!isNaN(map.value) && map.value!=null)
-							})
-	    					.forEach(function(map){
-								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-								mapping.addMap(mapData);
-	    						var node = networkData.getNodeById(map.node);
-	    						if(node!=undefined){
-	    							var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-	    							node.addMappingData(mapNode);
-	    						}
-	    	        		});	
-                 	 });
+                    nodeMappingByCondition.forEach(function(condition){
+                        condition.data
+                            .filter(function(map){
+                                return (!isNaN(map.value) && map.value!=null)
+                            })
+                            .forEach(function(map){
+                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+                                mapping.addMap(mapData);
+                                var node = networkData.getNodeByDbIdentifier(map.node);
+                                if(node!=undefined){
+                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+                                    node.addMappingData(mapNode);
+                                }
+                            });
+                    });
                 }
                 else
                 {
-                	nodeMappingByCondition[0].data
-	                	.forEach(function(map){
-							var mapData = new MappingData(map.node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
-							mapping.addMap(mapData);
-							var node = networkData.getNodeById(map.node);
-							if(node!=undefined){
-								var mapNode = new MappingData(node, mapping.getName(), nodeMappingByCondition[0].name, map.value);
-								node.addMappingData(mapNode);
-							}
-		        		});	
+                    nodeMappingByCondition.forEach(function(condition){
+                        condition.data
+                            .forEach(function(map){
+                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+                                mapping.addMap(mapData);
+                                var node = networkData.getNodeByDbIdentifier(map.node);
+                                if(node!=undefined){
+                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+                                    node.addMappingData(mapNode);
+                                }
+                            });
+                    });
+                }
+                break;
+            case "reactionId":
+                if(nodeMappingByCondition[0].name!=="undefined")
+                {
+                    nodeMappingByCondition.forEach(function(condition){
+                        condition.data
+                            .filter(function(map){
+                                return (!isNaN(map.value) && map.value!=null)
+                            })
+                            .forEach(function(map){
+                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+                                mapping.addMap(mapData);
+                                var node = networkData.getNodeByDbIdentifier(map.node);
+                                if(node!=undefined){
+                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+                                    node.addMappingData(mapNode);
+                                }
+                            });
+                    });
+                }
+                else
+                {
+                    nodeMappingByCondition.forEach(function(condition){
+                        condition.data
+                            .forEach(function(map){
+                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+                                mapping.addMap(mapData);
+                                var node = networkData.getNodeByDbIdentifier(map.node);
+                                if(node!=undefined){
+                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+                                    node.addMappingData(mapNode);
+                                }
+                            });
+                    });
                 }
                 break;
             case "metaboliteId":
-            	if(!(nodeMappingByCondition.length==1 && nodeMappingByCondition[0].name=="undefined"))
-	            {	
-	                nodeMappingByCondition.forEach(function(condition){
-						condition.data
-							.filter(function(map){
-								return (!isNaN(map.value) && map.value!=null)
-							})
-							.forEach(function(map){ 
-								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-								mapping.addMap(mapData); 
-								var node = networkData.getNodeById(map.node);
-								if(node!=undefined){
-									var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-									if(map.inchi!= undefined)
-										node.mappedInchi = map.inchi;
-
-									node.addMappingData(mapNode);
-								}
-			        		});	
-	             	});
-	            }
-	            else
-	            {
-	            	nodeMappingByCondition.forEach(function(condition){
-						condition.data
-							.forEach(function(map){ 
-								var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-								mapping.addMap(mapData); 
-								var node = networkData.getNodeById(map.node);
-								if(node!=undefined){
-									var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-									if(map.inchi!= undefined)
-										node.mappedInchi = map.inchi;
-
-									node.addMappingData(mapNode);
-								}
-			        		});	
-	             	});
-	            }
+                if(nodeMappingByCondition[0].name!=="undefined")
+                {
+                    nodeMappingByCondition.forEach(function(condition){
+                        condition.data
+                            .filter(function(map){
+                                return (!isNaN(map.value) && map.value!=null)
+                            })
+                            .forEach(function(map){
+                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+                                mapping.addMap(mapData);
+                                var node = networkData.getNodeByDbIdentifier(map.node);
+                                if(node!=undefined){
+                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+                                    node.addMappingData(mapNode);
+                                }
+                            });
+                    });
+                }
+                else
+                {
+                    nodeMappingByCondition.forEach(function(condition){
+                        condition.data
+                            .forEach(function(map){
+                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+                                mapping.addMap(mapData);
+                                var node = networkData.getNodeByDbIdentifier(map.node);
+                                if(node!=undefined){
+                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+                                    node.addMappingData(mapNode);
+                                }
+                            });
+                    });
+                }
                 break;
             case "inchi":
                 // Blah

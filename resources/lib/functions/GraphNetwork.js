@@ -1284,26 +1284,6 @@ metExploreD3.GraphNetwork = {
 
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
-        var activePanel = _MyThisGraphNode.activePanel;
-        if(!activePanel) activePanel='viz';
-        metExploreD3.applyTolinkedNetwork(
-            activePanel,
-            function(panelLinked, sessionLinked) {
-                metExploreD3.GraphCaption.majCaption(panelLinked);
-
-                s_GeneralStyle.setDisplayConvexhulls(false);
-                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                metExploreD3.GraphNetwork.tick(panelLinked);
-
-                s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                metExploreD3.GraphNetwork.tick(panelLinked);
-
-                s_GeneralStyle.setDisplayCaption("Pathways");
-                metExploreD3.GraphCaption.majCaption(panelLinked);
-
-            });
-
         metExploreD3.GraphNetwork.tick(panel);
         metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
