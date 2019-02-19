@@ -128,7 +128,7 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 
         _metExploreViz.getSessionById('viz').setMapped("false");
 
-        var conditions = newMapping.getConditions();
+        var conditions = newMapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
         var comboCond = Ext.getCmp('selectCondition');
 		var storeCond = comboCond.getStore();
 

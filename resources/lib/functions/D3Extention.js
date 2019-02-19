@@ -66,7 +66,7 @@ d3.selection.enter.prototype =
 			        var tspan = el.append('tspan').text(nameDOMFormat);
 			        if (i > 0)
 			            tspan.attr('x', 0).attr('dy', '10');
-			    }
+                }
 			})
 			.style("font-size",style.getFontSize())
 			.style("paint-order","stroke")
@@ -77,7 +77,16 @@ d3.selection.enter.prototype =
 			.style("font-weight", 'bold')
 			.style("pointer-events", 'none')
 			.style("text-anchor", 'middle')
-			.attr("y",minDim/2+5);
+			.attr("y",minDim/2+5)
+			.style("font-family",function(node) { if (node.labelFont) if (node.labelFont.font) return node.labelFont.font; })
+            .style("font-size",function(node) { if (node.labelFont) if (node.labelFont.fontSize) return node.labelFont.fontSize; })
+            .style("font-weight",function(node) { if (node.labelFont) if (node.labelFont.fontBold) return node.labelFont.fontBold; })
+            .style("font-style",function(node) { if (node.labelFont) if (node.labelFont.fontItalic) return node.labelFont.fontItalic; })
+            .style("text-decoration-line",function(node) { if (node.labelFont) if (node.labelFont.fontUnderline) return node.labelFont.fontUnderline; })
+            .style("opacity",function(node) { if (node.labelFont) if (node.labelFont.fontOpacity) return node.labelFont.fontOpacity; })
+            .style("x",function(node) { if (node.labelFont) if (node.labelFont.fontX) return node.labelFont.fontX; })
+            .style("y",function(node) { if (node.labelFont) if (node.labelFont.fontY) return node.labelFont.fontY; })
+            .style("transform",function(node) { if (node.labelFont) if (node.labelFont.fontTransform) return node.labelFont.fontTransform; });
 
 	};
 

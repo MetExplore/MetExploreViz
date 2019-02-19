@@ -493,7 +493,6 @@ metExploreD3.GraphCaption = {
      * Maj caption
      */
     majCaption : function(panel){
-
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
         var component = s_GeneralStyle.isDisplayedCaption();
@@ -502,9 +501,9 @@ metExploreD3.GraphCaption = {
         if(component=="Pathways") {
             d3.select("#" + panel).select("#D3viz").selectAll("path.convexhull")
                 .classed("hide", function (conv) {
-                    var component = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
-                    if (component) {
-                        return component.hidden();
+                    var thecomponent = _metExploreViz.getSessionById(panel).getD3Data().getPathwayByName(conv.key);
+                    if (thecomponent) {
+                        return thecomponent.hidden() || thecomponent.isCollapsed();
                     }
 
                     return true;
@@ -542,11 +541,23 @@ metExploreD3.GraphCaption = {
                         var comp = _metExploreViz.getSessionById(panelLinked).getD3Data().getPathwayById(this.getAttribute("id"));
 
                         if(comp){
-
                             return comp.hidden() || !isDisplayedPathwaysOnLinks;
                         }
                         return true
                     });
+                
+                d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                    .each(function(linkGroup){
+
+                        var size = 8;
+                        var visibleLinks = d3.select(this).selectAll("path.link.pathway:not(.hide)");
+
+                        visibleLinks
+                            .style("stroke-dasharray", size+","+size*(visibleLinks[0].length-1))
+                            .style("stroke-dashoffset", function(l, i){
+                                return size*i;
+                            })
+                    })
             });
     },
 
@@ -575,6 +586,17 @@ metExploreD3.GraphCaption = {
                         return component.color;
                     });
         }
+
+        d3.select("#"+panel).select("#D3viz").selectAll("g.node")
+            .select(".pathway")
+            .filter(function (n) { return n.getBiologicalType()==="pathway"; })
+            .style("stroke", function(d){
+                var component = components.find(function(c){
+                    return c.name===d.name;
+                });
+
+                return component.color;
+            });
 
         switch(selectedComponent) {
             case "Compartments":
@@ -630,36 +652,46 @@ metExploreD3.GraphCaption = {
      * @param {} top : top of the metabolite caption
      */
     colorPathwayLegend : function(){
+
         var groups = metExploreD3.getPathwaysSet('viz');
         var pathways = [];
+        if(groups[0]){
+            if(groups[0].getColor()){
+                metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
+            }
+            else
+            {
+                groups.forEach(function(path){
+                    pathways.push({"key":path});
+                });
 
-        groups.forEach(function(path){
-            pathways.push({"key":path});
-        });
 
-        var phase = metExploreD3.getPathwaysLength('viz');
-        if (phase == undefined) phase = 0;
-        center = 128;
-        width = 127;
-        frequency = Math.PI*2*0.95/phase;
 
-        pathways.sort(function(a,b){
-            if(a.key < b.key) return -1;
-            if(a.key > b.key) return 1;
-            return 0;
-        });
+                var phase = metExploreD3.getPathwaysLength('viz');
+                if (phase == undefined) phase = 0;
+                center = 128;
+                width = 127;
+                frequency = Math.PI*2*0.95/phase;
 
-        for (var i = 0; i < phase; i++)
-        {
+                pathways.sort(function(a,b){
+                    if(a.key < b.key) return -1;
+                    if(a.key > b.key) return 1;
+                    return 0;
+                });
 
-            red   = Math.sin(frequency*i+2+phase) * width + center;
-            green = Math.sin(frequency*i+0+phase) * width + center;
-            blue  = Math.sin(frequency*i+4+phase) * width + center;
+                for (var i = 0; i < phase; i++)
+                {
 
-            var pathway = pathways[i].key;
-            pathway.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));
+                    red   = Math.sin(frequency*i+2+phase) * width + center;
+                    green = Math.sin(frequency*i+0+phase) * width + center;
+                    blue  = Math.sin(frequency*i+4+phase) * width + center;
+
+                    var pathway = pathways[i].key;
+                    pathway.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));
+                }
+                metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
+            }
         }
-        metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
     }
-}
+};
     

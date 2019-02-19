@@ -265,12 +265,12 @@ var metExploreD3 = {
         );
 
         function addNodeInGroup(node, compartment){
-            if(compartment!=undefined){
+            if(compartment!==undefined){
 
-                if(compartment.values==undefined)
+                if(compartment.values===undefined)
                         compartment.values=[];
 
-                if(compartment.values.indexOf(node)==-1)
+                if(compartment.values.indexOf(node)===-1)
                     compartment.values.push(node);
             }
         }
@@ -278,7 +278,7 @@ var metExploreD3 = {
             .forEach(function(d){
                 var source = d.source;
                 var target = d.target;
-                if(source.getBiologicalType()=="metabolite"){
+                if(source.getBiologicalType()==="metabolite" && target.getBiologicalType()==="reaction"){
 
 
                     addNodeInGroup(
@@ -286,7 +286,7 @@ var metExploreD3 = {
                         compartmentGroup
                             .find(function(compart)
                             {
-                                return compart.key==source.getCompartment();
+                                return compart.key===source.getCompartment();
                             }
                         )
                     );
@@ -295,31 +295,31 @@ var metExploreD3 = {
                         compartmentGroup
                             .find(function(compart)
                             {
-                                return compart.key==source.getCompartment();
+                                return compart.key===source.getCompartment();
                             }
                         )
                     );
                 }
                 else
                 {
-                    addNodeInGroup(
-                        source,
-                        compartmentGroup
-                            .find(function(compart)
-                            {
-                                return compart.key==target.getCompartment();
-                            }
-                        )
-                    );
-                    addNodeInGroup(
-                        target,
-                        compartmentGroup
-                            .find(function(compart)
-                            {
-                                return compart.key==target.getCompartment();
-                            }
-                        )
-                    );
+                    if(source.getBiologicalType()==="reaction" && target.getBiologicalType()==="metabolite") {
+                        addNodeInGroup(
+                            source,
+                            compartmentGroup
+                                .find(function (compart) {
+                                        return compart.key === target.getCompartment();
+                                    }
+                                )
+                        );
+                        addNodeInGroup(
+                            target,
+                            compartmentGroup
+                                .find(function (compart) {
+                                        return compart.key === target.getCompartment();
+                                    }
+                                )
+                        );
+                    }
                 }
             });
         return compartmentGroup;
@@ -370,10 +370,19 @@ var metExploreD3 = {
                     pathway.values.push(node);
             }
         }
-        _metExploreViz.getSessionById(panel).getD3Data().getLinks()
+        var networkData = _metExploreViz.getSessionById(panel).getD3Data();
+        networkData.getLinks()
             .forEach(function(d){
-                var source = d.source;
-                var target = d.target;
+                var target, source;
+                target = d.getTarget();
+                source = d.getSource();
+                if(!(target instanceof NodeData)){
+                    target = networkData.getNodes()[d.getTarget()];
+                }
+                if(!(source instanceof NodeData)){
+                    source = networkData.getNodes()[d.getSource()];
+                }
+
                 if(source.getBiologicalType()=="reaction"){
                     source.getPathways()
                         .forEach(function(pathway){
@@ -401,29 +410,32 @@ var metExploreD3 = {
                 }
                 else
                 {
-                    target.getPathways()
-                        .forEach(function(pathway){
+                    if(target.getBiologicalType()=="reaction")
+                    {
+                        target.getPathways()
+                            .forEach(function(pathway){
 
-                            addNodeInGroup(
-                                source,
-                                pathwayGroup
-                                    .find(function(pathw)
-                                    {
-                                        return pathw.key==pathway;
-                                    }
-                                )
-                            );
-                            addNodeInGroup(
-                                target,
-                                pathwayGroup
-                                    .find(function(pathw)
-                                    {
-                                        return pathw.key==pathway;
-                                    }
-                                )
-                            );
-                        }
-                    );
+                                addNodeInGroup(
+                                    source,
+                                    pathwayGroup
+                                        .find(function(pathw)
+                                        {
+                                            return pathw.key==pathway;
+                                        }
+                                    )
+                                );
+                                addNodeInGroup(
+                                    target,
+                                    pathwayGroup
+                                        .find(function(pathw)
+                                        {
+                                            return pathw.key==pathway;
+                                        }
+                                    )
+                                );
+                            }
+                        );
+                    }
                 }
             });
 
@@ -902,6 +914,9 @@ metExploreViz.prototype = {
     getParentWebSite : function(){
         return this.parentWebSite;
     },
+    setParentWebSite : function(parentWebSite){
+        this.parentWebSite = parentWebSite;
+    },
     cloneNetworkData : function(networkData){
         var newData = new NetworkData();
        
@@ -977,12 +992,16 @@ metExploreViz.prototype = {
             newData.addNode(name,comp,dbId,id,rev,bt,sel,lv,svg,svgW,svgH,sc,ec);
         }
 
+        networkData.getPathways().forEach(function(p){
+            newData.copyPathway(p);
+        });
+
         for (var j=0; j<networkData.links.length; j++) {
 
             var id = networkData.links[j].getId().valueOf(); 
             var src = networkData.links[j].getSource();
             var source = newData.nodes[src];
-            
+
             var tgt = networkData.links[j].getTarget();
             var target = newData.nodes[tgt];
        
@@ -1000,7 +1019,7 @@ metExploreViz.prototype = {
         var newSession = new NetworkVizSession();
         newSession.reset();
         
-        var n, name, comp, pathw, dbId, ec, id, rev, sc, bt, sel, lv, svg, svgW, svgH, locked, alias, label;
+        var n, name, comp, pathw, dbId, ec, id, rev, sc, bt, sel, lv, svg, svgW, svgH, locked, alias, label, hidden;
 
         // for (var j=0; j<this.initialData.nodes.length; j++) {
         //     n = this.initialData.nodes[j];
@@ -1019,6 +1038,11 @@ metExploreViz.prototype = {
                 locked = n.isLocked().valueOf();
             else
                 locked = undefined;
+
+            if(n.isHidden()!=undefined)
+                hidden = n.isHidden().valueOf();
+            else
+                hidden = undefined;
 
             if(n.getAlias()!=undefined)
                 alias = n.getAlias().valueOf();
@@ -1103,7 +1127,7 @@ metExploreViz.prototype = {
                 isDuplicated = false;
 
 
-            var node = newSession.d3Data.addNode(name,comp,dbId,id,rev,bt,sel,lv,svg,svgW,svgH,sc,ec,isDuplicated,identif,pathw,locked,alias,label);
+            var node = newSession.d3Data.addNode(name,comp,dbId,id,rev,bt,sel,lv,svg,svgW,svgH,sc,ec,isDuplicated,identif,pathw,locked,alias,label, undefined, hidden);
         });
 
         mainSession.getD3Data().getPathways().forEach(function(p){

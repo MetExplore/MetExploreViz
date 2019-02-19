@@ -9,14 +9,14 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
-		
+
 		view.on({
 			setGeneralStyle : function(){
 				var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 				if(s_GeneralStyle.isDisplayedConvexhulls()=="Compartments"){
-					view.lookupReference('highlightCompartments').setChecked(true);  
+					view.lookupReference('highlightCompartments').setChecked(true);
 					metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
-					
+
 					if(s_GeneralStyle.useClusters()){
 						Ext.getCmp("vizIdDrawing").lookupReference('makeClusters').setIconCls("unmakeClusters");
 						Ext.getCmp("vizIdDrawing").lookupReference('makeClusters').setTooltip('Release force for clusters');
@@ -28,13 +28,13 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 						Ext.getCmp("vizIdDrawing").lookupReference('makeClusters').setTooltip('Make clusters in function of highlighted component');
 						Ext.getCmp("vizIdDrawing").lookupReference('makeClusters').setText("Make clusters");
 					}
-				} 
+				}
 				else
 				{
 					if(s_GeneralStyle.isDisplayedConvexhulls()=="Pathways"){
-						view.lookupReference('highlightPathways').setChecked(true);  
+						view.lookupReference('highlightPathways').setChecked(true);
 						metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
-						
+
 						if(s_GeneralStyle.useClusters()){
 							Ext.getCmp("vizIdDrawing").lookupReference('makeClusters').setIconCls("unmakeClusters");
 							Ext.getCmp("vizIdDrawing").lookupReference('makeClusters').setTooltip('Release force for clusters');
@@ -49,8 +49,8 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 					}
 					else
 					{
-						view.lookupReference('highlightCompartments').setChecked(false);  
-						view.lookupReference('highlightPathways').setChecked(false);  
+						view.lookupReference('highlightCompartments').setChecked(false);
+						view.lookupReference('highlightPathways').setChecked(false);
 						metExploreD3.fireEvent("vizIdDrawing", "disableMakeClusters");
 
 						Ext.getCmp("vizIdDrawing").lookupReference('makeClusters').setIconCls("makeClusters");
@@ -142,7 +142,7 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 
     },
     highlightComponents : function(component){
-
+		console.log(component);
     	var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();

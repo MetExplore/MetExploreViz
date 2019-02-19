@@ -48,51 +48,118 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 					|| e.target.parentNode.parentNode.id=="D3viz" 
 					|| e.target.parentNode.id=="graphComponent") 
 				{
-					if(networkVizSessionStore.getSelectedNodes().length!=0)
-					{
-						viz.CtxMenu = new Ext.menu.Menu({
-							items : [{
-								text : 'Remove selected nodes',
-								hidden : false,
-								iconCls:"removeNode",
-								handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
-							},{
-								text : 'Fix selected nodes',
-								hidden : false,
-								iconCls:"lock_font_awesome",
-								handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
-							},{
-                                text : 'Unfix selected nodes',
-                                iconCls:"unlock_font_awesome",
-                                hidden : false,
-                                handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
-                            },{
-								text : 'Duplicate selected nodes as side compounds',
-								hidden : false,
-								iconCls:"duplicate-sideCompounds",
-								handler : function(){
-									metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); 
-								}
-							}
-							,{
-								text : 'Select selected nodes in table',
-								hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-								iconCls:"search",
-								handler : function() {
-									var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
-									var selectedNodesObj = [];
-									networkData = networkVizSessionStore.getD3Data();
 
-									selectedNodesIds.forEach(function(id){
-										var node = networkData.getNodeById(id);
-										if(node)
-											selectedNodesObj.push(node);
-									})
-									metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
-								}
-							}]
-						});
-					}
+					viz.CtxMenu = new Ext.menu.Menu({
+						items : [{
+							text : 'Collapse selected pathway(s)',
+							hidden : networkVizSessionStore.getSelectedPathways().length===0,
+							iconCls:"removeNode",
+							handler :function(){
+								var sessionStore = _metExploreViz.getSessionById("viz");
+								sessionStore.getSelectedPathways().forEach(function (path, i) {
+								    setTimeout(function(){
+                                        metExploreD3.GraphNetwork.collapsePathway(path);
+                                        metExploreD3.GraphNetwork.initPathway(path);
+                                    }, i*1000);
+								});
+								sessionStore.removeAllSelectedPathways();
+							}
+                        },{
+                            text : 'Collapse all pathways',
+                            iconCls:"removeNode",
+                            hidden : networkVizSessionStore.getD3Data().getNodes().filter(function(node){return node.getBiologicalType()==="pathway" && node.isHidden()}).length===0,
+                            handler :function(){
+                                var sessionStore = _metExploreViz.getSessionById("viz");
+                                sessionStore.getD3Data().getPathways()
+                                    .filter(function(path){return !path.isCollapsed();})
+                                    .forEach(function (path, i) {
+                                        setTimeout(function(){
+                                            metExploreD3.GraphNetwork.collapsePathway(path.getName());
+                                            metExploreD3.GraphNetwork.initPathway(path.getName());
+                                        }, i*500);
+                                    });
+                                sessionStore.removeAllSelectedPathways();
+                            }
+                        },{
+                            text : 'Select all nodes of selected pathway(s)',
+                            hidden : networkVizSessionStore.getSelectedPathways().length===0,
+                            iconCls:"removeNode",
+                            handler :function(){
+                                var sessionStore = _metExploreViz.getSessionById("viz");
+                                sessionStore.getSelectedPathways().forEach(function (path, i) {
+                                    metExploreD3.GraphNode.selectNodesOfPathway(path, "viz");
+                                });
+                            }
+                        },{
+                            text : 'Expand selected pathway nodes',
+                            hidden : networkVizSessionStore.getD3Data().getNodes().filter(function(node){return node.getBiologicalType()==="pathway" && node.isSelected()}).length===0,
+                            iconCls:"removeNode",
+                            handler :function(){
+                                networkVizSessionStore.getD3Data().getNodes()
+                                    .filter(function(node){return node.getBiologicalType()==="pathway" && node.isSelected()})
+                                    .forEach(function (path, i) {
+                                        setTimeout(function(){
+                                            path.setIsSelected(false);
+                                            metExploreD3.GraphNetwork.expandPathwayNode(path.getName(), "viz");
+                                        }, i*1000);
+                                    });
+                            }
+                        },{
+                            text : 'Expand all pathway nodes',
+                            hidden : networkVizSessionStore.getD3Data().getPathways().filter(function(path){return path.isCollapsed()}).length===0,
+                            iconCls:"removeNode",
+                            handler :function(){
+                                networkVizSessionStore.getD3Data().getNodes()
+                                    .filter(function(node){return node.getBiologicalType()==="pathway" && !node.isHidden()})
+                                    .forEach(function (path, i) {
+                                        setTimeout(function(){
+                                            path.setIsSelected(false);
+                                            metExploreD3.GraphNetwork.expandPathwayNode(path.getName(), "viz");
+                                        }, i*500);
+                                    });
+                            }
+                        },{
+							text : 'Remove selected nodes',
+							hidden : networkVizSessionStore.getSelectedNodes().length===0,
+							iconCls:"removeNode",
+							handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
+						},{
+							text : 'Fix selected nodes',
+							hidden : networkVizSessionStore.getSelectedNodes().length===0,
+							iconCls:"lock_font_awesome",
+							handler :function(){ metExploreD3.GraphNode.fixSelectedNode("viz") }
+						},{
+                            text : 'Unfix selected nodes',
+                            iconCls:"unlock_font_awesome",
+                            hidden : networkVizSessionStore.getSelectedNodes().length===0,
+                            handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
+                        },{
+							text : 'Duplicate selected nodes as side compounds',
+							hidden : networkVizSessionStore.getSelectedNodes().length===0,
+							iconCls:"duplicate-sideCompounds",
+							handler : function(){
+								metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz");
+							}
+						}
+						,{
+							text : 'Select selected nodes in table',
+							hidden : !metExploreD3.getGeneralStyle().hasEventForNodeInfo() && networkVizSessionStore.getSelectedNodes().length===0,
+							iconCls:"search",
+							handler : function() {
+								var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
+								var selectedNodesObj = [];
+								networkData = networkVizSessionStore.getD3Data();
+
+								selectedNodesIds.forEach(function(id){
+									var node = networkData.getNodeById(id);
+									if(node)
+										selectedNodesObj.push(node);
+								})
+								metExploreD3.fireEventParentWebSite("selectNodesInTable", selectedNodesObj);
+							}
+						}]
+					});
+
 				}
 				else
 				{
@@ -118,6 +185,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 					var theNode = metExploreD3.GraphNode.selectNodeData(e.target);
 					var mappedImage = metExploreD3.GraphMapping.selectMappedImages(theNode);
 					var isMetabolite = (theNode.getBiologicalType()=="metabolite");
+					var isPathway = (theNode.getBiologicalType()=="pathway");
 					var isPartOfCycle = metExploreD3.GraphFunction.checkIfPartOfCycle(theNode, "viz");
 
                     viz.selectMenu = new Ext.menu.Menu({
@@ -198,6 +266,13 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
                     viz.CtxMenu = new Ext.menu.Menu({
                         items: [{
+                            text: 'Expand pathway',
+                            hidden: !isPathway,
+                            iconCls: "duplicate-sideCompounds",
+                            handler: function () {
+                                metExploreD3.GraphNetwork.expandPathwayNode(theNode.getName(), "viz");
+                            }
+                        }, {
                             text: 'Remove nodes',
                             hidden: false,
                             iconCls: "removeNode",
@@ -517,10 +592,12 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                     });
 				}
 			}
-			
+			var a=viz.CtxMenu.items.items.filter(function (menu) { return !menu.hidden; });
+
 			// positionner le menu au niveau de la souris
 			if(viz.CtxMenu!=undefined)
-				viz.CtxMenu.showAt(e.clientX, e.clientY);
+				if(a.length>0)
+					viz.CtxMenu.showAt(e.clientX, e.clientY);
 		});	
 	}
 

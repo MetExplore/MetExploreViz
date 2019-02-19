@@ -1070,6 +1070,7 @@ metExploreD3.GraphFunction = {
 	 */
 	keepOnlySubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
+        var networkData = session.getD3Data();
 		//console.log("------keep only sub-network------"
 		// )
 
@@ -1153,10 +1154,21 @@ metExploreD3.GraphFunction = {
 									}
 								})
 								.each(function(node){
-									metExploreD3.GraphNetwork.removeANode(node,"viz");
+                                    networkData.removeNode(node);
 								});
 						}
 					}
+
+                    var activePanel = _MyThisGraphNode.activePanel;
+                    if(!activePanel) activePanel='viz';
+                    metExploreD3.applyTolinkedNetwork(
+                        activePanel,
+                        function(panelLinked, sessionLinked) {
+                            metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
+                        });
+
+                    metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
+
 					if(session!=undefined)
 					{
 						if(force!=undefined)
