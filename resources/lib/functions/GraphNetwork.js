@@ -2082,6 +2082,43 @@ metExploreD3.GraphNetwork = {
      * @param {} panel : The panel to unlink
      * @returns {} newNode : The created node
      */
+    expandAllPathwayNode: function(panel){
+
+        var activePanel = panel;
+        if(!activePanel) activePanel='viz';
+        metExploreD3.applyTolinkedNetwork(
+            activePanel,
+            function(panelLinked, sessionLinked) {
+            var session = sessionLinked;
+            var networkData = session.getD3Data();
+            var force = session.getForce();
+            networkData.getPathways()
+                .forEach(function(pathway){
+                    pathway.setCollapsed(false);
+                    networkData.getNodeByName(pathway.getName()).hide();
+                });
+
+            networkData.getNodes()
+                .filter(function (n) {
+                    return n.getBiologicalType()!=="pathway" && n.isHidden();
+                })
+                .forEach(function (n) {
+                    n.show();
+                });
+
+                metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
+            });
+
+        metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
+    },
+
+    /*******************************************
+     * identifier parameter is used if there is a new parameter to add.
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @returns {} newNode : The created node
+     */
     addPathwayLinks: function(newNode){
         var pathwayName = newNode.getName();
         var session = _metExploreViz.getSessionById("viz");
@@ -2312,6 +2349,58 @@ metExploreD3.GraphNetwork = {
                     metExploreD3.GraphNetwork.tick(panelLinked);
                     metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
                 }
+
+            });
+    },
+
+    /*******************************************
+     * identifier parameter is used if there is a new parameter to add.
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @param {} panel : The panel to unlink
+     * @returns {} newNode : The created node
+     */
+    collapseAllPathway: function(panel){
+        var activePanel = panel;
+        if(!activePanel) activePanel='viz';
+        metExploreD3.applyTolinkedNetwork(
+            activePanel,
+            function(panelLinked, sessionLinked) {
+                var networkData = sessionLinked.getD3Data();
+                networkData.getPathways()
+                    .forEach(function (thePathwayModel) {
+                        thePathwayModel.setCollapsed(true);
+                        networkData.getNodeByName(thePathwayModel.getName()).show();
+                    });
+
+                networkData.getNodes()
+                    .filter(function (n) {
+                        return n.getBiologicalType()!=="pathway" && !n.isHidden();
+                    })
+                    .forEach(function (n) {
+                        n.hide();
+                    });
+
+                metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
+
+
+                var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+
+                metExploreD3.GraphCaption.majCaption(panelLinked);
+
+                s_GeneralStyle.setDisplayConvexhulls(false);
+                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                metExploreD3.GraphNetwork.tick(panelLinked);
+
+                s_GeneralStyle.setDisplayConvexhulls("Pathways");
+                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                metExploreD3.GraphNetwork.tick(panelLinked);
+
+                s_GeneralStyle.setDisplayCaption("Pathways");
+                metExploreD3.GraphCaption.majCaption(panelLinked);
+
+                metExploreD3.GraphNetwork.tick(panelLinked);
+                metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
             });
     },
