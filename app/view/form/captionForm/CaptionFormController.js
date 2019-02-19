@@ -32,7 +32,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             viewModel   = me.getViewModel(),
             view      	= me.getView();
 
-        // We add form corresponding to the component data type
+            // We add form corresponding to the component data type
         var captionForm = view;
         if(view.getTitle()=="Pathways")
             var components = metExploreD3.getPathwaysSet('viz');
@@ -48,6 +48,15 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             var listComponentCaptionForm = [];
 
             var that = this;
+
+            components=components.sort(function (comp, comp2) {
+                if (comp.getName()<comp2.getName())
+                    return -1;
+                if (comp.getName()>comp2.getName())
+                    return 1;
+                // a doit être égal à b
+                return 0;
+            });
 
             // For each value we add corresponding color caption
             components.forEach(function (component, i) {
@@ -98,11 +107,15 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                             comp.setHidden(!newValue);
                                                             d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
                                                                 .classed("hide", function (conv) {
-                                                                    if (view.getTitle() == "Pathways")
+                                                                    if (view.getTitle() == "Pathways"){
                                                                         var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
+                                                                        if(com.isCollapsed()) return true;
+                                                                    }
                                                                     else
                                                                         var com = metExploreD3.getCompartmentByName(conv.key);
-                                                                    return com.hidden();
+                                                                    if(com)
+                                                                        return com.hidden();
+                                                                    return false;
                                                                 });
                                                             if (view.getTitle() == "Pathways"){
                                                                 metExploreD3.GraphCaption.majCaptionPathwayOnLink();
@@ -174,12 +187,18 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                 }
             });
 
+            var s_GeneralStyle = _metExploreViz.getGeneralStyle();
+            var checkComponent = false;
+            if(s_GeneralStyle.isDisplayedConvexhulls()===view.getTitle())
+                checkComponent=true;
+
             // Create checkbox to display convex hull around each components
             var highlightCheckbox = Ext.create('Ext.form.field.Checkbox', {
                 tooltip: 'Display convex hull around each ' + view.getTitle(),
                 boxLabel: 'Highlight '+view.getTitle().toLowerCase(),
                 margin: '0 0 0 10',
-                id: 'highlightCheckbox' + view.getTitle()
+                id: 'highlightCheckbox' + view.getTitle(),
+                checked: checkComponent
             });
 
             highlightCheckbox.on({
@@ -205,12 +224,14 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             newConditionPanel.add(highlightCheckbox);
 
             if(view.getTitle()=="Pathways"){
+
                 // Create checkbox to display convex hull around each components
                 var highlightLinkCheckbox = Ext.create('Ext.form.field.Checkbox', {
                     tooltip: 'Display convex hull around each ' + view.getTitle(),
                     boxLabel: 'Highlight '+view.getTitle().toLowerCase() +' on links' ,
                     margin: '0 0 20 10',
-                    id: 'highlightCheckbox' + view.getTitle() + "Link"
+                    id: 'highlightCheckbox' + view.getTitle() + "Link",
+                    checked: s_GeneralStyle.isDisplayedPathwaysOnLinks()
                 });
 
                 highlightLinkCheckbox.on({

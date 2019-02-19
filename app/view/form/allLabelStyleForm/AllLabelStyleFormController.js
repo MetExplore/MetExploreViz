@@ -29,7 +29,7 @@ Ext.define('metExploreViz.view.form.allLabelStyleForm.AllLabelStyleFormControlle
                         var fontUnderline = view.lookupReference('checkUnderlineFont').getValue();
                         var labelOpacity = (view.lookupReference('checkHideLabel').getValue()) ? 0.0 : 1.0;
                         metExploreD3.GraphStyleEdition.changeAllFontType(fontType, flag, panelLinked);
-                        (!isNaN(fontSize) && fontSize > 0 && fontSize < 40) ? metExploreD3.GraphStyleEdition.changeAllFontSize(fontSize, flag, panelLinked) : null;
+                        (!isNaN(fontSize) && fontSize > 0 && fontSize < 140) ? metExploreD3.GraphStyleEdition.changeAllFontSize(fontSize, flag, panelLinked) : null;
                         metExploreD3.GraphStyleEdition.changeAllFontBold(fontBold, flag, panelLinked);
                         metExploreD3.GraphStyleEdition.changeAllFontItalic(fontItalic, flag, panelLinked);
                         metExploreD3.GraphStyleEdition.changeAllFontUnderline(fontUnderline, flag, panelLinked);

@@ -20,51 +20,58 @@ metExploreD3.GraphLink = {
             .each(function(link){
                 var me = this;
                 var cols = [];
-                var reaction;
+                var component;
                 if(link.getSource().getBiologicalType()==="reaction")
-                    reaction=link.getSource();
-                else
-                    reaction=link.getTarget();
+                    component=link.getSource();
 
-                if(reaction.getPathways().length>0)
-                {
-                    var color="#000000";
-                    reaction.getPathways().forEach(function(path){
-                        var pathw = _metExploreViz.getSessionById("viz").getD3Data().getPathwayByName(path);
-                        if(pathw!==null){
-                            var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
-                            if(col!==null) {
-                                col["o"] = 0.15;
+                if(link.getTarget().getBiologicalType()==="reaction")
+                    component=link.getTarget();
+
+                if(link.getSource().getBiologicalType()==="pathway")
+                    component=link.getSource();
+
+                if(link.getTarget().getBiologicalType()==="pathway")
+                    component=link.getTarget();
+
+                if(component){
+                    if(component.getPathways().length>0)
+                    {
+                        var color="#000000";
+                        component.getPathways().forEach(function(path){
+                            var pathw = _metExploreViz.getSessionById(parent).getD3Data().getPathwayByName(path);
+                            if(pathw!==null){
+                                var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
+                                col["o"]=0.15;
                                 cols.push(pathw);
 
                                 if (color === "#000000") {
                                     color = col;
                                 }
                             }
+                        });
+
+                        if(cols.length>0){
+                            var percent = 100 / cols.length;
+                            cols.forEach(function(pathw, i){
+                                var newelemt = me.cloneNode(true);
+                                me.parentNode.appendChild(newelemt);
+                                var size = 8;
+                                d3.select(newelemt).datum(link)
+                                    .classed("reaction", false)
+                                    .classed("pathway", true)
+                                    .attr('id', pathw.getName().replace(/[.*+?^${} ()|[\]\-\\]/g, ""))
+                                    .classed("hide", true)
+                                    .style("stroke-width","3px")
+                                    .style("stroke-dasharray", size+","+size*(cols.length-1))
+                                    .style("stroke-dashoffset", size*i)
+                                    .style("stroke", pathw.getColor());
+
+                            })
+                            //me.parentNode.removeChild(me);
                         }
-                    });
-
-                    if(cols.length>0){
-                        var percent = 100 / cols.length;
-                        cols.forEach(function(pathw, i){
-                            var newelemt = me.cloneNode(true);
-                            me.parentNode.appendChild(newelemt);
-                            var size = 8;
-                            d3.select(newelemt).datum(link)
-                                .classed("reaction", false)
-                                .classed("pathway", true)
-                                .attr('id', pathw.getName().replace(/[.*+?^${} ()|[\]\-\\]/g, ""))
-                                .classed("hide", true)
-                                .style("stroke-width","3px")
-                                .style("stroke-dasharray", size+","+size*(cols.length-1))
-                                .style("stroke-dashoffset", size*i)
-                                .style("stroke", pathw.getColor());
-
-                        })
-                        //me.parentNode.removeChild(me);
+                        //if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
+                        // return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
                     }
-                    //if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
-                   // return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
                 }
             });
     },
@@ -242,8 +249,6 @@ metExploreD3.GraphLink = {
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
             if (source.getBiologicalType() == "metabolite") {
                 var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
                 var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
@@ -351,339 +356,20 @@ metExploreD3.GraphLink = {
         return path;
     },
 
-    //arrayValue already scale
-    funcPathForFlux3: function (link, panel, linkId, value) {
-        var source, target, path;
-
-        function pathSimple(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-            if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-            else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-
-            var xTarget = source.x + dX * ((d - largeurNoeudT) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudT) / d);
-
-            // 5 -- 15
-            var heightArrow = 5 * Math.abs(value);
-            var xBaseArrow = source.x + dX * ((d - largeurNoeudT - heightArrow) / d);
-            var yBaseArrow = source.y + dY * ((d - largeurNoeudT - heightArrow) / d);
-
-            // 2 -- 6
-            widthArrow = 2 * Math.abs(value);
-            var xWBaseArrow = xBaseArrow + dY * (widthArrow / d);
-            var yWBaseArrow = yBaseArrow - dX * (widthArrow / d);
-
-            var xIntermBaseArrow = xBaseArrow + dY * ((2 * widthArrow / 3) / d);
-            var yIntermBaseArrow = yBaseArrow - dX * ((2 * widthArrow / 3) / d);
-
-            // 1.5 -- 4.5
-            var heightFeet = 1.5 * Math.abs(value);
-            var xBaseFeet = source.x + dX * (heightFeet / d);
-            var yBaseFeet = source.y + dY * (heightFeet / d);
-
-            var widthFeet = 2 * Math.abs(value);
-            var xWBaseFeet = xBaseFeet + dY * ((2 * widthFeet / 3) / d);
-            var yWBaseFeet = yBaseFeet - dX * ((2 * widthFeet / 3) / d);
-
-            return "M" + source.x + "," + source.y + "L" + xTarget + "," + yTarget + "L" + xWBaseArrow + "," + yWBaseArrow + "L" + xIntermBaseArrow + "," + yIntermBaseArrow + "L" + xWBaseFeet + "," + yWBaseFeet + "L" + source.x + "," + source.y + "Z";
-        }
-
-        if (link.getSource().x == undefined) {
-            var networkData = _metExploreViz.getSessionById(panel).getD3Data();
-            var nodes = networkData.getNodes();
-
-            source = nodes[link.getSource()];
-            target = nodes[link.getTarget()];
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (value < 0)
-                    path = pathSimple(target, source);
-                else
-                    path = pathSimple(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-        else {
-            source = link.getSource();
-            target = link.getTarget();
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (value < 0)
-                    path = pathSimple(target, source);
-                else
-                    path = pathSimple(source, target);
-
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-
-        return path;
-    },
-
-
     funcPath1: function (link, panel) {
         var source, target, path;
 
-        function pathForReversibleReactions(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudS = (rTW < rTH) ? rT = rTW : rt = rTH;
-
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-            else {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudS = (rTW < rTH) ? rT = rTW : rt = rTH;
-
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-
-            var xSource = source.x + dX * (1 - (d - largeurNoeudS) / d);
-            var ySource = source.y + dY * (1 - (d - largeurNoeudS) / d);
-
-            var xTarget = source.x + dX * ((d - largeurNoeudT) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudT) / d);
-
-            var heightArrow = 5;
-            var xBaseArrowT = source.x + dX * ((d - largeurNoeudT - heightArrow) / d);
-            var yBaseArrowT = source.y + dY * ((d - largeurNoeudT - heightArrow) / d);
-
-            var xWBaseArrowT = xBaseArrowT + dY * (3 / d);
-            var yWBaseArrowT = yBaseArrowT - dX * (3 / d);
-
-            var xBaseArrowS = source.x + dX * (1 - (d - largeurNoeudS - heightArrow) / d);
-            var yBaseArrowS = source.y + dY * (1 - (d - largeurNoeudS - heightArrow) / d);
-
-            var xWBaseArrowS = xBaseArrowS - dY * (3 / d);
-            var yWBaseArrowS = yBaseArrowS + dX * (3 / d);
-            return "M" + xSource + "," + ySource + "L" + xTarget + "," + yTarget + "L" + xWBaseArrowT + "," + yWBaseArrowT + "L" + xBaseArrowT + "," + yBaseArrowT + "L" + xSource + "," + ySource + "L" + xWBaseArrowS + "," + yWBaseArrowS + "L" + xBaseArrowS + "," + yBaseArrowS + "Z";
-        }
-
         function path(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-            else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-
-            var xTarget = source.x + dX * ((d - largeurNoeudT) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudT) / d);
-
-            var heightArrow = 5;
-            var xBaseArrow = source.x + dX * ((d - largeurNoeudT - heightArrow) / d);
-            var yBaseArrow = source.y + dY * ((d - largeurNoeudT - heightArrow) / d);
-
-            var xWBaseArrow = xBaseArrow + dY * (3 / d);
-            var yWBaseArrow = yBaseArrow - dX * (3 / d);
-            return "M" + source.x + "," + source.y + "L" + xTarget + "," + yTarget + "L" + xWBaseArrow + "," + yWBaseArrow + "L" + xBaseArrow + "," + yBaseArrow + "Z";
+            return "M" + source.x + "," + source.y + "L" + target.x + "," + target.y + "Z";
         }
 
-
-        if (link.getSource().x == undefined) {
-            var networkData = _metExploreViz.getSessionById(panel).getD3Data();
-            var nodes = networkData.getNodes();
-
-            source = nodes[link.getSource()];
-            target = nodes[link.getTarget()];
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
+        source = link.getSource();
+        target = link.getTarget();
+        if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
+            path = path(source, target);
         }
         else {
-            source = link.getSource();
-            target = link.getTarget();
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-
-        return path;
-    },
-
-    funcPath2: function (link, panel) {
-        var source, target, path;
-
-        function pathForReversibleReactions(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-            else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-
-            var xSource = source.x + dX * (1 - (d - largeurNoeudS) / d);
-            var ySource = source.y + dY * (1 - (d - largeurNoeudS) / d);
-
-            var xTarget = source.x + dX * ((d - largeurNoeudT) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudT) / d);
-
-            var heightArrow = 5;
-            var xBaseArrowT = source.x + dX * ((d - largeurNoeudT - heightArrow) / d);
-            var yBaseArrowT = source.y + dY * ((d - largeurNoeudT - heightArrow) / d);
-
-            var xWBaseArrowT1 = xBaseArrowT + dY * (3 / d);
-            var yWBaseArrowT1 = yBaseArrowT - dX * (3 / d);
-            var xWBaseArrowT2 = xBaseArrowT - dY * (3 / d);
-            var yWBaseArrowT2 = yBaseArrowT + dX * (3 / d);
-
-            var xBaseArrowS = source.x + dX * (1 - (d - largeurNoeudS - heightArrow) / d);
-            var yBaseArrowS = source.y + dY * (1 - (d - largeurNoeudS - heightArrow) / d);
-
-            var xWBaseArrowS1 = xBaseArrowS - dY * (3 / d);
-            var yWBaseArrowS1 = yBaseArrowS + dX * (3 / d);
-            var xWBaseArrowS2 = xBaseArrowS + dY * (3 / d);
-            var yWBaseArrowS2 = yBaseArrowS - dX * (3 / d);
-
-            return "M" + xSource + "," + ySource +
-                "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                "L" + xBaseArrowS + "," + yBaseArrowS +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                "L" + xTarget + "," + yTarget +
-                "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "L" + xBaseArrowS + "," + yBaseArrowS +
-                "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                "L" + xSource + "," + ySource +
-                "Z";
-        }
-
-        function path(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var largeurNoeudT = (reactionStyle.getWidth() + reactionStyle.getHeight()) / 2 / 2;
-                var largeurNoeudS = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-            }
-            else {
-                var largeurNoeudT = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-                var largeurNoeudS = (reactionStyle.getWidth() + reactionStyle.getHeight()) / 2 / 2;
-            }
-
-            var xTarget = source.x + dX * ((d - largeurNoeudT) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudT) / d);
-
-            var heightArrow = 5;
-            var xBaseArrowT = source.x + dX * ((d - largeurNoeudT - heightArrow) / d);
-            var yBaseArrowT = source.y + dY * ((d - largeurNoeudT - heightArrow) / d);
-
-            var xWBaseArrowT1 = xBaseArrowT + dY * (3 / d);
-            var yWBaseArrowT1 = yBaseArrowT - dX * (3 / d);
-            var xWBaseArrowT2 = xBaseArrowT - dY * (3 / d);
-            var yWBaseArrowT2 = yBaseArrowT + dX * (3 / d);
-
-
-            return "M" + source.x + "," + source.y +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                "L" + xTarget + "," + yTarget +
-                "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "Z";
-        }
-
-
-        if (link.getSource().x == undefined) {
-            var networkData = _metExploreViz.getSessionById(panel).getD3Data();
-            var nodes = networkData.getNodes();
-
-            source = nodes[link.getSource()];
-            target = nodes[link.getTarget()];
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-        else {
-            source = link.getSource();
-            target = link.getTarget();
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
+            path = "M0,0L0,0Z";
         }
 
         return path;
@@ -698,8 +384,6 @@ metExploreD3.GraphLink = {
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
 
             if (source.getBiologicalType() == "metabolite") {
                 var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
@@ -745,8 +429,6 @@ metExploreD3.GraphLink = {
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
 
             if (source.getBiologicalType() == "metabolite") {
                 var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
@@ -790,10 +472,15 @@ metExploreD3.GraphLink = {
             target = nodes[link.getTarget()];
             if (source != undefined && target != undefined) {
                 if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                    if (source.getReactionReversibility() || target.getReactionReversibility())
-                        path = pathForReversibleReactions(source, target);
-                    else
-                        path = path(source, target);
+                    var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
+                    if(d!==0){
+                        if (source.getReactionReversibility() || target.getReactionReversibility())
+                            path = pathForReversibleReactions(source, target);
+                        else
+                            path = path(source, target);
+                    }else {
+                        path = "M0,0L0,0Z";
+                    }
                 }
                 else {
                     path = "M0,0L0,0Z";
@@ -808,10 +495,15 @@ metExploreD3.GraphLink = {
             target = link.getTarget();
             if (source != undefined && target != undefined) {
                 if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                    if (source.getReactionReversibility() || target.getReactionReversibility())
-                        path = pathForReversibleReactions(source, target);
-                    else
-                        path = path(source, target);
+                    var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
+                    if(d!==0){
+                        if (source.getReactionReversibility() || target.getReactionReversibility())
+                            path = pathForReversibleReactions(source, target);
+                        else
+                            path = path(source, target);
+                    }else {
+                        path = "M0,0L0,0Z";
+                    }
                 }
                 else {
                     path = "M0,0L0,0Z";
@@ -823,550 +515,6 @@ metExploreD3.GraphLink = {
         }
 
         return path;
-    },
-
-    funcPath4: function (link, panel) {
-        var source, target, path;
-
-        function pathForReversibleReactions(source, target) {
-
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var largeurNoeudS = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-
-                var xSource = source.x + dX * (1 - (d - largeurNoeudS) / d);
-                var ySource = source.y + dY * (1 - (d - largeurNoeudS) / d);
-
-                var heightArrow = 5;
-
-                var xBaseArrowS = source.x + dX * (1 - (d - largeurNoeudS - heightArrow) / d);
-                var yBaseArrowS = source.y + dY * (1 - (d - largeurNoeudS - heightArrow) / d);
-
-                var xBaseArrowRev = source.x + dX * (1 - (d - largeurNoeudS - heightArrow - heightArrow) / d);
-                var yBaseArrowRev = source.y + dY * (1 - (d - largeurNoeudS - heightArrow - heightArrow) / d);
-
-                var xWBaseArrowS1 = xBaseArrowS - dY * (3 / d);
-                var yWBaseArrowS1 = yBaseArrowS + dX * (3 / d);
-                var xWBaseArrowS2 = xBaseArrowS + dY * (3 / d);
-                var yWBaseArrowS2 = yBaseArrowS - dX * (3 / d);
-
-
-                path =
-                    // "M"+xWBaseArrowS1+","+yWBaseArrowS1+
-                    // 		"L"+xWBaseArrowS2+","+yWBaseArrowS2+
-                    // 		"L"+xSource+","+ySource+
-                    // 		"Z"+
-                    "M" + xBaseArrowRev + "," + yBaseArrowRev +
-                    "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                    "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                    "L" + xSource + "," + ySource +
-                    "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                    "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                    "L" + xBaseArrowRev + "," + yBaseArrowRev +
-                    "L" + target.x + "," + target.y +
-                    "Z";
-            }
-            else {
-                var largeurNoeudS = (metaboliteStyle.getWidth() + metaboliteStyle.getHeight()) / 2 / 2;
-                var xSource = source.x + dX * (1 - (d - largeurNoeudS) / d);
-                var ySource = source.y + dY * (1 - (d - largeurNoeudS) / d);
-
-                var heightArrow = 5;
-
-
-                var xTarget = source.x + dX * ((d - largeurNoeudS) / d);
-                var yTarget = source.y + dY * ((d - largeurNoeudS) / d);
-
-                var heightArrow = 5;
-                var xBaseArrowT = source.x + dX * ((d - largeurNoeudS - heightArrow) / d);
-                var yBaseArrowT = source.y + dY * ((d - largeurNoeudS - heightArrow) / d);
-
-                var xWBaseArrowT1 = xBaseArrowT + dY * (3 / d);
-                var yWBaseArrowT1 = yBaseArrowT - dX * (3 / d);
-                var xWBaseArrowT2 = xBaseArrowT - dY * (3 / d);
-                var yWBaseArrowT2 = yBaseArrowT + dX * (3 / d);
-
-                var xBaseArrowRev = source.x + dX * ((d - largeurNoeudS - heightArrow - heightArrow) / d);
-                var yBaseArrowRev = source.y + dY * ((d - largeurNoeudS - heightArrow - heightArrow) / d);
-
-
-                path =
-                    // "M"+xWBaseArrowT1+","+yWBaseArrowT1+
-                    // 		"L"+xWBaseArrowT2+","+yWBaseArrowT2+
-                    // 		"L"+xBaseArrowRev+","+yBaseArrowRev+
-                    // 		"Z"+
-                    "M" + source.x + "," + source.y +
-                    "L" + xBaseArrowRev + "," + yBaseArrowRev +
-                    "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                    "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                    "L" + xTarget + "," + yTarget +
-                    "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                    "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                    "L" + xBaseArrowRev + "," + yBaseArrowRev +
-                    "Z";
-            }
-            return path;
-
-        }
-
-        function path(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var largeurNoeudS = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-
-                var xSource = source.x + dX * (1 - (d - largeurNoeudS) / d);
-                var ySource = source.y + dY * (1 - (d - largeurNoeudS) / d);
-
-                var heightArrow = 5;
-
-                var xPointeS = source.x + dX * (1 - (d - largeurNoeudS - heightArrow) / d);
-                var yPointeS = source.y + dY * (1 - (d - largeurNoeudS - heightArrow) / d);
-
-                var xWBaseArrowS1 = xSource - dY * (3 / d);
-                var yWBaseArrowS1 = ySource + dX * (3 / d);
-                var xWBaseArrowS2 = xSource + dY * (3 / d);
-                var yWBaseArrowS2 = ySource - dX * (3 / d);
-
-                return "M" + target.x + "," + target.y +
-                    "L" + xPointeS + "," + yPointeS +
-                    "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                    "L" + xSource + "," + ySource +
-                    "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                    "L" + xPointeS + "," + yPointeS +
-                    "Z";
-            }
-            else {
-                var largeurNoeudS = (metaboliteStyle.getWidth() + metaboliteStyle.getHeight()) / 2 / 2;
-                var xTarget = source.x + dX * ((d - largeurNoeudS) / d);
-                var yTarget = source.y + dY * ((d - largeurNoeudS) / d);
-
-                var heightArrow = 5;
-                var xBaseArrowT = source.x + dX * ((d - largeurNoeudS - heightArrow) / d);
-                var yBaseArrowT = source.y + dY * ((d - largeurNoeudS - heightArrow) / d);
-
-                var xWBaseArrowT1 = xBaseArrowT + dY * (3 / d);
-                var yWBaseArrowT1 = yBaseArrowT - dX * (3 / d);
-                var xWBaseArrowT2 = xBaseArrowT - dY * (3 / d);
-                var yWBaseArrowT2 = yBaseArrowT + dX * (3 / d);
-
-
-                return "M" + source.x + "," + source.y +
-                    "L" + xBaseArrowT + "," + yBaseArrowT +
-                    "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                    "L" + xTarget + "," + yTarget +
-                    "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                    "L" + xBaseArrowT + "," + yBaseArrowT +
-                    "Z";
-            }
-
-            return path;
-        }
-
-
-        if (link.getSource().x == undefined) {
-            var networkData = _metExploreViz.getSessionById(panel).getD3Data();
-            var nodes = networkData.getNodes();
-
-            source = nodes[link.getSource()];
-            target = nodes[link.getTarget()];
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-        else {
-            source = link.getSource();
-            target = link.getTarget();
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-
-        return path;
-    },
-
-    funcPath5: function (link, panel) {
-        var source, target, path;
-
-        function pathForReversibleReactions(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-            else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-
-            var largeurNoeudS = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-
-            var xSource = source.x + dX * (1 - (d - largeurNoeudS) / d);
-            var ySource = source.y + dY * (1 - (d - largeurNoeudS) / d);
-
-            var heightArrow = 5;
-
-            var xBaseArrowS = source.x + dX * (1 - (d - largeurNoeudS - heightArrow) / d);
-            var yBaseArrowS = source.y + dY * (1 - (d - largeurNoeudS - heightArrow) / d);
-
-            var xBaseArrowRevS = source.x + dX * (1 - (d - largeurNoeudS - heightArrow - heightArrow) / d);
-            var yBaseArrowRevS = source.y + dY * (1 - (d - largeurNoeudS - heightArrow - heightArrow) / d);
-
-            var xWBaseArrowS1 = xBaseArrowS - dY * (3 / d);
-            var yWBaseArrowS1 = yBaseArrowS + dX * (3 / d);
-            var xWBaseArrowS2 = xBaseArrowS + dY * (3 / d);
-            var yWBaseArrowS2 = yBaseArrowS - dX * (3 / d);
-
-
-            var xTarget = source.x + dX * ((d - largeurNoeudS) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudS) / d);
-
-            var xBaseArrowT = source.x + dX * ((d - largeurNoeudS - heightArrow) / d);
-            var yBaseArrowT = source.y + dY * ((d - largeurNoeudS - heightArrow) / d);
-
-            var xWBaseArrowT1 = xBaseArrowT + dY * (3 / d);
-            var yWBaseArrowT1 = yBaseArrowT - dX * (3 / d);
-            var xWBaseArrowT2 = xBaseArrowT - dY * (3 / d);
-            var yWBaseArrowT2 = yBaseArrowT + dX * (3 / d);
-
-            var xBaseArrowRevT = source.x + dX * ((d - largeurNoeudS - heightArrow - heightArrow) / d);
-            var yBaseArrowRevT = source.y + dY * ((d - largeurNoeudS - heightArrow - heightArrow) / d);
-
-
-            return "M" + xSource + "," + ySource +
-                "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                "M" + xBaseArrowRevT + "," + yBaseArrowRevT +
-                "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "M" + xBaseArrowRevS + "," + yBaseArrowRevS +
-                "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                "L" + xSource + "," + ySource +
-                "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                "L" + xBaseArrowRevS + "," + yBaseArrowRevS +
-                "L" + xBaseArrowRevT + "," + yBaseArrowRevT +
-                "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xTarget + "," + yTarget +
-                "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xBaseArrowRevT + "," + yBaseArrowRevT +
-                "Z";
-        }
-
-        function path(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var largeurNoeudT = (reactionStyle.getWidth() + reactionStyle.getHeight()) / 2 / 2;
-                var largeurNoeudS = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-            }
-            else {
-                var largeurNoeudT = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-                var largeurNoeudS = (reactionStyle.getWidth() + reactionStyle.getHeight()) / 2 / 2;
-            }
-            var xSource = source.x + dX * (1 - (d - largeurNoeudS) / d);
-            var ySource = source.y + dY * (1 - (d - largeurNoeudS) / d);
-
-            var xTarget = source.x + dX * ((d - largeurNoeudT) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudT) / d);
-
-            var heightArrow = 5;
-            var xBaseArrowT = source.x + dX * ((d - largeurNoeudT - heightArrow) / d);
-            var yBaseArrowT = source.y + dY * ((d - largeurNoeudT - heightArrow) / d);
-
-
-            var xWBaseArrowT1 = xBaseArrowT + dY * (3 / d);
-            var yWBaseArrowT1 = yBaseArrowT - dX * (3 / d);
-            var xWBaseArrowT2 = xBaseArrowT - dY * (3 / d);
-            var yWBaseArrowT2 = yBaseArrowT + dX * (3 / d);
-
-            var xPointeS = source.x + dX * (1 - (d - largeurNoeudS - heightArrow) / d);
-            var yPointeS = source.y + dY * (1 - (d - largeurNoeudS - heightArrow) / d);
-
-            var xWBaseArrowS1 = xSource - dY * (3 / d);
-            var yWBaseArrowS1 = ySource + dX * (3 / d);
-            var xWBaseArrowS2 = xSource + dY * (3 / d);
-            var yWBaseArrowS2 = ySource - dX * (3 / d);
-
-            return "M" + xPointeS + "," + yPointeS +
-                "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                "L" + xPointeS + "," + yPointeS +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                "L" + xTarget + "," + yTarget +
-                "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "Z";
-        }
-
-
-        if (link.getSource().x == undefined) {
-            var networkData = _metExploreViz.getSessionById(panel).getD3Data();
-            var nodes = networkData.getNodes();
-
-            source = nodes[link.getSource()];
-            target = nodes[link.getTarget()];
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-        else {
-            source = link.getSource();
-            target = link.getTarget();
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-
-        return path;
-    },
-
-    funcPath6: function (link, panel) {
-        var source, target, path;
-
-        function pathForReversibleReactions(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-            else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
-                var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
-            }
-
-            var xSource = source.x + dX * (1 - (d - largeurNoeudS) / d);
-            var ySource = source.y + dY * (1 - (d - largeurNoeudS) / d);
-
-            var xTarget = source.x + dX * ((d - largeurNoeudT) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudT) / d);
-
-            var heightArrow = 5;
-            var xBaseArrowT = source.x + dX * ((d - largeurNoeudT - heightArrow) / d);
-            var yBaseArrowT = source.y + dY * ((d - largeurNoeudT - heightArrow) / d);
-
-            var xWBaseArrowT1 = xBaseArrowT + dY * (3 / d);
-            var yWBaseArrowT1 = yBaseArrowT - dX * (3 / d);
-            var xWBaseArrowT2 = xBaseArrowT - dY * (3 / d);
-            var yWBaseArrowT2 = yBaseArrowT + dX * (3 / d);
-
-            var xBaseArrowS = source.x + dX * (1 - (d - largeurNoeudS - heightArrow) / d);
-            var yBaseArrowS = source.y + dY * (1 - (d - largeurNoeudS - heightArrow) / d);
-
-            var xWBaseArrowS1 = xBaseArrowS - dY * (3 / d);
-            var yWBaseArrowS1 = yBaseArrowS + dX * (3 / d);
-            var xWBaseArrowS2 = xBaseArrowS + dY * (3 / d);
-            var yWBaseArrowS2 = yBaseArrowS - dX * (3 / d);
-
-            return "M" + xSource + "," + ySource +
-                "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                "M" + xSource + "," + ySource +
-                "L" + xWBaseArrowS1 + "," + yWBaseArrowS1 +
-                "L" + xBaseArrowS + "," + yBaseArrowS +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                "L" + xTarget + "," + yTarget +
-                "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "L" + xBaseArrowS + "," + yBaseArrowS +
-                "L" + xWBaseArrowS2 + "," + yWBaseArrowS2 +
-                "L" + xSource + "," + ySource +
-                "Z";
-        }
-
-        function path(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
-            var dX = (target.x - source.x);
-            var dY = (target.y - source.y);
-            var diffX = dX / Math.abs(dX);
-            var diffY = dY / Math.abs(dY);
-
-            if (source.getBiologicalType() == "metabolite") {
-                var largeurNoeudT = (reactionStyle.getWidth() + reactionStyle.getHeight()) / 2 / 2;
-                var largeurNoeudS = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-            }
-            else {
-                var largeurNoeudT = (metaboliteStyle.getHeight() + metaboliteStyle.getWidth()) / 2 / 2;
-                var largeurNoeudS = (reactionStyle.getWidth() + reactionStyle.getHeight()) / 2 / 2;
-            }
-
-            var xTarget = source.x + dX * ((d - largeurNoeudT) / d);
-            var yTarget = source.y + dY * ((d - largeurNoeudT) / d);
-
-            var heightArrow = 5;
-            var xBaseArrowT = source.x + dX * ((d - largeurNoeudT - heightArrow) / d);
-            var yBaseArrowT = source.y + dY * ((d - largeurNoeudT - heightArrow) / d);
-
-            var xWBaseArrowT1 = xBaseArrowT + dY * (3 / d);
-            var yWBaseArrowT1 = yBaseArrowT - dX * (3 / d);
-            var xWBaseArrowT2 = xBaseArrowT - dY * (3 / d);
-            var yWBaseArrowT2 = yBaseArrowT + dX * (3 / d);
-
-
-            return "M" + source.x + "," + source.y +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
-                "L" + xTarget + "," + yTarget +
-                "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "Z";
-        }
-
-
-        if (link.getSource().x == undefined) {
-            var networkData = _metExploreViz.getSessionById(panel).getD3Data();
-            var nodes = networkData.getNodes();
-
-            source = nodes[link.getSource()];
-            target = nodes[link.getTarget()];
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-        else {
-            source = link.getSource();
-            target = link.getTarget();
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                if (source.getReactionReversibility() || target.getReactionReversibility())
-                    path = pathForReversibleReactions(source, target);
-                else
-                    path = path(source, target);
-            }
-            else {
-                path = "M0,0L0,0Z";
-            }
-        }
-
-        return path;
-    },
-
-    /*******************************************
-     * Init the visualization of links
-     * @param {} parent : The panel where the action is launched
-     * @param {} session : Store which contains global characteristics of session
-     * @param {} linkStyle : Store which contains links style
-     * @param {} metaboliteStyle : Store which contains metabolites style
-     */
-    refreshLink1: function (parent, session, linkStyle, metaboliteStyle) {
-        metExploreD3.GraphLink.panelParent = "#" + parent;
-        var networkData = session.getD3Data();
-
-        var size = 20;
-        // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-        var refY = linkStyle.getMarkerWidth() / 2;
-        // The x-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-        // var refX = linkStyle.getMarkerHeight / 2;
-
-        // Adding arrow on links
-        // d3.select("#"+parent).select("#D3viz").select("#graphComponent").append("svg:defs").selectAll("marker")
-        // 	.data(["in", "out"])
-        // 	.enter().append("svg:marker")
-        // 	.attr("id", String)
-        // 	.attr("viewBox", "0 0 "+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight())
-        // 	.attr("refY", refY)
-        // 	.attr("markerWidth", linkStyle.getMarkerWidth())
-        // 	.attr("markerHeight", linkStyle.getMarkerHeight())
-        // 	.attr("orient", "auto")
-        // 	.append("svg:path")
-        // 	.attr("class", String)
-        // 	.attr("d", "M0,0L"+linkStyle.getMarkerWidth()+","+linkStyle.getMarkerHeight()/2+"L0,"+linkStyle.getMarkerWidth()+"Z")
-        // 	.style("visibility", "hidden");
-        // .attr("d", "M"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+" L"+linkStyle.getMarkerWidth()/2+" "+(3*linkStyle.getMarkerHeight()/4)+" A"+linkStyle.getMarkerHeight()+" "+linkStyle.getMarkerHeight()+" 0 0 0 "+linkStyle.getMarkerWidth()/2+" "+(1*linkStyle.getMarkerHeight()/4)+" L"+linkStyle.getMarkerWidth()+" "+linkStyle.getMarkerHeight()/2+"Z")
-        // Append link on panel
-        metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .data(networkData.getLinks())
-            .enter()
-            .append("svg:path")
-            .attr("class", String)
-            .attr("d", function (link) {
-                return metExploreD3.GraphLink.funcPath1(link, parent);
-            })
-            .attr("class", "link").classed("reaction", true)
-            .attr("fill-rule", "evenodd")
-            .attr("fill", function (d) {
-                if (d.interaction == "out")
-                    return linkStyle.getMarkerOutColor();
-                else
-                    return linkStyle.getMarkerInColor();
-            })
-            .style("stroke", linkStyle.getStrokeColor())
-            .style("stroke-width", 0.5)
-            .style("stroke-linejoin", "bevel");
-
     },
 
     /*******************************************
@@ -1384,16 +532,50 @@ metExploreD3.GraphLink = {
         var size = 20;
         // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
         var refY = linkStyle.getMarkerWidth() / 2;
-        // The x-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-        // var refX = linkStyle.getMarkerHeight / 2;
 
         d3.select("#" + parent).select("#D3viz").select("#graphComponent")
             .selectAll(".linkGroup")
             .remove();
 
-        d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .data(networkData.getLinks())
-            .enter()
+        function onlyUnique(value, index, self) {
+            return self
+                .findIndex(
+                    function(link){return link.getId()===value.getId();}
+                ) === index;
+        }
+
+        var links = networkData.getLinks();
+        links.forEach(function(link){
+            var target, source;
+            target = link.getTarget();
+            source = link.getSource();
+            if(!(target instanceof NodeData)){
+                link.setTarget(networkData.getNodes()[link.getTarget()]);
+            }
+            if(!(source instanceof NodeData))
+                link.setSource(networkData.getNodes()[link.getSource()]);
+        });
+
+        var link = networkData.getLinks();
+        var unique = link.filter( onlyUnique );
+
+        networkData.links=unique;
+        var visibleLinks = networkData.getLinks()
+            .filter(function (link) {
+                var target, source;
+                target = link.getTarget();
+                source = link.getSource();
+
+                return !source.isHidden() && !target.isHidden();
+            });
+
+
+        metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
+            .data(visibleLinks, function keyFunc(d, i) { return d.getId() });
+
+        metExploreD3.GraphLink.link.remove();
+
+        metExploreD3.GraphLink.link.enter()
             .insert("svg:g", ":first-child")
             .attr("class", "linkGroup")
             .append("svg:path")
@@ -1414,21 +596,10 @@ metExploreD3.GraphLink = {
             .style("opacity", 1)
             .style("stroke-dasharray", null);
 
-        // d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup")
-        //     .append("svg:text")
-        //     .style("font-size",'6px')
-        //     .attr("class", "linklabel")
-        //    // .classed('hide', true)
-        // 	.style("paint-order","stroke")
-        // 	.style("stroke-width",  1)
-        // 	.style("stroke", "white")
-        // 	.style("stroke-opacity", "0.7")
-        // 	.attr("dy", ".4em")
-        // 	.style("font-weight", 'bold')
-        // 	.style("pointer-events", 'none')
-        // 	.text('eeee');
+        metExploreD3.GraphLink.pathwaysOnLink(parent);
+        if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
+            metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 
-        metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
     },
 
     loadLinksForFlux: function (parent, networkData, linkStyle, metaboliteStyle, showValues, conditionName) {
@@ -1490,7 +661,7 @@ metExploreD3.GraphLink = {
 
                 var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
                 var mapping = _metExploreViz.getMappingByName(mappingName);
-                var conditions = mapping.getConditions();
+                var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 
                 var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
                 var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
@@ -1560,7 +731,7 @@ metExploreD3.GraphLink = {
 
                     var mappingName = _metExploreViz.getSessionById("viz").getActiveMapping();
                     var mapping = _metExploreViz.getMappingByName(mappingName);
-                    var conditions = mapping.getConditions();
+                    var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
 
                     var map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
                     var map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
@@ -1633,7 +804,6 @@ metExploreD3.GraphLink = {
             .style("stroke-linejoin", "bevel");
     },
 
-    // A n'appliquer que sur les petits graphes
     linkTypeOfMetabolite : function(){
         _metExploreViz.setLinkedByTypeOfMetabolite(true);
         var panel = "viz";
@@ -1812,7 +982,6 @@ metExploreD3.GraphLink = {
         var session = _metExploreViz.getSessionById(panel);
         var networkData = session.getD3Data();
         networkData.addLink(identifier,source,target,"hiddenForce",false);
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         var linkStyle = metExploreD3.getLinkStyle();
         var force = session.getForce();
 
@@ -1843,7 +1012,7 @@ metExploreD3.GraphLink = {
         var linksToRemove = [];
         var force = session.getForce();
 
-        var link=d3.select("#"+panel).select("#graphComponent").selectAll("path.link.reaction")
+        d3.select("#"+panel).select("#graphComponent").selectAll("path.link.reaction")
             .filter(function(link){
                 return link.getInteraction()=="hiddenForce";
             })
@@ -1860,47 +1029,12 @@ metExploreD3.GraphLink = {
 
                     var index = force.links().indexOf(link);
 
-                    if(index!=-1)
+                    if(index!==-1)
                         force.links().splice(index, 1);
                 }
             }
             , 100);
     },
-
-// 	function getRandomArbitrary(min, max) {
-//   	return Math.random() * (max - min) + min;
-// }
-
-// d3.select("#viz").select("#D3viz").selectAll("path.link.reaction")
-// 	.each(function(link){
-// 		if(link.getSource().getReactionReversibility() || link.getTarget().getReactionReversibility())
-// 			link.value = getRandomArbitrary(-4, 4);
-// 		else
-// 			link.value = getRandomArbitrary(0, 4);
-// 	}); 
-// function getRandomArbitrary(min, max) {
-//   	return Math.random() * (max - min) + min;
-// }
-
-// d3.select("#viz").select("#D3viz").selectAll("path.link.reaction")
-// 	.each(function(link){
-// 		if(link.getSource().getReactionReversibility() || link.getTarget().getReactionReversibility())
-// 			link.value = getRandomArbitrary(-4, 4);
-// 		else
-// 			link.value = getRandomArbitrary(0, 4);
-
-// 		if(link.getSource().value==undefined)
-// 			link.getSource().value = link.value;
-// 		else
-// 			if(Math.abs(link.getSource().value)<Math.abs(link.value))
-// 				link.getSource().value = link.value;
-
-// 		if(link.getTarget().value==undefined)
-// 			link.getTarget().value = link.value;
-// 		else
-// 			if(Math.abs(link.getTarget().value)<Math.abs(link.value))
-// 				link.getTarget().value = link.value;
-// 	}); 
 
     /*******************************************
      * Tick function of links
@@ -1908,13 +1042,15 @@ metExploreD3.GraphLink = {
      * @param {} scale = Ext.getStore('S_Scale').getStoreByGraphName(panel);
      */
     tick : function(panel, scale) {
-
         // If you want to use selection on compartments path
-        d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
+        var convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull");
+
+        convexHullPath
             .attr("d", _metExploreViz.getSessionById(panel).groupPath)
             .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
-        if (metExploreD3.GraphStyleEdition.curvedPath == true){
-            var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
+
+        if (metExploreD3.GraphStyleEdition.curvedPath === true){
+            var flux = _metExploreViz.getSessionById(panel).getMappingDataType()==="Flux";
             if(flux) {
                 funcPath = metExploreD3.GraphLink.funcPathForFlux;
                 d3.select("#"+panel).select("#D3viz").select("#graphComponent")
@@ -1927,12 +1063,23 @@ metExploreD3.GraphLink = {
             }
         }
         else {
+            var scale = metExploreD3.getScaleById("viz");
+
+
+
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
-            if(flux) {
-                funcPath = metExploreD3.GraphLink.funcPathForFlux;
+
+            if(scale.getZoomScale()<0.5){
+                funcPath = metExploreD3.GraphLink.funcPath1;
             }
-            else {
-                funcPath = metExploreD3.GraphLink.funcPath3;
+            else
+            {
+                if(flux) {
+                    funcPath = metExploreD3.GraphLink.funcPathForFlux;
+                }
+                else {
+                    funcPath = metExploreD3.GraphLink.funcPath3;
+                }
             }
 
             // If you want to use selection on compartments path
@@ -1943,7 +1090,6 @@ metExploreD3.GraphLink = {
             d3.select("#"+panel).select("#D3viz").select("#graphComponent")
                 .selectAll("path.link")
                 .attr("d", function(link){
-
                     return funcPath(link, panel, this.id);
                 })
                 .select('reaction').attr("fill", function (d) {
@@ -1958,20 +1104,18 @@ metExploreD3.GraphLink = {
 
     displayConvexhulls : function(panel){
 
-
         var generalStyle = _metExploreViz.getGeneralStyle();
 
         var convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull");
 
 
         var isDisplay = generalStyle.isDisplayedConvexhulls();
-
         if(!isDisplay){
             convexHullPath.remove();
         }
         else
         {
-            if(convexHullPath[0].length==0)
+            if(convexHullPath[0].length===0)
                 metExploreD3.GraphNode.loadPath(panel, isDisplay);
 
             convexHullPath
@@ -2161,6 +1305,37 @@ metExploreD3.GraphLink = {
                 .attr("marker-start", "url(#markerEntry)");
         });
         metExploreD3.GraphCaption.drawCaptionEditMode();
+
+        var pathways = [];
+
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(node){
+                return node.getBiologicalType()==="pathway";
+            })
+            .each(function (path) {
+                pathways.push(path.getId())
+            });
+
+        links = d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+        var pathwayLinks = links.filter(function (link) {
+            return pathways.includes(link.getTarget().getId()) || pathways.includes(link.getSource().getId())
+        });
+
+        if(pathwayLinks!=null){
+            pathwayLinks
+                .attr("fill", function (d) {
+                    if (d.interaction == "out")
+                        return metExploreD3.getLinkStyle().getMarkerOutColor();
+                    else
+                        return metExploreD3.getLinkStyle().getMarkerInColor();
+                })
+                .attr("d", function(link){ return metExploreD3.GraphLink.funcPath3(link, panel, this.id);})
+                .style("stroke-linejoin", "bevel")
+                .style("opacity", 0.2);
+        }
+
     },
 
     /*******************************************

@@ -211,13 +211,14 @@ NetworkData.prototype = {
         var object = new Pathway(name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), name);
         this.pathways.push(object);
     },
+
     copyPathway:function(path){
         if(this.pathways == undefined)
             this.pathways = [];
 
-
-        var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color);
+        var object = new Pathway(path.name.replace(/[.*+?^${} ()|[\]\-\\]/g, ""), path.name, path.hide, path.color, path.collapsed, path.nodes);
         this.pathways.push(object);
+        return object;
     },
 
     containsNode: function(id)
@@ -279,6 +280,7 @@ NetworkData.prototype = {
             if(allNodes[i].getDbIdentifier()==(id))
                 {node=allNodes[i];break;}
         }
+
         return node;
     },
 
@@ -321,6 +323,7 @@ NetworkData.prototype = {
 
       var object = new LinkData(id, source, target, interaction, reversible);
       this.links.push(object);
+      return object;
     },
 
     getDataNodes:function(){
@@ -357,7 +360,8 @@ NetworkData.prototype = {
             locked, 
             alias, 
             label,
-            labelFont
+            labelFont,
+            hidden
         ){
         if(this.nodes == undefined)
             this.nodes = [];
@@ -383,7 +387,8 @@ NetworkData.prototype = {
             locked, 
             alias, 
             label,
-            labelFont);
+            labelFont,
+            hidden);
         //console.log('ec '+ec);
         //console.log('ec '+object.getEC());
         this.nodes.push(object);
@@ -451,84 +456,150 @@ NetworkData.prototype = {
 
     cloneObject : function(obj){
         var that = this;
-        
 
         // if(obj.compartments==undefined)
         // {
-           obj.links.forEach(function(link){
-           that.addLink(link.id,
-                        link.source,
-                        link.target,
-                        link.interaction, 
-                        link.reversible);
-            });
 
-            obj.nodes.forEach(function(node){
-                if(node.biologicalType=="reaction"){
-               
+
+        obj.nodes.forEach(function(node){
+            if(node.biologicalType=="reaction"){
+
+                that.addNode(
+                    node.name,
+                    undefined,
+                    node.dbIdentifier,
+                    node.id,
+                    node.reactionReversibility,
+                    'reaction',
+                    false,
+                    true,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    node.ec,
+                    false,
+                    undefined,
+                    node.pathways,
+                    node.locked,
+                    node.alias,
+                    node.label,
+                    node.labelFont,
+                    node.hidden
+                    );
+
+            }
+            else
+            {
+                if(node.biologicalType=="pathway") {
                     that.addNode(
                         node.name,
-                        undefined, 
+                        undefined,
                         node.dbIdentifier,
-                        node.id, 
+                        node.id,
                         node.reactionReversibility,
-                        'reaction', 
-                        false, 
+                        'pathway',
+                        false,
                         true,
                         undefined,
-                        undefined, 
                         undefined,
                         undefined,
-                        node.ec, 
-                        false, 
-                        undefined, 
-                        node.pathways, 
-                        node.locked, 
+                        undefined,
+                        node.ec,
+                        false,
+                        undefined,
+                        node.pathways,
+                        node.locked,
                         node.alias,
                         node.label,
-                        node.labelFont
-                        );
-
+                        node.labelFont,
+                        node.hidden
+                    );
                 }
                 else
                 {
-
+                    //console.log(node.labelFont);
                     that.addNode(
-                        node.name,
-                        node.compartment, 
-                        node.dbIdentifier,
-                        node.id, 
-                        undefined,
-                        'metabolite', 
-                        false, 
-                        true, 
-                        node.svg,
-                        node.svgWidth, 
-                        node.svgHeight,
-                        node.isSideCompound,
-                        undefined, 
-                        node.duplicated, 
-                        node.identifier, 
-                        node.pathways, 
-                        node.locked, 
-                        node.alias, 
-                        node.label,
-                        node.labelFont);
+                    node.name,
+                    node.compartment,
+                    node.dbIdentifier,
+                    node.id,
+                    undefined,
+                    'metabolite',
+                    false,
+                    true,
+                    node.svg,
+                    node.svgWidth,
+                    node.svgHeight,
+                    node.isSideCompound,
+                    undefined,
+                    node.duplicated,
+                    node.identifier,
+                    node.pathways,
+                    node.locked,
+                    node.alias,
+                    node.label,
+                    node.labelFont,
+                    node.hidden);
                 }
-                if(node.mappingDatas!=undefined){
-                    if(node.mappingDatas.length>0){
-                        node.mappingDatas.forEach(function(mappingData){
-                            var map = new MappingData(mappingData.node, mappingData.mappingName, mappingData.conditionName, mappingData.mapValue);
-                            that.nodes[that.nodes.length-1].addMappingData(map);
-                        });
-                    }
+            }
+            if(node.mappingDatas!=undefined){
+                if(node.mappingDatas.length>0){
+                    node.mappingDatas.forEach(function(mappingData){
+                        var map = new MappingData(mappingData.node, mappingData.mappingName, mappingData.conditionName, mappingData.mapValue);
+                        that.nodes[that.nodes.length-1].addMappingData(map);
+                    });
                 }
-                if (node.imagePosition != undefined){
-                    that.nodes[that.nodes.length-1].imagePosition = node.imagePosition;
-                }
+            }
+            if (node.imagePosition != undefined){
+                that.nodes[that.nodes.length-1].imagePosition = node.imagePosition;
+            }
 
-                that.nodes[that.nodes.length-1].x = node.x;
-                that.nodes[that.nodes.length-1].y = node.y;
+            that.nodes[that.nodes.length-1].x = node.x;
+            that.nodes[that.nodes.length-1].y = node.y;
+        });
+
+        obj.links.forEach(function(link){
+            var source = link.source;
+            var target = link.target;
+            if((source instanceof NodeData)){
+                source=that.nodes.find(function (n) {
+                    return source.getId()===n.getId();
+                })
+            }
+            if((target instanceof NodeData)){
+                target=that.nodes.find(function (n) {
+                    return target.getId()===n.getId();
+                })
+            }
+            that.addLink(link.id,
+                source,
+                target,
+                link.interaction,
+                link.reversible);
+        });
+
+        if(obj.pathways){
+            obj.pathways.forEach(function(pathway){
+                var newPath = that.copyPathway(pathway);
+                var arrayNewNodes = [];
+                newPath.nodes.forEach(function(node, i){
+                    var newNode = that.nodes.find(function (n) {
+                        return n.getId()===node.getId();
+                    });
+                    if(newNode)
+                    {
+                        arrayNewNodes.push(newNode);
+                    }
+                });
+                newPath.nodes=[];
+                arrayNewNodes.forEach(function(newNode){
+                    newPath.addNode(newNode);
+                });
+
             });
+        }
+
+
     }
 };
