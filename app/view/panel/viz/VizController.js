@@ -70,14 +70,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             hidden : networkVizSessionStore.getD3Data().getNodes().filter(function(node){return node.getBiologicalType()==="pathway" && node.isHidden()}).length===0,
                             handler :function(){
                                 var sessionStore = _metExploreViz.getSessionById("viz");
-                                sessionStore.getD3Data().getPathways()
-                                    .filter(function(path){return !path.isCollapsed();})
-                                    .forEach(function (path, i) {
-                                        setTimeout(function(){
-                                            metExploreD3.GraphNetwork.collapsePathway(path.getName());
-                                            metExploreD3.GraphNetwork.initPathway(path.getName());
-                                        }, i*500);
-                                    });
+                                metExploreD3.GraphNetwork.collapseAllPathway();
                                 sessionStore.removeAllSelectedPathways();
                             }
                         },{
@@ -109,14 +102,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             hidden : networkVizSessionStore.getD3Data().getPathways().filter(function(path){return path.isCollapsed()}).length===0,
                             iconCls:"removeNode",
                             handler :function(){
-                                networkVizSessionStore.getD3Data().getNodes()
-                                    .filter(function(node){return node.getBiologicalType()==="pathway" && !node.isHidden()})
-                                    .forEach(function (path, i) {
-                                        setTimeout(function(){
-                                            path.setIsSelected(false);
-                                            metExploreD3.GraphNetwork.expandPathwayNode(path.getName(), "viz");
-                                        }, i*500);
-                                    });
+                                metExploreD3.GraphNetwork.expandAllPathwayNode("viz");
                             }
                         },{
 							text : 'Remove selected nodes',
