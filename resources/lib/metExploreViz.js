@@ -842,7 +842,11 @@ var metExploreD3 = {
     },
     setIsNewBioSource:function(bool){
         _metExploreViz.setIsNewBioSource(bool);
-    }
+    },
+    resizeViz:function(){
+        metExploreD3.fireEventArg('networkPanel', "resizeViz", _metExploreViz.panel);
+    },
+
 };
 
 var _metExploreViz;

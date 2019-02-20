@@ -22,13 +22,17 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 
 		view.on({
 			afterlunch : function(panel){
-				
 				me.myRender(panel);
 				Ext.on('resize', function(w, h){
-				    document.getElementById("visualisation").style.width = w+"px";
+					document.getElementById("visualisation").style.width = w+"px";
 				    document.getElementById("visualisation").style.height = h+"px";
 				    view.setSize(w, h);
 	            });
+			},
+			resizeViz : function(panel){
+				var w = document.getElementById("visualisation").getBoundingClientRect().width;
+				var h = document.getElementById("visualisation").getBoundingClientRect().height;
+				view.setSize(w, h);
 			},
 			scope:me
 		});	    
