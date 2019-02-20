@@ -314,8 +314,6 @@ metExploreD3.GraphPanel = {
 		var sessionsStore = _metExploreViz.getSessionsSet();
 		var session = _metExploreViz.getSessionById(panel);
 		var h = $("#"+panel).height();
-		console.log($("#"+panel).height());
-		console.log(this.getHeight(panel));
 		var w = $("#"+panel).width();
 
 
