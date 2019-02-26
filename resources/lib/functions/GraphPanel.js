@@ -515,6 +515,172 @@ metExploreD3.GraphPanel = {
 			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. Use a saved file from MetExploreViz or see <a href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#generalfunctioning">MetExploreViz documentation</a>.');
 		}
 	},
+
+	/*****************************************************
+	* Update the node coordinates based on a gml file
+	*/
+    refreshCoordinatesFromGML : function(gml, func) {
+
+		var graph = new dagre.graphlib.Graph().setGraph({ranker:'longest-path'});
+		
+
+		var session = _metExploreViz.getSessionById('viz');
+
+
+		//var a;
+		//graph.setNode(a, { label: "a" });
+
+		session.getD3Data().getNodes()
+					.filter(function(node){return !node.isHidden();})
+				   .filter(function (node) {
+                                	graph.setNode(node, { label: node.getId() });
+                                });
+
+		session.getD3Data().getLinks()
+				.filter(function(link){
+						return ((!link.getSource().isHidden()) &&
+							(!link.getTarget().isHidden()));
+					})
+				.filter(function(link){
+                                	console.log("edge");
+                                	graph.setEdge(link.getSource().getId(), link.getTarget().getId(), { label: link.getId() });
+                                });
+
+		// Create the renderer
+		//var render = new dagreD3.render();
+		//render(d3.select("#D3viz"),graph);
+		
+		//graph.nodesep=800;
+
+		dagre.layout(graph);
+		//graph.rankDir = 'LR';
+
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+                                .each(function(node){
+                                	 var x;
+                                	 var y;
+                                	graph.nodes().forEach(function(n) {
+											var nodeG = graph.node(n);
+											if(nodeG.label === node.getId())
+												{
+													x=nodeG.x;
+													y=nodeG.y;
+												}
+											});
+
+
+                                        node.px = x;
+                                        node.py = y;
+                                        node.x = x;
+                                        node.y = y;
+                                        node.setLocked(true);
+                                        node.fixed=node.isLocked();
+
+                                    });
+                               
+
+        metExploreD3.GraphNetwork.tick("viz");
+
+		console.log(graph);
+
+        //console.log(graph.edges());
+
+
+		// var me = this;
+		// metExploreD3.hideInitialMask();
+
+  //       var panel = "viz";
+  //       var myMask = metExploreD3.createLoadMask("Move nodes in progress...", panel);
+  //       if(myMask!== undefined){
+
+  //           metExploreD3.showMask(myMask);
+
+  //           metExploreD3.deferFunction(function() {
+
+  //               metExploreD3.displayMessageYesNo("Set nodes coordinates",'Do you want highlight moved nodes.',function(btn){
+  //                   if(btn==="yes")
+  //                   {
+  //                       moveNodes(true);
+  //                   }
+  //                   else
+  //                   {
+  //                       moveNodes(false);
+  //                   }
+  //               });
+
+  //               function moveNodes(highlight){
+  //                   var session = _metExploreViz.getSessionById("viz");
+
+  //                   /**Parse the gml file*/
+
+  //                   var nodesToMove=[];
+  //                    var lines = gml.split('\n');
+  //   				for(var line = 0; line < lines.length; line++){
+  //     						//label is the way to identify nodes since the identifier is lost when exported from MetExplore
+  //     						var text = lines[line]
+  //     						if (text.indexOf('node') !== -1)
+  //     							{
+  //     								var id=lines[line+1].split(" ")[1];
+  //     								var node = session.getD3Data().getNodeById(id);
+  //     								console.log(session.getD3Data().getNodeById(id));
+  //     								console.log(id);
+  //     								if(node)
+  //     									{
+  //     										//node.x=lines[line+4].split(' ')[1];
+  //     										//console.log(lines[line+4].split(' ')[1]);
+  //     										//node.x=3;
+  //     										//node.y=lines[line+5].split(' ')[1];
+  //     										//node.y=2;
+  //     										nodesToMove.push({dbIdentifier:node.getDbIdentifier(),x:parseInt(lines[line+4].split(' ')[1])*10,y:parseInt(lines[line+5].split(' ')[1])*10});
+  //     									}
+
+  //     							}
+
+  //   					}
+  //   					//console.log(nodesToMove);
+  //   				if(nodesToMove.length>0){
+  //                       if(session!==undefined)
+  //                       {
+  //                           if(highlight)
+  //                               metExploreD3.GraphNode.unselectAll("#viz");
+
+  //                           metExploreD3.GraphNetwork.animationButtonOff("viz");
+  //                           var force = session.getForce();
+  //                           force.stop();
+  //                           d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+  //                               .each(function(node){
+  //                                   var nodeToMove = nodesToMove.find(function (aNode) {
+  //                                       return aNode.dbIdentifier === node.getDbIdentifier();
+  //                                   });
+  //                                   if(nodeToMove){
+  //                                       node.px = nodeToMove.x ;
+  //                                       node.py = nodeToMove.y ;
+  //                                       node.x = nodeToMove.x ;
+  //                                       node.y = nodeToMove.y ;
+  //                                       node.setLocked(true);
+  //                                       node.fixed=node.isLocked();
+
+  //                                       if(highlight)
+  //                                       	metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
+  //                                   }
+  //                               });
+
+  //                           metExploreD3.GraphNetwork.tick("viz");
+  //                           metExploreD3.hideMask(myMask);
+
+  //                       }
+  //                     }  
+
+		// 		}
+
+  //           }, 100);
+  //       }
+
+
+
+
+	},
+
 	/*****************************************************
 	* Update the network
 	*/

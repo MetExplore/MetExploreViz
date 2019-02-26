@@ -53,6 +53,18 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 			scope : me
 		});
 
+		view.lookupReference('importGML').on({
+			click : function(){
+				// console.log(Ext.getCmp("IDimport"));
+				// console.log(Ext.getCmp("buttonMap"));
+				var component = Ext.getCmp("IDimportGML");
+		        if(component!= undefined){
+					component.fileInputEl.dom.click();
+		        }
+			},
+			scope : me
+		});
+
 		view.lookupReference('importCycle').on({
 			click : function(){
 				var component = Ext.getCmp('IDimportCycle');
