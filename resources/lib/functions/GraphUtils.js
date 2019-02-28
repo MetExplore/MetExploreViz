@@ -618,7 +618,7 @@ metExploreD3.GraphUtils = {
 				var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 				var component = s_GeneralStyle.isDisplayedCaption();
 
-				d3Clone.selectAll("path.convexhull.hide").remove();
+				d3Clone.selectAll(".hide").remove();
 
 				var nbNodes = d3Clone.select("#graphComponent").selectAll("g.node").data().length;
 				if(nbNodes<1000){
@@ -1038,7 +1038,7 @@ metExploreD3.GraphUtils = {
 	    visit(obj);
 	    function visit(node) {
 
-	    	if ((!(node.className.baseVal && node.className.baseVal=="linkGroup")) && node.tagName!='line' ){
+	    	if ((!(node.className.baseVal /*&& node.className.baseVal=="linkGroup"*/)) && node.tagName!='line' ){
 	    			    		
 		        if (node && node.hasChildNodes()) {
 			        var child = node.firstChild;
