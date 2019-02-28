@@ -517,49 +517,103 @@ metExploreD3.GraphPanel = {
 	},
 
 	/*****************************************************
-	* Update the node coordinates based on a gml file
+	* Draw network in a hierarchical way
 	*/
-    refreshCoordinatesFromGML : function(gml, func) {
-
-		var graph = new dagre.graphlib.Graph().setGraph({ranker:'longest-path'});
-		
-
+    hierarchicalDrawing : function() {
+    	//graph structure used by dagre library (and behind graphviz) to compute the drawing
+		var graph = new dagre.graphlib.Graph().setGraph({});
 		var session = _metExploreViz.getSessionById('viz');
-
-
-		//var a;
-		//graph.setNode(a, { label: "a" });
-
-		session.getD3Data().getNodes()
-					.filter(function(node){return !node.isHidden();})
-				   .filter(function (node) {
-                                	graph.setNode(node, { label: node.getId() });
-                                });
-
-		session.getD3Data().getLinks()
-				.filter(function(link){
-						return ((!link.getSource().isHidden()) &&
-							(!link.getTarget().isHidden()));
-					})
-				.filter(function(link){
-                                	console.log("edge");
-                                	graph.setEdge(link.getSource().getId(), link.getTarget().getId(), { label: link.getId() });
-                                });
-
-		// Create the renderer
-		//var render = new dagreD3.render();
-		//render(d3.select("#D3viz"),graph);
 		
-		//graph.nodesep=800;
+		//create the graph structure from the MetExploreViz graph: here we are going to use the compound graph structure
+		session.getD3Data().getNodes()
+				.filter(function (node){return node.biologicalType=="reaction" && !node.isHidden();})
+				.filter(function (node){
+				   	// check if the reaction has only one substrate and one product
+				   		var connectedLinks=session.getD3Data().getLinks()
+				   			.filter(function(link){
+				   				return (link.source == node) || (link.target == node);
+				   				});
+				   			//console.log(connectedLinks);
+				   		if(connectedLinks.length==2){
+				   			//the node won't be used in the computation so we are going to add the source and the target and connect them
+				   			//For each of both links, get the source node and target nodes
+				   			var source;
+				   			var target;
+				   			connectedLinks.forEach(function(link){
+				   				if(link.source == node){
+				   					target=link.getTarget();
+				   				}
+				   				if(link.target == node){
+				   					source=link.getSource();
+				   				}	
+				   			});
+				   			var sourceNode=graph.setNode(source, {label:source.id});
+				   			var targetNode=graph.setNode(target, {label:target.id});
 
-		dagre.layout(graph);
-		//graph.rankDir = 'LR';
+				   			if(graph.edge(source,target)){
+			   					//The label of the reaction which has the same substrate and product and is already in the graph.
+				   				var referenceReactionLabel=graph.edge(source,target).label;
+				   				var referenceNode = session.getD3Data().getNodes()
+				   				.find(function (n){return n.id==referenceReactionLabel;});
+				   				//if the edge is already in the graph we have to store the reaction since it won't be placed in the final view.
+				   				//indeed dagre doesn't allow multi-edges.
+				   				// who have to associate the current reaction to the one that will be drawn
+				   				
+	
+				   				//console.log(graph.edge(source,target).label);
+				   				//console.log(node.getId());
+				   				if (!referenceNode.associatedReactions){
+				   					var associatedReactions=[];
+				   					referenceNode.associatedReactions=associatedReactions;
+				   					referenceNode.associatedReactions.push(node);
+				   					//console.log("push ",node);
+				   					//console.log("ref ",referenceNode);
+				   				}
+				   				else{
+				   					referenceNode.associatedReactions.push(node);
+				   				}
+
+				   				//console.log("ref ", referenceNode);
+				   				
+				   			}
+				   			else{
+				   				graph.setEdge(source.id, target.id, { label: node.getId()});
+				   			}
+				   			
+
+				   			//console.log(graph.edge(source,target));
+				   			//console.log(targetNode);
+				   			
+				   		}
+				   		else{
+				   			//Add the reaction to the node list
+				   			//add connection to the reaction and substrate product
+				   				connectedLinks.forEach(function(link){
+				   				graph.setNode(link.getSource(), {label:link.getSource().id});
+				   				graph.setNode(link.getTarget(), {label:link.getTarget().id});
+				   				graph.setEdge(link.getSource().id, link.getTarget().id, { label: link.getSource().id+' -- '+link.getTarget().id });
+				   			});
+				   		}
+                    	
+                     });
+
+		var layout=dagre.layout(graph);
+
+		//!!!! ISSUE !!!
+		// If two reactions have same substrates and same products only one is taken into account....the second one won't appear
 
 		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
                                 .each(function(node){
-                                	 var x;
-                                	 var y;
-                                	graph.nodes().forEach(function(n) {
+                               //console.log("associated reactions",node.associatedReactions);
+                                //place nodes that were in the grap
+                                	
+                                      			
+
+
+                                	if(graph.node(node)){
+                                	 	var x;
+                                	 	var y;
+                                		graph.nodes().forEach(function(n) {
 											var nodeG = graph.node(n);
 											if(nodeG.label === node.getId())
 												{
@@ -567,119 +621,54 @@ metExploreD3.GraphPanel = {
 													y=nodeG.y;
 												}
 											});
-
-
                                         node.px = x;
                                         node.py = y;
                                         node.x = x;
                                         node.y = y;
                                         node.setLocked(true);
                                         node.fixed=node.isLocked();
+                                	}
+                                //place nodes that were not in the graph
+                                	else
+                                	{
 
-                                    });
-                               
+                                		for(label in  graph._edgeLabels){
+                                			//look for the edge where the node is located
+                                			var edgeLabel=graph._edgeLabels[label].label;
+                                			if(edgeLabel == node.getId()){
+                                				//console.log(graph._edgeLabels[label]);
+                                				//console.log(graph._edgeLabels[label].points[0].y);
+                                				node.px = graph._edgeLabels[label].points[1].x;
+                                        		node.py = graph._edgeLabels[label].points[1].y;
+                                        		node.x = graph._edgeLabels[label].points[1].x;
+                                        		node.y = graph._edgeLabels[label].points[1].y;
+                                        		node.setLocked(true);
+                                        		node.fixed=node.isLocked();
+                                 				if(node.associatedReactions){
+                                 					for(associated in node.associatedReactions){
+                                 						var associatedNode=node.associatedReactions[associated];
+                                 						console.log("asssociated ",associatedNode);
+                                 						associatedNode.px=node.px+10;
+                                 						associatedNode.py=node.py;
+                                 						associatedNode.x=node.x+10;
+                                 						associatedNode.y=node.y;
+                                 						associatedNode.setLocked(true);
+                                 						associatedNode.isLocked();
+                                        				//console.log("set coordinates ",node.associatedReactions)
+                                 					}
+                                        		}
+                                        		//console.log("associated reactions",node.associatedReactions);
 
+                                        		//place all associated nodes
+                                			}
+										}
+                                	}
+
+
+                                    });         
         metExploreD3.GraphNetwork.tick("viz");
+		},
 
-		console.log(graph);
-
-        //console.log(graph.edges());
-
-
-		// var me = this;
-		// metExploreD3.hideInitialMask();
-
-  //       var panel = "viz";
-  //       var myMask = metExploreD3.createLoadMask("Move nodes in progress...", panel);
-  //       if(myMask!== undefined){
-
-  //           metExploreD3.showMask(myMask);
-
-  //           metExploreD3.deferFunction(function() {
-
-  //               metExploreD3.displayMessageYesNo("Set nodes coordinates",'Do you want highlight moved nodes.',function(btn){
-  //                   if(btn==="yes")
-  //                   {
-  //                       moveNodes(true);
-  //                   }
-  //                   else
-  //                   {
-  //                       moveNodes(false);
-  //                   }
-  //               });
-
-  //               function moveNodes(highlight){
-  //                   var session = _metExploreViz.getSessionById("viz");
-
-  //                   /**Parse the gml file*/
-
-  //                   var nodesToMove=[];
-  //                    var lines = gml.split('\n');
-  //   				for(var line = 0; line < lines.length; line++){
-  //     						//label is the way to identify nodes since the identifier is lost when exported from MetExplore
-  //     						var text = lines[line]
-  //     						if (text.indexOf('node') !== -1)
-  //     							{
-  //     								var id=lines[line+1].split(" ")[1];
-  //     								var node = session.getD3Data().getNodeById(id);
-  //     								console.log(session.getD3Data().getNodeById(id));
-  //     								console.log(id);
-  //     								if(node)
-  //     									{
-  //     										//node.x=lines[line+4].split(' ')[1];
-  //     										//console.log(lines[line+4].split(' ')[1]);
-  //     										//node.x=3;
-  //     										//node.y=lines[line+5].split(' ')[1];
-  //     										//node.y=2;
-  //     										nodesToMove.push({dbIdentifier:node.getDbIdentifier(),x:parseInt(lines[line+4].split(' ')[1])*10,y:parseInt(lines[line+5].split(' ')[1])*10});
-  //     									}
-
-  //     							}
-
-  //   					}
-  //   					//console.log(nodesToMove);
-  //   				if(nodesToMove.length>0){
-  //                       if(session!==undefined)
-  //                       {
-  //                           if(highlight)
-  //                               metExploreD3.GraphNode.unselectAll("#viz");
-
-  //                           metExploreD3.GraphNetwork.animationButtonOff("viz");
-  //                           var force = session.getForce();
-  //                           force.stop();
-  //                           d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-  //                               .each(function(node){
-  //                                   var nodeToMove = nodesToMove.find(function (aNode) {
-  //                                       return aNode.dbIdentifier === node.getDbIdentifier();
-  //                                   });
-  //                                   if(nodeToMove){
-  //                                       node.px = nodeToMove.x ;
-  //                                       node.py = nodeToMove.y ;
-  //                                       node.x = nodeToMove.x ;
-  //                                       node.y = nodeToMove.y ;
-  //                                       node.setLocked(true);
-  //                                       node.fixed=node.isLocked();
-
-  //                                       if(highlight)
-  //                                       	metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
-  //                                   }
-  //                               });
-
-  //                           metExploreD3.GraphNetwork.tick("viz");
-  //                           metExploreD3.hideMask(myMask);
-
-  //                       }
-  //                     }  
-
-		// 		}
-
-  //           }, 100);
-  //       }
-
-
-
-
-	},
 
 	/*****************************************************
 	* Update the network

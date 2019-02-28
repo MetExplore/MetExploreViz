@@ -52,11 +52,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
             xtype:'buttonImportCoordinates'/*,text: 'Refresh/Build network'*/
         },
         {
-            text: 'Import gml file',
-            reference:'importGML',
-            //iconCls:'importCoordinates'
-        },
-        {
             hidden:true,
             id:'buttonImportGML',
             xtype:'buttonImportGML'/*,text: 'Refresh/Build network'*/

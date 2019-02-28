@@ -88,6 +88,17 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  tooltip:'Make clusters in function of highlighted component',
                  iconCls:'makeClusters',
                  disabled:true
-             }
+             },
+            {
+                text: 'Hierarchical layout', 
+               // scale: 'large',
+               // menu:{id:'hierarchicalLayoutMenu',xtype: 'hierarchicalLayoutMenu'},
+              //  id:'hierarchicalLayoutMenuID',
+                reference:'hierarchicalLayout',
+                tooltip:'Apply hierarchical drawing algorithm on the network',
+                iconCls:'hierarchicalDrawing',
+              //  padding:'0 0 0 0',
+              //  iconCls:'hierarchicalLayoutMenu'
+             },
         ]
 });
