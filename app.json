@@ -232,6 +232,9 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/dagre.js"
+        },
+        {
             "path": "resources/lib/graphjs/graph.js",
             "bundle": true
         },

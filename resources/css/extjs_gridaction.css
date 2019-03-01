@@ -404,13 +404,6 @@ p {
   background-repeat: no-repeat;
 }
 
-.drawhierarchicallayout {
-       background-image: url(../icons/drawhierarchicallayout.png);
-    background-size: 100% 100%;
-  background-position: 0% 0%;
-  background-repeat: no-repeat;
-}
-
 .handcursor {
        background-image: url(../icons/handcursor.svg);
     background-size: 100% 100%;
@@ -498,7 +491,8 @@ p {
 }
 /*Icons were downloaded on http://icomoon.io/app/*/
 .hierarchicalDrawing {
-    background-image: url(../icons/hierarchicDrawing.svg);
+    /*background-image: url(../icons/hierarchicDrawing.svg);*/
+    background-image: url(../icons/hierarchical.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
@@ -564,7 +558,6 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
-
 .exportSvg {
     background-image: url(../icons/exportSvg.png);
     background-size: 100% 100%;
