@@ -524,7 +524,26 @@ metExploreD3.GraphPanel = {
 		var graph = new dagre.graphlib.Graph().setGraph({});
 		var session = _metExploreViz.getSessionById('viz');
 		
-		//create the graph structure from the MetExploreViz graph: here we are going to use the compound graph structure
+		//create the graph structure from the MetExploreViz graph
+		//In order to reduce the number of layers, we won't consider all ther reactions to be nodes in the dagre graph
+		//If a reaction has only one substrate and one product (two connected links), we won't use it in the computation
+		//Algorithm is as follow:
+		//For each reaction node in the original graph
+		//	if the node has two links
+		//		if it is the first time we visit the reaction
+		//			add the substrate as a node in the graph
+		//			add the product as a node in the graph
+		//			add the edge (substrate,product) in the graph
+		//			set the label of the edge as the id of the reaction
+		//		else
+		//			find the reaciton r corresponding to the edge in the graph which has the same substrate and product
+		//			add the current reaction to the associated reaction list of r 
+		//	else
+		//		for each link connected to the reaction
+		//			add the metabolite to the graph
+		//			add the reaction to the graph
+		//			add the edge (metabolite,reaction) to the graph
+
 		session.getD3Data().getNodes()
 				.filter(function (node){return node.biologicalType=="reaction" && !node.isHidden();})
 				.filter(function (node){
@@ -559,30 +578,18 @@ metExploreD3.GraphPanel = {
 				   				//indeed dagre doesn't allow multi-edges.
 				   				// who have to associate the current reaction to the one that will be drawn
 				   				
-	
-				   				//console.log(graph.edge(source,target).label);
-				   				//console.log(node.getId());
 				   				if (!referenceNode.associatedReactions){
 				   					var associatedReactions=[];
 				   					referenceNode.associatedReactions=associatedReactions;
 				   					referenceNode.associatedReactions.push(node);
-				   					//console.log("push ",node);
-				   					//console.log("ref ",referenceNode);
 				   				}
 				   				else{
 				   					referenceNode.associatedReactions.push(node);
 				   				}
-
-				   				//console.log("ref ", referenceNode);
-				   				
 				   			}
 				   			else{
 				   				graph.setEdge(source.id, target.id, { label: node.getId()});
 				   			}
-				   			
-
-				   			//console.log(graph.edge(source,target));
-				   			//console.log(targetNode);
 				   			
 				   		}
 				   		else{
@@ -599,17 +606,21 @@ metExploreD3.GraphPanel = {
 
 		var layout=dagre.layout(graph);
 
-		//!!!! ISSUE !!!
-		// If two reactions have same substrates and same products only one is taken into account....the second one won't appear
 
+		//-----Drawing the graph
+		//For each node of the visualised graph
+		//		if the node is in the Dagre graph
+		//			use the Dagre coordinates to draw the node
+		//		else
+		//			for each edge
+		//				if the edge has a reaction as a label (it means this reaction has no corresponding node in the Dagre graph)
+		//					affect to the coordinates of the first bend to the reaction
+		//					for r=0 to the size of associated reaction AR table
+		//						set same y to AR[r]
+		//						set AR[r].x <- x+ 10*(AR[r]+1)
 		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
                                 .each(function(node){
-                               //console.log("associated reactions",node.associatedReactions);
-                                //place nodes that were in the grap
-                                	
-                                      			
-
-
+                                //place nodes that were in the graph
                                 	if(graph.node(node)){
                                 	 	var x;
                                 	 	var y;
@@ -636,8 +647,6 @@ metExploreD3.GraphPanel = {
                                 			//look for the edge where the node is located
                                 			var edgeLabel=graph._edgeLabels[label].label;
                                 			if(edgeLabel == node.getId()){
-                                				//console.log(graph._edgeLabels[label]);
-                                				//console.log(graph._edgeLabels[label].points[0].y);
                                 				node.px = graph._edgeLabels[label].points[1].x;
                                         		node.py = graph._edgeLabels[label].points[1].y;
                                         		node.x = graph._edgeLabels[label].points[1].x;
@@ -647,26 +656,61 @@ metExploreD3.GraphPanel = {
                                  				if(node.associatedReactions){
                                  					for(associated in node.associatedReactions){
                                  						var associatedNode=node.associatedReactions[associated];
-                                 						console.log("asssociated ",associatedNode);
-                                 						associatedNode.px=node.px+10;
+                                 						associatedNode.px=node.px+10*(associated+1);
                                  						associatedNode.py=node.py;
-                                 						associatedNode.x=node.x+10;
+                                 						associatedNode.x=node.x+10*(associated+1);
                                  						associatedNode.y=node.y;
                                  						associatedNode.setLocked(true);
-                                 						associatedNode.isLocked();
-                                        				//console.log("set coordinates ",node.associatedReactions)
+                                 						associatedNode.fixed=associatedNode.isLocked();
                                  					}
                                         		}
-                                        		//console.log("associated reactions",node.associatedReactions);
-
-                                        		//place all associated nodes
                                 			}
 										}
                                 	}
 
 
-                                    });         
+                                    });  
+
+
+
+
         metExploreD3.GraphNetwork.tick("viz");
+
+
+
+		// d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
+  //                               .each(function(link){
+  //                               	//console.log("---draw edges");
+  //                               	var source=link.getSource();
+  //                               	console.log(source.getId())
+  //                               	var target=link.getTarget();
+  //                               	// for all the edges in the Dagre graph
+  //                               	//		if it corresponds to a link
+  //                               	//			Draw the liknk with the points of the Dagre graph.
+  //                               	for(label in  graph._edgeLabels){
+  //                               			//look for the edge where the node is located
+  //                               			var edgeSource=graph._edgeLabels[label].label.split(" -- ")[0];
+  //                               			var edgeTarget=graph._edgeLabels[label].label.split(" -- ")[1];
+  //                               			 if(edgeSource==source.getId() && edgeTarget==target.getId()){
+  //                               			 	//get coordinates in DAGRE
+  //                               			 	//console.log(link);
+  //                               			 	console.log(d3.select(this).attr("d"));
+  //                               			 	var lineData = [ { "x": 120, "y": 20}, { "x": 120,  "y": 100},
+  //                 									{ "x": 40,  "y": 100}, { "x": 40,   "y": 180},
+  //                									{ "x": 500,  "y": 180}, { "x": 500,   "y": 100}];
+		// 										var lineFunction = d3.svg.line()
+		// 										 .x(function(d) { return d.x; })
+		// 										 .y(function(d) { return d.y; })
+		// 										 .interpolate("linear");
+ 	// 										d3.select(this).attr("d",lineFunction(lineData));
+ 	// 										console.log("after",d3.select(this).attr("d"));
+
+  //                               			 	//d3.select(this).attr("d", );
+  //                               			 }
+
+  //                               		}
+  //                               });
+        
 		},
 
 
