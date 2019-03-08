@@ -381,9 +381,7 @@ console.log("resizeViz");
 				   					source=link.getSource();
 				   				}	
 				   			});
-				   			console.log(source);
-				   			console.log(target);
-
+				   			
 				   			if(source && target) {
                                 var sourceNode = graph.setNode(source, {label: source.id});
 
