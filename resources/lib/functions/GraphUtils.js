@@ -1695,13 +1695,15 @@ metExploreD3.GraphUtils = {
 				var networkJSON ="graph [";
 				networkJSON +="\ndirected 1\n";
 				var i = 0;
-				var corresp = {};
+				//var corresp = {};
 				var sideCompounds = {};
 
-			   	_metExploreViz.getSessionById('viz').getD3Data().getNodes().forEach(function(node){
-				    corresp[node.getId()] = i;
+			   	_metExploreViz.getSessionById('viz').getD3Data().getNodes()
+				.filter(function(node){return !node.isHidden();})
+			   	.forEach(function(node){
+				    //corresp[node.getId()] = i;
 					networkJSON+="node [\n";
-						networkJSON+="id "+i+"\n";
+						networkJSON+="id "+node.getId()+"\n";
 						if(node.getIsSideCompound()){
 							if(sideCompounds[node.getName()]!==undefined)
 							{
@@ -1725,11 +1727,17 @@ metExploreD3.GraphUtils = {
 					i++;
 				});
 
-				_metExploreViz.getSessionById('viz').getD3Data().getLinks().forEach(function(link){
+				_metExploreViz.getSessionById('viz').getD3Data().getLinks()
+				.filter(function(link){
+						return ((!link.getSource().isHidden()) &&
+							(!link.getTarget().isHidden()));
+					})
+				.forEach(function(link){
 				    	
 			    	networkJSON+="edge [\n";
-						networkJSON+="source "+corresp[link.getSource().getId()]+"\n";
-						networkJSON+="target "+corresp[link.getTarget().getId()]+"\n";
+						//networkJSON+="source "+corresp[link.getSource().getId()]+"\n";
+						networkJSON+="source "+link.getSource().getId()+"\n";
+						networkJSON+="target "+link.getTarget().getId()+"\n";
 						networkJSON+='label "'+
 										link.getSource().getId().replace("-", "")+
 										"-"+
@@ -1739,8 +1747,8 @@ metExploreD3.GraphUtils = {
 				    
 				    if(link.isReversible()==="true"){
 				    	networkJSON+="edge [\n";
-							networkJSON+="source "+corresp[link.getTarget().getId()]+"\n";
-							networkJSON+="target "+corresp[link.getSource().getId()]+"\n";
+							networkJSON+="source "+link.getTarget().getId()+"\n";
+							networkJSON+="target "+link.getSource().getId()+"\n";
 							networkJSON+='label "'+
 										link.getSource().getId().replace("-", "")+
 										"-"+

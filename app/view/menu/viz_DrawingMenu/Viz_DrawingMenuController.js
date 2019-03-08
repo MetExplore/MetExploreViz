@@ -71,6 +71,11 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			click : me.makeClusters,
 			scope : me
 		});
+
+		view.lookupReference('hierarchicalLayout').on({
+			click : me.hierarchicalLayout,
+			scope : me
+		});
 		
 		view.on({
 			enableMakeClusters : function(){
@@ -125,5 +130,9 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 	},
 	removeSideCompounds : function(){
 		metExploreD3.GraphNetwork.removeSideCompounds();
+	},
+	hierarchicalLayout : function(){
+		console.log("--- start hierarchical drawing");
+		metExploreD3.GraphPanel.hierarchicalDrawing();
 	}
 });
