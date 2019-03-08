@@ -381,31 +381,38 @@ console.log("resizeViz");
 				   					source=link.getSource();
 				   				}	
 				   			});
-				   			var sourceNode=graph.setNode(source, {label:source.id});
-				   			var targetNode=graph.setNode(target, {label:target.id});
+				   			console.log(source);
+				   			console.log(target);
 
-				   			if(graph.edge(source,target)){
-			   					//The label of the reaction which has the same substrate and product and is already in the graph.
-				   				var referenceReactionLabel=graph.edge(source,target).label;
-				   				var referenceNode = session.getD3Data().getNodes()
-				   				.find(function (n){return n.id==referenceReactionLabel;});
-				   				//if the edge is already in the graph we have to store the reaction since it won't be placed in the final view.
-				   				//indeed dagre doesn't allow multi-edges.
-				   				// who have to associate the current reaction to the one that will be drawn
-				   				
-				   				if (!referenceNode.associatedReactions){
-				   					var associatedReactions=[];
-				   					referenceNode.associatedReactions=associatedReactions;
-				   					referenceNode.associatedReactions.push(node);
-				   				}
-				   				else{
-				   					referenceNode.associatedReactions.push(node);
-				   				}
-				   			}
-				   			else{
-				   				graph.setEdge(source.id, target.id, { label: node.getId()});
-				   			}
-				   			
+				   			if(source && target) {
+                                var sourceNode = graph.setNode(source, {label: source.id});
+
+                                var targetNode = graph.setNode(target, {label: target.id});
+
+                                if (graph.edge(source, target)) {
+                                    //The label of the reaction which has the same substrate and product and is already in the graph.
+                                    var referenceReactionLabel = graph.edge(source, target).label;
+                                    var referenceNode = session.getD3Data().getNodes()
+                                        .find(function (n) {
+                                            return n.id == referenceReactionLabel;
+                                        });
+                                    //if the edge is already in the graph we have to store the reaction since it won't be placed in the final view.
+                                    //indeed dagre doesn't allow multi-edges.
+                                    // who have to associate the current reaction to the one that will be drawn
+
+                                    if (!referenceNode.associatedReactions) {
+                                        var associatedReactions = [];
+                                        referenceNode.associatedReactions = associatedReactions;
+                                        referenceNode.associatedReactions.push(node);
+                                    }
+                                    else {
+                                        referenceNode.associatedReactions.push(node);
+                                    }
+                                }
+                                else {
+                                    graph.setEdge(source.id, target.id, {label: node.getId()});
+                                }
+                            }
 				   		}
 				   		else{
 				   			//Add the reaction to the node list
