@@ -9,17 +9,17 @@ metExploreD3.Features = {
 			"highlightSubnetwork":
 			{
 				description: "highlightSubnetwork",
-				enabledTo: ["Cottret", "Poupin", "Chazalviel", "Jourdan"]
+				enabledTo: []
 			},
         	"layouts":
             {
                 description: "layouts",
-                enabledTo: ["Cottret", "Poupin", "Chazalviel", "Jourdan"]
+                enabledTo: []
             },
             "algorithm":
             {
                 description: "layouts",
-                enabledTo: ["Cottret", "Poupin", "Chazalviel", "Jourdan"]
+                enabledTo: []
             },
             "align":
             {
@@ -29,7 +29,6 @@ metExploreD3.Features = {
 	},
 
     isEnabled : function(feature, currentUser) {
-        console.log(this.features[feature]);
     	if(this.features[feature]!=undefined)
     	 	return this.isEnabledForUser(feature, currentUser) || this.isEnabledForAll(feature) ;
     	return false;
@@ -42,7 +41,6 @@ metExploreD3.Features = {
     },
 
     isEnabledForAll : function(feature) {
-		console.log(this.features[feature]);
     	if(this.features[feature]!==undefined)
     		return this.features[feature].enabledTo.indexOf("all")!==-1;
     	return false;
