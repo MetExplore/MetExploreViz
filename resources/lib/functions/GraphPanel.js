@@ -197,10 +197,15 @@ console.log("resizeViz");
 					var h = $("#"+panel).height();
 					var w = $("#"+panel).width();
 					force.size([ w, h ]);
-	                var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
-	                if(anim=="true")
-	                    force.resume();
-				}
+
+					if(d3.select("#"+panel).select("#buttonAnim").node()){
+
+						var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
+		                if(anim=="true")
+		                    force.resume();
+
+		            }
+	            }
 			}
 		}
 		var sessions = _metExploreViz.getSessionsSet();
