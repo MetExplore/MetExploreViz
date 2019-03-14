@@ -68,20 +68,14 @@ console.log("resizeViz");
             var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
             var maxDim = Math.max(maxDimRea, maxDimMet);
             // Initiate the D3 force drawing algorithm
-            var force = d3.layout.force().friction(0.90).gravity(0.06)
-                .charge(-150)
-                .linkDistance(function(link){
-                    if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-                        return linkStyle.getSize()/2+maxDim;
-                    else
-                        return linkStyle.getSize()+maxDim;
-                })
-                .size([ w, h ]);
 
             var session = _metExploreViz.getSessionById(panel);
 
+			var force = session.getForce();
+
+			force.size([ w, h ]);
+
             session.setActivity(true);
-            session.setForce(force);
 
 
             // Redefine Zoom and brush
@@ -118,6 +112,40 @@ console.log("resizeViz");
 
 			d3.select("#metexplore").text('MetExploreViz').attr('x', $("#viz").width() - 112).attr(
 					'y',  $("#viz").height() - 10);
+
+            if(session!=undefined)
+            {
+                if(session.isLinked()){
+
+                    var sessionMain = _metExploreViz.getSessionById("viz");
+                    var force = sessionMain.getForce();
+                    if(force!=undefined){
+                        var h = $("#viz").height();
+                        var w = $("#viz").width();
+                        force.size([ w, h ]);
+                        var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
+                        if(anim=="true")
+                            force.resume();
+                    }
+                }
+                else
+                {
+                    var force = session.getForce();
+                    if(force!=undefined){
+                        var h = $("#"+panel).height();
+                        var w = $("#"+panel).width();
+                        force.size([ w, h ]);
+
+                        if(d3.select("#"+panel).select("#buttonAnim").node()){
+
+                            var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
+                            if(anim=="true")
+                                force.resume();
+
+                        }
+                    }
+                }
+            }
 		}
 	},
 
