@@ -637,12 +637,24 @@ metExploreD3.GraphNetwork = {
                 d3.selectAll("#brush").classed("hide", false);
             });
 
-        var brush = d3.select("#"+panel).select("#D3viz")
+        d3.select("#"+panel).select("#D3viz")
+            .select("#brush").remove();
+
+        d3.select("#"+panel).select("#D3viz")
             .append("g")
             .datum(function() { return {selected: false, previouslySelected: false}; })
             .attr('id','brush')
             .attr("class", "brush")
             .call(metExploreD3.GraphNetwork.brushEvnt);
+
+        var brush = d3.select("#"+panel).select("#D3viz")
+            .select("#brush").node();
+
+        var viz = d3.select("#"+panel).select("#D3viz").node();
+        if(viz.firstChild){
+            viz.insertBefore(brush, viz.firstChild);
+        }
+
     },
 
     initShortCut: function () {
@@ -2903,17 +2915,18 @@ metExploreD3.GraphNetwork = {
 
         metExploreD3.GraphCaption.majCaption(panelLinked);
 
-        s_GeneralStyle.setDisplayConvexhulls(false);
-        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-        metExploreD3.GraphNetwork.tick(panelLinked);
+        if(s_GeneralStyle.isDisplayedConvexhulls()==="Pathways") {
+            s_GeneralStyle.setDisplayConvexhulls(false);
+            metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+            metExploreD3.GraphNetwork.tick(panelLinked);
 
-        s_GeneralStyle.setDisplayConvexhulls("Pathways");
-        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-        metExploreD3.GraphNetwork.tick(panelLinked);
+            s_GeneralStyle.setDisplayConvexhulls("Pathways");
+            metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+            metExploreD3.GraphNetwork.tick(panelLinked);
 
-        s_GeneralStyle.setDisplayCaption("Pathways");
-        metExploreD3.GraphCaption.majCaption(panelLinked);
-
+            s_GeneralStyle.setDisplayCaption("Pathways");
+            metExploreD3.GraphCaption.majCaption(panelLinked);
+        }
         var networkData = sessionLinked.getD3Data();
         var force = sessionLinked.getForce();
 
