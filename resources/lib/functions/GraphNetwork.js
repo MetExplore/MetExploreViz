@@ -10,6 +10,7 @@ metExploreD3.GraphNetwork = {
     task:"",
     brushing:false,
     brushEvnt:undefined,
+    taskZoom: "",
     /*******************************************
      * Initialization of variables
      * @param {} panel : The panel where are the node
@@ -150,16 +151,39 @@ metExploreD3.GraphNetwork = {
 
                 // if visualisation is actived we add item to menu
                 if(session.isActive()){
+                    if(sessionLinked.getD3Data().getNodes().length>1000){
+                        d3.select("#"+panelLinked).selectAll("path.link").remove();
+                        if(metExploreD3.GraphNetwork.taskZoom)
+                            metExploreD3.stopTask(metExploreD3.GraphNetwork.taskZoom);
+
+                        metExploreD3.GraphNetwork.taskZoom = metExploreD3.createDelayedTask(
+                            function () {
+                                var alpha = _metExploreViz.getSessionById(panelLinked).getForce().alpha();
+
+                                if(alpha!==undefined){
+                                    console.log(alpha);
+                                    if(alpha<0.6){
+                                        console.log("Refresh", alpha);
+                                        var linkStyle = metExploreD3.getLinkStyle();
+                                        metExploreD3.GraphLink.refreshLinkZoom(panelLinked, _metExploreViz.getSessionById(panel), linkStyle);
+                                    }
+                                }
+                            }
+                        );
+
+                        metExploreD3.fixDelay(metExploreD3.GraphNetwork.taskZoom, 1000);
+                    }
+
                     var transX = d3EventTranslate[0];
                     var transY = d3EventTranslate[1];
 
-					d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
-						.attr("transform", "translate("+transX+","+transY+")scale(" + d3EventScale + ")");
-					var zoomListener = scale.getZoom();
-					zoomListener.translate([transX,transY]);
-					zoomListener.scale(d3EventScale);
-					// Firstly we changed the store which correspond to viz panel
-					scale.setZoomScale(d3EventScale);
+                    d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
+                        .attr("transform", "translate("+transX+","+transY+")scale(" + d3EventScale + ")");
+                    var zoomListener = scale.getZoom();
+                    zoomListener.translate([transX,transY]);
+                    zoomListener.scale(d3EventScale);
+                    // Firstly we changed the store which correspond to viz panel
+                    scale.setZoomScale(d3EventScale);
 
 
                     metExploreD3.GraphLink.tick(panelLinked, scale);
@@ -175,23 +199,11 @@ metExploreD3.GraphNetwork = {
         _MyThisGraphNode.dblClickable=false;
         var panel = this.parentNode.parentNode.id;
         var scale = metExploreD3.getScaleById(panel);
-        var zoomListener = scale.getZoom();
-        var session = _metExploreViz.getSessionById(panel);
-        var vizRect = document.getElementById(panel).getBoundingClientRect();
-        var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
 
         var zoomListener = scale.getZoom();
-        var width = parseInt(d3.select("#"+panel).select("#D3viz")
-            .style("width"));
-        var height = parseInt(d3.select("#"+panel).select("#D3viz")
-            .style("height"));
-
         zoomListener.scale(scale.getZoomScale()*1.1);
 
-		
-		zoomListener.event(d3.select("#"+panel).select("#D3viz"));		
-		
-
+		zoomListener.event(d3.select("#"+panel).select("#D3viz"));
 
         // Firstly we changed the store which correspond to viz panel
         scale.setZoomScale(scale.getZoomScale()*1.1);
@@ -207,16 +219,8 @@ metExploreD3.GraphNetwork = {
         _MyThisGraphNode.dblClickable=false;
         var panel = this.parentNode.parentNode.id;
         var scale = metExploreD3.getScaleById(panel);
-        var zoomListener = scale.getZoom();
-        var session = _metExploreViz.getSessionById(panel);
-        var vizRect = document.getElementById(panel).getBoundingClientRect();
-        var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
 
         var zoomListener = scale.getZoom();
-        var width = parseInt(d3.select("#"+panel).select("#D3viz")
-            .style("width"));
-        var height = parseInt(d3.select("#"+panel).select("#D3viz")
-            .style("height"));
 
         zoomListener.scale(scale.getZoomScale()*0.9);
 
@@ -457,7 +461,7 @@ metExploreD3.GraphNetwork = {
 
                 var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
-                _MyThisGraphNode.activePanel = this.parentNode.parentNode.id;
+                metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 
                 var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
@@ -1082,8 +1086,6 @@ metExploreD3.GraphNetwork = {
         metExploreD3.sortCompartmentInBiosource();
 
         metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
-
-        metExploreD3.GraphLink.pathwaysOnLink(panel);
 
         // metExploreD3.GraphNetwork.initPathways(panel);
         metExploreD3.GraphCaption.majCaptionPathwayOnLink();
