@@ -2282,9 +2282,9 @@ metExploreD3.GraphNetwork = {
             var newID=theNode.getId()+"-"+reaction.getId();
             //add the node to the data and viz
             var newNode=metExploreD3.GraphNetwork.addMetaboliteInDrawing(theNode,theNode.getId(),reaction.getId(),panel);
-            console.log(newNode);
+
             newNode.getPathways().forEach(function (pathwayName) {
-                console.log(pathwayName);
+
                 var pathwayModel = networkData.getPathwayByName(pathwayName);
                 if(pathwayModel)
                 {
@@ -2302,9 +2302,9 @@ metExploreD3.GraphNetwork = {
             var newID=theNode.getId()+"-"+reaction.getId();
             //add the link from the reaction to theNode
             var newNode=metExploreD3.GraphNetwork.addMetaboliteInDrawing(theNode,theNode.getId(), reaction.getId(),panel);
-            console.log(newNode);
+
             newNode.getPathways().forEach(function (pathwayName) {
-                console.log(pathwayName);
+
                 var pathwayModel = networkData.getPathwayByName(pathwayName);
                 if(pathwayModel)
                 {
