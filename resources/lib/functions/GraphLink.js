@@ -526,13 +526,9 @@ metExploreD3.GraphLink = {
      * @param {} linkStyle : Store which contains links style
      * @param {} metaboliteStyle : Store which contains metabolites style
      */
-    refreshLink: function (parent, session, linkStyle, metaboliteStyle) {
+    refreshDataLink: function (parent, session) {
         metExploreD3.GraphLink.panelParent = "#" + parent;
         var networkData = session.getD3Data();
-
-        var size = 20;
-        // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-        var refY = linkStyle.getMarkerWidth() / 2;
 
         d3.select("#" + parent).select("#D3viz").select("#graphComponent")
             .selectAll(".linkGroup")
@@ -573,6 +569,21 @@ metExploreD3.GraphLink = {
 
         metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(metExploreD3.GraphLink.visibleLinks, function keyFunc(d, i) { return d.getId() });
+    },
+
+    /*******************************************
+     * Init the visualization of links
+     * @param {} parent : The panel where the action is launched
+     * @param {} session : Store which contains global characteristics of session
+     * @param {} linkStyle : Store which contains links style
+     * @param {} linkStyle : Store which contains links style
+     * @param {} metaboliteStyle : Store which contains metabolites style
+     */
+    refreshLink: function (parent, linkStyle) {
+
+        var size = 20;
+        // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
+        var refY = linkStyle.getMarkerWidth() / 2;
 
         metExploreD3.GraphLink.link.remove();
 

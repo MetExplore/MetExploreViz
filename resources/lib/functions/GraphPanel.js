@@ -882,6 +882,7 @@ console.log("resizeViz");
 
 				for (var key in sessions) {
 					metExploreD3.GraphNetwork.refreshSvg(key);
+                    metExploreD3.GraphNetwork.refreshViz(key);
                     // set style of previous session from JSON
                     var networkDataViz = new NetworkData(key);
                     networkDataViz.cloneObject(sessions[key].d3Data);
@@ -970,7 +971,8 @@ console.log("resizeViz");
 				if(overlap && !metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
 					metExploreD3.displayMessageYesNo("Coodinates",'Do you want keep node coordinates.',function(btn){
 		                if(btn=="yes")
-		                {   
+		                {
+                            metExploreD3.GraphNetwork.refreshViz("viz");
 		                	var selected = [];
 				            oldCoodinates.forEach(function(coor){
 				            	var node = networkData.getNodeById(coor.id);
