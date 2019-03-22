@@ -14,7 +14,7 @@ metExploreD3.GraphNetwork = {
     first: true,
     /*******************************************
      * Initialization of variables
-     * @param {} panel : The panel where are the node
+     * @param {string} panel : The panel where are the node
      */
     delayedInitialisation : function(panel) {
 
@@ -39,10 +39,10 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Refresh the graph interface & resize it if it's big at the beginnning
-     * @param {} panel : The panel to refresh
+     * @param {string} panel : The panel to refresh
      */
     tick : function(panel){
-        if(_metExploreViz.getComparedPanelById(panel)!=null || panel=="viz"){
+        if(_metExploreViz.getComparedPanelById(panel)!==null || panel==="viz"){
             var alpha = _metExploreViz.getSessionById(panel).getForce().alpha();
 
             var scale = metExploreD3.getScaleById(panel);
@@ -132,7 +132,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Zoom on the main panel and on link graph
-     * @param {} panel : The panel to refresh
+     * @param {string} panel : The panel to refresh
      */
     zoom:function(panel) {
         var d3EventScale = d3.event.scale;
@@ -147,8 +147,8 @@ metExploreD3.GraphNetwork = {
                 // else d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 
-                if(d3EventSourceEvent !=null)
-                    if(d3EventSourceEvent.type=='wheel')
+                if(d3EventSourceEvent !==null)
+                    if(d3EventSourceEvent.type==='wheel')
                         session.setResizable(false);
 
                 // if visualisation is actived we add item to menu
