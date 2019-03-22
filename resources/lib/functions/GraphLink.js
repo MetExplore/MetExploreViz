@@ -5,6 +5,7 @@
 metExploreD3.GraphLink = {
 
     link: "",
+    visibleLinks: "",
     panelParent: "",
 
     /**********************************************/
@@ -525,13 +526,9 @@ metExploreD3.GraphLink = {
      * @param {} linkStyle : Store which contains links style
      * @param {} metaboliteStyle : Store which contains metabolites style
      */
-    refreshLink: function (parent, session, linkStyle, metaboliteStyle) {
+    refreshDataLink: function (parent, session) {
         metExploreD3.GraphLink.panelParent = "#" + parent;
         var networkData = session.getD3Data();
-
-        var size = 20;
-        // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
-        var refY = linkStyle.getMarkerWidth() / 2;
 
         d3.select("#" + parent).select("#D3viz").select("#graphComponent")
             .selectAll(".linkGroup")
@@ -560,7 +557,7 @@ metExploreD3.GraphLink = {
         var unique = link.filter( onlyUnique );
 
         networkData.links=unique;
-        var visibleLinks = networkData.getLinks()
+        metExploreD3.GraphLink.visibleLinks = networkData.getLinks()
             .filter(function (link) {
                 var target, source;
                 target = link.getTarget();
@@ -571,7 +568,22 @@ metExploreD3.GraphLink = {
 
 
         metExploreD3.GraphLink.link = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .data(visibleLinks, function keyFunc(d, i) { return d.getId() });
+            .data(metExploreD3.GraphLink.visibleLinks, function keyFunc(d, i) { return d.getId() });
+    },
+
+    /*******************************************
+     * Init the visualization of links
+     * @param {} parent : The panel where the action is launched
+     * @param {} session : Store which contains global characteristics of session
+     * @param {} linkStyle : Store which contains links style
+     * @param {} linkStyle : Store which contains links style
+     * @param {} metaboliteStyle : Store which contains metabolites style
+     */
+    refreshLink: function (parent, linkStyle) {
+
+        var size = 20;
+        // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
+        var refY = linkStyle.getMarkerWidth() / 2;
 
         metExploreD3.GraphLink.link.remove();
 
@@ -596,7 +608,52 @@ metExploreD3.GraphLink = {
             .style("opacity", 1)
             .style("stroke-dasharray", null);
 
-        metExploreD3.GraphLink.pathwaysOnLink(parent);
+
+        if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
+            metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+
+    },
+
+ /*******************************************
+     * Init the visualization of links
+     * @param {} parent : The panel where the action is launched
+     * @param {} session : Store which contains global characteristics of session
+     * @param {} linkStyle : Store which contains links style
+     * @param {} linkStyle : Store which contains links style
+     * @param {} metaboliteStyle : Store which contains metabolites style
+     */
+    refreshLinkZoom: function (parent, session, linkStyle, metaboliteStyle) {
+        metExploreD3.GraphLink.panelParent = "#" + parent;
+        var networkData = session.getD3Data();
+
+        d3.select("#" + parent).select("#D3viz").select("#graphComponent")
+            .selectAll(".linkGroup")
+            .remove();
+
+        metExploreD3.GraphLink.link.remove();
+
+        metExploreD3.GraphLink.link.enter()
+            .insert("svg:g", ":first-child")
+            .attr("class", "linkGroup")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d", function (link) {
+                return metExploreD3.GraphLink.funcPath3(link, parent, this.id, 3);
+            })
+            .attr("class", "link").classed("reaction", true)
+            .attr("fill-rule", "evenodd")
+            .attr("fill", function (d) {
+                if (d.interaction == "out")
+                    return linkStyle.getMarkerOutColor();
+                else
+                    return linkStyle.getMarkerInColor();
+            })
+            .style("stroke", linkStyle.getStrokeColor())
+            .style("stroke-width", 0.5)
+            .style("opacity", 1)
+            .style("stroke-dasharray", null);
+
+
         if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
             metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 

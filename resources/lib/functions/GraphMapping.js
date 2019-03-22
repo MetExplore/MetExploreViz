@@ -2521,8 +2521,10 @@ metExploreD3.GraphMapping = {
 
 		var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 		var linkStyle = metExploreD3.getLinkStyle();
-		if(panel==="viz")
-			metExploreD3.GraphLink.refreshLink('viz', session, linkStyle, metaboliteStyle);
+		if(panel==="viz"){
+            metExploreD3.GraphLink.refreshDataLink('viz', session);
+            metExploreD3.GraphLink.refreshLink('viz', linkStyle);
+		}
 	},
 
 

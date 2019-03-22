@@ -10,9 +10,11 @@ metExploreD3.GraphNetwork = {
     task:"",
     brushing:false,
     brushEvnt:undefined,
+    taskZoom: "",
+    first: true,
     /*******************************************
      * Initialization of variables
-     * @param {} panel : The panel where are the node
+     * @param {string} panel : The panel where are the node
      */
     delayedInitialisation : function(panel) {
 
@@ -37,10 +39,11 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Refresh the graph interface & resize it if it's big at the beginnning
-     * @param {} panel : The panel to refresh
+     * @param {string} panel : The panel to refresh
      */
     tick : function(panel){
-        if(_metExploreViz.getComparedPanelById(panel)!=null || panel=="viz"){
+        if(_metExploreViz.getComparedPanelById(panel)!==null || panel==="viz"){
+            var alpha = _metExploreViz.getSessionById(panel).getForce().alpha();
 
             var scale = metExploreD3.getScaleById(panel);
 
@@ -81,27 +84,27 @@ metExploreD3.GraphNetwork = {
                     var newScale = previousScale-(previousScale*updateScale);
                     zoomListener.scale(newScale);
 
-					var newWidth = newScale*width;
-					var newHeight = newScale*height;
-					var xScale = (width-newWidth)/2;
-					var yScale = (height-newHeight)/2;
-					zoomListener.translate([xScale,yScale]);
-					
-					zoomListener.event(d3.select("#"+panel).select("#D3viz"));	
-	            	
-	            	scale.setZoomScale(newScale);
+                    var newWidth = newScale*width;
+                    var newHeight = newScale*height;
+                    var xScale = (width-newWidth)/2;
+                    var yScale = (height-newHeight)/2;
+                    zoomListener.translate([xScale,yScale]);
 
-				}
-				else
-				{
-					if(!((vizRect.top+height/10>graphComponentRect.top && vizRect.bottom-height/10<graphComponentRect.bottom) 
-										|| (vizRect.left+width/10>graphComponentRect.left && vizRect.right-width/10<graphComponentRect.right))){
-						var dataLength =session.getD3Data().getNodesLength();
-						var delay = 3000;
-						if (dataLength < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())						
-							delay = 3000;
-							
-						metExploreD3.fixDelay(metExploreD3.GraphNetwork.task, delay);
+                    zoomListener.event(d3.select("#"+panel).select("#D3viz"));
+
+                    scale.setZoomScale(newScale);
+
+                }
+                else
+                {
+                    if(!((vizRect.top+height/10>graphComponentRect.top && vizRect.bottom-height/10<graphComponentRect.bottom)
+                                        || (vizRect.left+width/10>graphComponentRect.left && vizRect.right-width/10<graphComponentRect.right))){
+                        var dataLength =session.getD3Data().getNodesLength();
+                        var delay = 3000;
+                        if (dataLength < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
+                            delay = 3000;
+
+                        metExploreD3.fixDelay(metExploreD3.GraphNetwork.task, delay);
 
                         var zoomListener = scale.getZoom();
 
@@ -111,25 +114,25 @@ metExploreD3.GraphNetwork = {
                         var newScale = previousScale+(previousScale*updateScale);
                         zoomListener.scale(newScale);
 
-						var newWidth = newScale*width;
-						var newHeight = newScale*height;
-						var xScale = (width-newWidth)/2;
-						var yScale = (height-newHeight)/2;
-						zoomListener.translate([xScale,yScale]);
-						
-						zoomListener.event(d3.select("#"+panel).select("#D3viz"));	
-		            	
-		            	scale.setZoomScale(newScale);
+                        var newWidth = newScale*width;
+                        var newHeight = newScale*height;
+                        var xScale = (width-newWidth)/2;
+                        var yScale = (height-newHeight)/2;
+                        zoomListener.translate([xScale,yScale]);
 
-					}
-				}
-			}
-		}
+                        zoomListener.event(d3.select("#"+panel).select("#D3viz"));
+
+                        scale.setZoomScale(newScale);
+
+                    }
+                }
+            }
+        }
 	},
 
     /*******************************************
      * Zoom on the main panel and on link graph
-     * @param {} panel : The panel to refresh
+     * @param {string} panel : The panel to refresh
      */
     zoom:function(panel) {
         var d3EventScale = d3.event.scale;
@@ -144,22 +147,43 @@ metExploreD3.GraphNetwork = {
                 // else d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll('text').classed("hide", false);
 
 
-                if(d3EventSourceEvent !=null)
-                    if(d3EventSourceEvent.type=='wheel')
+                if(d3EventSourceEvent !==null)
+                    if(d3EventSourceEvent.type==='wheel')
                         session.setResizable(false);
 
                 // if visualisation is actived we add item to menu
                 if(session.isActive()){
+                    if(sessionLinked.getD3Data().getNodes().length>1000){
+                        d3.select("#"+panelLinked).selectAll("path.link").remove();
+                        if(metExploreD3.GraphNetwork.taskZoom)
+                            metExploreD3.stopTask(metExploreD3.GraphNetwork.taskZoom);
+
+                        metExploreD3.GraphNetwork.taskZoom = metExploreD3.createDelayedTask(
+                            function () {
+                                var alpha = _metExploreViz.getSessionById(panelLinked).getForce().alpha();
+
+                                if(alpha!==undefined){
+                                    if(alpha<0.08){
+                                        var linkStyle = metExploreD3.getLinkStyle();
+                                        metExploreD3.GraphLink.refreshLinkZoom(panelLinked, _metExploreViz.getSessionById(panel), linkStyle);
+                                    }
+                                }
+                            }
+                        );
+
+                        metExploreD3.fixDelay(metExploreD3.GraphNetwork.taskZoom, 2000);
+                    }
+
                     var transX = d3EventTranslate[0];
                     var transY = d3EventTranslate[1];
 
-					d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
-						.attr("transform", "translate("+transX+","+transY+")scale(" + d3EventScale + ")");
-					var zoomListener = scale.getZoom();
-					zoomListener.translate([transX,transY]);
-					zoomListener.scale(d3EventScale);
-					// Firstly we changed the store which correspond to viz panel
-					scale.setZoomScale(d3EventScale);
+                    d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent")
+                        .attr("transform", "translate("+transX+","+transY+")scale(" + d3EventScale + ")");
+                    var zoomListener = scale.getZoom();
+                    zoomListener.translate([transX,transY]);
+                    zoomListener.scale(d3EventScale);
+                    // Firstly we changed the store which correspond to viz panel
+                    scale.setZoomScale(d3EventScale);
 
 
                     metExploreD3.GraphLink.tick(panelLinked, scale);
@@ -175,23 +199,11 @@ metExploreD3.GraphNetwork = {
         _MyThisGraphNode.dblClickable=false;
         var panel = this.parentNode.parentNode.id;
         var scale = metExploreD3.getScaleById(panel);
-        var zoomListener = scale.getZoom();
-        var session = _metExploreViz.getSessionById(panel);
-        var vizRect = document.getElementById(panel).getBoundingClientRect();
-        var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
 
         var zoomListener = scale.getZoom();
-        var width = parseInt(d3.select("#"+panel).select("#D3viz")
-            .style("width"));
-        var height = parseInt(d3.select("#"+panel).select("#D3viz")
-            .style("height"));
-
         zoomListener.scale(scale.getZoomScale()*1.1);
 
-		
-		zoomListener.event(d3.select("#"+panel).select("#D3viz"));		
-		
-
+		zoomListener.event(d3.select("#"+panel).select("#D3viz"));
 
         // Firstly we changed the store which correspond to viz panel
         scale.setZoomScale(scale.getZoomScale()*1.1);
@@ -207,16 +219,8 @@ metExploreD3.GraphNetwork = {
         _MyThisGraphNode.dblClickable=false;
         var panel = this.parentNode.parentNode.id;
         var scale = metExploreD3.getScaleById(panel);
-        var zoomListener = scale.getZoom();
-        var session = _metExploreViz.getSessionById(panel);
-        var vizRect = document.getElementById(panel).getBoundingClientRect();
-        var graphComponentRect = d3.select("#"+panel).select("#D3viz")[0][0].getElementById('graphComponent').getBoundingClientRect();
 
         var zoomListener = scale.getZoom();
-        var width = parseInt(d3.select("#"+panel).select("#D3viz")
-            .style("width"));
-        var height = parseInt(d3.select("#"+panel).select("#D3viz")
-            .style("height"));
 
         zoomListener.scale(scale.getZoomScale()*0.9);
 
@@ -457,7 +461,7 @@ metExploreD3.GraphNetwork = {
 
                 var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
-                _MyThisGraphNode.activePanel = this.parentNode.parentNode.id;
+                metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 
                 var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
@@ -840,11 +844,13 @@ metExploreD3.GraphNetwork = {
 
 
         force.on("start", function(){
+            console.log("start");
             if (networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())
                 d3.selectAll("path.link.reaction").remove();
         });
 
         force.on("end", function(){
+            console.log("end");
             var scale = metExploreD3.getScaleById(panel);
             if ((networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())) {
                 metExploreD3.GraphLink.reloadLinks(panel, networkData, linkStyle, metaboliteStyle);
@@ -932,9 +938,8 @@ metExploreD3.GraphNetwork = {
         //         else n.hide();
         //     });
 
-        metExploreD3.GraphLink.refreshLink(panel, session, linkStyle, metaboliteStyle);
+        metExploreD3.GraphLink.refreshDataLink(panel, session);
 
-        metExploreD3.GraphNode.refreshNode(panel);
         // Define play and stop button ->play function
         if(panel!="viz"){
             this.defineInteractionButtons(panel);
@@ -1052,13 +1057,24 @@ metExploreD3.GraphNetwork = {
                         }
                     });
                 }
-                // // Go when the bound effect is under .08
-                // if(force.alpha() < .08){
-                if(force.alpha() >= .005){
+
+                if(force.alpha() >= .005 && force.alpha() < .08){
                     setTimeout(metExploreD3.GraphNetwork.tick(panel), 0);
+                    if(metExploreD3.GraphNetwork.first){
+                        metExploreD3.GraphNetwork.refreshViz(panel);
+                        metExploreD3.GraphNetwork.first=false;
+                    }
+
                 }
-                // }
             });
+
+        session.setForce(force);
+
+        var networkDataInit = new NetworkData('viz');
+        networkDataInit.cloneObject(networkData);
+        _metExploreViz.setInitialData(networkDataInit);
+        var session = _metExploreViz.getSessionById(panel);
+        var force = session.getForce();
 
         if(session.isAnimated())
             force.start();
@@ -1069,37 +1085,44 @@ metExploreD3.GraphNetwork = {
             metExploreD3.GraphNetwork.tick(panel);
         }
 
+    },
+
+    refreshViz : function(panel){
+        var mask = metExploreD3.createLoadMask("Draw graph", panel);
+        metExploreD3.showMask(mask);
+        setTimeout(
+            function() {
+                var linkStyle = metExploreD3.getLinkStyle();
+                var generalStyle = metExploreD3.getGeneralStyle();
+
+                metExploreD3.GraphLink.refreshLink(panel, linkStyle);
+
+                metExploreD3.GraphNode.refreshNode(panel);
+
+                var isDisplay = generalStyle.isDisplayedConvexhulls();
 
 
-        var isDisplay = generalStyle.isDisplayedConvexhulls();
+                if (isDisplay) metExploreD3.GraphLink.displayConvexhulls(panel);
 
 
-        if(isDisplay) metExploreD3.GraphLink.displayConvexhulls(panel);
+                // Sort compartiments store
+                metExploreD3.sortCompartmentInBiosource();
 
-        session.setForce(force);
+                metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
 
-        // Sort compartiments store
-        metExploreD3.sortCompartmentInBiosource();
+                metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 
-        metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+                metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
-        metExploreD3.GraphLink.pathwaysOnLink(panel);
+                // reinitialize
+                metExploreD3.GraphStyleEdition.allDrawnCycles = [];
 
-        // metExploreD3.GraphNetwork.initPathways(panel);
-        metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+                var session = _metExploreViz.getSessionById(panel);
 
-        var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-
-        metExploreD3.GraphNetwork.tick(panel);
-        metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
-
-        var networkDataInit = new NetworkData('viz');
-        networkDataInit.cloneObject(networkData);
-        _metExploreViz.setInitialData(networkDataInit);
-
-        // reinitialize
-        metExploreD3.GraphStyleEdition.allDrawnCycles = [];
-
+                if (!session.isAnimated())
+                    metExploreD3.GraphNetwork.tick(panel);
+                metExploreD3.hideMask(mask);
+            }, 200);
     },
 
     rescale : function(panel){
@@ -1150,9 +1173,7 @@ metExploreD3.GraphNetwork = {
                             zoom.translate([transX, transY]);
                             zoom.scale(scale);
                             scaleViz.setZoomScale(scale);
-
                         });
-
             });
     },
 
@@ -2280,9 +2301,9 @@ metExploreD3.GraphNetwork = {
             var newID=theNode.getId()+"-"+reaction.getId();
             //add the node to the data and viz
             var newNode=metExploreD3.GraphNetwork.addMetaboliteInDrawing(theNode,theNode.getId(),reaction.getId(),panel);
-            console.log(newNode);
+
             newNode.getPathways().forEach(function (pathwayName) {
-                console.log(pathwayName);
+
                 var pathwayModel = networkData.getPathwayByName(pathwayName);
                 if(pathwayModel)
                 {
@@ -2300,9 +2321,9 @@ metExploreD3.GraphNetwork = {
             var newID=theNode.getId()+"-"+reaction.getId();
             //add the link from the reaction to theNode
             var newNode=metExploreD3.GraphNetwork.addMetaboliteInDrawing(theNode,theNode.getId(), reaction.getId(),panel);
-            console.log(newNode);
+
             newNode.getPathways().forEach(function (pathwayName) {
-                console.log(pathwayName);
+
                 var pathwayModel = networkData.getPathwayByName(pathwayName);
                 if(pathwayModel)
                 {
@@ -2697,8 +2718,6 @@ metExploreD3.GraphNetwork = {
      */
     duplicateSideCompound : function(theNodeElement, panel){
 
-        console.log(theNodeElement);
-
         metExploreD3.GraphFunction.removeCycleContainingNode(theNodeElement);
         var session = _metExploreViz.getSessionById(panel);
 
@@ -2908,7 +2927,9 @@ metExploreD3.GraphNetwork = {
         metExploreD3.GraphNode.refreshNode(panelLinked);
 
         var linkStyle = metExploreD3.getLinkStyle();
-        metExploreD3.GraphLink.refreshLink(panelLinked, sessionLinked, linkStyle);
+
+        metExploreD3.GraphLink.refreshDataLink(panelLinked, sessionLinked);
+        metExploreD3.GraphLink.refreshLink(panelLinked, linkStyle);
 
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 

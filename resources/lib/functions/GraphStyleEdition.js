@@ -450,12 +450,12 @@ metExploreD3.GraphStyleEdition = {
                 }
                 else if (flag === "reaction") {
                     s_ReactionStyle.setLabelOpacity(labelOpacity);
-                    return node.getBiologicalType() == "reaction";
+                    return node.getBiologicalType() === "reaction";
                 }
 
                 else if (flag === "metabolite") {
                     s_MetaboliteStyle.setLabelOpacity(labelOpacity);
-                    return node.getBiologicalType() == "metabolite";
+                    return node.getBiologicalType() === "metabolite";
                 }
             })
             .select("text")
