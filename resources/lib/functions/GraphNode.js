@@ -2163,14 +2163,13 @@ metExploreD3.GraphNode = {
                 }
             })
             .on("mouseover", function (d) {
-                var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-
+                var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node").nodes();
                 var nodeElemt=this;
 
                 d3.select(this)
                     .each(function (node) {
                         if (node.getBiologicalType() !== "pathway") {
-                            var last = nodes[0][nodes.size() - 1];
+                            var last = nodes[nodes.length - 1];
                             this.parentNode.insertBefore(this, last);
                             this.parentNode.insertBefore(last, this);
                         }

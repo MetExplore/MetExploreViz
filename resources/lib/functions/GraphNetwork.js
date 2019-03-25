@@ -520,7 +520,8 @@ metExploreD3.GraphNetwork = {
             })
             .on("end", function() {
                 if(d3.event.sourceEvent.button!==2 && d3.event.sourceEvent.button!==1 && metExploreD3.GraphNetwork.brushing){
-                    var extent = d3.event.target.extent();
+                    if (!d3.event.selection) return;
+                    var extent = d3.event.selection;
                     if(extent[1][0]-extent[0][0]>20 || extent[1][1]-extent[0][1]>20){
 
                         var iSselected;
@@ -629,8 +630,9 @@ metExploreD3.GraphNetwork = {
                     }
                 }
 
-                d3.event.target.clear();
-                d3.select(this).call(d3.event.target);
+                d3.select(this).call(metExploreD3.GraphNetwork.brushEvnt.move, null);
+                // d3.event.target.clear();
+                // d3.select(this).call(d3.event.target);
                 var scale = metExploreD3.getScaleById(panel);
 
                 d3.select("#"+panel).selectAll("#D3viz")
@@ -641,7 +643,6 @@ metExploreD3.GraphNetwork = {
                     .on("dblclick.zoom", null)
                     .on("mousedown", null);
 
-                d3.event.target.extent();
                 d3.selectAll("#brush").classed("hide", false);
             });
 
