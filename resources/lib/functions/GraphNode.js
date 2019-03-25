@@ -1048,7 +1048,7 @@ metExploreD3.GraphNode = {
                 .each('end', function () {
                     zoom.translate([0, 0]);
 
-                    zoom.scale(1);
+                    zoom.scaleBy(1);
                     scaleViz.setZoomScale(1);
 
                     var maxX = -100000;
@@ -1096,7 +1096,7 @@ metExploreD3.GraphNode = {
                         });
 
 					zoom.translate([transX,transY]);
-					zoom.scale(scale);
+					zoom.scaleBy(scale);
 					scaleViz.setZoomScale(scale);
 
 
@@ -1128,10 +1128,10 @@ metExploreD3.GraphNode = {
         /***************************/
         // Var which permit to drag
         /***************************/
-        var node_drag = d3.behavior.drag()
-            .on("dragstart", _MyThisGraphNode.dragstart)
+        var node_drag = d3.drag()
+            .on("start", _MyThisGraphNode.dragstart)
             .on("drag", _MyThisGraphNode.dragmove)
-            .on("dragend", _MyThisGraphNode.dragend);
+            .on("end", _MyThisGraphNode.dragend);
 
 
         var networkData = session.getD3Data();
@@ -1449,7 +1449,7 @@ metExploreD3.GraphNode = {
                     var colorMin = generalStyle.getColorMinMappingContinuous();
                     var colorMax = generalStyle.getColorMaxMappingContinuous();
 
-                    var colorScale = d3.scale.linear()
+                    var colorScale = d3.scaleLinear()
                         .domain([parseFloat(minValue), parseFloat(maxValue)])
                         .range([colorMin, colorMax]);
 
@@ -1487,7 +1487,7 @@ metExploreD3.GraphNode = {
                     var colorMin = generalStyle.getColorMinMappingContinuous();
                     var colorMax = generalStyle.getColorMaxMappingContinuous();
 
-                    var colorScale = d3.scale.linear()
+                    var colorScale = d3.scaleLinear()
                         .domain([parseFloat(minValue), parseFloat(maxValue)])
                         .range([colorMin, colorMax]);
 
@@ -1533,7 +1533,7 @@ metExploreD3.GraphNode = {
             var session = _metExploreViz.getSessionById(panel);
             if (session.isLinked()) {
                 for (var key in sessionsStore) {
-                    if (sessionsStore[key].isLinked() && panel != sessionsStore[key].getId() && d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")[0][0] != null) {
+                    if (sessionsStore[key].isLinked() && panel != sessionsStore[key].getId() && d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")[0] != null) {
                         d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")
                             .selectAll("g.node")
                             .each(function (node) {
@@ -1689,7 +1689,7 @@ metExploreD3.GraphNode = {
                         if (force != undefined) {
                             if (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == 'true'
                                 || metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == null) {
-                                force.start();
+                                force.restart();
                             }
                         }
                     }
@@ -1704,7 +1704,7 @@ metExploreD3.GraphNode = {
                     if (force != undefined) {
                         if ((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
                             || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
-                            force.start();
+                            force.restart();
                         }
                     }
                 }
@@ -1912,7 +1912,7 @@ metExploreD3.GraphNode = {
                     if (d.values.length > 2) {
 
                         return "M" +
-                            d3.geom.hull(d.values.map(function (i) {
+                            d3.polygonHull(d.values.map(function (i) {
 
                                     return [i.x, i.y];
                             }))
@@ -1933,7 +1933,7 @@ metExploreD3.GraphNode = {
                         ;
 
                         return "M" +
-                            d3.geom.hull(fakeNodes)
+                            d3.polygonHull(fakeNodes)
                                 .join("L")
                             + "Z";
                     }
@@ -2301,7 +2301,7 @@ metExploreD3.GraphNode = {
                     .style("stroke-width", "0.5")
                     .each(function () {
                         var linksover = d3.select(this.parentNode).selectAll("path.link");
-                        var first = linksover[0][0];
+                        var first = linksover[0];
                         this.parentNode.insertBefore(this, first);
                     });
 
@@ -2532,7 +2532,7 @@ metExploreD3.GraphNode = {
                     .style("stroke-width", "0.5")
                     // .each(function () {
                     //     var linksover = d3.select(this.parentNode).selectAll("path.link");
-                    //     var first = linksover[0][0];
+                    //     var first = linksover[0];
                     //     this.parentNode.insertBefore(this, first);
                     // });
 

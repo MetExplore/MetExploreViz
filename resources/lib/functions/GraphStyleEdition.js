@@ -135,8 +135,8 @@ metExploreD3.GraphStyleEdition = {
         var deltaX;
         var deltaY;
         var element;
-        var drag = d3.behavior.drag()
-            .on ("dragstart", function (d,i) {
+        var drag = d3.drag()
+            .on ("start", function (d,i) {
                 d3.event.sourceEvent.stopPropagation();
                 element = this;
                 var cX = d3.select(this).attr("x");
@@ -173,7 +173,7 @@ metExploreD3.GraphStyleEdition = {
                         theD3Node.attr("y", d3mouse1 + deltaY);
                     });
             })
-            .on("dragend", function (d,i) {
+            .on("end", function (d,i) {
                 d3.selectAll("#D3viz")
                     .style("cursor", "default");
             });
@@ -471,9 +471,8 @@ metExploreD3.GraphStyleEdition = {
             .selectAll("g.node")
             .filter(function(d){return d.getDbIdentifier()==node.getDbIdentifier();})
             .select("text");
-console.log(nodeLabel);
-        if(nodeLabel[0].length>0){
-            if(nodeLabel[0][0]!==null)
+        if(nodeLabel.size()>0){
+            if(nodeLabel[0]!==null)
                 var labelStyle = {
                     font : nodeLabel.style("font-family"),
                     fontSize : nodeLabel.style("font-size"),

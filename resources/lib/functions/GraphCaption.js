@@ -605,7 +605,7 @@ metExploreD3.GraphCaption = {
                         var visibleLinks = d3.select(this).selectAll("path.link.pathway");
 
                         visibleLinks
-                            .style("stroke-dasharray", size+","+size*(visibleLinks[0].length-1))
+                            .style("stroke-dasharray", size+","+size*(visibleLinks.size()-1))
                             .style("stroke-dashoffset", function(l, i){
                                 return size*i;
                             })

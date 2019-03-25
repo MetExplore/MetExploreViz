@@ -99,7 +99,7 @@ metExploreD3.GraphLink = {
             if (maxValue == undefined | color.getName() > maxValue) maxValue = color.getName();
         });
 
-        var scaleValue = d3.scale.linear()
+        var scaleValue = d3.scaleLinear()
             .domain([-maxValue, 0, 0, maxValue])
             .range([-7, -1, 1, 7]);
 
@@ -978,7 +978,7 @@ metExploreD3.GraphLink = {
                     {
                         if((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
                             || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
-                            force.start();
+                            force.restart();
                         }
                     }
                 }
@@ -1018,7 +1018,7 @@ metExploreD3.GraphLink = {
                     {
                         if((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
                             || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
-                            force.start();
+                            force.restart();
                         }
                     }
                 }
@@ -1172,7 +1172,7 @@ metExploreD3.GraphLink = {
         }
         else
         {
-            if(convexHullPath[0].length===0)
+            if(convexHullPath.size()===0)
                 metExploreD3.GraphNode.loadPath(panel, isDisplay);
 
             convexHullPath

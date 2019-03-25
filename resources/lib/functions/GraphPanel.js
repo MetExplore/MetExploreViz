@@ -73,7 +73,9 @@ console.log("resizeViz");
 
 			var force = session.getForce();
 
-			force.size([ w, h ]);
+			force
+				.x(w)
+				.y(h);
 
             session.setActivity(true);
 
@@ -81,28 +83,25 @@ console.log("resizeViz");
             // Redefine Zoom and brush
 			var scaleZ = scale.getZoomScale();
 			var xScale =
-			  d3.scale.linear()
+			  d3.scaleLinear()
 			    .domain([0, w])
 			    .range([0, w]);
 
 			var yScale =
-			  d3.scale.linear()
+			  d3.scaleLinear()
 			    .domain([h, 0])
 			    .range([h, 0]);
 
 			var transform = scale.getZoom().translate();
 
 			scale.getZoom()
-				.x(xScale)
-				.y(yScale)
 				.translate(transform)
-				.scale(scaleZ);
-
-            scale.setScale(xScale, yScale, 1, 1, 1, metExploreD3.GraphNetwork.zoomListener.scale(), metExploreD3.GraphNetwork.zoomListener);
+				.scaleBy(scaleZ);
+            scale.setScale(xScale, yScale, 1, 1, 1, 0, metExploreD3.GraphNetwork.zoomListener);
 
             metExploreD3.setScale(scale, panel);
 
-            metExploreD3.GraphNetwork.defineBrush(panel, xScale, yScale);
+            metExploreD3.GraphNetwork.defineBrush(panel);
 
             d3.select("#viz").select("#D3viz")
 				.select("#logoViz")
@@ -160,9 +159,9 @@ console.log("resizeViz");
 		var w = $("#"+panel).width();
 
 
-		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0][0]!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut")[0][0]!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand")[0][0]!=null)
+		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0]!=null
+			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut")[0]!=null
+			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand")[0]!=null)
 		{
 			var x = d3
 				.select("#"+panel)
@@ -677,7 +676,6 @@ console.log("resizeViz");
 					oldForce.nodes([]);
 					oldForce.links([]);
 
-					oldForce.on("start", null);
 					oldForce.on("end", null);
 					oldForce.on("tick", null);
 
@@ -923,7 +921,6 @@ console.log("resizeViz");
 				oldForce.nodes([]);
 				oldForce.links([]);
 
-				oldForce.on("start", null);
 				oldForce.on("end", null);
 				oldForce.on("tick", null);
 

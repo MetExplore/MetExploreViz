@@ -48,7 +48,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         force.charge(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            force.start();
+                            force.restart();
                         }
                         this.lastValue = newValue;
                     }
@@ -71,7 +71,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         force.gravity(newValue/100);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            force.start();
+                            force.restart();
                         }
                         this.lastValue = newValue;
                     }
@@ -112,7 +112,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var session = _metExploreViz.getSessionById('viz');
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            force.start();
+                            force.restart();
                         }
                         this.lastValue = newValue;
 
@@ -139,7 +139,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var session = _metExploreViz.getSessionById('viz');
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            force.start();
+                            force.restart();
                         }
                         this.lastValue = newValue;
 
