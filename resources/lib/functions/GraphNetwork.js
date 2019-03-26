@@ -522,10 +522,13 @@ metExploreD3.GraphNetwork = {
                 if(d3.event.sourceEvent.button!==2 && d3.event.sourceEvent.button!==1 && metExploreD3.GraphNetwork.brushing){
                     if (!d3.event.selection) return;
                     var extent = d3.event.selection;
+
                     if(extent[1][0]-extent[0][0]>20 || extent[1][1]-extent[0][1]>20){
 
                         var iSselected;
                         var scale = metExploreD3.getScaleById(panel);
+
+                        var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
 
                         var myMask = metExploreD3.createLoadMask("Selection in progress...", panel);
                         if(myMask!== undefined){
@@ -536,8 +539,8 @@ metExploreD3.GraphNetwork = {
                                 nodeBrushed
                                     .classed("selected", function(d) {
 
-                                        iSselected = (xScale(extent[0][0]) <= xScale(d.x) && xScale(d.x) < xScale(extent[1][0]))
-                                            && (yScale(extent[0][1]) <= yScale(d.y) && yScale(d.y) < yScale(extent[1][1]));
+                                        iSselected = (transform.invertX(extent[0][0]) <= d.x && d.x < transform.invertX(extent[1][0]))
+                                            && (transform.invertY(extent[0][1]) <= d.y && d.y < transform.invertY(extent[1][1]));
                                         if((!d.isSelected() && iSselected)||(d.isSelected() && !iSselected && !d.previouslySelected))
                                         {
                                             _MyThisGraphNode.selection(d, panel);
@@ -822,6 +825,7 @@ metExploreD3.GraphNetwork = {
                 // .x( xScale )
                 // .y( yScale )
                 .scaleExtent([ 0.01, 30 ])
+                //Ca éviterait de sortir de l'écran  .translateExtent
                 .on("zoom", function(e){
                     that.zoom(this.parentNode.id);
                 });
