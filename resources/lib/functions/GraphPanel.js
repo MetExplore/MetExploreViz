@@ -82,22 +82,13 @@ console.log("resizeViz");
 
             // Redefine Zoom and brush
 			var scaleZ = scale.getZoomScale();
-			var xScale =
-			  d3.scaleLinear()
-			    .domain([0, w])
-			    .range([0, w]);
-
-			var yScale =
-			  d3.scaleLinear()
-			    .domain([h, 0])
-			    .range([h, 0]);
 
 			var transform = scale.getZoom().translate();
 
 			scale.getZoom()
 				.translate(transform)
 				.scaleBy(scaleZ);
-            scale.setScale(xScale, yScale, 1, 1, 1, 0, metExploreD3.GraphNetwork.zoomListener);
+            scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
 
             metExploreD3.setScale(scale, panel);
 

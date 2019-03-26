@@ -140,11 +140,10 @@ metExploreD3.GraphNetwork = {
         var transX = d3.event.transform.x;
         var transY = d3.event.transform.y;
         var d3EventSourceEvent = d3.event.sourceEvent;
-
-        console.log(d3EventScale);
-        console.log(transX);
-        console.log(transY);
-        console.log(d3EventSourceEvent);
+console.log(d3EventScale);
+console.log(transX);
+console.log(transY);
+console.log(d3EventSourceEvent);
 
         metExploreD3.applyTolinkedNetwork(
             panel,
@@ -169,7 +168,7 @@ metExploreD3.GraphNetwork = {
                         metExploreD3.GraphNetwork.taskZoom = metExploreD3.createDelayedTask(
                             function () {
                                 var alpha = _metExploreViz.getSessionById(panelLinked).getForce().alpha();
-                    console.log(alpha);
+
                                 if(alpha!==undefined){
                                     if(alpha<0.08){
                                         var linkStyle = metExploreD3.getLinkStyle();
@@ -185,9 +184,7 @@ metExploreD3.GraphNetwork = {
                     var viz = d3.select("#"+panelLinked).select("#D3viz");
 
                     viz.select("#graphComponent").attr("transform", "translate("+transX+","+transY+")scale(" + d3EventScale + ")");
-                    var zoomListener = scale.getZoom();
-                    //zoomListener.translateTo(viz, transX, transY);
-                    //zoomListener.scaleBy(viz, d3EventScale);
+
                     // Firstly we changed the store which correspond to viz panel
                     scale.setZoomScale(d3EventScale);
 
@@ -207,14 +204,10 @@ metExploreD3.GraphNetwork = {
         var scale = metExploreD3.getScaleById(panel);
 
         var zoomListener = scale.getZoom();
-        zoomListener.scaleBy(1.1);
-
-		zoomListener.event(d3.select("#"+panel).select("#D3viz"));
+        zoomListener.scaleBy(d3.select("#"+panel).select("#D3viz"), 1.1);
 
         // Firstly we changed the store which correspond to viz panel
         scale.setZoomScale(scale.getZoomScale()*1.1);
-
-        metExploreD3.GraphLink.tick(panel, scale);
     },
 
     /*******************************************
@@ -227,18 +220,10 @@ metExploreD3.GraphNetwork = {
         var scale = metExploreD3.getScaleById(panel);
 
         var zoomListener = scale.getZoom();
-
-        zoomListener.scaleBy(0.9);
-
-		zoomListener.event(d3.select("#"+panel).select("#D3viz"));
-
-		scale.setXScale(zoomListener.x());
-		scale.setYScale(zoomListener.y());
+        zoomListener.scaleBy(d3.select("#"+panel).select("#D3viz"), 0.9);
 
         // Firstly we changed the store which correspond to viz panel
         scale.setZoomScale(scale.getZoomScale()*0.9);
-
-        metExploreD3.GraphLink.tick(panel, scale);
     },
 
     /*******************************************
@@ -468,8 +453,10 @@ metExploreD3.GraphNetwork = {
                 metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 
                 var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-
+                console.log(scrollable);
                 if(d3.event.sourceEvent.button!==1 && scrollable!=="true"){
+                    console.log("d3.event.sourceEvent.button ", d3.event.sourceEvent.button);
+
                     if(d3.event.sourceEvent.button!==2) {
                         if (session !== undefined) {
                             // We stop the previous animation
@@ -508,6 +495,9 @@ metExploreD3.GraphNetwork = {
                 }
                 else
                 {
+
+                    console.log("d3.event.sourceEvent.button ", d3.event.sourceEvent.button);
+                    console.log("scrollable ", scrollable);
                     var force = session.getForce();
                     if(force!=undefined)
                     {
@@ -616,8 +606,7 @@ metExploreD3.GraphNetwork = {
                         else
                         {
 
-                            var force = session.getForce();
-                            var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId())
+                            var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId());
 
                             if (animLinked==='true') {
                                 var force = session.getForce();
@@ -774,20 +763,6 @@ metExploreD3.GraphNetwork = {
         // var start = new Date().getTime();
         // console.log("----Viz: START refresh/init Viz");
 
-        // Define the zoomListener and put it in a store
-
-        var xScale =
-            d3.scaleLinear()
-                .domain([0, w])
-                .range([0, w]);
-
-        var yScale =
-            d3.scaleLinear()
-                .domain([h, 0])
-                .range([h, 0]);
-
-
-
         // Call GraphCaption to draw the caption
         if(panel=='viz')
             metExploreD3.GraphCaption.drawCaption();
@@ -812,7 +787,7 @@ metExploreD3.GraphNetwork = {
 
             console.log(metExploreD3.GraphNetwork.zoomListener);
             var scale = new Scale(panel);
-            scale.setScale(xScale, yScale, 1, 1, 1, 0, metExploreD3.GraphNetwork.zoomListener);
+            scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
 
             metExploreD3.setScale(scale, panel);
 
@@ -831,7 +806,7 @@ metExploreD3.GraphNetwork = {
                 });
 
             var scale = new Scale(panel);
-            scale.setScale(xScale, yScale, 1, 1, 1, 0, metExploreD3.GraphNetwork.zoomListener);
+            scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
 
             metExploreD3.setScale(scale, panel);
         }
@@ -954,7 +929,7 @@ metExploreD3.GraphNetwork = {
             });
 
 
-// Initiate the D3 force drawing algorithm
+        // Initiate the D3 force drawing algorithm
         var manyBody = d3.forceManyBody()
             .strength(-150)
             .theta(0.2)

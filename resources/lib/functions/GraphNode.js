@@ -1628,13 +1628,15 @@ metExploreD3.GraphNode = {
 
     unselectIfDBClick: function () {
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+        console.log("_MyThisGraphNode.dblClickable ",_MyThisGraphNode.dblClickable);
+        console.log("d3.event.button ",d3.event.button);
+        if (_MyThisGraphNode.dblClickable && d3.event.button === 0) {
 
-        if (_MyThisGraphNode.dblClickable && d3.event.button == 0) {
             metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
             _MyThisGraphNode.unselectAll(this);
         }
         else {
-            if (d3.event.button == 0) {
+            if (d3.event.button === 0) {
                 _MyThisGraphNode.dblClickable = true;
 
                 _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
@@ -1650,7 +1652,7 @@ metExploreD3.GraphNode = {
             }
         }
 
-        if (_MyThisGraphNode.dblClickable && d3.event.button == 1) {
+        if (_MyThisGraphNode.dblClickable && d3.event.button === 1) {
             metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
             d3.select(this).select("#graphComponent")
                 .selectAll("g.node")
@@ -1663,7 +1665,7 @@ metExploreD3.GraphNode = {
                 });
         }
         else {
-            if (d3.event.button == 1) {
+            if (d3.event.button === 1) {
                 _MyThisGraphNode.dblClickable = true;
 
                 _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
@@ -2434,11 +2436,11 @@ metExploreD3.GraphNode = {
             .on("mouseover", function (d) {
 
 
-                var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node").nodes();
                 d3.select(this)
                     .each(function (node) {
                         if (node.getBiologicalType() !== "pathway") {
-                            var last = nodes[0][nodes.size() - 1];
+                            var last = nodes[nodes.length - 1];
                             this.parentNode.insertBefore(this, last);
                         }
                     });
