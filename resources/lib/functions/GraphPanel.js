@@ -71,24 +71,39 @@ console.log("resizeViz");
 
             var session = _metExploreViz.getSessionById(panel);
 
-			var force = session.getForce();
-
-			force
+			var forceX = d3.forceX()
 				.x(w)
-				.y(h);
+				.strength(0.06);
+
+			var forceY = d3.forceY()
+				.y(h)
+				.strength(0.06);
+
+			var force = session.getForce();
+			force
+				.force('x', forceX)
+				.force('y', forceY);
 
             session.setActivity(true);
 
 
             // Redefine Zoom and brush
+			var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+			var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 			var scaleZ = scale.getZoomScale();
+			metExploreD3.GraphNetwork.zoomListener
+				.scaleExtent([ 0.01, 30 ])
+				.extent([[0,0], [w, h]])
+				.translateExtent([[-w*2, -h*2], [w*2, h*2]]);
 
-			var transform = scale.getZoom().translate();
 
-			scale.getZoom()
-				.translate(transform)
-				.scaleBy(scaleZ);
+			var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
+
+			scale.getZoom().scaleBy(d3.select("#"+panel).select("#D3viz"), scaleZ);
+			scale.getZoom().translateBy(d3.select("#"+panel).select("#D3viz"), transform.x, transform.y);
             scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
+
+
 
             metExploreD3.setScale(scale, panel);
 
@@ -112,10 +127,20 @@ console.log("resizeViz");
                     if(force!=undefined){
                         var h = $("#viz").height();
                         var w = $("#viz").width();
-                        force.size([ w, h ]);
+						var forceX = d3.forceX()
+							.x(w)
+							.strength(0.06);
+
+						var forceY = d3.forceY()
+							.y(h)
+							.strength(0.06);
+						force
+							.force('x', forceX)
+							.force('y', forceY);
+
                         var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
                         if(anim=="true")
-                            force.resume();
+                            force.restart();
                     }
                 }
                 else
@@ -124,13 +149,23 @@ console.log("resizeViz");
                     if(force!=undefined){
                         var h = $("#"+panel).height();
                         var w = $("#"+panel).width();
-                        force.size([ w, h ]);
+
+						var forceX = d3.forceX()
+							.x(w)
+							.strength(0.06);
+
+						var forceY = d3.forceY()
+							.y(h)
+							.strength(0.06);
+						force
+							.force('x', forceX)
+							.force('y', forceY);
 
                         if(d3.select("#"+panel).select("#buttonAnim").node()){
 
                             var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
                             if(anim=="true")
-                                force.resume();
+                                force.restart();
 
                         }
                     }
@@ -202,10 +237,21 @@ console.log("resizeViz");
 				if(force!=undefined){
 					var h = $("#viz").height();
 					var w = $("#viz").width();
-					force.size([ w, h ]);
+
+					var forceX = d3.forceX()
+						.x(w)
+						.strength(0.06);
+
+					var forceY = d3.forceY()
+						.y(h)
+						.strength(0.06);
+					force
+						.force('x', forceX)
+						.force('y', forceY);
+
 	                var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
 	                if(anim=="true")
-	                    force.resume();
+	                    force.restart();
 				}
 			}
 			else
@@ -214,13 +260,23 @@ console.log("resizeViz");
 				if(force!=undefined){
 					var h = $("#"+panel).height();
 					var w = $("#"+panel).width();
-					force.size([ w, h ]);
+
+					var forceX = d3.forceX()
+						.x(w)
+						.strength(0.06);
+
+					var forceY = d3.forceY()
+						.y(h)
+						.strength(0.06);
+					force
+						.force('x', forceX)
+						.force('y', forceY);
 
 					if(d3.select("#"+panel).select("#buttonAnim").node()){
 
 						var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
 		                if(anim=="true")
-		                    force.resume();
+		                    force.restart();
 
 		            }
 	            }
@@ -239,13 +295,13 @@ console.log("resizeViz");
 							metExploreD3.GraphNetwork.animationButtonOn(sessions[key].getId());
 					}
 					var force = _metExploreViz.getSessionById("viz").getForce();
-					force.resume();
+					force.restart();
 				}
 				else
 				{
 					metExploreD3.GraphNetwork.animationButtonOn(panel);
 					var force = session.getForce();
-					force.resume();
+					force.restart();
 				}
 			}
 		}
@@ -665,7 +721,7 @@ console.log("resizeViz");
 				// Reset visualisation---less than a ms
 				if(oldForce!=undefined){
 					oldForce.nodes([]);
-					oldForce.links([]);
+					oldForce.force("link", null);
 
 					oldForce.on("end", null);
 					oldForce.on("tick", null);
@@ -910,7 +966,7 @@ console.log("resizeViz");
 			// Reset visualisation---less than a ms
 			if(oldForce!=undefined){
 				oldForce.nodes([]);
-				oldForce.links([]);
+				oldForce.force("link", null);
 
 				oldForce.on("end", null);
 				oldForce.on("tick", null);

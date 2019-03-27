@@ -125,7 +125,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 		var session = _metExploreViz.getSessionById('viz');
 		if((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true') 
 							|| (metExploreD3.GraphNetwork.isAnimated(session.getId())  == null))
-			session.getForce().resume();
+			session.getForce().restart();
 		
 	},
 	removeSideCompounds : function(){

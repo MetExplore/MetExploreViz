@@ -162,8 +162,9 @@ metExploreD3.GraphStyleEdition = {
                     function(panelLinked, sessionLinked) {
                         var theD3Node=d3.select(me);
 
-                        if (theD3Node.attr("transform")) {
-                            var transformScale = d3.transform(theD3Node.attr("transform")).scale;
+                        if (theD3Node.attr("transform")){
+
+                            var transformScale = d3.zoomTransform(d3.select(theD3Node).node()).k;
                             theD3Node.attr("transform", "translate(" + (d3eventx + deltaX) + ", " + (d3eventy + deltaY) + ") scale(" + transformScale[0] + ", " + transformScale[1] + ")");
                         }
                         else{

@@ -575,7 +575,7 @@ metExploreD3.GraphNode = {
 
                             if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == 'true')
                                 || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == null)) {
-                                mainforce.resume();
+                                mainforce.restart();
                             }
                         }
                         _MyThisGraphNode.tick(sessionsStore[key].getId()); // this is the key to make it work together
@@ -592,7 +592,7 @@ metExploreD3.GraphNode = {
 
                     if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == 'true')
                         || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == null)) {
-                        force.resume();
+                        force.restart();
                     }
                 }
 
@@ -1045,10 +1045,10 @@ metExploreD3.GraphNode = {
                 .transition()
                 .duration(750)
                 .attr("transform", "translate(0,0)scale(1)")
-                .each('end', function () {
-                    zoom.translate([0, 0]);
+                .each(function () {
+                    zoom.translateBy( d3.select("#viz").select("#D3viz"),0 ,0);
 
-                    zoom.scaleBy(1);
+                    zoom.scaleBy(d3.select("#viz").select("#D3viz"),1);
                     scaleViz.setZoomScale(1);
 
                     var maxX = -100000;
@@ -1089,14 +1089,14 @@ metExploreD3.GraphNode = {
                         .transition()
                         .duration(750)
                         .attr("transform", "translate(" + transX + "," + transY + ")scale(" + scale + ")")
-                        .each('end', function () {
+                        .each(function () {
                             metExploreD3.GraphLink.tick("viz", scale);
                             metExploreD3.GraphNode.tick("viz");
                             metExploreD3.hideMask(mask);
                         });
 
-					zoom.translate([transX,transY]);
-					zoom.scaleBy(scale);
+                    zoom.translateBy( d3.select("#viz").select("#D3viz"),transX ,transY);
+					zoom.scaleBy(d3.select("#viz").select("#D3viz"), scale);
 					scaleViz.setZoomScale(scale);
 
 

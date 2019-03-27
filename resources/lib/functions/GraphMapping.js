@@ -160,7 +160,7 @@ metExploreD3.GraphMapping = {
 					var force = session.getForce();
 					
 					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.resume();
+						force.restart();
 					}
 				}
 	   		}, 1);
@@ -252,7 +252,7 @@ metExploreD3.GraphMapping = {
 					var force = session.getForce();
 					
 					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.resume();
+						force.restart();
 					}
 				}
 	   		}, 1);
@@ -642,7 +642,7 @@ metExploreD3.GraphMapping = {
 							var force = session.getForce();
 							
 							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-									force.resume();
+									force.restart();
 							}
 						}	
 
@@ -1423,7 +1423,7 @@ metExploreD3.GraphMapping = {
 					var force = session.getForce();
 					
 					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.resume();
+						force.restart();
 					}
 				}
 			}, 1);
@@ -1569,7 +1569,7 @@ metExploreD3.GraphMapping = {
 							var force = session.getForce();
 							
 							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-									force.resume();
+									force.restart();
 							}
 						}
 			   		}, 1
@@ -1837,7 +1837,7 @@ metExploreD3.GraphMapping = {
 							var force = session.getForce();
 							
 							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-									force.resume();
+									force.restart();
 							}
 						}
 
@@ -1954,7 +1954,7 @@ metExploreD3.GraphMapping = {
                         var force = session.getForce();
 
                         if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-                            force.resume();
+                            force.restart();
                         }
                     }
                 }, 1
@@ -2062,7 +2062,7 @@ metExploreD3.GraphMapping = {
                         var force = session.getForce();
 
                         if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-                            force.resume();
+                            force.restart();
                         }
                     }
                 }, 1
@@ -2300,7 +2300,7 @@ metExploreD3.GraphMapping = {
 							force = session.getForce();
 							
 							if ((d3.select("#viz").select("#D3viz").attr("animation") === 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-									force.resume();
+									force.restart();
 							}
 						}
 			   		}, 1
@@ -2590,7 +2590,7 @@ metExploreD3.GraphMapping = {
 						var force = session.getForce();
 						
 						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-							force.resume();
+							force.restart();
 						}
 					}
 				}, 1);
@@ -2636,7 +2636,7 @@ metExploreD3.GraphMapping = {
 					var force = session.getForce();
 					
 					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.resume();
+						force.restart();
 					}
 				}   
 	        });
@@ -3083,8 +3083,10 @@ metExploreD3.GraphMapping = {
 				d3.event.sourceEvent.stopPropagation();
 				imgWidth = Number(image.attr("width"));
 				imgHeight = Number(image.attr("height"));
-				oldX = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
-				oldY = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+
+				var transform = d3.zoomTransform(d3.select(this.parentNode).node());
+				oldX = transform.x;
+				oldY = transform.y;
 				limitX = oldX + imgWidth;
 				d3.selectAll("#D3viz").style("cursor", "move");
 			})
@@ -3096,8 +3098,9 @@ metExploreD3.GraphMapping = {
 				newWidth = tmpWidth - (d3.event.x + deltaGX);
 				var transform = d3.select(this.parentNode).attr("transform");
 				var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
-				var x = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
-				var y = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+				var transforms = d3.zoomTransform(d3.select(this.parentNode).node());
+				var x = transforms.x;
+				var y = transforms.y;
 				var newX = x + d3.event.x + deltaGX;
 				newX = Math.min(newX, limitX - 8);
 				var translate = "translate(" + newX + "," + y + ")";
@@ -3115,11 +3118,14 @@ metExploreD3.GraphMapping = {
 			if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
 				var transform = d3.select(this.parentNode).attr("transform");
 				var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
-				var x = d3.transform(d3.select(this.parentNode).attr("transform")).translate[0];
-				var y = d3.transform(d3.select(this.parentNode).attr("transform")).translate[1];
+				var transforms = d3.zoomTransform(d3.select(this.parentNode).node());
+				var x = transforms.x;
+				var y = transforms.y;
 				var newY =  oldY - (newHeight - imgHeight);
 				var translate = "translate(" + x + "," + newY + ")";
+				var translate = "translate(" + newX + "," + y + ")";
 				d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
+
 			}
 			metExploreD3.GraphMapping.updateImageDimensions(image);
 		})
