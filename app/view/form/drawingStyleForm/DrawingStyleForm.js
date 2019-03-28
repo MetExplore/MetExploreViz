@@ -28,47 +28,197 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
         itemId: 'slider',
         bodyStyle: 'background-color:inherit',
         width: "100%",
+        top:'10',
         border: false,
         items: [
             {
+                xtype: 'label',
+                forId: 'myFieldId',
+                // text: 'Charge',
+                html:" <h2>Charge</h2> Attracts (+) or repels (-) nodes to/from each other.\n",
+                // style: " font-size:20px;",
+                margin:'5 5 5 5',
+            },
+            {
                 xtype: 'slider',
 
-                reference:'forceCharge',
-                fieldLabel: "Charge :",
-                margin:'5 5 5 5',
+                reference:'chargeStrength',
+                fieldLabel: "Strength :",
+                margin:'5 5 5 15',
                 width:"80%",
                 value: -250,
-                increment: 20,
-                minValue: -3000,
-                maxValue: -50,
+                increment: 10,
+                minValue: -1000,
+                maxValue: 100,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
                         var force = session.getForce();
-                        force.charge(newValue);
+                        force.force("charge").strength(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            force.restart();
+                            force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
                     }
                 }
+            },
+            {
+                xtype: 'slider',
+
+                reference:'distanceMin',
+                fieldLabel: "Distance Min  :",
+                margin:'5 5 5 15',
+                width:"80%",
+                value: 1,
+                increment: 1,
+                minValue: 0,
+                maxValue: 50,
+                listeners: {
+                    changecomplete: function(slider, newValue){
+                        var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
+                        force.force("charge").distanceMin(newValue);
+                        var anim = metExploreD3.GraphNetwork.isAnimated('viz');
+                        if (anim === "true"){
+                            force.alphaTarget(0.3).restart();
+                        }
+                        this.lastValue = newValue;
+                    }
+                }
+            },
+            {
+                xtype: 'slider',
+
+                reference:'distanceMax',
+                fieldLabel: "Distance Max  :",
+                margin:'5 5 5 15',
+                width:"80%",
+                value: 1000,
+                increment: 1,
+                minValue: 0,
+                maxValue: 2000,
+                listeners: {
+                    changecomplete: function(slider, newValue){
+                        var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
+                        force.force("charge").distanceMax(newValue);
+                        var anim = metExploreD3.GraphNetwork.isAnimated('viz');
+                        if (anim === "true"){
+                            force.alphaTarget(0.3).restart();
+                        }
+                        this.lastValue = newValue;
+                    }
+                }
+            },
+            {
+                xtype: 'box',
+                margin:'15 0 0 0',
+                autoEl: {tag: 'hr'}
+            },
+            {
+                xtype: 'label',
+                forId: 'myFieldId',
+                html:" <h2>Collide</h2> Prevents nodes from overlapping\n",
+                margin:'5 5 5 5',
+            },
+            {
+                xtype: 'slider',
+
+                reference:'collideStrength',
+                fieldLabel: "Strength :",
+                margin:'5 5 5 15',
+                width:"80%",
+                value: 15,
+                increment: 1,
+                minValue: 0,
+                maxValue: 20,
+                listeners: {
+                    changecomplete: function(slider, newValue){
+                        var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
+                        force.force("collide").strength(newValue/10);
+                        var anim = metExploreD3.GraphNetwork.isAnimated('viz');
+                        if (anim === "true"){
+                            force.alphaTarget(0.3).restart();
+                        }
+                        this.lastValue = newValue;
+                    }
+                }
+            },
+            {
+                xtype: 'slider',
+                reference:'radius',
+                fieldLabel: "Radius :",
+                margin:'5 5 5 15',
+                width:"80%",
+                value: 15,
+                increment: 1,
+                minValue: 0,
+                maxValue: 100,
+                listeners: {
+                    changecomplete: function(slider, newValue){
+                        var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
+                        force.force("collide").radius(newValue);
+                        var anim = metExploreD3.GraphNetwork.isAnimated('viz');
+                        if (anim === "true"){
+                            force.alphaTarget(0.3).restart();
+                        }
+                        this.lastValue = newValue;
+                    }
+                }
+            },
+            {
+                xtype: 'slider',
+                reference:'iterationsCollide',
+                fieldLabel: "Iterations :",
+                margin:'5 5 5 15',
+                width:"80%",
+                value: 1,
+                increment: 1,
+                minValue: 1,
+                maxValue: 10,
+                listeners: {
+                    changecomplete: function(slider, newValue){
+                        var session = _metExploreViz.getSessionById('viz');
+                        var force = session.getForce();
+                        force.force("collide").iterations(newValue);
+                        var anim = metExploreD3.GraphNetwork.isAnimated('viz');
+                        if (anim === "true"){
+                            force.alphaTarget(0.3).restart();
+                        }
+                        this.lastValue = newValue;
+                    }
+                }
+            },
+            {
+                xtype: 'box',
+                margin:'15 0 0 0',
+                autoEl: {tag: 'hr'}
+            },
+            {
+                xtype: 'label',
+                forId: 'myFieldId',
+                html:" <h2>Gravity</h2> Pulls all points towards window center\n",
+                margin:'5 5 5 5',
             },
             {
                 xtype: 'slider',
                 value:6,
                 reference:'forceGravity',
-                fieldLabel: "Gravity :",
-                margin:'5 5 5 5',
+                fieldLabel: "Strength :",
+                margin:'5 5 5 15',
                 width:"80%",
                 increment: 1,
                 minValue: 0,
-                maxValue: 100,
+                maxValue: 500,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
                         var force = session.getForce();
-                        force.gravity(newValue/100);
+                        force.force("x").strength(newValue/1000);
+                        force.force("y").strength(newValue/1000);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
                             force.restart();
@@ -78,74 +228,102 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 }
             },
             {
-                xtype: 'slider',
-                reference:'forceLinkDistance',
-                fieldLabel: "Link distance :",
+                xtype: 'box',
+                margin:'15 0 0 0',
+                autoEl: {tag: 'hr'}
+            },
+            {
+                xtype: 'label',
+                forId: 'myFieldId',
+                html:" <h2>Link</h2> Sets link length\n",
                 margin:'5 5 5 5',
+            },
+            {
+                xtype: 'slider',
+                reference:'linkDistance',
+                fieldLabel: "Distance :",
+                margin:'5 5 5 15',
                 width:"80%",
-                value:20,
+                value: 30,
                 increment: 1,
                 minValue: 0,
                 maxValue: 100,
                 listeners: {
                     changecomplete: function(slider, newValue){
-                        var linkStyle = metExploreD3.getLinkStyle();
-                        linkStyle.setSize(newValue);
-                        var generalStyle = metExploreD3.getGeneralStyle();
-                        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-                        var reactionStyle = metExploreD3.getReactionStyle();
-
-                        var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
-                        var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
-                        var maxDim = Math.max(maxDimRea, maxDimMet);
-                        // Initiate the D3 force drawing algorithm
                         var session = _metExploreViz.getSessionById('viz');
                         var force = session.getForce();
-
-                        force.linkDistance(function(link){
-                            if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-                                return linkStyle.getSize()/2+maxDim;
-                            else
-                                return linkStyle.getSize()+maxDim;
-                        });
-
-                        var session = _metExploreViz.getSessionById('viz');
+                        force.force("link").distance(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            force.restart();
+                            force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
-
                     }
                 }
             },
             {
                 xtype: 'slider',
-                reference:'forceLinkStrength',
-                fieldLabel: "Link strength :",
-                margin:'5 5 5 5',
+                reference:'linkIterations',
+                fieldLabel: "Iterations :",
+                margin:'5 5 5 15',
                 width:"80%",
-                value:10,
+                value: 1,
                 increment: 1,
-                minValue: 0,
-                maxValue: 1000,
+                minValue: 1,
+                maxValue: 10,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
                         var force = session.getForce();
-
-                        force.linkStrength(newValue/100);
-
-                        var session = _metExploreViz.getSessionById('viz');
+                        force.force("link").iterations(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            force.restart();
+                            force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
-
                     }
                 }
             }
+            // {
+            //     xtype: 'box',
+            //     margin:'15 0 15 0',
+            //     autoEl: {tag: 'hr'}
+            // },{
+            //     xtype: 'label',
+            //     forId: 'myFieldId',
+            //     text: 'Collide',
+            //     style: " font-size:20px;",
+            //     margin:'15 5 5 5'
+            // },
+            // {
+            //     xtype: 'label',
+            //     forId: 'myFieldId',
+            //     text: 'Prevents nodes from overlapping',
+            //     padding:'5 5 5 5'
+            // },
+            // {
+            //     xtype: 'slider',
+            //     value:6,
+            //     reference:'forceGravity',
+            //     fieldLabel: "Gravity :",
+            //     margin:'5 5 5 5',
+            //     width:"80%",
+            //     increment: 1,
+            //     minValue: 0,
+            //     maxValue: 100,
+            //     listeners: {
+            //         changecomplete: function(slider, newValue){
+            //             var session = _metExploreViz.getSessionById('viz');
+            //             var force = session.getForce();
+            //             force.gravity(newValue/100);
+            //             var anim = metExploreD3.GraphNetwork.isAnimated('viz');
+            //             if (anim === "true"){
+            //                 force.restart();
+            //             }
+            //             this.lastValue = newValue;
+            //         }
+            //     }
+            // },
         ]
     }
     // ,

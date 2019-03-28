@@ -166,12 +166,12 @@ metExploreD3.GraphNetwork = {
                             function () {
                                 var alpha = _metExploreViz.getSessionById(panelLinked).getForce().alpha();
 
-                                if(alpha!==undefined){
-                                    if(alpha<0.08){
+                                // if(alpha!==undefined){
+                                //     if(alpha<0.06){
                                         var linkStyle = metExploreD3.getLinkStyle();
                                         metExploreD3.GraphLink.refreshLinkZoom(panelLinked, _metExploreViz.getSessionById(panel), linkStyle);
-                                    }
-                                }
+                                //     }
+                                // }
                             }
                         );
 
@@ -929,9 +929,9 @@ metExploreD3.GraphNetwork = {
 
         // Initiate the D3 force drawing algorithm
         var manyBody = d3.forceManyBody()
-            .strength(-150)
-            .theta(0.2)
-            .distanceMin(1);
+            .strength(-100)
+            .distanceMin(1)
+            .distanceMax(1000);
 
         var forceLinks = d3.forceLink(visibleLinks)
             .distance(function(link){
@@ -939,32 +939,39 @@ metExploreD3.GraphNetwork = {
                     return linkStyle.getSize()/2+maxDim;
                 else
                     return linkStyle.getSize()+maxDim;
-            });
+            })
+            .iterations(1);
         // .strength([strength])
-        // .iterations([iterations])
+
+
+        var forceCollide = d3.forceCollide()
+            .radius(15)
+            .strength(0.7)
+            .iterations(1);
 
         var forceX = d3.forceX()
             .x(w/2)
-            .strength(0.06);
+            .strength(0.006);
 
         var forceY = d3.forceY()
             .y(h/2)
-            .strength(0.06);
+            .strength(0.006);
+
 
         var force = d3.forceSimulation(visibleNodes)
             .force("charge", manyBody)
             .force("link", forceLinks)
             .force('x', forceX)
             .force('y', forceY)
-            .velocityDecay(0.90)
-            /*.x(w)
-            .y(h)*/;
+            .force("collide", forceCollide)
+            .alphaDecay(0.01)
+            .velocityDecay(0.2);
 
         session.setForce(force);
 
         force
             .on("end", function(){
-            console.log("end");
+            console.log("force end");
             var scale = metExploreD3.getScaleById(panel);
             if ((networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())) {
                 metExploreD3.GraphLink.reloadLinks(panel, networkData, linkStyle, metaboliteStyle);
@@ -1049,7 +1056,7 @@ metExploreD3.GraphNetwork = {
                     });
                 }
 
-                if(force.alpha() >= .005 && force.alpha() < .08){
+                if(force.alpha() >= .005 /*&& force.alpha() < .06*/){
                     setTimeout(metExploreD3.GraphNetwork.tick(panel), 0);
                     if(metExploreD3.GraphNetwork.first){
                         metExploreD3.GraphNetwork.refreshViz(panel);
@@ -1283,18 +1290,19 @@ metExploreD3.GraphNetwork = {
 
         var forceX = d3.forceX()
             .x(w/2)
-            .strength(0.06);
+            .strength(0.006);
 
         var forceY = d3.forceY()
             .y(h/2)
-            .strength(0.06);
+            .strength(0.006);
 
         var force2 = d3.forceSimulation(components)
             .force("charge", manyBody)
             .force("link", forceLinks)
             .force('x', forceX)
             .force('y', forceY)
-            .velocityDecay(0.90);
+            .velocityDecay(0.90)
+            .restart();
 
         session.setForceCentroids(force2);
 

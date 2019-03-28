@@ -72,12 +72,12 @@ console.log("resizeViz");
             var session = _metExploreViz.getSessionById(panel);
 
 			var forceX = d3.forceX()
-				.x(w)
-				.strength(0.06);
+				.x(w/2)
+				.strength(0.006);
 
 			var forceY = d3.forceY()
-				.y(h)
-				.strength(0.06);
+				.y(h/2)
+				.strength(0.006);
 
 			var force = session.getForce();
 			force
@@ -128,12 +128,12 @@ console.log("resizeViz");
                         var h = $("#viz").height();
                         var w = $("#viz").width();
 						var forceX = d3.forceX()
-							.x(w)
-							.strength(0.06);
+							.x(w/2)
+							.strength(0.006);
 
 						var forceY = d3.forceY()
-							.y(h)
-							.strength(0.06);
+							.y(h/2)
+							.strength(0.006);
 						force
 							.force('x', forceX)
 							.force('y', forceY);
@@ -151,12 +151,12 @@ console.log("resizeViz");
                         var w = $("#"+panel).width();
 
 						var forceX = d3.forceX()
-							.x(w)
-							.strength(0.06);
+							.x(w/2)
+							.strength(0.006);
 
 						var forceY = d3.forceY()
-							.y(h)
-							.strength(0.06);
+							.y(h/2)
+							.strength(0.006);
 						force
 							.force('x', forceX)
 							.force('y', forceY);
@@ -239,15 +239,20 @@ console.log("resizeViz");
 					var w = $("#viz").width();
 
 					var forceX = d3.forceX()
-						.x(w)
-						.strength(0.06);
+						.x(w/2)
+						.strength(0.006);
 
 					var forceY = d3.forceY()
-						.y(h)
-						.strength(0.06);
+						.y(h/2)
+						.strength(0.006);
 					force
 						.force('x', forceX)
 						.force('y', forceY);
+
+					metExploreD3.GraphNetwork.zoomListener
+						.scaleExtent([ 0.01, 30 ])
+						.extent([[0,0], [w, h]])
+						.translateExtent([[-w*2, -h*2], [w*2, h*2]]);
 
 	                var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
 	                if(anim=="true")
@@ -262,15 +267,20 @@ console.log("resizeViz");
 					var w = $("#"+panel).width();
 
 					var forceX = d3.forceX()
-						.x(w)
-						.strength(0.06);
+						.x(w/2)
+						.strength(0.006);
 
 					var forceY = d3.forceY()
-						.y(h)
-						.strength(0.06);
+						.y(h/2)
+						.strength(0.006);
 					force
 						.force('x', forceX)
 						.force('y', forceY);
+
+					metExploreD3.GraphNetwork.zoomListener
+						.scaleExtent([ 0.01, 30 ])
+						.extent([[0,0], [w, h]])
+						.translateExtent([[-w*2, -h*2], [w*2, h*2]]);
 
 					if(d3.select("#"+panel).select("#buttonAnim").node()){
 
