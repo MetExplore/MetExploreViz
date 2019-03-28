@@ -140,7 +140,7 @@ console.log("resizeViz");
 
                         var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
                         if(anim=="true")
-                            force.restart();
+                            force.alpha(1).restart();
                     }
                 }
                 else
@@ -165,7 +165,7 @@ console.log("resizeViz");
 
                             var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
                             if(anim=="true")
-                                force.restart();
+                                force.alpha(1).restart();
 
                         }
                     }
@@ -235,8 +235,8 @@ console.log("resizeViz");
 				var sessionMain = _metExploreViz.getSessionById("viz");
 				var force = sessionMain.getForce();
 				if(force!=undefined){
-					var h = $("#viz").height();
-					var w = $("#viz").width();
+					var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+					var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 
 					var forceX = d3.forceX()
 						.x(w/2)
@@ -256,15 +256,15 @@ console.log("resizeViz");
 
 	                var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
 	                if(anim=="true")
-	                    force.restart();
+	                    force.alpha(1).restart();
 				}
 			}
 			else
 			{
 				var force = session.getForce();
 				if(force!=undefined){
-					var h = $("#"+panel).height();
-					var w = $("#"+panel).width();
+					var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+					var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 
 					var forceX = d3.forceX()
 						.x(w/2)
@@ -286,7 +286,7 @@ console.log("resizeViz");
 
 						var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
 		                if(anim=="true")
-		                    force.restart();
+		                    force.alpha(1).restart();
 
 		            }
 	            }
@@ -305,13 +305,13 @@ console.log("resizeViz");
 							metExploreD3.GraphNetwork.animationButtonOn(sessions[key].getId());
 					}
 					var force = _metExploreViz.getSessionById("viz").getForce();
-					force.restart();
+					force.alpha(1).restart();
 				}
 				else
 				{
 					metExploreD3.GraphNetwork.animationButtonOn(panel);
 					var force = session.getForce();
-					force.restart();
+					force.alpha(1).restart();
 				}
 			}
 		}

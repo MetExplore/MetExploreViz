@@ -221,7 +221,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         force.force("y").strength(newValue/1000);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
                         if (anim === "true"){
-                            force.restart();
+                            force.alpha(1).restart();
                         }
                         this.lastValue = newValue;
                     }
@@ -318,7 +318,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
             //             force.gravity(newValue/100);
             //             var anim = metExploreD3.GraphNetwork.isAnimated('viz');
             //             if (anim === "true"){
-            //                 force.restart();
+            //                 force.alpha(1).restart();
             //             }
             //             this.lastValue = newValue;
             //         }

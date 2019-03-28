@@ -780,7 +780,7 @@ metExploreD3.GraphUtils = {
 			if(force!=undefined)  
 			{		
 				if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-					force.restart();
+					force.alpha(1).restart();
 			}	
 		}
 	},
@@ -902,7 +902,7 @@ metExploreD3.GraphUtils = {
 						if(force!=undefined)  
 						{		
 							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-								force.restart();
+								force.alpha(1).restart();
 						}	
 					}
 				}, 100);

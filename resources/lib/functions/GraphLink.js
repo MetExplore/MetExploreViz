@@ -978,7 +978,7 @@ metExploreD3.GraphLink = {
                     {
                         if((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
                             || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
-                            force.restart();
+                            force.alpha(1).restart();
                         }
                     }
                 }
@@ -1018,7 +1018,7 @@ metExploreD3.GraphLink = {
                     {
                         if((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
                             || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
-                            force.restart();
+                            force.alpha(1).restart();
                         }
                     }
                 }

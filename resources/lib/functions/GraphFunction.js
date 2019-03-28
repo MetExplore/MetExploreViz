@@ -1174,7 +1174,7 @@ metExploreD3.GraphFunction = {
 						if(force!=undefined)
 						{
 							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-								force.restart();
+								force.alpha(1).restart();
 						}
 					}
 					metExploreD3.hideMask(myMask);
@@ -1397,7 +1397,7 @@ metExploreD3.GraphFunction = {
 					if(force!=undefined)  
 					{		
 						if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-							force.restart();
+							force.alpha(1).restart();
 					}	
 				}
 		    	metExploreD3.hideMask(myMask);

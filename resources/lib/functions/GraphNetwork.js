@@ -278,13 +278,13 @@ metExploreD3.GraphNetwork = {
                     }
 
                     var force = _metExploreViz.getSessionById("viz").getForce();
-                    force.restart();
+                    force.alpha(1).restart();
                 }
                 else
                 {
                     metExploreD3.GraphNetwork.animationButtonOn(panel);
                     var force = session.getForce();
-                    force.restart();
+                    force.alpha(1).restart();
 
                 }
             } else {
@@ -407,7 +407,7 @@ metExploreD3.GraphNetwork = {
         var anim = metExploreD3.GraphNetwork.isAnimated(panel);
         if (anim == "true"){
             var force = session.getForce();
-            force.restart();
+            force.alpha(1).restart();
         }
     },
 
@@ -550,7 +550,7 @@ metExploreD3.GraphNetwork = {
                                                 {
                                                     if((metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === 'true')
                                                         || (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === null)) {
-                                                        force.restart();
+                                                        force.alpha(1).restart();
                                                     }
                                                 }
                                             }
@@ -566,7 +566,7 @@ metExploreD3.GraphNetwork = {
                                             if(force!==undefined)
                                             {
                                                 if((metExploreD3.GraphNetwork.isAnimated(session.getId()) === 'true') || (metExploreD3.GraphNetwork.isAnimated(session.getId()) === null)) {
-                                                    force.restart();
+                                                    force.alpha(1).restart();
                                                 }
                                             }
                                         }
@@ -594,7 +594,7 @@ metExploreD3.GraphNetwork = {
                                     {
                                         if((metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === 'true')
                                             || (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === null)) {
-                                            force.restart();
+                                            force.alpha(1).restart();
                                         }
                                     }
                                 }
@@ -611,7 +611,7 @@ metExploreD3.GraphNetwork = {
                                 {
                                     if(d3.select(metExploreD3.GraphNetwork.isAnimated(session.getId()) === 'true')
                                         || (metExploreD3.GraphNetwork.isAnimated(session.getId()) === null)) {
-                                        force.restart();
+                                        force.alpha(1).restart();
                                     }
                                 }
                             }
@@ -1075,10 +1075,10 @@ metExploreD3.GraphNetwork = {
         var force = session.getForce();
 
         if(session.isAnimated())
-            force.restart();
+            force.alpha(1).restart();
         else
         {
-            force.restart();
+            force.alpha(1).restart();
             force.stop();
             metExploreD3.GraphNetwork.tick(panel);
         }
@@ -1968,11 +1968,11 @@ metExploreD3.GraphNetwork = {
             });
 
         if (metExploreD3.GraphNetwork.isAnimated("viz")==true || metExploreD3.GraphNetwork.isAnimated("viz")=="true") {
-            force.restart();
+            force.alpha(1).restart();
         }
         else
         {
-            force.restart();
+            force.alpha(1).restart();
             force.stop();
         }
 
@@ -2405,7 +2405,7 @@ metExploreD3.GraphNetwork = {
                                 metExploreD3.GraphNetwork.looksLinked();
 
                                 var force = sessions[key].getForce();
-                                // force.restart();
+                                // force.alpha(1).restart();
 
                                 var mainSession = _metExploreViz.getSessionById('viz');
                                 if(sessions[key]!=undefined)
@@ -2569,7 +2569,7 @@ metExploreD3.GraphNetwork = {
                                 metExploreD3.GraphNetwork.looksLinked();
 
                                 var force = sessions[key].getForce();
-                                // force.restart();
+                                // force.alpha(1).restart();
 
                                 var mainSession = _metExploreViz.getSessionById('viz');
                                 if(sessions[key]!=undefined)
@@ -2671,7 +2671,7 @@ metExploreD3.GraphNetwork = {
                                 metExploreD3.GraphNetwork.looksLinked();
 
                                 var force = sessions[key].getForce();
-                                // force.restart();
+                                // force.alpha(1).restart();
 
                                 var mainSession = _metExploreViz.getSessionById('viz');
                                 if(sessions[key]!=undefined)
@@ -2729,7 +2729,7 @@ metExploreD3.GraphNetwork = {
                     if(force!=undefined)
                     {
                         if(metExploreD3.GraphNetwork.isAnimated("viz")== "true" || metExploreD3.GraphNetwork.isAnimated("viz")==true)
-                            force.restart();
+                            force.alpha(1).restart();
                     }
                 }
             }
@@ -2740,7 +2740,7 @@ metExploreD3.GraphNetwork = {
                 if(force!=undefined)
                 {
                     if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" || metExploreD3.GraphNetwork.isAnimated(panel)==true)
-                        force.restart();
+                        force.alpha(1).restart();
 
                 }
             }
@@ -2753,7 +2753,7 @@ metExploreD3.GraphNetwork = {
             if(force!=undefined)
             {
                 if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" || metExploreD3.GraphNetwork.isAnimated(panel)==true)
-                    force.restart();
+                    force.alpha(1).restart();
             }
         }
         metExploreD3.GraphNetwork.initCentroids(panel);
@@ -2786,7 +2786,7 @@ metExploreD3.GraphNetwork = {
                             if(force!=undefined)
                             {
                                 if(metExploreD3.GraphNetwork.isAnimated("viz")=="true")
-                                    force.restart();
+                                    force.alpha(1).restart();
                             }
                         }
                     }
@@ -2797,7 +2797,7 @@ metExploreD3.GraphNetwork = {
                         if(force!=undefined)
                         {
                             if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
-                                force.restart();
+                                force.alpha(1).restart();
 
                         }
                     }
@@ -2836,7 +2836,7 @@ metExploreD3.GraphNetwork = {
                     if(force!=undefined)
                     {
                         if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
-                            force.restart();
+                            force.alpha(1).restart();
                     }
                 }
 
@@ -2873,7 +2873,7 @@ metExploreD3.GraphNetwork = {
                             if(force!=undefined)
                             {
                                 if(metExploreD3.GraphNetwork.isAnimated("viz")=="true")
-                                    force.restart();
+                                    force.alpha(1).restart();
                             }
                         }
                     }
@@ -2884,7 +2884,7 @@ metExploreD3.GraphNetwork = {
                         if(force!=undefined)
                         {
                             if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
-                                force.restart();
+                                force.alpha(1).restart();
 
                         }
                     }
@@ -2909,7 +2909,7 @@ metExploreD3.GraphNetwork = {
                     if(force!=undefined)
                     {
                         if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
-                            force.restart();
+                            force.alpha(1).restart();
                     }
                 }
 
@@ -2972,7 +2972,7 @@ metExploreD3.GraphNetwork = {
             if(force!=undefined)
             {
                 if(metExploreD3.GraphNetwork.isAnimated(panelLinked)=="true")
-                    force.restart();
+                    force.alpha(1).restart();
             }
         }
         metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");

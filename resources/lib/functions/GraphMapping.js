@@ -160,7 +160,7 @@ metExploreD3.GraphMapping = {
 					var force = session.getForce();
 					
 					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.restart();
+						force.alpha(1).restart();
 					}
 				}
 	   		}, 1);
@@ -252,7 +252,7 @@ metExploreD3.GraphMapping = {
 					var force = session.getForce();
 					
 					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.restart();
+						force.alpha(1).restart();
 					}
 				}
 	   		}, 1);
@@ -642,7 +642,7 @@ metExploreD3.GraphMapping = {
 							var force = session.getForce();
 							
 							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-									force.restart();
+									force.alpha(1).restart();
 							}
 						}	
 
@@ -954,7 +954,7 @@ metExploreD3.GraphMapping = {
 						var session = _metExploreViz.getSessionById('viz');
 						
 						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-								force.restart();
+								force.alpha(1).restart();
 						}
 					}
 					if (isBinned){
@@ -1212,7 +1212,7 @@ metExploreD3.GraphMapping = {
 						var session = _metExploreViz.getSessionById('viz');
 						
 						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-								force.restart();
+								force.alpha(1).restart();
 						}
 					}
                     if (isBinned){
@@ -1423,7 +1423,7 @@ metExploreD3.GraphMapping = {
 					var force = session.getForce();
 					
 					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.restart();
+						force.alpha(1).restart();
 					}
 				}
 			}, 1);
@@ -1569,7 +1569,7 @@ metExploreD3.GraphMapping = {
 							var force = session.getForce();
 							
 							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-									force.restart();
+									force.alpha(1).restart();
 							}
 						}
 			   		}, 1
@@ -1837,7 +1837,7 @@ metExploreD3.GraphMapping = {
 							var force = session.getForce();
 							
 							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-									force.restart();
+									force.alpha(1).restart();
 							}
 						}
 
@@ -1954,7 +1954,7 @@ metExploreD3.GraphMapping = {
                         var force = session.getForce();
 
                         if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-                            force.restart();
+                            force.alpha(1).restart();
                         }
                     }
                 }, 1
@@ -2062,7 +2062,7 @@ metExploreD3.GraphMapping = {
                         var force = session.getForce();
 
                         if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-                            force.restart();
+                            force.alpha(1).restart();
                         }
                     }
                 }, 1
@@ -2300,7 +2300,7 @@ metExploreD3.GraphMapping = {
 							force = session.getForce();
 							
 							if ((d3.select("#viz").select("#D3viz").attr("animation") === 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-									force.restart();
+									force.alpha(1).restart();
 							}
 						}
 			   		}, 1
@@ -2590,7 +2590,7 @@ metExploreD3.GraphMapping = {
 						var force = session.getForce();
 						
 						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-							force.restart();
+							force.alpha(1).restart();
 						}
 					}
 				}, 1);
@@ -2636,7 +2636,7 @@ metExploreD3.GraphMapping = {
 					var force = session.getForce();
 					
 					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-						force.restart();
+						force.alpha(1).restart();
 					}
 				}   
 	        });

@@ -575,7 +575,7 @@ metExploreD3.GraphNode = {
 
                             if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == 'true')
                                 || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == null)) {
-                                mainforce.restart();
+                                mainforce.alpha(1).restart();
                             }
                         }
                         _MyThisGraphNode.tick(sessionsStore[key].getId()); // this is the key to make it work together
@@ -592,7 +592,7 @@ metExploreD3.GraphNode = {
 
                     if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == 'true')
                         || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == null)) {
-                        force.restart();
+                        force.alpha(1).restart();
                     }
                 }
 
@@ -1691,7 +1691,7 @@ metExploreD3.GraphNode = {
                         if (force != undefined) {
                             if (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == 'true'
                                 || metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == null) {
-                                force.restart();
+                                force.alpha(1).restart();
                             }
                         }
                     }
@@ -1706,7 +1706,7 @@ metExploreD3.GraphNode = {
                     if (force != undefined) {
                         if ((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
                             || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
-                            force.restart();
+                            force.alpha(1).restart();
                         }
                     }
                 }
