@@ -776,6 +776,9 @@ metExploreD3.GraphNetwork = {
             // Define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleSents
             var that = metExploreD3.GraphNetwork;
             metExploreD3.GraphNetwork.zoomListener = d3.zoom()
+                .filter(function(){
+                    return event.button === 1 || event.type==="wheel";
+                })
                 .scaleExtent([ 0.01, 30 ])
                 .extent([[0,0], [w, h]])
                 .translateExtent([[-w*2, -h*2], [w*2, h*2]])
@@ -795,6 +798,9 @@ metExploreD3.GraphNetwork = {
             var that = metExploreD3.GraphNetwork;
 
             metExploreD3.GraphNetwork.zoomListener = d3.zoom()
+                .filter(function(){
+                    return event.button === 1 || event.type==="wheel";
+                })
                 .scaleExtent([ 0.01, 30 ])
                 .extent([[0,0], [w, h]])
                 .translateExtent([[-w*2, -h*2], [w*2, h*2]])
@@ -831,9 +837,7 @@ metExploreD3.GraphNetwork = {
         // Define zoomListener
         vis.svg = d3.select("#"+panel).select("#D3viz")
             .call(metExploreD3.GraphNetwork.zoomListener)
-            // Remove zoom on double click
-            .on("dblclick.zoom", null)
-            // .on("wheel.zoom", function(){console.log("wheel")})
+            .on("dblclick.zoom", null) // Remove zoom on double click
             .attr("pointer-events", "all")
             .append('svg:g')
             .attr("class","graphComponent").attr("id","graphComponent");
