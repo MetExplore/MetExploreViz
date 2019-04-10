@@ -93,8 +93,8 @@ console.log("resizeViz");
 			var scaleZ = scale.getZoomScale();
 			metExploreD3.GraphNetwork.zoomListener
 				.scaleExtent([ 0.01, 30 ])
-				.extent([[0,0], [w, h]])
-				.translateExtent([[-w*2, -h*2], [w*2, h*2]]);
+				.extent([[w*.45, h*.45], [w*.55, h*.55]])
+				.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
 
 
 			var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
@@ -251,8 +251,8 @@ console.log("resizeViz");
 
 					metExploreD3.GraphNetwork.zoomListener
 						.scaleExtent([ 0.01, 30 ])
-						.extent([[0,0], [w, h]])
-						.translateExtent([[-w*2, -h*2], [w*2, h*2]]);
+						.extent([[w*.45, h*.45], [w*.55, h*.55]])
+						.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
 
 	                var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
 	                if(anim=="true")
@@ -279,8 +279,8 @@ console.log("resizeViz");
 
 					metExploreD3.GraphNetwork.zoomListener
 						.scaleExtent([ 0.01, 30 ])
-						.extent([[0,0], [w, h]])
-						.translateExtent([[-w*2, -h*2], [w*2, h*2]]);
+						.extent([[w*.45, h*.45], [w*.55, h*.55]])
+						.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
 
 					if(d3.select("#"+panel).select("#buttonAnim").node()){
 

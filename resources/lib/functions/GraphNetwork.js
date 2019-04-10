@@ -137,10 +137,10 @@ metExploreD3.GraphNetwork = {
         var transX = d3.event.transform.x;
         var transY = d3.event.transform.y;
         var d3EventSourceEvent = d3.event.sourceEvent;
-// console.log(d3EventScale);
-// console.log(transX);
-// console.log(transY);
-// console.log(d3EventSourceEvent);
+ console.log(d3EventScale);
+ console.log(transX);
+ console.log(transY);
+ console.log(d3EventSourceEvent);
 
         metExploreD3.applyTolinkedNetwork(
             panel,
@@ -166,12 +166,12 @@ metExploreD3.GraphNetwork = {
                             function () {
                                 var alpha = _metExploreViz.getSessionById(panelLinked).getForce().alpha();
 
-                                // if(alpha!==undefined){
-                                //     if(alpha<0.06){
+                                if(alpha!==undefined){
+                                    if(alpha<0.06){
                                         var linkStyle = metExploreD3.getLinkStyle();
                                         metExploreD3.GraphLink.refreshLinkZoom(panelLinked, _metExploreViz.getSessionById(panel), linkStyle);
-                                //     }
-                                // }
+                                    }
+                                }
                             }
                         );
 
@@ -771,50 +771,24 @@ metExploreD3.GraphNetwork = {
 
         metExploreD3.GraphCaption.majCaption(panel);
 
-        if(session.getScale()==undefined){
-
-            // Define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleSents
-            var that = metExploreD3.GraphNetwork;
-            metExploreD3.GraphNetwork.zoomListener = d3.zoom()
-                .filter(function(){
-                    return event.button === 1 || event.type==="wheel";
-                })
-                .scaleExtent([ 0.01, 30 ])
-                .extent([[0,0], [w, h]])
-                .translateExtent([[-w*2, -h*2], [w*2, h*2]])
-                .on("zoom", function(e){
-                    that.zoom(panel);
-                });
+        // Define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleSents
+        var that = metExploreD3.GraphNetwork;
+        metExploreD3.GraphNetwork.zoomListener = d3.zoom()
+            .filter(function(){
+                return event.button === 1 || event.type==="wheel";
+            })
+            .scaleExtent([ 0.01, 30 ])
+            .extent([[w*.45, h*.45], [w*.55, h*.55]])
+            .translateExtent([[-w*2, -h*2], [w*3, h*3]])
+            .on("zoom", function(e){
+                that.zoom(panel);
+            });
 
 
-            var scale = new Scale(panel);
-            scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
+        var scale = new Scale(panel);
+        scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
 
-            metExploreD3.setScale(scale, panel);
-
-        }
-        else
-        {
-            var that = metExploreD3.GraphNetwork;
-
-            metExploreD3.GraphNetwork.zoomListener = d3.zoom()
-                .filter(function(){
-                    return event.button === 1 || event.type==="wheel";
-                })
-                .scaleExtent([ 0.01, 30 ])
-                .extent([[0,0], [w, h]])
-                .translateExtent([[-w*2, -h*2], [w*2, h*2]])
-                //Ca éviterait de sortir de l'écran  .translateExtent
-                .on("zoom", function(e){
-                    that.zoom(this.parentNode.id);
-                });
-
-            var scale = new Scale(panel);
-            scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
-
-            metExploreD3.setScale(scale, panel);
-        }
-
+        metExploreD3.setScale(scale, panel);
 
         endall = new Date().getTime();
         timeall = endall - startall;
@@ -1142,12 +1116,25 @@ metExploreD3.GraphNetwork = {
         var height = parseInt(metExploreD3.GraphPanel.getHeight(panel).replace("px",""));
 
         var scale =(Math.min(height/hSvg, width/wSvg))*0.9;
-
+        console.log(scale);
         metExploreD3.applyTolinkedNetwork(
             panel,
             function(panelLinked, sessionLinked) {
                 zoom.scaleBy(d3.select("#viz").select("#D3viz").transition().duration(750).on("end",function(){
-                    zoom.translateTo(d3.select("#"+panel).select("#D3viz").transition().duration(750), 0, 0);
+                    var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
+                    console.log(rectD3viz);
+                    var centerD3vizX = rectD3viz.left + rectD3viz.width/2;
+                    var centerD3vizY = rectD3viz.top + rectD3viz.height/2;
+
+                    var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                    var centerGCX = rectSvg.left + rectSvg.width/2;
+                    var centerGCY = rectSvg.top + rectSvg.height/2;
+
+                    var moveX = centerGCX - centerD3vizX;
+                    var moveY = centerGCY - centerD3vizY;
+
+                    moveX = rectD3viz.left + rectSvg.left;
+                    zoom.translateTo(d3.select("#"+panel).select("#D3viz").transition().duration(750), moveX, moveY);
                     scaleViz.setZoomScale(scale);
                     metExploreD3.hideMask(mask);
                 }), scale);
