@@ -444,7 +444,7 @@ metExploreD3.GraphNetwork = {
                         e.stopImmediatePropagation();
                     }
                 });
-
+                metExploreD3.GraphNode.unselectIfDBClick();
                 var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
                 metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);

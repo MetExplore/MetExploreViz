@@ -1628,56 +1628,52 @@ metExploreD3.GraphNode = {
 
     unselectIfDBClick: function () {
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-        console.log("_MyThisGraphNode.dblClickable ",_MyThisGraphNode.dblClickable);
-        console.log("d3.event.button ",d3.event.button);
-        if (_MyThisGraphNode.dblClickable && d3.event.button === 0) {
+        if(d3.event.type==="start" && d3.event.sourceEvent.type!=="end"){
+            if (_MyThisGraphNode.dblClickable) {
 
-            metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
-            _MyThisGraphNode.unselectAll(this);
-        }
-        else {
-            if (d3.event.button === 0) {
-                _MyThisGraphNode.dblClickable = true;
-
-                _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
-                    function () {
-                        _MyThisGraphNode.dblClickable = false;
-                    }
-                );
-
-                metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400);
+                metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.ownerSVGElement.parentNode.id);
+                _MyThisGraphNode.unselectAll(d3.event.sourceEvent.target.ownerSVGElement);
             }
             else {
+                if (d3.event.type==="start" && d3.event.sourceEvent!=="end") {
+                    _MyThisGraphNode.dblClickable = true;
 
+                    _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
+                        function () {
+                            _MyThisGraphNode.dblClickable = false;
+                        }
+                    );
+
+                    metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400);
+                }
             }
         }
-
-        if (_MyThisGraphNode.dblClickable && d3.event.button === 1) {
-            metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
-            d3.select(this).select("#graphComponent")
-                .selectAll("g.node")
-                .filter(function (d) {
-                    return d.isLocked();
-                })
-                .each(function (d) {
-                    d.fixed = false;
-                    d.setLocked(false);
-                });
-        }
-        else {
-            if (d3.event.button === 1) {
-                _MyThisGraphNode.dblClickable = true;
-
-                _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
-                    function () {
-                        _MyThisGraphNode.dblClickable = false;
-                    }
-                );
-
-                metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400);
+        else
+        {
+            if (_MyThisGraphNode.dblClickable && d3.event.button === 1) {
+                metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
+                d3.select(this).select("#graphComponent")
+                    .selectAll("g.node")
+                    .filter(function (d) {
+                        return d.isLocked();
+                    })
+                    .each(function (d) {
+                        d.fixed = false;
+                        d.setLocked(false);
+                    });
             }
             else {
+                if (d3.event.button === 1) {
+                    _MyThisGraphNode.dblClickable = true;
 
+                    _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
+                        function () {
+                            _MyThisGraphNode.dblClickable = false;
+                        }
+                    );
+
+                    metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400);
+                }
             }
         }
         if (session != undefined) {
