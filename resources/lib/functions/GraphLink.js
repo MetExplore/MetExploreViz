@@ -622,7 +622,7 @@ metExploreD3.GraphLink = {
      * @param {} linkStyle : Store which contains links style
      * @param {} metaboliteStyle : Store which contains metabolites style
      */
-    refreshLinkZoom: function (parent, session, linkStyle, metaboliteStyle) {
+    refreshLinkActivity: function (parent, session, linkStyle, metaboliteStyle) {
         metExploreD3.GraphLink.panelParent = "#" + parent;
         var networkData = session.getD3Data();
 

@@ -1676,6 +1676,7 @@ metExploreD3.GraphNode = {
                 }
             }
         }
+
         if (session != undefined) {
             // We stop the previous animation
             if (session.isLinked()) {

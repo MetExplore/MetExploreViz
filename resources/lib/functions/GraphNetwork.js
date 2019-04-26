@@ -57,6 +57,28 @@ metExploreD3.GraphNetwork = {
             // Resize it if it's big at the beginnning
             var session = _metExploreViz.getSessionById(panel);
             var generalStyle = metExploreD3.getGeneralStyle();
+
+            if(anim){
+                if(alpha!==undefined){
+                    if(session.getD3Data().getNodes().length>1000){
+                        if(session.isAnimated()){
+
+                            if(alpha>0.06){
+                                d3.select("#"+panel).selectAll("path.link").remove();
+                            }
+                            else
+                            {
+                                if(d3.select("#"+panel).selectAll("path.link").nodes().length===0){
+                                    var linkStyle = metExploreD3.getLinkStyle();
+                                    metExploreD3.GraphLink.refreshLinkActivity(panel, _metExploreViz.getSessionById(panel), linkStyle);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
             // Control if the user can see all the graph
             if (anim && previousScale>0.05 && session.isResizable()) {
 
@@ -137,10 +159,6 @@ metExploreD3.GraphNetwork = {
         var transX = d3.event.transform.x;
         var transY = d3.event.transform.y;
         var d3EventSourceEvent = d3.event.sourceEvent;
- console.log(d3EventScale);
- console.log(transX);
- console.log(transY);
- console.log(d3EventSourceEvent);
 
         metExploreD3.applyTolinkedNetwork(
             panel,
@@ -165,11 +183,10 @@ metExploreD3.GraphNetwork = {
                         metExploreD3.GraphNetwork.taskZoom = metExploreD3.createDelayedTask(
                             function () {
                                 var alpha = _metExploreViz.getSessionById(panelLinked).getForce().alpha();
-
                                 if(alpha!==undefined){
-                                    if(alpha<0.06){
+                                    if(!session.isAnimated() || alpha<0.06){
                                         var linkStyle = metExploreD3.getLinkStyle();
-                                        metExploreD3.GraphLink.refreshLinkZoom(panelLinked, _metExploreViz.getSessionById(panel), linkStyle);
+                                        metExploreD3.GraphLink.refreshLinkActivity(panelLinked, _metExploreViz.getSessionById(panel), linkStyle);
                                     }
                                 }
                             }
@@ -263,11 +280,10 @@ metExploreD3.GraphNetwork = {
     play:function(d) {
         var sessions = _metExploreViz.getSessionsSet();
         var panel = this.parentNode.parentNode.id;
-
         var session = _metExploreViz.getSessionById(panel);
         if(session!=undefined)
         {
-            var anim = metExploreD3.GraphNetwork.isAnimated(panel);;
+            var anim = metExploreD3.GraphNetwork.isAnimated(panel);
             if (anim == "false") {
                 if(session.isLinked())
                 {
@@ -287,6 +303,7 @@ metExploreD3.GraphNetwork = {
                     force.alpha(1).restart();
 
                 }
+
             } else {
                 if(session.isLinked())
                 {
@@ -445,14 +462,17 @@ metExploreD3.GraphNetwork = {
                     }
                 });
                 metExploreD3.GraphNode.unselectIfDBClick();
+
+
+            })
+            .on("brush ", function(d) {
                 var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
                 metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
 
                 var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-                console.log(scrollable);
+
                 if(d3.event.sourceEvent.button!==1 && scrollable!=="true"){
-                    console.log("d3.event.sourceEvent.button ", d3.event.sourceEvent.button);
 
                     if(d3.event.sourceEvent.button!==2) {
                         if (session !== undefined) {
@@ -492,9 +512,6 @@ metExploreD3.GraphNetwork = {
                 }
                 else
                 {
-
-                    console.log("d3.event.sourceEvent.button ", d3.event.sourceEvent.button);
-                    console.log("scrollable ", scrollable);
                     var force = session.getForce();
                     if(force!=undefined)
                     {
@@ -715,7 +732,6 @@ metExploreD3.GraphNetwork = {
      */
     refreshSvg : function(panel) {
         var startall = new Date().getTime();
-        console.log("Refresh SVG");
 
         document.addEventListener("keydown", function (e) {
             // 83=S
@@ -758,7 +774,6 @@ metExploreD3.GraphNetwork = {
 
         // var startall = new Date().getTime();
         // var start = new Date().getTime();
-        // console.log("----Viz: START refresh/init Viz");
 
         // Call GraphCaption to draw the caption
         if(panel=='viz')
@@ -889,7 +904,6 @@ metExploreD3.GraphNetwork = {
         var networkData = session.getD3Data();
 
         // Get bound effect
-        // console.log(force.alpha());
         var visibleLinks = networkData.getLinks()
             .filter(function (link) {
                 var target, source;
@@ -942,20 +956,19 @@ metExploreD3.GraphNetwork = {
             .force('x', forceX)
             .force('y', forceY)
             .force("collide", forceCollide)
-            .alphaDecay(0.01)
+            .alphaDecay(0.1)
             .velocityDecay(0.2);
 
         session.setForce(force);
 
         force
             .on("end", function(){
-            console.log("force end");
-            var scale = metExploreD3.getScaleById(panel);
-            if ((networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())) {
-                metExploreD3.GraphLink.reloadLinks(panel, networkData, linkStyle, metaboliteStyle);
-            }
-            metExploreD3.GraphLink.tick(panel, scale);
-        })
+                var scale = metExploreD3.getScaleById(panel);
+                if ((networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())) {
+                    metExploreD3.GraphLink.reloadLinks(panel, networkData, linkStyle, metaboliteStyle);
+                }
+                metExploreD3.GraphLink.tick(panel, scale);
+            })
             .on("tick", function(e){
                 var useClusters = metExploreD3.getGeneralStyle().useClusters();
                 var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
@@ -1012,8 +1025,6 @@ metExploreD3.GraphNetwork = {
                                 // var center = group.center;
                                 // d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.centroid")
                                 // 	.filter(function(centroid){
-                                // 		console.log(node.getPathways()[0]);
-                                // 		console.log(centroid.id);
                                 // 		return centroid.id == node.getPathways()[0];
                                 // 	})
                                 // 	.each(function(centroid){
@@ -1116,13 +1127,11 @@ metExploreD3.GraphNetwork = {
         var height = parseInt(metExploreD3.GraphPanel.getHeight(panel).replace("px",""));
 
         var scale =(Math.min(height/hSvg, width/wSvg))*0.9;
-        console.log(scale);
         metExploreD3.applyTolinkedNetwork(
             panel,
             function(panelLinked, sessionLinked) {
                 zoom.scaleBy(d3.select("#viz").select("#D3viz").transition().duration(750).on("end",function(){
                     var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
-                    console.log(rectD3viz);
                     var centerD3vizX = rectD3viz.left + rectD3viz.width/2;
                     var centerD3vizY = rectD3viz.top + rectD3viz.height/2;
 
@@ -2938,7 +2947,6 @@ metExploreD3.GraphNetwork = {
         var force = sessionLinked.getForce();
 
         // Get bound effect
-        // console.log(force.alpha());
         var visibleLinks = networkData.getLinks()
             .filter(function (link) {
                 var target, source;
