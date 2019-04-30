@@ -146,9 +146,15 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                     metExploreD3.applyTolinkedNetwork(
                                                         activePanel,
                                                         function(panelLinked, sessionLinked) {
-                                                            var componentsLinked = metExploreD3.getPathwaysSet(panelLinked);
-                                                            var comp = _metExploreViz.getSessionById(panelLinked).getD3Data().getPathwayById(component.getId());
-                                                            comp.setColor(that.value);
+                                                            if (view.getTitle() === "Pathways"){
+                                                                var componentsLinked = metExploreD3.getPathwaysSet(panelLinked);
+                                                            }
+                                                            else
+                                                            {
+                                                                var componentsLinked = metExploreD3.getCompartmentInBiosourceSet();
+                                                            }
+
+                                                            component.setColor(that.value);
                                                             metExploreD3.GraphCaption.majCaptionColor(componentsLinked, view.getTitle(), panelLinked);
                                                         });
                                                 }

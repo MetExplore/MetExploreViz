@@ -931,6 +931,8 @@ metExploreD3.GraphNetwork = {
                     return linkStyle.getSize()/2+maxDim;
                 else
                     return linkStyle.getSize()+maxDim;
+
+
             })
             .iterations(1);
         // .strength([strength])
@@ -973,8 +975,11 @@ metExploreD3.GraphNetwork = {
                 var useClusters = metExploreD3.getGeneralStyle().useClusters();
                 var componentDisplayed = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
                 if(useClusters && componentDisplayed!=false){
-                    var k = e.alpha * .1;
-                    networkData.getNodes().forEach(function(node) {
+                    var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
+                    var k = forceCentroids.alpha();
+                    networkData.getNodes()
+                        .filter(function(n){ return n.getBiologicalType()!=="pathway" && !n.getIsSideCompound();})
+                        .forEach(function(node) {
                         if(componentDisplayed=="Compartments"){
                             var group = null;
                             if(node.getBiologicalType()=="metabolite"){
@@ -996,7 +1001,7 @@ metExploreD3.GraphNetwork = {
                             }
                             if(group!=null)
                             {
-                                var forceCentroids = _metExploreViz.getSessionById(panel).getForceCentroids();
+
                                 var theCentroid = forceCentroids.nodes()
                                     .find(function(centroid){
                                             return centroid.id == group;
@@ -1036,10 +1041,28 @@ metExploreD3.GraphNetwork = {
                                             return centroid.id == nodePathwayVisible[0];
                                         }
                                     );
-                                node.x += (theCentroid.x - node.x) * k;
-                                node.y += (theCentroid.y - node.y) * k;
 
-
+                                d3.select("#" + panel).select("#D3viz").select("#graphComponent")
+                                    .selectAll("g.node")
+                                    .attr("cx", function (d) {
+                                        return (theCentroid.x - d.x) * k;
+                                    })
+                                    .attr("cy", function (d) {
+                                        return (theCentroid.y - d.y) * k;
+                                    })
+                                    .attr("transform", function (d) {
+                                        //  scale("+ +")
+                                        var scale = 1;
+                                        if (d3.select(this) != null) {
+                                            var transformString = d3.select(this).attr("transform");
+                                            if (d3.select(this).attr("transform") != null) {
+                                                var indexOfScale = transformString.indexOf("scale(");
+                                                if (indexOfScale != -1)
+                                                    scale = parseInt(transformString.substring(indexOfScale + 6, transformString.length - 1));
+                                            }
+                                        }
+                                        return "translate(" + (theCentroid.x - d.x) * k + "," + (theCentroid.y - d.y) * k + ") scale(" + scale + ")";
+                                    });
                             }
                         }
                     });
@@ -1437,7 +1460,7 @@ metExploreD3.GraphNetwork = {
                                 }
                                 else
                                 {
-                                    if(d3.select(this).select('rect.stroke')[0]!=null)
+                                    if(d3.select(this).select('rect.stroke').node()!=null)
                                     {
                                         var colorStrokeMain = d3.select(this).select('rect.stroke').style("fill");
 
@@ -2271,9 +2294,6 @@ metExploreD3.GraphNetwork = {
         //Create the list of nodes to duplicate.
         //Two tables are created, one when side compounds are substrates and one when they are products
         vis.selectAll("path.link.reaction")
-            .filter(function(link){
-                return link.getInteraction()!="hiddenForce";
-            })
             .each(function(d) {
                 var source = d.source;
                 var target = d.target;
@@ -2485,11 +2505,6 @@ metExploreD3.GraphNetwork = {
 
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
-
-                if(_metExploreViz.isLinkedByTypeOfMetabolite()){
-                    metExploreD3.GraphLink.linkTypeOfMetabolite();
-                }
-
             }, 0);
         }
         metExploreD3.GraphNetwork.initCentroids(panel);
@@ -2548,10 +2563,6 @@ metExploreD3.GraphNetwork = {
                     });
 
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
-
-                if(_metExploreViz.isLinkedByTypeOfMetabolite()){
-                    metExploreD3.GraphLink.linkTypeOfMetabolite();
-                }
 
                 var sessions = _metExploreViz.getSessionsSet();
                 var aSession = _metExploreViz.getSessionById(panel);
@@ -2648,11 +2659,6 @@ metExploreD3.GraphNetwork = {
                     });
 
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
-
-
-                if(_metExploreViz.isLinkedByTypeOfMetabolite()){
-                    metExploreD3.GraphLink.linkTypeOfMetabolite();
-                }
 
                 var sessions = _metExploreViz.getSessionsSet();
                 var aSession = _metExploreViz.getSessionById(panel);
@@ -2963,7 +2969,7 @@ metExploreD3.GraphNetwork = {
 
         force
             .nodes(visibleNodes);
-        
+
         force
             .force("link").links(visibleLinks);
 

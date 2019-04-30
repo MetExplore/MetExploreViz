@@ -1533,7 +1533,7 @@ metExploreD3.GraphNode = {
             var session = _metExploreViz.getSessionById(panel);
             if (session.isLinked()) {
                 for (var key in sessionsStore) {
-                    if (sessionsStore[key].isLinked() && panel != sessionsStore[key].getId() && d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")[0] != null) {
+                    if (sessionsStore[key].isLinked() && panel != sessionsStore[key].getId() && d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent").node() != null) {
                         d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")
                             .selectAll("g.node")
                             .each(function (node) {
@@ -1688,7 +1688,7 @@ metExploreD3.GraphNode = {
                         if (force != undefined) {
                             if (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == 'true'
                                 || metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == null) {
-                                force.alpha(1).restart();
+                                force.alpha(force.alpha()).restart();
                             }
                         }
                     }
@@ -1703,7 +1703,7 @@ metExploreD3.GraphNode = {
                     if (force != undefined) {
                         if ((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
                             || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
-                            force.alpha(1).restart();
+                            force.alpha(force.alpha()).restart();
                         }
                     }
                 }
@@ -2183,7 +2183,7 @@ metExploreD3.GraphNode = {
                                     return !node.isHidden() && node.getBiologicalType() === "pathway"
                                 });
 
-                            var last = pathways[0][pathways.size() - 1];
+                            var last = pathways.nodes()[pathways.size() - 1];
                             this.parentNode.insertBefore(this, last);
                             this.parentNode.insertBefore(last, this);
 
