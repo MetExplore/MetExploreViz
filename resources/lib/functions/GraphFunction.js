@@ -116,11 +116,11 @@ metExploreD3.GraphFunction = {
         nodes
             .filter(function(node) {
                 var numberOfLinkWithoutSource = links.filter(function (link) {
-                    return node.getId() === link.getSource()
+                    return node.getId() === link.getSource().getId()
                 }).size();
 
                 var linkWithThisNode = links.filter(function (link) {
-                    return node.getId() == link.getSource() || node.getId() == link.getTarget();
+                    return node.getId() === link.getSource().getId() || node.getId() === link.getTarget().getId();
                 });
 
                 var numberOfLinkWithThisNode = linkWithThisNode.size();
@@ -144,18 +144,18 @@ metExploreD3.GraphFunction = {
         nodes
             .filter(function(node){
                 var numberOfLinkWithoutTarget = links.filter(function(link){
-                    return node.getId()==link.getTarget()
+                    return node.getId()==link.getTarget().getId()
                 }).size();
 
                 var linkWithThisNode = links.filter(function(link){
-                    return node.getId()==link.getSource() || node.getId()==link.getTarget();
+                    return node.getId()==link.getSource().getId() || node.getId()==link.getTarget().getId();
                 });
 
-                var numberOfLinkWithThisNode = linkWithThisNode[0].length;
+                var numberOfLinkWithThisNode = linkWithThisNode.size();
                
                 var numberOfReversibleLink = linkWithThisNode.filter(function(link){
                     return link.getTarget().getReactionReversibility();
-                })[0].length;
+                }).size();
 
                 return numberOfLinkWithoutTarget===0 && (numberOfLinkWithThisNode===1 || numberOfReversibleLink===0);
             })
