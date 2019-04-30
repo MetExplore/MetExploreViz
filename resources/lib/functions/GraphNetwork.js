@@ -2962,8 +2962,10 @@ metExploreD3.GraphNetwork = {
             });
 
         force
-            .nodes(visibleNodes)
-            .links(visibleLinks);
+            .nodes(visibleNodes);
+        
+        force
+            .force("link").links(visibleLinks);
 
         metExploreD3.GraphNetwork.tick(panelLinked);
         if(sessionLinked!=undefined)
