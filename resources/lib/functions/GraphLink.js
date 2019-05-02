@@ -87,11 +87,12 @@ metExploreD3.GraphLink = {
         var maxValue = undefined;
 
         d3.select("#" + panel).select("#D3viz").select("#graphComponent").selectAll(".linklabel")
+            .filter(function(l){ return l.getSource().getBiologicalType()!=="pathway" && l.getTarget().getBiologicalType()!=="pathway" && !l.getTarget().isHidden() && !l.getSource().isHidden()})
             .attr("x", function (d) {
-                return (d.source.x + d.target.x) / 2;
+                return (d.getSource().x + d.getTarget().x) / 2;
             })
             .attr("y", function (d) {
-                return (d.source.y + d.target.y) / 2;
+                return (d.getSource().y + d.getTarget().y) / 2;
             });
 
         var colors = _metExploreViz.getSessionById('viz').getColorMappingsSet();

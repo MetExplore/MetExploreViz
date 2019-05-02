@@ -683,13 +683,17 @@ metExploreD3.GraphMapping = {
 		          	var mappingName = mapping.getName();
 		          	var linkStyle = metExploreD3.getLinkStyle();  
 		          	var force = session.getForce();
-					
-					force.linkDistance(function(link){
-						if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-							return linkStyle.getSize();
-						else
-							return linkStyle.getSize()*2;
-					});
+
+					var forceLinks = force.force("link")
+						.distance(function(link){
+							if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+								return linkStyle.getSize();
+							else
+								return linkStyle.getSize()*2;
+						});
+
+					force
+						.force("link", forceLinks);
 
 					vis.selectAll("g.node")
 						.filter(function(d){
@@ -777,8 +781,8 @@ metExploreD3.GraphMapping = {
 						.domain([-maxValue, 0, maxValue])
 						.range([-7, 0, 7]);
 
-			    	session.addColorMapping(maxValue, colorMax); 
-					session.addColorMapping(-maxValue, colorMin);
+			    	session.addColorMapping(maxValue, d3.color(colorMax).hex());
+					session.addColorMapping(-maxValue, d3.color(colorMin).hex());
 					 
 			     	vis.selectAll("g.node")
 			        	.each(
@@ -1002,13 +1006,19 @@ metExploreD3.GraphMapping = {
 		          	var mappingName = mapping.getName();
 		          	var linkStyle = metExploreD3.getLinkStyle();  
 		          	var force = session.getForce();
-					
-					force.linkDistance(function(link){
-						if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-							return linkStyle.getSize();
-						else
-							return linkStyle.getSize()*2;
-					});
+
+					var force = session.getForce();
+
+					var forceLinks = force.force("link")
+						.distance(function(link){
+							if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+								return linkStyle.getSize();
+							else
+								return linkStyle.getSize()*2;
+						});
+
+					force
+						.force("link", forceLinks);
 
 					vis.selectAll("g.node")
 						.filter(function(d){
@@ -1084,7 +1094,7 @@ metExploreD3.GraphMapping = {
 						.domain([minValue, 0, maxValue])
 						.range([-7, 0, 7]);
 
-			    	session.addColorMapping(maxValue, colorNode(parseFloat(maxValue)));
+			    	session.addColorMapping(maxValue, d3.color(colorNode(parseFloat(maxValue))).hex());
 					 
 			    	vis.selectAll("g.node")
 			        	.each(
@@ -1480,16 +1490,17 @@ metExploreD3.GraphMapping = {
 									var mapNode = node.getMappingDataByNameAndCond(mapping.getName(), condition);
 									if(mapNode != null){
 										var exist = false;
-										var mapVal = mapNode.getMapValue().valueOf();
-										
-										values.forEach(function(val){
-											if(val.valueOf()==mapVal.valueOf())
-												exist = true;
-										})
-										if(!exist)
-											values.push(mapVal);
-									}
+										var mapVal = mapNode.getMapValue();
+										if(mapVal!==undefined){
+											values.forEach(function(val){
+												if(val===mapVal)
+													exist = true;
+											});
 
+											if(!exist)
+												values.push(mapVal);
+										}
+									}
 								});
 								// 	var metabolite = metExploreD3.getMetaboliteById(metabolite_Store, idsTab[i]);
 								// 	if(metabolite!=undefined)
@@ -1754,14 +1765,14 @@ metExploreD3.GraphMapping = {
 				      	// color = metExploreD3.GraphUtils.RGB2Color(255,255,0);
 
 				      	// session.addColorMapping("min", color); 
-				    	
+
 				    	if(minValue==maxValue){
-				    		session.addColorMapping(maxValue, colorScale(parseFloat(maxValue))); 
+				    		session.addColorMapping(maxValue, d3.color(colorScale(parseFloat(maxValue))).hex());
 						}
 				    	else
 				    	{
-				    		session.addColorMapping(maxValue, colorScale(parseFloat(maxValue))); 
-							session.addColorMapping(minValue, colorScale(parseFloat(minValue))); 
+				    		session.addColorMapping(maxValue, d3.color(colorScale(parseFloat(maxValue))).hex());
+							session.addColorMapping(minValue, d3.color(colorScale(parseFloat(minValue))).hex());
 				    	}
 				    
 				     	vis.selectAll("g.node")
@@ -2235,16 +2246,16 @@ metExploreD3.GraphMapping = {
 									var mapNode = node.getMappingDataByNameAndCond(mapping.getName(), condition);
 									if(mapNode != null){
 										var exist = false;
-										var mapVal = mapNode.getMapValue().valueOf();
-
-										values.forEach(function(val){
-											if(val.valueOf()==mapVal.valueOf())
-												exist = true;
-										})
-										if(!exist)
-											values.push(mapVal);
+										var mapVal = mapNode.getMapValue();
+										if(mapVal!==undefined) {
+											values.forEach(function (val) {
+												if (val == mapVal)
+													exist = true;
+											})
+											if (!exist)
+												values.push(mapVal);
+										}
 									}
-
 								});
 								// 	var metabolite = metExploreD3.getMetaboliteById(metabolite_Store, idsTab[i]);
 								// 	if(metabolite!=undefined)
@@ -2976,6 +2987,7 @@ metExploreD3.GraphMapping = {
                     // Do whatever you'd like with the Data URI!
                     var img = new Image();
                     img.src = dataUri;
+                    console.log(node);
                     img.node = node;
                     img.onload = function () {
                         var imgWidth = this.width;
@@ -2986,6 +2998,8 @@ metExploreD3.GraphMapping = {
                             imgWidth = 150;
                         }
                         var offsetX = -imgWidth/2;
+                        console.log(this.src);
+                        console.log(this.src);
                         this.node.append("g")
                             .attr("class", "imageNode")
                             .attr("x", 0)
@@ -3001,6 +3015,8 @@ metExploreD3.GraphMapping = {
                             .attr("width", imgWidth)
                             .attr("height", imgHeight)
                             .attr("opacity", 1);
+
+                        console.log(this.node.select(".imageNode"));
                         metExploreD3.GraphMapping.applyEventOnImage(this.node.select(".imageNode"));
                         this.node.selectAll(".imageNode")
                             .each(function(d){
@@ -3049,6 +3065,7 @@ metExploreD3.GraphMapping = {
      * @param {} image : The g element containing the image on which to apply the event.
      */
     applyEventOnImage : function (image) {
+    	console.log(image);
     	var panel = _MyThisGraphNode.activePanel;
     	if(!panel)
     		panel="viz";
@@ -3060,6 +3077,7 @@ metExploreD3.GraphMapping = {
             var mouseenterEvent = new MouseEvent("mouseenter");
             this.parentNode.dispatchEvent(mouseenterEvent);
         });
+
         var drag = metExploreD3.GraphStyleEdition.createDragBehavior(panel);
         image.call(drag);
         metExploreD3.GraphMapping.applyResizeHandle(image);

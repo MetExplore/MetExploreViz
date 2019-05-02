@@ -534,12 +534,13 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				// For each value we add corresponding color caption
 				var i = 0;
 				colorStore.forEach(function(color){
-
-			    	var colorName = color.getName();
+						console.log(color);
+						var colorName = color.getName();
 			    	var value = colorName;
 			    	if(type==="flux")
 			    		value = selectedCondition[i];
 			    	i++;
+
 			    	var newId = colorName.toString().replace(me.regexpPanel, "_");
 
 			    	var newMappingCaptionForm = Ext.create('metExploreViz.view.form.MappingCaptionForm', {

@@ -447,12 +447,20 @@ metExploreD3.GraphNode = {
 
 
         var linkStyle = metExploreD3.getLinkStyle();
-        force.linkDistance(function (link) {
-            if (link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-                return linkStyle.getSize() / 2 + maxDim;
-            else
-                return linkStyle.getSize() + maxDim;
-        });
+
+        var force = session.getForce();
+
+        var forceLinks = force.force("link")
+            .distance(function(link){
+                if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+                    return linkStyle.getSize() / 2 + maxDim;
+                else
+                    return linkStyle.getSize() + maxDim;
+            });
+
+        force
+            .force("link", forceLinks);
+
         metabolites
             .select("text")
             .attr("opacity", metaboliteStyle.getLabelOpacity());
@@ -2059,7 +2067,23 @@ metExploreD3.GraphNode = {
                 node.fixed = node.isLocked();
             })
     },
+    getTranslation: function (transform) {
+        // Create a dummy g for calculation purposes only. This will never
+        // be appended to the DOM and will be discarded once this function
+        // returns.
+        var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
+        // Set the transform attribute to the provided string value.
+        g.setAttributeNS(null, "transform", transform);
+
+        // consolidate the SVGTransformList containing all transformations
+        // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+        // its SVGMatrix.
+        var matrix = g.transform.baseVal.consolidate().matrix;
+
+        // As per definition values e and f are the ones for the translation.
+        return [matrix.e, matrix.f];
+    },
     applyEventOnNode: function (parent) {
         var reactionStyle = metExploreD3.getReactionStyle();
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -2087,7 +2111,7 @@ metExploreD3.GraphNode = {
                     var labelTranslate = [labelTransform.x, labelTransform.y];
                     var labelScale = labelTransform.k;
                     if (metExploreD3.GraphStyleEdition.editMode) {
-                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
                     }
                     else {
                         labelElement.attr("y", newY);
@@ -2098,10 +2122,15 @@ metExploreD3.GraphNode = {
                     var imageElement = d3.select(this).select(".imageNode");
                     if (!imageElement.empty()) {
 
-                        var imageTransform = d3.zoomTransform(imageElement);
-                        var imageTranslate = [imageTransform.x, imageTransform.y];
-                        var imageScale = imageTransform.k;
-                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + (imageScale[0] / 2) + ", " + (imageScale[1] / 2) + ")");
+                        var imageTransform = imageElement.attr("transform");
+                        var imageTranslate = metExploreD3.GraphNode.getTranslation(imageTransform);
+                        var scale = imageTransform.substring(imageTransform.indexOf("scale"), imageTransform.length);
+                        var imageScale = scale.substring(6, scale.indexOf(')'));
+
+                        if (isNaN(imageScale))
+                            imageScale = 1;
+
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + imageScale + ")");
                     }
                 }
 
@@ -2274,7 +2303,7 @@ metExploreD3.GraphNode = {
                     var labelScale = labelTransform.k;
 
                     if (metExploreD3.GraphStyleEdition.editMode) {
-                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")")
                     }
                     else {
                         labelElement.attr("y", newY);
@@ -2285,11 +2314,15 @@ metExploreD3.GraphNode = {
                     var imageElement = d3.select(this).select(".imageNode");
                     if (!imageElement.empty()) {
 
-                        var imageTransform = d3.zoomTransform(imageElement);
-                        var imageTranslate = [imageTransform.x, imageTransform.y];
-                        var imageScale = imageTransform.k;
+                        var imageTransform = imageElement.attr("transform");
+                        var imageTranslate = metExploreD3.GraphNode.getTranslation(imageTransform);
+                        var scale = imageTransform.substring(imageTransform.indexOf("scale"), imageTransform.length);
+                        var imageScale = scale.substring(6, scale.indexOf(')'));
 
-                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + (imageScale[0] * 2) + ", " + (imageScale[1] * 2) + ")");
+                        if (isNaN(imageScale))
+                            imageScale = 1;
+
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + imageScale + ")");
                     }
                 }
 
@@ -2357,7 +2390,7 @@ metExploreD3.GraphNode = {
                     var labelScale = labelTransform.k;
 
                     if (metExploreD3.GraphStyleEdition.editMode) {
-                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
                     }
                     else {
                         labelElement.attr("y", newY);
@@ -2372,7 +2405,7 @@ metExploreD3.GraphNode = {
                         var imageTranslate = [imageTransform.x, imageTransform.y];
                         var imageScale = imageTransform.k;
 
-                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + (imageScale[0] / 2) + ", " + (imageScale[1] / 2) + ")");
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + imageScale + ")");
                     }
                 }
 
@@ -2519,7 +2552,7 @@ metExploreD3.GraphNode = {
                     var labelScale = labelTransform.k;
 
                     if (metExploreD3.GraphStyleEdition.editMode) {
-                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")")
                     }
                     else {
                         labelElement.attr("y", newY);
@@ -2534,7 +2567,7 @@ metExploreD3.GraphNode = {
                         var imageTranslate = [imageTransform.x, imageTransform.y];
                         var imageScale = imageTransform.k;
 
-                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + (imageScale[0] * 2) + ", " + (imageScale[1] * 2) + ")");
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + imageScale + ")");
                     }
                 }
 

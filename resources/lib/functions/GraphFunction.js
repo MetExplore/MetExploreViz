@@ -401,48 +401,6 @@ metExploreD3.GraphFunction = {
 			});	
 		};
     },
-    test2 : function(){
-		
-		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
-		
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-			.on("click", function(node){
-				metExploreD3.GraphFunction.colorDistanceOnNode(metExploreD3.GraphFunction.bfs(node), setLinkDistance);
-		});
-		function setLinkDistance(){
-			var linkStyle = metExploreD3.getLinkStyle();
-			var color = d3.scaleLinear()
-				.domain([0, 1, 2, 3])
-				.range([5*linkStyle.getSize(), 4*linkStyle.getSize(), 3*linkStyle.getSize(), linkStyle.getSize()]);
-				
-				// d3.layout.force().friction(0.90).gravity(0.06)
-				// 	.charge(-150)
-
-				// d3.layout.force().friction(0.90).gravity(0.08).charge(-4000).theta(0.2)
-    
-			var color2 = d3.scaleLinear()
-				.domain([0, 1, 2, 3])
-				.range([-600, -500, -400, -30]);
-
-			metExploreD3.getGlobals().getSessionById('viz').getForce()
-				.linkDistance(function(link){
-
-					var value = Math.max(link.getSource().distance, link.getTarget().distance);
-					if(value>3) 
-						value = 3;
-					var val = color(value);
-					return val;
-				})
-				.gravity(0.04)
-				.charge(function(node){
-					var value = node.distance;
-					if(node.distance>3) 
-						value = 3;
-					var val = color2(value);
-					return val;
-				});
-		};
-    },
 
     /*******************************************
     * Hierarchical drawing of the current tulip network
