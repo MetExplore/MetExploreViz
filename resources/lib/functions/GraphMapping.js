@@ -2998,8 +2998,6 @@ metExploreD3.GraphMapping = {
                             imgWidth = 150;
                         }
                         var offsetX = -imgWidth/2;
-                        console.log(this.src);
-                        console.log(this.src);
                         this.node.append("g")
                             .attr("class", "imageNode")
                             .attr("x", 0)
@@ -3007,6 +3005,8 @@ metExploreD3.GraphMapping = {
                             .attr("width", imgWidth)
                             .attr("height", imgHeight)
                             .attr("opacity", 1)
+                            .attr("x", offsetX)
+                            .attr("y", 20)
                             .attr("transform", "translate(" + offsetX + ",20)");
                         this.node.selectAll(".imageNode")
                             .append("image")
@@ -3089,6 +3089,7 @@ metExploreD3.GraphMapping = {
      * @param {} image : The g element containing the image on which to add the element
      */
     applyResizeHandle : function (image) {
+    	console.log(image);
         var imgWidth = Number(image.attr("width"));
         var imgHeight = Number(image.attr("height"));
         var deltaGX = 0;
@@ -3096,57 +3097,76 @@ metExploreD3.GraphMapping = {
         var oldY = 0;
         var limitX = 0;
 
+        function getTranslation(transform) {
+			// Create a dummy g for calculation purposes only. This will never
+			// be appended to the DOM and will be discarded once this function
+			// returns.
+			var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+			// Set the transform attribute to the provided string value.
+			g.setAttributeNS(null, "transform", transform);
+
+			// consolidate the SVGTransformList containing all transformations
+			// to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+			// its SVGMatrix.
+			var matrix = g.transform.baseVal.consolidate().matrix;
+
+			// As per definition values e and f are the ones for the translation.
+			return [matrix.e, matrix.f];
+		}
+
         var drag = d3.drag()
 			.on("start", function () {
 				d3.event.sourceEvent.stopPropagation();
 				imgWidth = Number(image.attr("width"));
 				imgHeight = Number(image.attr("height"));
 
-				var transform = d3.zoomTransform(d3.select(this.parentNode).node());
-				oldX = transform.x;
-				oldY = transform.y;
+				var transform = d3.select(this.parentNode).attr("transform");
+				var translate = getTranslation(transform);
+				oldX = translate[0];
+				oldY = translate[1];
 				limitX = oldX + imgWidth;
 				d3.selectAll("#D3viz").style("cursor", "move");
 			})
 			.on('drag', function () {
-			var newWidth = 0;
-			var newHeight = 0;
-			if (d3.select(this).attr("class") === "LL" || d3.select(this).attr("class") === "UL") {
-				var tmpWidth = d3.select(this.parentNode).attr("width");
-				newWidth = tmpWidth - (d3.event.x + deltaGX);
-				var transform = d3.select(this.parentNode).attr("transform");
-				var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
-				var transforms = d3.zoomTransform(d3.select(this.parentNode).node());
-				var x = transforms.x;
-				var y = transforms.y;
-				var newX = x + d3.event.x + deltaGX;
-				newX = Math.min(newX, limitX - 8);
-				var translate = "translate(" + newX + "," + y + ")";
-				d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
-			}
-			else {
-				newWidth = d3.event.x - deltaGX;
-			}
-			newWidth = Math.max(newWidth, 8);
-			newHeight = imgHeight * (newWidth/imgWidth);
-			newWidth = (newWidth > 0) ? newWidth : 0;
-			newHeight = (newHeight > 0) ? newHeight : 0;
-			image.attr("width", newWidth);
-			image.attr("height", newHeight);
-			if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
-				var transform = d3.select(this.parentNode).attr("transform");
-				var transformList = transform.split(/(translate\([\d.,\-\s]*\))/);
-				var transforms = d3.zoomTransform(d3.select(this.parentNode).node());
-				var x = transforms.x;
-				var y = transforms.y;
-				var newY =  oldY - (newHeight - imgHeight);
-				var translate = "translate(" + x + "," + newY + ")";
-				var translate = "translate(" + newX + "," + y + ")";
-				d3.select(this.parentNode).attr("transform", transformList[0] + translate + transformList[2]);
+				var newWidth = 0;
+				var newHeight = 0;
+				if (d3.select(this).attr("class") === "LL" || d3.select(this).attr("class") === "UL") {
+					var tmpWidth = d3.select(this.parentNode).attr("width");
+					newWidth = tmpWidth - (d3.event.x + deltaGX);
+					transform = d3.select(this.parentNode).attr("transform");
+					translate = getTranslation(transform);
+					console.log(translate);
+					var x = translate[0];
+					var y = translate[1];
+					var newX = x + d3.event.x + deltaGX;
+					newX = Math.min(newX, limitX - 8);
+					var translate = "translate(" + newX + "," + y + ")";
+					d3.select(this.parentNode).attr("transform", translate);
+				}
+				else {
+					newWidth = d3.event.x - deltaGX;
+				}
+				newWidth = Math.max(newWidth, 8);
+				newHeight = imgHeight * (newWidth/imgWidth);
+				newWidth = (newWidth > 0) ? newWidth : 0;
+				newHeight = (newHeight > 0) ? newHeight : 0;
+				image.attr("width", newWidth);
+				image.attr("height", newHeight);
 
-			}
-			metExploreD3.GraphMapping.updateImageDimensions(image);
-		})
+				if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
+					var transform = d3.select(this.parentNode).attr("transform");
+					var translate = getTranslation(transform);
+					console.log(translate);
+					var x = translate[0];
+
+					var newY =  oldY - (newHeight - imgHeight);
+					var translate = "translate(" + x + "," + newY + ")";
+					d3.select(this.parentNode).attr("transform", translate);
+
+				}
+				metExploreD3.GraphMapping.updateImageDimensions(image);
+			})
 			.on("end", function () {
 				d3.selectAll("#D3viz").style("cursor", "default");
 			});
