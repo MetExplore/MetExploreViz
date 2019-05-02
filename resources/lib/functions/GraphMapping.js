@@ -3121,6 +3121,8 @@ metExploreD3.GraphMapping = {
 				imgWidth = Number(image.attr("width"));
 				imgHeight = Number(image.attr("height"));
 
+				deltaGX= imgWidth - d3.event.subject.x;
+
 				var transform = d3.select(this.parentNode).attr("transform");
 				var translate = getTranslation(transform);
 				oldX = translate[0];
@@ -3132,37 +3134,44 @@ metExploreD3.GraphMapping = {
 				var newWidth = 0;
 				var newHeight = 0;
 				if (d3.select(this).attr("class") === "LL" || d3.select(this).attr("class") === "UL") {
-					var tmpWidth = d3.select(this.parentNode).attr("width");
-					newWidth = tmpWidth - (d3.event.x + deltaGX);
+					var tmpWidth = parseFloat(d3.select(this.parentNode).attr("width"));
+
+					newWidth = tmpWidth - (d3.event.x - d3.event.subject.x);
 					transform = d3.select(this.parentNode).attr("transform");
 					translate = getTranslation(transform);
-					console.log(translate);
+
 					var x = translate[0];
 					var y = translate[1];
-					var newX = x + d3.event.x + deltaGX;
+					var newX = x + d3.event.x - d3.event.subject.x;
 					newX = Math.min(newX, limitX - 8);
-					var translate = "translate(" + newX + "," + y + ")";
-					d3.select(this.parentNode).attr("transform", translate);
+					var newtranslate = "translate(" + newX + "," + y + ")";
+
+					d3.select(this.parentNode).attr("x", newX);
+					d3.select(this.parentNode).attr("transform", newtranslate);
 				}
 				else {
-					newWidth = d3.event.x - deltaGX;
+					newWidth = d3.event.x + deltaGX;
 				}
 				newWidth = Math.max(newWidth, 8);
 				newHeight = imgHeight * (newWidth/imgWidth);
 				newWidth = (newWidth > 0) ? newWidth : 0;
 				newHeight = (newHeight > 0) ? newHeight : 0;
+
 				image.attr("width", newWidth);
 				image.attr("height", newHeight);
+
 
 				if (d3.select(this).attr("class") === "UL" || d3.select(this).attr("class") === "UR") {
 					var transform = d3.select(this.parentNode).attr("transform");
 					var translate = getTranslation(transform);
-					console.log(translate);
+
 					var x = translate[0];
 
 					var newY =  oldY - (newHeight - imgHeight);
-					var translate = "translate(" + x + "," + newY + ")";
-					d3.select(this.parentNode).attr("transform", translate);
+					var newtranslateY = "translate(" + x + "," + newY + ")";
+
+					d3.select(this.parentNode).attr("y", newY);
+					d3.select(this.parentNode).attr("transform", newtranslateY);
 
 				}
 				metExploreD3.GraphMapping.updateImageDimensions(image);
