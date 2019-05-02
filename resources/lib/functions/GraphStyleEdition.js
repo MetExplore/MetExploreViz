@@ -139,10 +139,12 @@ metExploreD3.GraphStyleEdition = {
             .on ("start", function (d,i) {
                 d3.event.sourceEvent.stopPropagation();
                 element = this;
-                var cX = d3.select(this).attr("x");
-                var cY = d3.select(this).attr("y");
-                deltaX = cX - d3.mouse(element)[0];
-                deltaY = cY - d3.mouse(element)[1];
+
+                deltaX = parseFloat(d3.select(this).attr("x"));
+                deltaY = parseFloat(d3.select(this).attr("y"));
+                if(isNaN(deltaX)) deltaX=0;
+                if(isNaN(deltaY)) deltaY=0;
+
                 d3.selectAll("#D3viz")
                     .style("cursor", "move");
                 d3.select(this)
@@ -152,26 +154,35 @@ metExploreD3.GraphStyleEdition = {
             })
             .on("drag", function (d,i) {
                 var me=this;
-                var d3mouse0 = d3.mouse(element)[0];
-                var d3mouse1 = d3.mouse(element)[1];
-                var d3eventx = d3.event.x;
-                var d3eventy = d3.event.y;
-                var me = this;
                 metExploreD3.applyTolinkedNetwork(
                     panel,
                     function(panelLinked, sessionLinked) {
                         var theD3Node=d3.select(me);
+                        var transform = theD3Node.attr("transform");
+                        console.log(transform);
+                        console.log(theD3Node);
 
-                        if (theD3Node.attr("transform")){
+                        var newX = 0;
+                        var newY = 0;
 
-                            var transformScale = d3.zoomTransform(d3.select(theD3Node).node()).k;
-                            theD3Node.attr("transform", "translate(" + (d3eventx + deltaX) + ", " + (d3eventy + deltaY) + ") scale(" + transformScale[0] + ", " + transformScale[1] + ")");
+                        newX=d3.event.x-d3.event.subject.x+deltaX;
+                        newY=d3.event.y-d3.event.subject.y+deltaY;
+
+                        if(me.classList.contains("imageNode")) {
+                            if (transform && transform.indexOf("scale") != -1) {
+                                console.log(transform.indexOf("scale"));
+                                var transform = theD3Node.attr("transform");
+                                var scale = transform.substring(transform.indexOf("scale"), transform.length);
+                                var elemtScale = scale.substring(6, scale.indexOf(')'));
+
+                                theD3Node.attr("transform", "translate(" + newX + ", " + newY + ") scale(" + elemtScale + ")");
+                            } else {
+                                theD3Node.attr("transform", "translate(" + newX + ", " + newY + ")");
+                            }
                         }
-                        else{
-                            theD3Node.attr("transform", "translate(" + (d3eventx + deltaX) + ", " + (d3eventy + deltaY) + ")");
-                        }
-                        theD3Node.attr("x", d3mouse0 + deltaX);
-                        theD3Node.attr("y", d3mouse1 + deltaY);
+
+                        theD3Node.attr("x", newX);
+                        theD3Node.attr("y", newY);
                     });
             })
             .on("end", function (d,i) {
