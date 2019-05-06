@@ -305,6 +305,8 @@ metExploreD3.GraphNetwork = {
                 }
 
             } else {
+
+                var linkStyle = metExploreD3.getLinkStyle();
                 if(session.isLinked())
                 {
                     for (var key in sessions) {
@@ -323,7 +325,7 @@ metExploreD3.GraphNetwork = {
                     metExploreD3.GraphNetwork.animationButtonOff(panel);
                     var force = session.getForce();
                     force.stop();
-                    if(d3.select(panel).select("#D3viz").selectAll("path.link").nodes().length===0)
+                    if(d3.select("#"+panel).select("#D3viz").selectAll("path.link").nodes().length===0)
                         metExploreD3.GraphLink.refreshLinkActivity(panel, _metExploreViz.getSessionById(panel), linkStyle);
                 }
             }
