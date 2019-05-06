@@ -2315,6 +2315,8 @@ metExploreD3.GraphFunction = {
             nodesList[i].each(function (d) {
                 d.setLocked(true);
                 d.fixed=d.isLocked();
+
+				metExploreD3.GraphNode.fixNode(d);
             });
         }
         metExploreD3.GraphNode.tick('viz');

@@ -39,6 +39,7 @@ metExploreD3.GraphNode = {
             })
             .each(function (d) {
                 d.fixed = true;
+                metExploreD3.GraphNode.fixNode(d);
                 // if(!d.isSelected())
                 //     _MyThisGraphNode.selection(d, "viz")
                 var transform = d3.select(this).attr("transform");
@@ -146,6 +147,26 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
+     * Fix node position
+     * @param {} d : a node
+     */
+    fixNode: function (node) {
+        if(node.x){
+            node.fx=node.x;
+            node.fy=node.y;
+        }
+    },
+
+    /*******************************************
+     * Unlock node position
+     * @param {} d : a node
+     */
+    unfixNode: function (node) {
+        node.fx=undefined;
+        node.fy=undefined;
+    },
+
+    /*******************************************
      * Permit to start drag and drop of nodes
      * @param {} d : Color in byte
      */
@@ -195,6 +216,8 @@ metExploreD3.GraphNode = {
                 if (d3.event.sourceEvent.button != 2) {
                     d.setLocked(!d.isLocked());
                     d.fixed = d.isLocked();
+                    if(d.isLocked())
+                        metExploreD3.GraphNode.fixNode(d);
                     d3.select("#" + _MyThisGraphNode.activePanel)
                         .selectAll('g.node')
                         .filter(function (node) {
@@ -1430,6 +1453,7 @@ metExploreD3.GraphNode = {
             })
             .each(function (d) {
                 d.fixed = true;
+                metExploreD3.GraphNode.fixNode(d);
             });
 
         metExploreD3.GraphNode.updatedNodes
@@ -1668,6 +1692,8 @@ metExploreD3.GraphNode = {
                     .each(function (d) {
                         d.fixed = false;
                         d.setLocked(false);
+
+                        metExploreD3.GraphNode.unfixNode(d);
                     });
             }
             else {
@@ -1996,37 +2022,31 @@ metExploreD3.GraphNode = {
             convexHull
                 .on("mouseup", function (d) {
                     if (d3.event.button !== 2) {
-                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
-                        if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
-                            if (d.isSelected) {
-                                d.isSelected = false;
-                                session.removeSelectedPathway(d.key);
-                                d3.select(this)
-                                    .style("stroke", metExploreD3.GraphNode.groupFill)
-                                    .style("stroke-width", 40)
-                                    .style("stroke-linejoin", "round")
-                            }
-                            else {
-                                d.isSelected = true;
-                                session.addSelectedPathway(d.key);
-                                d3.select(this)
-                                    .style("stroke", "black")
-                                    .style("stroke-width", 20)
-                                    .style("stroke-linejoin", "round")
-                            }
+                        if (d.isSelected) {
+                            d.isSelected = false;
+                            session.removeSelectedPathway(d.key);
+                            d3.select(this)
+                                .style("stroke", metExploreD3.GraphNode.groupFill)
+                                .style("stroke-width", 40)
+                                .style("stroke-linejoin", "round")
+                        }
+                        else {
+                            d.isSelected = true;
+                            session.addSelectedPathway(d.key);
+                            d3.select(this)
+                                .style("stroke", "black")
+                                .style("stroke-width", 20)
+                                .style("stroke-linejoin", "round")
                         }
                     }
                     else {
-                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
-                        if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
-                            if (!d.isSelected) {
-                                d.isSelected = true;
-                                session.addSelectedPathway(d.key);
-                                d3.select(this)
-                                    .style("stroke", "black")
-                                    .style("stroke-width", 20)
-                                    .style("stroke-linejoin", "round")
-                            }
+                        if (!d.isSelected) {
+                            d.isSelected = true;
+                            session.addSelectedPathway(d.key);
+                            d3.select(this)
+                                .style("stroke", "black")
+                                .style("stroke-width", 20)
+                                .style("stroke-linejoin", "round")
                         }
                     }
                 });
@@ -2055,6 +2075,8 @@ metExploreD3.GraphNode = {
             .each(function (node) {
                 node.setLocked(true);
                 node.fixed = node.isLocked();
+
+                metExploreD3.GraphNode.fixNode(node);
             })
     },
     unfixSelectedNode: function () {
@@ -2065,6 +2087,8 @@ metExploreD3.GraphNode = {
             .each(function (node) {
                 node.setLocked(false);
                 node.fixed = node.isLocked();
+
+                metExploreD3.GraphNode.unfixNode(node);
             })
     },
     getTranslation: function (transform) {
@@ -2254,6 +2278,7 @@ metExploreD3.GraphNode = {
                     });
 
                 d.fixed = true;
+                metExploreD3.GraphNode.fixNode(d);
                 if (parent == "viz") {
                     d3.select("#" + parent)
                         .selectAll('g.node')
@@ -2326,8 +2351,10 @@ metExploreD3.GraphNode = {
                     }
                 }
 
-                if (!d.isLocked())
+                if (!d.isLocked()) {
                     d.fixed = false;
+                    metExploreD3.GraphNode.unfixNode(d);
+                }
                 var linkStyle = metExploreD3.getLinkStyle();
 
                 d3.select("#" + parent).select("#D3viz").select("#graphComponent")
@@ -2476,6 +2503,9 @@ metExploreD3.GraphNode = {
                     });
 
                 d.fixed = true;
+
+                metExploreD3.GraphNode.fixNode(d);
+
                 if (parent == "viz") {
                     d3.select("#" + parent)
                         .selectAll('g.node')
@@ -2571,8 +2601,10 @@ metExploreD3.GraphNode = {
                     }
                 }
 
-                if (!d.isLocked())
+                if (!d.isLocked()) {
                     d.fixed = false;
+                    metExploreD3.GraphNode.fixNode(d);
+                }
                 var linkStyle = metExploreD3.getLinkStyle();
 
 

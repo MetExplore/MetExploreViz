@@ -546,6 +546,8 @@ console.log("resizeViz");
                                         node.y = y;
                                         node.setLocked(true);
                                         node.fixed=node.isLocked();
+
+										metExploreD3.GraphNode.fixNode(node);
                                 	}
                                 //place nodes that were not in the graph
                                 	else
@@ -561,7 +563,10 @@ console.log("resizeViz");
                                         		node.y = graph._edgeLabels[label].points[1].y;
                                         		node.setLocked(true);
                                         		node.fixed=node.isLocked();
-                                 				if(node.associatedReactions){
+
+												metExploreD3.GraphNode.fixNode(node);
+
+                                        		if(node.associatedReactions){
                                  					for(associated in node.associatedReactions){
                                  						var associatedNode=node.associatedReactions[associated];
                                  						associatedNode.px=node.px+10*(associated+1);
@@ -570,6 +575,8 @@ console.log("resizeViz");
                                  						associatedNode.y=node.y;
                                  						associatedNode.setLocked(true);
                                  						associatedNode.fixed=associatedNode.isLocked();
+
+														metExploreD3.GraphNode.fixNode(associatedNode);
                                  					}
                                         		}
                                 			}
@@ -679,6 +686,7 @@ console.log("resizeViz");
                                         node.setLocked(true);
                                         node.fixed=node.isLocked();
 
+										metExploreD3.GraphNode.fixNode(node);
                                         if(highlight)
                                         	metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
                                     }
@@ -1045,6 +1053,8 @@ console.log("resizeViz");
 						        .each(function(d) { 
 						        	d.setLocked(!d.isLocked());
 									d.fixed=d.isLocked();
+									if(isLocked())
+										metExploreD3.GraphNode.fixNode(d);
 						        });
 
 				            d3.select("#viz").select("#graphComponent")

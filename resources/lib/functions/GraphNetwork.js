@@ -314,14 +314,17 @@ metExploreD3.GraphNetwork = {
                     }
                     var force = _metExploreViz.getSessionById("viz").getForce();
                     force.stop();
+                    if(d3.select("#viz").select("#D3viz").selectAll("path.link").nodes().length===0)
+                        metExploreD3.GraphLink.refreshLinkActivity("viz", _metExploreViz.getSessionById("viz"), linkStyle);
+
                 }
                 else
                 {
                     metExploreD3.GraphNetwork.animationButtonOff(panel);
                     var force = session.getForce();
                     force.stop();
-
-
+                    if(d3.select(panel).select("#D3viz").selectAll("path.link").nodes().length===0)
+                        metExploreD3.GraphLink.refreshLinkActivity(panel, _metExploreViz.getSessionById(panel), linkStyle);
                 }
             }
         }
@@ -463,7 +466,6 @@ metExploreD3.GraphNetwork = {
                 });
                 metExploreD3.GraphNode.unselectIfDBClick();
 
-
             })
             .on("brush ", function(d) {
                 var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
@@ -523,6 +525,45 @@ metExploreD3.GraphNetwork = {
                 }
             })
             .on("end", function() {
+
+                function simulateClick(elementToClick){
+                    var evt = document.createEvent("MouseEvents");
+                    evt.initMouseEvent("mouseup", true, true, window,
+                        0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                    var canceled = !elementToClick.dispatchEvent(evt);
+                    return canceled; //Indicate if `preventDefault` was called during handling
+                }
+
+                var component = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
+                if (component === "Pathways") {
+                    if (d3.event.button !== 2) {
+                        if(!isNaN(d3.event.sourceEvent.x) && !isNaN(d3.event.sourceEvent.y)){
+                            var extent = d3.event.selection;
+                            if(extent===null){
+                                var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
+                                d3.select("#" + panel).select("#D3viz")
+                                    .select("#brush").style("display", "none");
+                                simulateClick(document.elementFromPoint(d3.event.sourceEvent.x, d3.event.sourceEvent.y));
+
+                                d3.select("#" + panel).select("#D3viz")
+                                    .select("#brush").style("display", "inline");
+                            }
+                            else
+                            {
+                                if(extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20){
+                                    var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
+                                    d3.select("#" + panel).select("#D3viz")
+                                        .select("#brush").style("display", "none");
+                                    simulateClick(document.elementFromPoint(d3.event.sourceEvent.x, d3.event.sourceEvent.y));
+
+                                    d3.select("#" + panel).select("#D3viz")
+                                        .select("#brush").style("display", "inline");
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if(d3.event.sourceEvent.button!==2 && d3.event.sourceEvent.button!==1 && metExploreD3.GraphNetwork.brushing){
                     if (!d3.event.selection) return;
                     var extent = d3.event.selection;
@@ -2184,16 +2225,33 @@ metExploreD3.GraphNetwork = {
 
                     metExploreD3.GraphCaption.majCaption(panelLinked);
 
-                    s_GeneralStyle.setDisplayConvexhulls(false);
-                    metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                    metExploreD3.GraphNetwork.tick(panelLinked);
 
-                    s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                    metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                    metExploreD3.GraphNetwork.tick(panelLinked);
+                    if(s_GeneralStyle.isDisplayedConvexhulls()==="Compartments"){
+                        s_GeneralStyle.setDisplayConvexhulls(false);
+                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                        metExploreD3.GraphNetwork.tick(panelLinked);
 
-                    s_GeneralStyle.setDisplayCaption("Pathways");
-                    metExploreD3.GraphCaption.majCaption(panelLinked);
+                        s_GeneralStyle.setDisplayConvexhulls("Compartments");
+                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                        metExploreD3.GraphNetwork.tick(panelLinked);
+
+                        s_GeneralStyle.setDisplayCaption("Compartments");
+                        metExploreD3.GraphCaption.majCaption(panelLinked);
+                    }
+                    else {
+                        if(s_GeneralStyle.isDisplayedConvexhulls()==="Pathways"){
+                            s_GeneralStyle.setDisplayConvexhulls(false);
+                            metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                            metExploreD3.GraphNetwork.tick(panelLinked);
+
+                            s_GeneralStyle.setDisplayConvexhulls("Pathways");
+                            metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                            metExploreD3.GraphNetwork.tick(panelLinked);
+
+                            s_GeneralStyle.setDisplayCaption("Pathways");
+                            metExploreD3.GraphCaption.majCaption(panelLinked);
+                        }
+                    }
 
                     metExploreD3.GraphNetwork.tick(panelLinked);
                     metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
@@ -2237,16 +2295,35 @@ metExploreD3.GraphNetwork = {
 
                 metExploreD3.GraphCaption.majCaption(panelLinked);
 
-                s_GeneralStyle.setDisplayConvexhulls(false);
-                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                metExploreD3.GraphNetwork.tick(panelLinked);
 
-                s_GeneralStyle.setDisplayConvexhulls("Pathways");
-                metExploreD3.GraphLink.displayConvexhulls(panelLinked);
-                metExploreD3.GraphNetwork.tick(panelLinked);
+                if(s_GeneralStyle.isDisplayedConvexhulls()==="Compartments"){
+                    s_GeneralStyle.setDisplayConvexhulls(false);
+                    metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                    metExploreD3.GraphNetwork.tick(panelLinked);
 
-                s_GeneralStyle.setDisplayCaption("Pathways");
-                metExploreD3.GraphCaption.majCaption(panelLinked);
+                    s_GeneralStyle.setDisplayConvexhulls("Compartments");
+                    metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                    metExploreD3.GraphNetwork.tick(panelLinked);
+
+                    s_GeneralStyle.setDisplayCaption("Compartments");
+                    metExploreD3.GraphCaption.majCaption(panelLinked);
+                }
+                else {
+                    if(s_GeneralStyle.isDisplayedConvexhulls()==="Pathways"){
+                        s_GeneralStyle.setDisplayConvexhulls(false);
+                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                        metExploreD3.GraphNetwork.tick(panelLinked);
+
+                        s_GeneralStyle.setDisplayConvexhulls("Pathways");
+                        metExploreD3.GraphLink.displayConvexhulls(panelLinked);
+                        metExploreD3.GraphNetwork.tick(panelLinked);
+
+                        s_GeneralStyle.setDisplayCaption("Pathways");
+                        metExploreD3.GraphCaption.majCaption(panelLinked);
+                    }
+                }
+
+
 
                 metExploreD3.GraphNetwork.tick(panelLinked);
                 metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
