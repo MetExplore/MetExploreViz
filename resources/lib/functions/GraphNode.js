@@ -505,11 +505,14 @@ metExploreD3.GraphNode = {
                     return d.getId() == node.getId();
             })
             .each(function (node) {
-
                 node.px += d3.event.dx;
                 node.py += d3.event.dy;
                 node.x += d3.event.dx;
                 node.y += d3.event.dy;
+                if(node.isLocked()){
+                    node.fx += d3.event.dx;
+                    node.fy += d3.event.dy;
+                }
             });
     },
 
