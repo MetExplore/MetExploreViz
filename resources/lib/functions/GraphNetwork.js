@@ -1205,15 +1205,73 @@ metExploreD3.GraphNetwork = {
                     var centerGCX = rectSvg.left + rectSvg.width/2;
                     var centerGCY = rectSvg.top + rectSvg.height/2;
 
-                    var moveX = centerGCX - centerD3vizX;
-                    var moveY = centerGCY - centerD3vizY;
+                    var xOK = false;
+                    var yOK = false;
 
-                    moveX = rectD3viz.left + rectSvg.left;
-                    zoom.translateTo(d3.select("#"+panel).select("#D3viz").transition().duration(750), moveX, moveY);
+                    if(centerD3vizX>centerGCX){
+                        while(!xOK){
+                            var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
+                            var centerD3vizX = rectD3viz.left + rectD3viz.width/2;
+
+                            var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                            var centerGCX = rectSvg.left + rectSvg.width/2;
+
+                            zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 20, 0);
+                            if(centerD3vizX<centerGCX){
+                                var xOK = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        while(!xOK){
+                            var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
+                            var centerD3vizX = rectD3viz.left + rectD3viz.width/2;
+
+                            var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                            var centerGCX = rectSvg.left + rectSvg.width/2;
+
+                            zoom.translateBy(d3.select("#"+panel).select("#D3viz"), -20, 0);
+                            if(centerD3vizX>centerGCX){
+                                var xOK = true;
+                                zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 30, 0);
+                            }
+                        }
+                    }
+
+                    if(centerD3vizY>centerGCY){
+                        while(!yOK){
+                            var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
+                            var centerD3vizY = rectD3viz.top + rectD3viz.height/2;
+
+                            var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                            var centerGCY = rectSvg.top + rectSvg.height/2;
+                            zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 0, 20);
+                            if(centerD3vizY<centerGCY){
+                                var yOK = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        while(!yOK){
+                            var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
+                            var centerD3vizY = rectD3viz.top + rectD3viz.height/2;
+
+                            var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                            var centerGCY = rectSvg.top + rectSvg.height/2;
+
+                            zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 0, -20);
+                            if(centerD3vizY>centerGCY){
+                                var yOK = true;
+                                zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 0, 30);
+                            }
+                        }
+                    }
+
                     scaleViz.setZoomScale(scale);
                     metExploreD3.hideMask(mask);
                 }), scale);
-
             });
     },
 
