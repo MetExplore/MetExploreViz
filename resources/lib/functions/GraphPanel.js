@@ -71,38 +71,43 @@ console.log("resizeViz");
 
             var session = _metExploreViz.getSessionById(panel);
 
-			var force = session.getForce();
+			var forceX = d3.forceX()
+				.x(w/2)
+				.strength(0.006);
 
-			force.size([ w, h ]);
+			var forceY = d3.forceY()
+				.y(h/2)
+				.strength(0.006);
+
+			var force = session.getForce();
+			force
+				.force('x', forceX)
+				.force('y', forceY);
 
             session.setActivity(true);
 
 
             // Redefine Zoom and brush
+			var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+			var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 			var scaleZ = scale.getZoomScale();
-			var xScale =
-			  d3.scale.linear()
-			    .domain([0, w])
-			    .range([0, w]);
+			metExploreD3.GraphNetwork.zoomListener
+				.scaleExtent([ 0.01, 30 ])
+				.extent([[w*.45, h*.45], [w*.55, h*.55]])
+				.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
 
-			var yScale =
-			  d3.scale.linear()
-			    .domain([h, 0])
-			    .range([h, 0]);
 
-			var transform = scale.getZoom().translate();
+			var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
 
-			scale.getZoom()
-				.x(xScale)
-				.y(yScale)
-				.translate(transform)
-				.scale(scaleZ);
+			scale.getZoom().scaleBy(d3.select("#"+panel).select("#D3viz"), scaleZ);
+			scale.getZoom().translateBy(d3.select("#"+panel).select("#D3viz"), transform.x, transform.y);
+            scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
 
-            scale.setScale(xScale, yScale, 1, 1, 1, metExploreD3.GraphNetwork.zoomListener.scale(), metExploreD3.GraphNetwork.zoomListener);
+
 
             metExploreD3.setScale(scale, panel);
 
-            metExploreD3.GraphNetwork.defineBrush(panel, xScale, yScale);
+            metExploreD3.GraphNetwork.defineBrush(panel);
 
             d3.select("#viz").select("#D3viz")
 				.select("#logoViz")
@@ -122,10 +127,20 @@ console.log("resizeViz");
                     if(force!=undefined){
                         var h = $("#viz").height();
                         var w = $("#viz").width();
-                        force.size([ w, h ]);
+						var forceX = d3.forceX()
+							.x(w/2)
+							.strength(0.006);
+
+						var forceY = d3.forceY()
+							.y(h/2)
+							.strength(0.006);
+						force
+							.force('x', forceX)
+							.force('y', forceY);
+
                         var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
                         if(anim=="true")
-                            force.resume();
+                            force.alpha(1).restart();
                     }
                 }
                 else
@@ -134,13 +149,23 @@ console.log("resizeViz");
                     if(force!=undefined){
                         var h = $("#"+panel).height();
                         var w = $("#"+panel).width();
-                        force.size([ w, h ]);
+
+						var forceX = d3.forceX()
+							.x(w/2)
+							.strength(0.006);
+
+						var forceY = d3.forceY()
+							.y(h/2)
+							.strength(0.006);
+						force
+							.force('x', forceX)
+							.force('y', forceY);
 
                         if(d3.select("#"+panel).select("#buttonAnim").node()){
 
                             var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
                             if(anim=="true")
-                                force.resume();
+                                force.alpha(1).restart();
 
                         }
                     }
@@ -160,9 +185,9 @@ console.log("resizeViz");
 		var w = $("#"+panel).width();
 
 
-		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0][0]!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut")[0][0]!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand")[0][0]!=null)
+		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0]!=null
+			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut")[0]!=null
+			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand")[0]!=null)
 		{
 			var x = d3
 				.select("#"+panel)
@@ -210,27 +235,58 @@ console.log("resizeViz");
 				var sessionMain = _metExploreViz.getSessionById("viz");
 				var force = sessionMain.getForce();
 				if(force!=undefined){
-					var h = $("#viz").height();
-					var w = $("#viz").width();
-					force.size([ w, h ]);
+					var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+					var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
+
+					var forceX = d3.forceX()
+						.x(w/2)
+						.strength(0.006);
+
+					var forceY = d3.forceY()
+						.y(h/2)
+						.strength(0.006);
+					force
+						.force('x', forceX)
+						.force('y', forceY);
+
+					metExploreD3.GraphNetwork.zoomListener
+						.scaleExtent([ 0.01, 30 ])
+						.extent([[w*.45, h*.45], [w*.55, h*.55]])
+						.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
+
 	                var anim=d3.select("#viz").select("#buttonAnim").attr("animation");
 	                if(anim=="true")
-	                    force.resume();
+	                    force.alpha(1).restart();
 				}
 			}
 			else
 			{
 				var force = session.getForce();
 				if(force!=undefined){
-					var h = $("#"+panel).height();
-					var w = $("#"+panel).width();
-					force.size([ w, h ]);
+					var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+					var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
+
+					var forceX = d3.forceX()
+						.x(w/2)
+						.strength(0.006);
+
+					var forceY = d3.forceY()
+						.y(h/2)
+						.strength(0.006);
+					force
+						.force('x', forceX)
+						.force('y', forceY);
+
+					metExploreD3.GraphNetwork.zoomListener
+						.scaleExtent([ 0.01, 30 ])
+						.extent([[w*.45, h*.45], [w*.55, h*.55]])
+						.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
 
 					if(d3.select("#"+panel).select("#buttonAnim").node()){
 
 						var anim=d3.select("#"+panel).select("#buttonAnim").attr("animation");
 		                if(anim=="true")
-		                    force.resume();
+		                    force.alpha(1).restart();
 
 		            }
 	            }
@@ -249,13 +305,13 @@ console.log("resizeViz");
 							metExploreD3.GraphNetwork.animationButtonOn(sessions[key].getId());
 					}
 					var force = _metExploreViz.getSessionById("viz").getForce();
-					force.resume();
+					force.alpha(1).restart();
 				}
 				else
 				{
 					metExploreD3.GraphNetwork.animationButtonOn(panel);
 					var force = session.getForce();
-					force.resume();
+					force.alpha(1).restart();
 				}
 			}
 		}
@@ -490,6 +546,8 @@ console.log("resizeViz");
                                         node.y = y;
                                         node.setLocked(true);
                                         node.fixed=node.isLocked();
+
+										metExploreD3.GraphNode.fixNode(node);
                                 	}
                                 //place nodes that were not in the graph
                                 	else
@@ -505,7 +563,10 @@ console.log("resizeViz");
                                         		node.y = graph._edgeLabels[label].points[1].y;
                                         		node.setLocked(true);
                                         		node.fixed=node.isLocked();
-                                 				if(node.associatedReactions){
+
+												metExploreD3.GraphNode.fixNode(node);
+
+                                        		if(node.associatedReactions){
                                  					for(associated in node.associatedReactions){
                                  						var associatedNode=node.associatedReactions[associated];
                                  						associatedNode.px=node.px+10*(associated+1);
@@ -514,6 +575,8 @@ console.log("resizeViz");
                                  						associatedNode.y=node.y;
                                  						associatedNode.setLocked(true);
                                  						associatedNode.fixed=associatedNode.isLocked();
+
+														metExploreD3.GraphNode.fixNode(associatedNode);
                                  					}
                                         		}
                                 			}
@@ -623,6 +686,7 @@ console.log("resizeViz");
                                         node.setLocked(true);
                                         node.fixed=node.isLocked();
 
+										metExploreD3.GraphNode.fixNode(node);
                                         if(highlight)
                                         	metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
                                     }
@@ -675,9 +739,8 @@ console.log("resizeViz");
 				// Reset visualisation---less than a ms
 				if(oldForce!=undefined){
 					oldForce.nodes([]);
-					oldForce.links([]);
+					oldForce.force("link", null);
 
-					oldForce.on("start", null);
 					oldForce.on("end", null);
 					oldForce.on("tick", null);
 
@@ -882,6 +945,7 @@ console.log("resizeViz");
 
 				for (var key in sessions) {
 					metExploreD3.GraphNetwork.refreshSvg(key);
+                    metExploreD3.GraphNetwork.refreshViz(key);
                     // set style of previous session from JSON
                     var networkDataViz = new NetworkData(key);
                     networkDataViz.cloneObject(sessions[key].d3Data);
@@ -920,9 +984,8 @@ console.log("resizeViz");
 			// Reset visualisation---less than a ms
 			if(oldForce!=undefined){
 				oldForce.nodes([]);
-				oldForce.links([]);
+				oldForce.force("link", null);
 
-				oldForce.on("start", null);
 				oldForce.on("end", null);
 				oldForce.on("tick", null);
 
@@ -970,7 +1033,8 @@ console.log("resizeViz");
 				if(overlap && !metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
 					metExploreD3.displayMessageYesNo("Coodinates",'Do you want keep node coordinates.',function(btn){
 		                if(btn=="yes")
-		                {   
+		                {
+                            metExploreD3.GraphNetwork.refreshViz("viz");
 		                	var selected = [];
 				            oldCoodinates.forEach(function(coor){
 				            	var node = networkData.getNodeById(coor.id);
@@ -989,6 +1053,8 @@ console.log("resizeViz");
 						        .each(function(d) { 
 						        	d.setLocked(!d.isLocked());
 									d.fixed=d.isLocked();
+									if(isLocked())
+										metExploreD3.GraphNode.fixNode(d);
 						        });
 
 				            d3.select("#viz").select("#graphComponent")

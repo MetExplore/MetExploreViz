@@ -215,6 +215,7 @@ Ext.define( 'metExploreViz.view.panel.comparePanel.ComparePanelController',{
 					that.initiateViz(panelId);
 					// metExploreD3.GraphNetwork.setAnimated(panelId, true);
 					metExploreD3.GraphNetwork.refreshSvg(panelId);
+                    metExploreD3.GraphNetwork.refreshViz(panelId);
                     metExploreD3.GraphNetwork.link(panelId);
 					myMask.hide();
 		    }, 100);

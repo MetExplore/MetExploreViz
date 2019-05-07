@@ -47,7 +47,7 @@ metExploreD3.GraphFunction = {
                 .filter(function(node){
                     return links.filter(function(link){
                         return node.getId()==link.getTarget() || node.getId()==link.getSource()
-                    })[0].length==1;
+                    }).size()===1;
                 });
 
             lonelyNode.each(function(node, i){
@@ -94,7 +94,7 @@ metExploreD3.GraphFunction = {
 
                         }
                     });
-                if(i==lonelyNode[0].length-1){
+                if(i===lonelyNode.size()-1){
                     metExploreD3.GraphNetwork.tick('viz');
                     if(fun)
                         fun()
@@ -116,18 +116,18 @@ metExploreD3.GraphFunction = {
         nodes
             .filter(function(node) {
                 var numberOfLinkWithoutSource = links.filter(function (link) {
-                    return node.getId() == link.getSource()
-                })[0].length;
+                    return node.getId() === link.getSource().getId()
+                }).size();
 
                 var linkWithThisNode = links.filter(function (link) {
-                    return node.getId() == link.getSource() || node.getId() == link.getTarget();
+                    return node.getId() === link.getSource().getId() || node.getId() === link.getTarget().getId();
                 });
 
-                var numberOfLinkWithThisNode = linkWithThisNode[0].length;
+                var numberOfLinkWithThisNode = linkWithThisNode.size();
 
                 var numberOfReversibleLink = linkWithThisNode.filter(function (link) {
                     return link.getSource().getReactionReversibility();
-                })[0].length;
+                }).size();
 
                 return numberOfLinkWithoutSource===0 && (numberOfLinkWithThisNode===1 || numberOfReversibleLink===0);
             })
@@ -144,18 +144,18 @@ metExploreD3.GraphFunction = {
         nodes
             .filter(function(node){
                 var numberOfLinkWithoutTarget = links.filter(function(link){
-                    return node.getId()==link.getTarget()
-                })[0].length;
+                    return node.getId()==link.getTarget().getId()
+                }).size();
 
                 var linkWithThisNode = links.filter(function(link){
-                    return node.getId()==link.getSource() || node.getId()==link.getTarget();
+                    return node.getId()==link.getSource().getId() || node.getId()==link.getTarget().getId();
                 });
 
-                var numberOfLinkWithThisNode = linkWithThisNode[0].length;
+                var numberOfLinkWithThisNode = linkWithThisNode.size();
                
                 var numberOfReversibleLink = linkWithThisNode.filter(function(link){
                     return link.getTarget().getReactionReversibility();
-                })[0].length;
+                }).size();
 
                 return numberOfLinkWithoutTarget===0 && (numberOfLinkWithThisNode===1 || numberOfReversibleLink===0);
             })
@@ -304,7 +304,7 @@ metExploreD3.GraphFunction = {
 	    }
 
     	var color = d3.scale.category20();
-		var color = d3.scale.linear()
+		var color = d3.scaleLinear()
 			.domain([0, 4])
 			.range(["blue", "yellow"]);
 
@@ -351,7 +351,7 @@ metExploreD3.GraphFunction = {
 				metExploreD3.GraphFunction.colorDistanceOnNode(finalGraph, setCharge);
 		});
 		function setCharge(){
-			var color = d3.scale.linear()
+			var color = d3.scaleLinear()
 				.domain([0, 1, 2, 3])
 				.range([-600, -500, -400, -30]);
 
@@ -368,7 +368,7 @@ metExploreD3.GraphFunction = {
 		
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
 		
-			var color = d3.scale.linear()
+			var color = d3.scaleLinear()
 				.domain([0, 0.1, 0.2, 0.5, 1])
 				.range([-30, -50, -60,-500 -600]);
 
@@ -388,7 +388,7 @@ metExploreD3.GraphFunction = {
 				metExploreD3.GraphFunction.colorDistanceOnNode(metExploreD3.GraphFunction.bfs(node), setCharge);
 		});
 		function setCharge(){
-			var color = d3.scale.linear()
+			var color = d3.scaleLinear()
 				.domain([0, 1, 2, 3])
 				.range([-600, -500, -400, -30]);
 
@@ -399,48 +399,6 @@ metExploreD3.GraphFunction = {
 				var val = color(value);
 				return val;
 			});	
-		};
-    },
-    test2 : function(){
-		
-		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
-		
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-			.on("click", function(node){
-				metExploreD3.GraphFunction.colorDistanceOnNode(metExploreD3.GraphFunction.bfs(node), setLinkDistance);
-		});
-		function setLinkDistance(){
-			var linkStyle = metExploreD3.getLinkStyle();
-			var color = d3.scale.linear()
-				.domain([0, 1, 2, 3])
-				.range([5*linkStyle.getSize(), 4*linkStyle.getSize(), 3*linkStyle.getSize(), linkStyle.getSize()]);
-				
-				// d3.layout.force().friction(0.90).gravity(0.06)
-				// 	.charge(-150)
-
-				// d3.layout.force().friction(0.90).gravity(0.08).charge(-4000).theta(0.2)
-    
-			var color2 = d3.scale.linear()
-				.domain([0, 1, 2, 3])
-				.range([-600, -500, -400, -30]);
-
-			metExploreD3.getGlobals().getSessionById('viz').getForce()
-				.linkDistance(function(link){
-
-					var value = Math.max(link.getSource().distance, link.getTarget().distance);
-					if(value>3) 
-						value = 3;
-					var val = color(value);
-					return val;
-				})
-				.gravity(0.04)
-				.charge(function(node){
-					var value = node.distance;
-					if(node.distance>3) 
-						value = 3;
-					var val = color2(value);
-					return val;
-				});
 		};
     },
 
@@ -695,11 +653,11 @@ metExploreD3.GraphFunction = {
 									arrayVal.push(viewMetric.getNodeValue(correspondNodeId[node.getId()]));
 								});
 
-							var colorNode = d3.scale.linear()
+							var colorNode = d3.scaleLinear()
 								.domain([Math.min.apply(null, arrayVal), Math.max.apply(null, arrayVal)])
 					    		.range(["yellow", "blue"]);
 
-							var sizeNode = d3.scale.linear()
+							var sizeNode = d3.scaleLinear()
 								.domain([Math.min.apply(null, arrayVal), Math.max.apply(null, arrayVal)])
 					    		.range([1, 3]);
 
@@ -1174,7 +1132,7 @@ metExploreD3.GraphFunction = {
 						if(force!=undefined)
 						{
 							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-								force.start();
+								force.alpha(1).restart();
 						}
 					}
 					metExploreD3.hideMask(myMask);
@@ -1397,7 +1355,7 @@ metExploreD3.GraphFunction = {
 					if(force!=undefined)  
 					{		
 						if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-							force.start();
+							force.alpha(1).restart();
 					}	
 				}
 		    	metExploreD3.hideMask(myMask);
@@ -2357,6 +2315,8 @@ metExploreD3.GraphFunction = {
             nodesList[i].each(function (d) {
                 d.setLocked(true);
                 d.fixed=d.isLocked();
+
+				metExploreD3.GraphNode.fixNode(d);
             });
         }
         metExploreD3.GraphNode.tick('viz');

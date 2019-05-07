@@ -205,7 +205,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			metabolites
 				.filter(
 					function(d, i) {
-						return (i <= metabolites[0].length/4*3);
+						return (i <= metabolites.size()/4*3);
 					}
 				)
 				.append("image")
@@ -217,7 +217,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			metabolites
 				.filter(
 					function(d, i) {
-						return (i > metabolites[0].length/6*5 && i!=metabolites[0].length-1);
+						return (i > metabolites.size()/6*5 && i!=metabolites.size()-1);
 					}
 				)
 				.append("image")
@@ -229,7 +229,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			metabolites
 				.filter(
 					function(d, i) {
-						return (i == metabolites[0].length-1);
+						return (i == metabolites.size()-1);
 					}
 				)
 				.append("image")

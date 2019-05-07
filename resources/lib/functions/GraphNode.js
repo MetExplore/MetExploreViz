@@ -39,6 +39,7 @@ metExploreD3.GraphNode = {
             })
             .each(function (d) {
                 d.fixed = true;
+                metExploreD3.GraphNode.fixNode(d);
                 // if(!d.isSelected())
                 //     _MyThisGraphNode.selection(d, "viz")
                 var transform = d3.select(this).attr("transform");
@@ -146,6 +147,26 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
+     * Fix node position
+     * @param {} d : a node
+     */
+    fixNode: function (node) {
+        if(node.x){
+            node.fx=node.x;
+            node.fy=node.y;
+        }
+    },
+
+    /*******************************************
+     * Unlock node position
+     * @param {} d : a node
+     */
+    unfixNode: function (node) {
+        node.fx=undefined;
+        node.fy=undefined;
+    },
+
+    /*******************************************
      * Permit to start drag and drop of nodes
      * @param {} d : Color in byte
      */
@@ -195,6 +216,8 @@ metExploreD3.GraphNode = {
                 if (d3.event.sourceEvent.button != 2) {
                     d.setLocked(!d.isLocked());
                     d.fixed = d.isLocked();
+                    if(d.isLocked())
+                        metExploreD3.GraphNode.fixNode(d);
                     d3.select("#" + _MyThisGraphNode.activePanel)
                         .selectAll('g.node')
                         .filter(function (node) {
@@ -447,12 +470,20 @@ metExploreD3.GraphNode = {
 
 
         var linkStyle = metExploreD3.getLinkStyle();
-        force.linkDistance(function (link) {
-            if (link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-                return linkStyle.getSize() / 2 + maxDim;
-            else
-                return linkStyle.getSize() + maxDim;
-        });
+
+        var force = session.getForce();
+
+        var forceLinks = force.force("link")
+            .distance(function(link){
+                if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
+                    return linkStyle.getSize() / 2 + maxDim;
+                else
+                    return linkStyle.getSize() + maxDim;
+            });
+
+        force
+            .force("link", forceLinks);
+
         metabolites
             .select("text")
             .attr("opacity", metaboliteStyle.getLabelOpacity());
@@ -474,11 +505,14 @@ metExploreD3.GraphNode = {
                     return d.getId() == node.getId();
             })
             .each(function (node) {
-
                 node.px += d3.event.dx;
                 node.py += d3.event.dy;
                 node.x += d3.event.dx;
                 node.y += d3.event.dy;
+                if(node.isLocked()){
+                    node.fx += d3.event.dx;
+                    node.fy += d3.event.dy;
+                }
             });
     },
 
@@ -575,7 +609,7 @@ metExploreD3.GraphNode = {
 
                             if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == 'true')
                                 || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == null)) {
-                                mainforce.resume();
+                                mainforce.alpha(1).restart();
                             }
                         }
                         _MyThisGraphNode.tick(sessionsStore[key].getId()); // this is the key to make it work together
@@ -592,7 +626,7 @@ metExploreD3.GraphNode = {
 
                     if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == 'true')
                         || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == null)) {
-                        force.resume();
+                        force.alpha(1).restart();
                     }
                 }
 
@@ -1045,10 +1079,10 @@ metExploreD3.GraphNode = {
                 .transition()
                 .duration(750)
                 .attr("transform", "translate(0,0)scale(1)")
-                .each('end', function () {
-                    zoom.translate([0, 0]);
+                .each(function () {
+                    zoom.translateBy( d3.select("#viz").select("#D3viz"),0 ,0);
 
-                    zoom.scale(1);
+                    zoom.scaleBy(d3.select("#viz").select("#D3viz"),1);
                     scaleViz.setZoomScale(1);
 
                     var maxX = -100000;
@@ -1089,14 +1123,14 @@ metExploreD3.GraphNode = {
                         .transition()
                         .duration(750)
                         .attr("transform", "translate(" + transX + "," + transY + ")scale(" + scale + ")")
-                        .each('end', function () {
+                        .each(function () {
                             metExploreD3.GraphLink.tick("viz", scale);
                             metExploreD3.GraphNode.tick("viz");
                             metExploreD3.hideMask(mask);
                         });
 
-					zoom.translate([transX,transY]);
-					zoom.scale(scale);
+                    zoom.translateBy( d3.select("#viz").select("#D3viz"),transX ,transY);
+					zoom.scaleBy(d3.select("#viz").select("#D3viz"), scale);
 					scaleViz.setZoomScale(scale);
 
 
@@ -1128,10 +1162,10 @@ metExploreD3.GraphNode = {
         /***************************/
         // Var which permit to drag
         /***************************/
-        var node_drag = d3.behavior.drag()
-            .on("dragstart", _MyThisGraphNode.dragstart)
+        var node_drag = d3.drag()
+            .on("start", _MyThisGraphNode.dragstart)
             .on("drag", _MyThisGraphNode.dragmove)
-            .on("dragend", _MyThisGraphNode.dragend);
+            .on("end", _MyThisGraphNode.dragend);
 
 
         var networkData = session.getD3Data();
@@ -1422,6 +1456,7 @@ metExploreD3.GraphNode = {
             })
             .each(function (d) {
                 d.fixed = true;
+                metExploreD3.GraphNode.fixNode(d);
             });
 
         metExploreD3.GraphNode.updatedNodes
@@ -1449,7 +1484,7 @@ metExploreD3.GraphNode = {
                     var colorMin = generalStyle.getColorMinMappingContinuous();
                     var colorMax = generalStyle.getColorMaxMappingContinuous();
 
-                    var colorScale = d3.scale.linear()
+                    var colorScale = d3.scaleLinear()
                         .domain([parseFloat(minValue), parseFloat(maxValue)])
                         .range([colorMin, colorMax]);
 
@@ -1487,7 +1522,7 @@ metExploreD3.GraphNode = {
                     var colorMin = generalStyle.getColorMinMappingContinuous();
                     var colorMax = generalStyle.getColorMaxMappingContinuous();
 
-                    var colorScale = d3.scale.linear()
+                    var colorScale = d3.scaleLinear()
                         .domain([parseFloat(minValue), parseFloat(maxValue)])
                         .range([colorMin, colorMax]);
 
@@ -1533,7 +1568,7 @@ metExploreD3.GraphNode = {
             var session = _metExploreViz.getSessionById(panel);
             if (session.isLinked()) {
                 for (var key in sessionsStore) {
-                    if (sessionsStore[key].isLinked() && panel != sessionsStore[key].getId() && d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")[0][0] != null) {
+                    if (sessionsStore[key].isLinked() && panel != sessionsStore[key].getId() && d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent").node() != null) {
                         d3.select("#" + sessionsStore[key].getId()).select("#D3viz").select("#graphComponent")
                             .selectAll("g.node")
                             .each(function (node) {
@@ -1628,56 +1663,57 @@ metExploreD3.GraphNode = {
 
     unselectIfDBClick: function () {
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+        if(d3.event.type==="start" && d3.event.sourceEvent.type!=="end"){
+            if (_MyThisGraphNode.dblClickable) {
 
-        if (_MyThisGraphNode.dblClickable && d3.event.button == 0) {
-            metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
-            _MyThisGraphNode.unselectAll(this);
-        }
-        else {
-            if (d3.event.button == 0) {
-                _MyThisGraphNode.dblClickable = true;
-
-                _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
-                    function () {
-                        _MyThisGraphNode.dblClickable = false;
-                    }
-                );
-
-                metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400);
+                metExploreD3.GraphPanel.setActivePanel(d3.event.sourceEvent.target.ownerSVGElement.parentNode.id);
+                _MyThisGraphNode.unselectAll(d3.event.sourceEvent.target.ownerSVGElement);
             }
             else {
+                if (d3.event.type==="start" && d3.event.sourceEvent!=="end") {
+                    _MyThisGraphNode.dblClickable = true;
 
+                    _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
+                        function () {
+                            _MyThisGraphNode.dblClickable = false;
+                        }
+                    );
+
+                    metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400);
+                }
             }
         }
+        else
+        {
+            if (_MyThisGraphNode.dblClickable && d3.event.button === 1) {
+                metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
+                d3.select(this).select("#graphComponent")
+                    .selectAll("g.node")
+                    .filter(function (d) {
+                        return d.isLocked();
+                    })
+                    .each(function (d) {
+                        d.fixed = false;
+                        d.setLocked(false);
 
-        if (_MyThisGraphNode.dblClickable && d3.event.button == 1) {
-            metExploreD3.GraphPanel.setActivePanel(this.parentNode.id);
-            d3.select(this).select("#graphComponent")
-                .selectAll("g.node")
-                .filter(function (d) {
-                    return d.isLocked();
-                })
-                .each(function (d) {
-                    d.fixed = false;
-                    d.setLocked(false);
-                });
-        }
-        else {
-            if (d3.event.button == 1) {
-                _MyThisGraphNode.dblClickable = true;
-
-                _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
-                    function () {
-                        _MyThisGraphNode.dblClickable = false;
-                    }
-                );
-
-                metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400);
+                        metExploreD3.GraphNode.unfixNode(d);
+                    });
             }
             else {
+                if (d3.event.button === 1) {
+                    _MyThisGraphNode.dblClickable = true;
 
+                    _MyThisGraphNode.taskClick = metExploreD3.createDelayedTask(
+                        function () {
+                            _MyThisGraphNode.dblClickable = false;
+                        }
+                    );
+
+                    metExploreD3.fixDelay(_MyThisGraphNode.taskClick, 400);
+                }
             }
         }
+
         if (session != undefined) {
             // We stop the previous animation
             if (session.isLinked()) {
@@ -1689,7 +1725,7 @@ metExploreD3.GraphNode = {
                         if (force != undefined) {
                             if (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == 'true'
                                 || metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == null) {
-                                force.start();
+                                force.alpha(force.alpha()).restart();
                             }
                         }
                     }
@@ -1704,7 +1740,7 @@ metExploreD3.GraphNode = {
                     if (force != undefined) {
                         if ((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
                             || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
-                            force.start();
+                            force.alpha(force.alpha()).restart();
                         }
                     }
                 }
@@ -1912,7 +1948,7 @@ metExploreD3.GraphNode = {
                     if (d.values.length > 2) {
 
                         return "M" +
-                            d3.geom.hull(d.values.map(function (i) {
+                            d3.polygonHull(d.values.map(function (i) {
 
                                     return [i.x, i.y];
                             }))
@@ -1933,7 +1969,7 @@ metExploreD3.GraphNode = {
                         ;
 
                         return "M" +
-                            d3.geom.hull(fakeNodes)
+                            d3.polygonHull(fakeNodes)
                                 .join("L")
                             + "Z";
                     }
@@ -1989,37 +2025,31 @@ metExploreD3.GraphNode = {
             convexHull
                 .on("mouseup", function (d) {
                     if (d3.event.button !== 2) {
-                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
-                        if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
-                            if (d.isSelected) {
-                                d.isSelected = false;
-                                session.removeSelectedPathway(d.key);
-                                d3.select(this)
-                                    .style("stroke", metExploreD3.GraphNode.groupFill)
-                                    .style("stroke-width", 40)
-                                    .style("stroke-linejoin", "round")
-                            }
-                            else {
-                                d.isSelected = true;
-                                session.addSelectedPathway(d.key);
-                                d3.select(this)
-                                    .style("stroke", "black")
-                                    .style("stroke-width", 20)
-                                    .style("stroke-linejoin", "round")
-                            }
+                        if (d.isSelected) {
+                            d.isSelected = false;
+                            session.removeSelectedPathway(d.key);
+                            d3.select(this)
+                                .style("stroke", metExploreD3.GraphNode.groupFill)
+                                .style("stroke-width", 40)
+                                .style("stroke-linejoin", "round")
+                        }
+                        else {
+                            d.isSelected = true;
+                            session.addSelectedPathway(d.key);
+                            d3.select(this)
+                                .style("stroke", "black")
+                                .style("stroke-width", 20)
+                                .style("stroke-linejoin", "round")
                         }
                     }
                     else {
-                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
-                        if (extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20) {
-                            if (!d.isSelected) {
-                                d.isSelected = true;
-                                session.addSelectedPathway(d.key);
-                                d3.select(this)
-                                    .style("stroke", "black")
-                                    .style("stroke-width", 20)
-                                    .style("stroke-linejoin", "round")
-                            }
+                        if (!d.isSelected) {
+                            d.isSelected = true;
+                            session.addSelectedPathway(d.key);
+                            d3.select(this)
+                                .style("stroke", "black")
+                                .style("stroke-width", 20)
+                                .style("stroke-linejoin", "round")
                         }
                     }
                 });
@@ -2048,6 +2078,8 @@ metExploreD3.GraphNode = {
             .each(function (node) {
                 node.setLocked(true);
                 node.fixed = node.isLocked();
+
+                metExploreD3.GraphNode.fixNode(node);
             })
     },
     unfixSelectedNode: function () {
@@ -2058,9 +2090,27 @@ metExploreD3.GraphNode = {
             .each(function (node) {
                 node.setLocked(false);
                 node.fixed = node.isLocked();
+
+                metExploreD3.GraphNode.unfixNode(node);
             })
     },
+    getTranslation: function (transform) {
+        // Create a dummy g for calculation purposes only. This will never
+        // be appended to the DOM and will be discarded once this function
+        // returns.
+        var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
+        // Set the transform attribute to the provided string value.
+        g.setAttributeNS(null, "transform", transform);
+
+        // consolidate the SVGTransformList containing all transformations
+        // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+        // its SVGMatrix.
+        var matrix = g.transform.baseVal.consolidate().matrix;
+
+        // As per definition values e and f are the ones for the translation.
+        return [matrix.e, matrix.f];
+    },
     applyEventOnNode: function (parent) {
         var reactionStyle = metExploreD3.getReactionStyle();
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -2083,10 +2133,12 @@ metExploreD3.GraphNode = {
                     var labelElement = d3.select(this).select("text");
                     var newY = (labelElement.attr("y")) ? labelElement.attr("y") / 2 : 0;
                     var newX = (labelElement.attr("x")) ? labelElement.attr("x") / 2 : 0;
-                    var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
-                    var labelScale = d3.transform(labelElement.attr("transform")).scale;
+
+                    var labelTransform = d3.zoomTransform(labelElement);
+                    var labelTranslate = [labelTransform.x, labelTransform.y];
+                    var labelScale = labelTransform.k;
                     if (metExploreD3.GraphStyleEdition.editMode) {
-                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
                     }
                     else {
                         labelElement.attr("y", newY);
@@ -2096,9 +2148,16 @@ metExploreD3.GraphNode = {
                     // Prevent movement of the node image during mouseenter
                     var imageElement = d3.select(this).select(".imageNode");
                     if (!imageElement.empty()) {
-                        var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
-                        var imageScale = d3.transform(imageElement.attr("transform")).scale;
-                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + (imageScale[0] / 2) + ", " + (imageScale[1] / 2) + ")");
+
+                        var imageTransform = imageElement.attr("transform");
+                        var imageTranslate = metExploreD3.GraphNode.getTranslation(imageTransform);
+                        var scale = imageTransform.substring(imageTransform.indexOf("scale"), imageTransform.length);
+                        var imageScale = scale.substring(6, scale.indexOf(')'));
+
+                        if (isNaN(imageScale))
+                            imageScale = 1;
+
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + imageScale + ")");
                     }
                 }
 
@@ -2111,8 +2170,8 @@ metExploreD3.GraphNode = {
                     })
                         .filter(function (link) {
 
-                            var linksover = d3.select(this.parentNode).selectAll("path.link");
-                            var last = linksover[0][linksover.size() - 1];
+                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                            var last = linksover[linksover.length - 1];
                             this.parentNode.appendChild(this, last);
 
                             return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
@@ -2125,8 +2184,8 @@ metExploreD3.GraphNode = {
                     })
                         .filter(function (link) {
 
-                            var linksover = d3.select(this.parentNode).selectAll("path.link");
-                            var last = linksover[0][linksover.size() - 1];
+                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                            var last = linksover[linksover.length - 1];
                             this.parentNode.appendChild(this, last);
 
                             return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
@@ -2139,8 +2198,8 @@ metExploreD3.GraphNode = {
                         return d.getId() == link.getSource().getId();
                     })
                         .filter(function (link) {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link");
-                            var last = linksover[0][linksover.size() - 1];
+                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                            var last = linksover[linksover.length - 1];
                             this.parentNode.appendChild(this, last);
 
                             return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
@@ -2152,8 +2211,8 @@ metExploreD3.GraphNode = {
                         return d.getId() == link.getTarget().getId();
                     })
                         .filter(function (link) {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link");
-                            var last = linksover[0][linksover.size() - 1];
+                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                            var last = linksover[linksover.length - 1];
                             this.parentNode.appendChild(this, last);
 
                             return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
@@ -2163,14 +2222,13 @@ metExploreD3.GraphNode = {
                 }
             })
             .on("mouseover", function (d) {
-                var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
-
+                var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node").nodes();
                 var nodeElemt=this;
 
                 d3.select(this)
                     .each(function (node) {
                         if (node.getBiologicalType() !== "pathway") {
-                            var last = nodes[0][nodes.size() - 1];
+                            var last = nodes[nodes.length - 1];
                             this.parentNode.insertBefore(this, last);
                             this.parentNode.insertBefore(last, this);
                         }
@@ -2181,7 +2239,7 @@ metExploreD3.GraphNode = {
                                     return !node.isHidden() && node.getBiologicalType() === "pathway"
                                 });
 
-                            var last = pathways[0][pathways.size() - 1];
+                            var last = pathways.nodes()[pathways.size() - 1];
                             this.parentNode.insertBefore(this, last);
                             this.parentNode.insertBefore(last, this);
 
@@ -2223,6 +2281,7 @@ metExploreD3.GraphNode = {
                     });
 
                 d.fixed = true;
+                metExploreD3.GraphNode.fixNode(d);
                 if (parent == "viz") {
                     d3.select("#" + parent)
                         .selectAll('g.node')
@@ -2266,10 +2325,13 @@ metExploreD3.GraphNode = {
                     var labelElement = d3.select(this).select("text");
                     var newY = (labelElement.attr("y")) ? labelElement.attr("y") * 2 : 0;
                     var newX = (labelElement.attr("x")) ? labelElement.attr("x") * 2 : 0;
-                    var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
-                    var labelScale = d3.transform(labelElement.attr("transform")).scale;
+
+                    var labelTransform = d3.zoomTransform(labelElement);
+                    var labelTranslate = [labelTransform.x, labelTransform.y];
+                    var labelScale = labelTransform.k;
+
                     if (metExploreD3.GraphStyleEdition.editMode) {
-                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")")
                     }
                     else {
                         labelElement.attr("y", newY);
@@ -2279,14 +2341,23 @@ metExploreD3.GraphNode = {
                     // Prevent  movement of the node label during mouseleave
                     var imageElement = d3.select(this).select(".imageNode");
                     if (!imageElement.empty()) {
-                        var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
-                        var imageScale = d3.transform(imageElement.attr("transform")).scale;
-                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + (imageScale[0] * 2) + ", " + (imageScale[1] * 2) + ")");
+
+                        var imageTransform = imageElement.attr("transform");
+                        var imageTranslate = metExploreD3.GraphNode.getTranslation(imageTransform);
+                        var scale = imageTransform.substring(imageTransform.indexOf("scale"), imageTransform.length);
+                        var imageScale = scale.substring(6, scale.indexOf(')'));
+
+                        if (isNaN(imageScale))
+                            imageScale = 1;
+
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + imageScale + ")");
                     }
                 }
 
-                if (!d.isLocked())
+                if (!d.isLocked()) {
                     d.fixed = false;
+                    metExploreD3.GraphNode.unfixNode(d);
+                }
                 var linkStyle = metExploreD3.getLinkStyle();
 
                 d3.select("#" + parent).select("#D3viz").select("#graphComponent")
@@ -2300,8 +2371,8 @@ metExploreD3.GraphNode = {
                     .style("stroke", linkStyle.getStrokeColor())
                     .style("stroke-width", "0.5")
                     .each(function () {
-                        var linksover = d3.select(this.parentNode).selectAll("path.link");
-                        var first = linksover[0][0];
+                        var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                        var first = linksover[0];
                         this.parentNode.insertBefore(this, first);
                     });
 
@@ -2343,10 +2414,13 @@ metExploreD3.GraphNode = {
                     var labelElement = d3.select(this).select("text");
                     var newY = (labelElement.attr("y")) ? labelElement.attr("y") / 2 : 0;
                     var newX = (labelElement.attr("x")) ? labelElement.attr("x") / 2 : 0;
-                    var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
-                    var labelScale = d3.transform(labelElement.attr("transform")).scale;
+
+                    var labelTransform = d3.zoomTransform(labelElement);
+                    var labelTranslate = [labelTransform.x, labelTransform.y];
+                    var labelScale = labelTransform.k;
+
                     if (metExploreD3.GraphStyleEdition.editMode) {
-                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + (labelScale[0] / 2) + ", " + (labelScale[1] / 2) + ")");
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] / 2) + ", " + labelTranslate[1] / 2 + ") scale(" + labelScale + ")");
                     }
                     else {
                         labelElement.attr("y", newY);
@@ -2356,9 +2430,12 @@ metExploreD3.GraphNode = {
                     // Prevent movement of the node image during mouseenter
                     var imageElement = d3.select(this).select(".imageNode");
                     if (!imageElement.empty()) {
-                        var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
-                        var imageScale = d3.transform(imageElement.attr("transform")).scale;
-                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + (imageScale[0] / 2) + ", " + (imageScale[1] / 2) + ")");
+
+                        var imageTransform = d3.zoomTransform(imageElement);
+                        var imageTranslate = [imageTransform.x, imageTransform.y];
+                        var imageScale = imageTransform.k;
+
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + imageScale + ")");
                     }
                 }
 
@@ -2373,8 +2450,8 @@ metExploreD3.GraphNode = {
                         .style("stroke", "green")
                         .style("stroke-width", "1.5")
                         .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link");
-                            var last = linksover[0][linksover.size() - 1];
+                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                            var last = linksover[linksover.length - 1];
                             this.parentNode.appendChild(this, last);
                         });
 
@@ -2385,8 +2462,8 @@ metExploreD3.GraphNode = {
                         .style("stroke", "red")
                         .style("stroke-width", "1.5")
                         .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link");
-                            var last = linksover[0][linksover.size() - 1];
+                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                            var last = linksover[linksover.length - 1];
                             this.parentNode.appendChild(this, last);
                         });
                 }
@@ -2398,8 +2475,8 @@ metExploreD3.GraphNode = {
                         .style("stroke", "red")
                         .style("stroke-width", "1.5")
                         .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link");
-                            var last = linksover[0][linksover.size() - 1];
+                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                            var last = linksover[linksover.length - 1];
                             this.parentNode.appendChild(this, last);
                         });
 
@@ -2410,8 +2487,8 @@ metExploreD3.GraphNode = {
                         .style("stroke", "green")
                         .style("stroke-width", "1.5")
                         .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link");
-                            var last = linksover[0][linksover.size() - 1];
+                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                            var last = linksover[linksover.length - 1];
                             this.parentNode.appendChild(this, last);
                         });
                 }
@@ -2419,16 +2496,19 @@ metExploreD3.GraphNode = {
             .on("mouseover", function (d) {
 
 
-                var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node");
+                var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node").nodes();
                 d3.select(this)
                     .each(function (node) {
                         if (node.getBiologicalType() !== "pathway") {
-                            var last = nodes[0][nodes.size() - 1];
+                            var last = nodes[nodes.length - 1];
                             this.parentNode.insertBefore(this, last);
                         }
                     });
 
                 d.fixed = true;
+
+                metExploreD3.GraphNode.fixNode(d);
+
                 if (parent == "viz") {
                     d3.select("#" + parent)
                         .selectAll('g.node')
@@ -2499,10 +2579,13 @@ metExploreD3.GraphNode = {
                     var labelElement = d3.select(this).select("text");
                     var newY = (labelElement.attr("y")) ? labelElement.attr("y") * 2 : 0;
                     var newX = (labelElement.attr("x")) ? labelElement.attr("x") * 2 : 0;
-                    var labelTranslate = d3.transform(labelElement.attr("transform")).translate;
-                    var labelScale = d3.transform(labelElement.attr("transform")).scale;
+
+                    var labelTransform = d3.zoomTransform(labelElement);
+                    var labelTranslate = [labelTransform.x, labelTransform.y];
+                    var labelScale = labelTransform.k;
+
                     if (metExploreD3.GraphStyleEdition.editMode) {
-                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale[0] * 2 + ", " + labelScale[1] * 2 + ")")
+                        labelElement.attr("transform", "translate(" + (labelTranslate[0] * 2) + ", " + labelTranslate[1] * 2 + ") scale(" + labelScale + ")")
                     }
                     else {
                         labelElement.attr("y", newY);
@@ -2512,14 +2595,19 @@ metExploreD3.GraphNode = {
                     // Prevent  movement of the node label during mouseleave
                     var imageElement = d3.select(this).select(".imageNode");
                     if (!imageElement.empty()) {
-                        var imageTranslate = d3.transform(imageElement.attr("transform")).translate;
-                        var imageScale = d3.transform(imageElement.attr("transform")).scale;
-                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + (imageScale[0] * 2) + ", " + (imageScale[1] * 2) + ")");
+
+                        var imageTransform = d3.zoomTransform(imageElement);
+                        var imageTranslate = [imageTransform.x, imageTransform.y];
+                        var imageScale = imageTransform.k;
+
+                        imageElement.attr("transform", "translate(" + (imageTranslate[0] * 2) + ", " + imageTranslate[1] * 2 + ") scale(" + imageScale + ")");
                     }
                 }
 
-                if (!d.isLocked())
+                if (!d.isLocked()) {
                     d.fixed = false;
+                    metExploreD3.GraphNode.fixNode(d);
+                }
                 var linkStyle = metExploreD3.getLinkStyle();
 
 
@@ -2531,8 +2619,8 @@ metExploreD3.GraphNode = {
                     .style("stroke", linkStyle.getStrokeColor())
                     .style("stroke-width", "0.5")
                     // .each(function () {
-                    //     var linksover = d3.select(this.parentNode).selectAll("path.link");
-                    //     var first = linksover[0][0];
+                    //     var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
+                    //     var first = linksover[0];
                     //     this.parentNode.insertBefore(this, first);
                     // });
 
