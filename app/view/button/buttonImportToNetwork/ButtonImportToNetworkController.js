@@ -15,7 +15,6 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
         // Listener which allows opening file manager of client side
         view.lookupReference('importNetwork').on({
 			change: function () {
-                console.log(view.lookupReference('importNetwork'));
                 var sessions = _metExploreViz.getSessionsSet();
                 var accord = Ext.getCmp("comparePanel");
                 for (var key in sessions) {
@@ -28,8 +27,6 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
                 	// Allows to reload the same file
                 	metExploreD3.GraphPanel.refreshPanel(json, view.lookupReference('importNetwork').reset());
                 });
-
-                console.log(view.lookupReference('importNetwork'));
 			},
             scope : me
 		});

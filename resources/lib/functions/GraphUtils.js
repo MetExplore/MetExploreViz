@@ -497,6 +497,9 @@ metExploreD3.GraphUtils = {
     * Get all networks displayed all networks  
     */
 	getSources : function(doc, emptySvgDeclarationComputed, prefix) {
+		console.log(doc);
+		console.log(emptySvgDeclarationComputed);
+		console.log(prefix);
 		var svgInfo = [],
 		svgs = doc.querySelectorAll("svg");
 
@@ -507,11 +510,15 @@ metExploreD3.GraphUtils = {
 			{
 				function clonef(selector) {
 					var node = d3.select(selector).node();
-					return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling))[0][0];
+					console.log(node);
+					return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling)).node();
 				};
-
-				var clone = clonef(svg);
-				clone.setAttribute("version", "1.1");
+				
+console.log(svg);
+var clone = clonef(svg);
+				
+console.log(clone);
+clone.setAttribute("version", "1.1");
 
 				// removing attributes so they aren't doubled up
 				clone.removeAttribute("xmlns");
@@ -675,7 +682,7 @@ metExploreD3.GraphUtils = {
 				// Version to catch all nodes in the picture
 				// d3.select(clone).select("#graphComponent").attr("transform",  "translate(0, 0) scale(1)");
 
-				var rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
+				var rectGraphComponent = d3Clone.select("#graphComponent").node().getBoundingClientRect();
 				
 				var translateX = rectSvg.left+100 - rectGraphComponent.left;
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
@@ -686,7 +693,7 @@ metExploreD3.GraphUtils = {
 				// 			d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
 				// 	});
 
-				rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
+				rectGraphComponent = d3Clone.select("#graphComponent").node().getBoundingClientRect();
                 if((rectSvg.width + rectGraphComponent.right - rectSvg.right +20 )>canvasWidth){
 					canvasWidth = rectSvg.width + rectGraphComponent.right - rectSvg.right +20;					
 				}
@@ -703,7 +710,7 @@ metExploreD3.GraphUtils = {
 					canvasHeight = rectSvg.height + rectGraphComponent.bottom - rectSvg.bottom +20;
 				clone.setAttribute("height", canvasHeight);
 
-				var rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
+				var rectGraphComponent = d3Clone.select("#graphComponent").node().getBoundingClientRect();
 				
 				var translateX = rectSvg.left+100 - rectGraphComponent.left;
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
@@ -714,7 +721,7 @@ metExploreD3.GraphUtils = {
 				// 		d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
 				// 	});
 
-				rectGraphComponent = d3Clone.select("#graphComponent")[0][0].getBoundingClientRect();
+				rectGraphComponent = d3Clone.select("#graphComponent").node().getBoundingClientRect();
 
 				var canvasWidth = rectSvg.width;
 				clone.setAttribute("width",  canvasWidth);
@@ -780,7 +787,7 @@ metExploreD3.GraphUtils = {
 			if(force!=undefined)  
 			{		
 				if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-					force.start();
+					force.alpha(1).restart();
 			}	
 		}
 	},
@@ -902,7 +909,7 @@ metExploreD3.GraphUtils = {
 						if(force!=undefined)  
 						{		
 							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-								force.start();
+								force.alpha(1).restart();
 						}	
 					}
 				}, 100);
@@ -1518,9 +1525,7 @@ metExploreD3.GraphUtils = {
 				    */
 				    networkJSON+="\"links\":[" ;
 				    var linksToSave = _metExploreViz.getSessionById(key).getD3Data().getLinks()
-				    	.filter(function(link){
-				    		return link.getInteraction()!="hiddenForce";
-				    	})
+
 				    linksToSave.forEach(function(link){
 					    	networkJSON+="{\"id\":"+JSON.stringify(link.getId())+",";
 					    	networkJSON+="\"source\":"+JSON.stringify(link.getSource().index)+",";

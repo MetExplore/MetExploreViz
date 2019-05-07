@@ -186,7 +186,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		});
 	},
 	changeHeight : function(height) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0]!=null){
+		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
 					
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
@@ -199,7 +199,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 	},
 
 	changeWidth : function(width) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0]!=null){
+		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
 					
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
@@ -208,7 +208,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 	},
 
 	changeStroke : function(stroke) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0]!=null){
+		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
 					
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
@@ -217,7 +217,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 	},
 
 	changeRx : function(rx) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0]!=null){
+		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
 					
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
@@ -226,7 +226,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 	},
 
 	changeRy : function(ry) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0]!=null){
+		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
 					
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
@@ -235,7 +235,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 	},
 
 	changeLabel : function(label) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0]!=null){
+		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
 					
 			var vis = d3.select("#vizExempleMetabolite")
 						.select("#D3vizExemple");
@@ -251,7 +251,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 
 	displayNode : function() {
         var vis;
-        if (d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0][0] != null) {
+        if (d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0] != null) {
 
             d3.select("#vizExempleMetabolite").select("#D3vizExemple")
                 .selectAll("*").remove();
@@ -272,8 +272,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 
 		var that = this;
 
-		var zoomListener = d3.behavior
-			.zoom()
+		var zoomListener = d3.zoom()
 			.scaleExtent([ 0.1, 20 ])
 			.on("zoom", function(e){
 				that.zoom();
@@ -328,7 +327,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 	},
 
 	zoom:function() {
-		d3.select("#vizExempleMetabolite").select("#D3vizExemple").select("#graphComponent").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+		d3.select("#vizExempleMetabolite").select("#D3vizExemple").select("#graphComponent").attr("transform", "translate(" + d3.event.transform.y + ")scale(" + d3.event.transform.k + ")");
 	}
 	
 });

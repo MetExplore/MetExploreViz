@@ -27,11 +27,6 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			scope : me
 		});
 
-		view.lookupReference('clustMetabolites').on({
-			click : me.clustMetabolites,
-			scope : me
-		});
-	
 		view.lookupReference('vizLayoutMenuID').on({
 			setUser : function(){
 				if(metExploreD3.Features.isEnabled('layouts', metExploreD3.getUser())){
@@ -93,20 +88,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 	duplicateSideCompounds : function(){
 		metExploreD3.GraphNetwork.duplicateSideCompounds('viz');
 	},
-	clustMetabolites : function(){
-		if(!_metExploreViz.isLinkedByTypeOfMetabolite()){
-			metExploreD3.GraphLink.linkTypeOfMetabolite();
-			this.getView().lookupReference('clustMetabolites').setIconCls("metabolitesUnlinkedByType");
-			this.getView().lookupReference('clustMetabolites').setTooltip('Release force between substrates/products');
-		}
-		else
-		{
-			metExploreD3.GraphLink.removeLinkTypeOfMetabolite();
-			this.getView().lookupReference('clustMetabolites').setIconCls("metabolitesLinkedByType");
-			this.getView().lookupReference('clustMetabolites').setTooltip('Draw closer substrates/products');
-		}
-		
-	},
+
 	makeClusters : function(){
 		var useClusters = metExploreD3.getGeneralStyle().useClusters();
 		metExploreD3.getGeneralStyle().setUseClusters(!useClusters);
@@ -125,7 +107,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 		var session = _metExploreViz.getSessionById('viz');
 		if((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true') 
 							|| (metExploreD3.GraphNetwork.isAnimated(session.getId())  == null))
-			session.getForce().resume();
+			session.getForce().restart();
 		
 	},
 	removeSideCompounds : function(){

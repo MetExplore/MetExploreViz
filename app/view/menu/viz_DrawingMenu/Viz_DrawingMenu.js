@@ -69,11 +69,6 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                 iconCls:'color'
              },
              {
-                 text: 'Draw closer substrates/products',
-                 reference:'clustMetabolites',
-                 iconCls:'metabolitesLinkedByType'
-             },
-             {
                 text: 'Highlight component', 
                 scale: 'large',
                 menu:{id:'vizIdConvexHullMenu',xtype: 'vizConvexHullMenu'},
@@ -87,7 +82,8 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  reference:'makeClusters',
                  tooltip:'Make clusters in function of highlighted component',
                  iconCls:'makeClusters',
-                 disabled:true
+                 disabled:true,
+                 hidden:true
              },
             {
                 text: 'Hierarchical layout', 
