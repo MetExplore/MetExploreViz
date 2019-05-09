@@ -48,7 +48,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 width:"80%",
                 value: -250,
                 increment: 10,
-                minValue: -1000,
+                minValue: -30000,
                 maxValue: 100,
                 listeners: {
                     changecomplete: function(slider, newValue){
@@ -97,7 +97,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 value: 1000,
                 increment: 1,
                 minValue: 0,
-                maxValue: 2000,
+                maxValue: 20000,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
@@ -155,7 +155,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 value: 15,
                 increment: 1,
                 minValue: 0,
-                maxValue: 100,
+                maxValue: 1000,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
@@ -178,7 +178,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 value: 1,
                 increment: 1,
                 minValue: 1,
-                maxValue: 10,
+                maxValue: 100,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
@@ -212,7 +212,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 width:"80%",
                 increment: 1,
                 minValue: 0,
-                maxValue: 500,
+                maxValue: 5000,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
@@ -247,7 +247,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 value: 30,
                 increment: 1,
                 minValue: 0,
-                maxValue: 100,
+                maxValue: 1000,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
@@ -270,7 +270,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 value: 1,
                 increment: 1,
                 minValue: 1,
-                maxValue: 10,
+                maxValue: 100,
                 listeners: {
                     changecomplete: function(slider, newValue){
                         var session = _metExploreViz.getSessionById('viz');
