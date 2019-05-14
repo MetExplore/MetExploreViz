@@ -54,7 +54,7 @@ text.reaction{
 .hide{
   fill-opacity: 0;
   opacity: 0;
-  display: none;
+  display: none !important;
 }
 .fixed{
   fill-opacity: 1;

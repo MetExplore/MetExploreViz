@@ -514,45 +514,26 @@ metExploreD3.GraphNetwork = {
                         d3.selectAll("#brush").classed("hide", true);
                     }
                 }
-                else
-                {
-                    var force = session.getForce();
-                    if(force!=undefined)
-                    {
-                        force.stop();
-                    }
-
-                    d3.select("#"+panel).selectAll("#D3viz").style("cursor", "all-scroll");
-                    d3.selectAll("#brush").classed("hide", true);
-                }
             })
             .on("end", function() {
+                var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
 
-                function simulateClick(elementToClick){
-                    var evt = document.createEvent("MouseEvents");
-                    evt.initMouseEvent("mouseup", true, true, window,
-                        0, 0, 0, 0, 0, false, false, false, false, 0, null);
-                    var canceled = !elementToClick.dispatchEvent(evt);
-                    return canceled; //Indicate if `preventDefault` was called during handling
-                }
+                if(scrollable==="false"){
 
-                var component = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
-                if (component === "Pathways") {
-                    if (d3.event.button !== 2) {
-                        if(!isNaN(d3.event.sourceEvent.x) && !isNaN(d3.event.sourceEvent.y)){
-                            var extent = d3.event.selection;
-                            if(extent===null){
-                                var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
-                                d3.select("#" + panel).select("#D3viz")
-                                    .select("#brush").style("display", "none");
-                                simulateClick(document.elementFromPoint(d3.event.sourceEvent.x, d3.event.sourceEvent.y));
+                    function simulateClick(elementToClick){
+                        var evt = document.createEvent("MouseEvents");
+                        evt.initMouseEvent("mouseup", true, true, window,
+                            0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                        var canceled = !elementToClick.dispatchEvent(evt);
+                        return canceled; //Indicate if `preventDefault` was called during handling
+                    }
 
-                                d3.select("#" + panel).select("#D3viz")
-                                    .select("#brush").style("display", "inline");
-                            }
-                            else
-                            {
-                                if(extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20){
+                    var component = metExploreD3.getGeneralStyle().isDisplayedConvexhulls();
+                    if (component === "Pathways") {
+                        if (d3.event.button !== 2) {
+                            if(!isNaN(d3.event.sourceEvent.x) && !isNaN(d3.event.sourceEvent.y)){
+                                var extent = d3.event.selection;
+                                if(extent===null){
                                     var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
                                     d3.select("#" + panel).select("#D3viz")
                                         .select("#brush").style("display", "none");
@@ -561,138 +542,150 @@ metExploreD3.GraphNetwork = {
                                     d3.select("#" + panel).select("#D3viz")
                                         .select("#brush").style("display", "inline");
                                 }
+                                else
+                                {
+                                    if(extent[1][0] - extent[0][0] < 20 && extent[1][1] - extent[0][1] < 20){
+                                        var extent = metExploreD3.GraphNetwork.brushEvnt.extent();
+                                        d3.select("#" + panel).select("#D3viz")
+                                            .select("#brush").style("display", "none");
+                                        simulateClick(document.elementFromPoint(d3.event.sourceEvent.x, d3.event.sourceEvent.y));
+
+                                        d3.select("#" + panel).select("#D3viz")
+                                            .select("#brush").style("display", "inline");
+                                    }
+                                }
                             }
                         }
                     }
-                }
 
-                if(d3.event.sourceEvent.button!==2 && d3.event.sourceEvent.button!==1 && metExploreD3.GraphNetwork.brushing){
-                    if (!d3.event.selection) return;
-                    var extent = d3.event.selection;
+                    if(d3.event.sourceEvent.button!==2 && d3.event.sourceEvent.button!==1 && metExploreD3.GraphNetwork.brushing){
+                        if (!d3.event.selection) return;
+                        var extent = d3.event.selection;
 
-                    if(extent[1][0]-extent[0][0]>20 || extent[1][1]-extent[0][1]>20){
+                        if(extent[1][0]-extent[0][0]>20 || extent[1][1]-extent[0][1]>20){
 
-                        var iSselected;
-                        var scale = metExploreD3.getScaleById(panel);
+                            var iSselected;
+                            var scale = metExploreD3.getScaleById(panel);
 
-                        var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
+                            var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
 
-                        var myMask = metExploreD3.createLoadMask("Selection in progress...", panel);
-                        if(myMask!== undefined){
+                            var myMask = metExploreD3.createLoadMask("Selection in progress...", panel);
+                            if(myMask!== undefined){
 
-                            metExploreD3.showMask(myMask);
+                                metExploreD3.showMask(myMask);
 
-                            metExploreD3.deferFunction(function() {
-                                nodeBrushed
-                                    .classed("selected", function(d) {
+                                metExploreD3.deferFunction(function() {
+                                    nodeBrushed
+                                        .classed("selected", function(d) {
 
-                                        iSselected = (transform.invertX(extent[0][0]) <= d.x && d.x < transform.invertX(extent[1][0]))
-                                            && (transform.invertY(extent[0][1]) <= d.y && d.y < transform.invertY(extent[1][1]));
-                                        if((!d.isSelected() && iSselected)||(d.isSelected() && !iSselected && !d.previouslySelected))
-                                        {
-                                            _MyThisGraphNode.selection(d, panel);
+                                            iSselected = (transform.invertX(extent[0][0]) <= d.x && d.x < transform.invertX(extent[1][0]))
+                                                && (transform.invertY(extent[0][1]) <= d.y && d.y < transform.invertY(extent[1][1]));
+                                            if((!d.isSelected() && iSselected)||(d.isSelected() && !iSselected && !d.previouslySelected))
+                                            {
+                                                _MyThisGraphNode.selection(d, panel);
+                                            }
+                                            return iSselected;
+                                        });
+                                    metExploreD3.hideMask(myMask);
+                                    var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+                                    if(session!==undefined)
+                                    {
+                                        // We stop the previous animation
+                                        if(session.isLinked()){
+                                            var sessionMain = _metExploreViz.getSessionById('viz');
+                                            if(sessionMain!==undefined)
+                                            {
+                                                var animLinked=metExploreD3.GraphNetwork.isAnimated(sessionMain.getId());
+                                                if (animLinked==='true') {
+                                                    var force = sessionMain.getForce();
+                                                    if(force!==undefined)
+                                                    {
+                                                        if((metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === 'true')
+                                                            || (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === null)) {
+                                                            force.alpha(1).restart();
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
-                                        return iSselected;
-                                    });
-                                metExploreD3.hideMask(myMask);
-                                var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-                                if(session!==undefined)
-                                {
-                                    // We stop the previous animation
-                                    if(session.isLinked()){
-                                        var sessionMain = _metExploreViz.getSessionById('viz');
-                                        if(sessionMain!==undefined)
+                                        else
                                         {
-                                            var animLinked=metExploreD3.GraphNetwork.isAnimated(sessionMain.getId());
+
+                                            var force = session.getForce();
+                                            var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId())
                                             if (animLinked==='true') {
-                                                var force = sessionMain.getForce();
+                                                var force = session.getForce();
                                                 if(force!==undefined)
                                                 {
-                                                    if((metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === 'true')
-                                                        || (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === null)) {
+                                                    if((metExploreD3.GraphNetwork.isAnimated(session.getId()) === 'true') || (metExploreD3.GraphNetwork.isAnimated(session.getId()) === null)) {
                                                         force.alpha(1).restart();
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                    else
-                                    {
-
-                                        var force = session.getForce();
-                                        var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId())
-                                        if (animLinked==='true') {
-                                            var force = session.getForce();
-                                            if(force!==undefined)
-                                            {
-                                                if((metExploreD3.GraphNetwork.isAnimated(session.getId()) === 'true') || (metExploreD3.GraphNetwork.isAnimated(session.getId()) === null)) {
-                                                    force.alpha(1).restart();
-                                                }
+                                    metExploreD3.GraphNetwork.brushing = false;
+                                }, 100);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+                        if(session!==undefined)
+                        {
+                            // We stop the previous animation
+                            if(session.isLinked()){
+                                var sessionMain = _metExploreViz.getSessionById('viz');
+                                if(sessionMain!==undefined)
+                                {
+                                    var animLinked=metExploreD3.GraphNetwork.isAnimated(sessionMain.getId())
+                                    if (animLinked==='true') {
+                                        var force = sessionMain.getForce();
+                                        if(force!==undefined)
+                                        {
+                                            if((metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === 'true')
+                                                || (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === null)) {
+                                                force.alpha(1).restart();
                                             }
                                         }
                                     }
                                 }
-                                metExploreD3.GraphNetwork.brushing = false;
-                            }, 100);
-                        }
-                    }
-                }
-                else
-                {
-                    var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-                    if(session!==undefined)
-                    {
-                        // We stop the previous animation
-                        if(session.isLinked()){
-                            var sessionMain = _metExploreViz.getSessionById('viz');
-                            if(sessionMain!==undefined)
+                            }
+                            else
                             {
-                                var animLinked=metExploreD3.GraphNetwork.isAnimated(sessionMain.getId())
+
+                                var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId());
+
                                 if (animLinked==='true') {
-                                    var force = sessionMain.getForce();
+                                    var force = session.getForce();
                                     if(force!==undefined)
                                     {
-                                        if((metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === 'true')
-                                            || (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === null)) {
+                                        if(d3.select(metExploreD3.GraphNetwork.isAnimated(session.getId()) === 'true')
+                                            || (metExploreD3.GraphNetwork.isAnimated(session.getId()) === null)) {
                                             force.alpha(1).restart();
                                         }
                                     }
                                 }
                             }
                         }
-                        else
-                        {
-
-                            var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId());
-
-                            if (animLinked==='true') {
-                                var force = session.getForce();
-                                if(force!==undefined)
-                                {
-                                    if(d3.select(metExploreD3.GraphNetwork.isAnimated(session.getId()) === 'true')
-                                        || (metExploreD3.GraphNetwork.isAnimated(session.getId()) === null)) {
-                                        force.alpha(1).restart();
-                                    }
-                                }
-                            }
-                        }
                     }
+
+                    d3.select(this).call(metExploreD3.GraphNetwork.brushEvnt.move, null);
+                    // d3.event.target.clear();
+                    // d3.select(this).call(d3.event.target);
+                    var scale = metExploreD3.getScaleById(panel);
+
+                    d3.select("#"+panel).selectAll("#D3viz")
+                        .style("cursor", "default");
+
+                    d3.select("#"+panel).selectAll("#D3viz")
+                        .call(scale.getZoom())
+                        .on("dblclick.zoom", null)
+                        .on("mousedown", null);
+
+                    d3.selectAll("#brush").classed("hide", false);
                 }
-
-                d3.select(this).call(metExploreD3.GraphNetwork.brushEvnt.move, null);
-                // d3.event.target.clear();
-                // d3.select(this).call(d3.event.target);
-                var scale = metExploreD3.getScaleById(panel);
-
-                d3.select("#"+panel).selectAll("#D3viz")
-                    .style("cursor", "default");
-
-                d3.select("#"+panel).selectAll("#D3viz")
-                    .call(scale.getZoom())
-                    .on("dblclick.zoom", null)
-                    .on("mousedown", null);
-
-                d3.selectAll("#brush").classed("hide", false);
             });
 
         d3.select("#"+panel).select("#D3viz")
@@ -774,6 +767,7 @@ metExploreD3.GraphNetwork = {
      * @param {} panel : The panel to refresh
      */
     refreshSvg : function(panel) {
+
         var startall = new Date().getTime();
 
         document.addEventListener("keydown", function (e) {
@@ -833,12 +827,16 @@ metExploreD3.GraphNetwork = {
         var that = metExploreD3.GraphNetwork;
         metExploreD3.GraphNetwork.zoomListener = d3.zoom()
             .filter(function(){
-                return event.button === 1 || event.type==="wheel";
+
+                var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
+
+                return event.button === 1 || event.type==="wheel" || (event.button === 0 && scrollable === "true");
             })
             .scaleExtent([ 0.01, 30 ])
             .extent([[w*.45, h*.45], [w*.55, h*.55]])
             .translateExtent([[-w*2, -h*2], [w*3, h*3]])
             .on("zoom", function(e){
+
                 that.zoom(panel);
             });
 
@@ -974,12 +972,8 @@ metExploreD3.GraphNetwork = {
                     return linkStyle.getSize()/2+maxDim;
                 else
                     return linkStyle.getSize()+maxDim;
-
-
             })
             .iterations(1);
-        // .strength([strength])
-
 
         var forceCollide = d3.forceCollide()
             .radius(15)
@@ -993,7 +987,6 @@ metExploreD3.GraphNetwork = {
         var forceY = d3.forceY()
             .y(h/2)
             .strength(0.006);
-
 
         var force = d3.forceSimulation(visibleNodes)
             .force("charge", manyBody)
@@ -1110,7 +1103,6 @@ metExploreD3.GraphNetwork = {
                         }
                     });
                 }
-
                 if(force.alpha() >= .005 /*&& force.alpha() < .06*/){
                     setTimeout(metExploreD3.GraphNetwork.tick(panel), 0);
                     if(metExploreD3.GraphNetwork.first){
@@ -1440,17 +1432,21 @@ metExploreD3.GraphNetwork = {
      * Change the cursor state to move the graph
      */
     moveGraph : function(){
-
         _MyThisGraphNode.dblClickable=false;
         var panel = this.parentNode.parentNode.id;
         var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
+        if(scrollable === "false"){
+            d3.select("#"+panel).selectAll("#D3viz").style("cursor", "all-scroll");
+            d3.selectAll("#brush").classed("hide", true);
 
-        if(scrollable == "false"){
             d3.select("#"+panel).select("#D3viz").select("#buttonHand").transition().duration(500).style("opacity", 1);
             d3.select("#"+panel).select("#buttonHand").attr("scrollable", true);
         }
         else
         {
+            d3.select("#"+panel).selectAll("#D3viz").style("cursor", "default");
+            d3.selectAll("#brush").classed("hide", false);
+
             d3.select("#"+panel).select("#D3viz").select("#buttonHand").transition().duration(500).style("opacity", 0.2);
             d3.select("#"+panel).select("#buttonHand").attr("scrollable", false);
         }

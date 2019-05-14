@@ -943,6 +943,7 @@ metExploreD3.GraphPanel = {
 				}
 
 				for (var key in sessions) {
+					metExploreD3.GraphNetwork.first=true;
 					metExploreD3.GraphNetwork.refreshSvg(key);
                     metExploreD3.GraphNetwork.refreshViz(key);
                     // set style of previous session from JSON
@@ -1014,9 +1015,8 @@ metExploreD3.GraphPanel = {
 			});
             networkData.setId('viz');
 			networkVizSession.setD3Data(networkData);
-
+			metExploreD3.GraphNetwork.first=true;
 		    metExploreD3.GraphNetwork.refreshSvg("viz");
-
 
 		    var oldCoodinates = _metExploreViz.getOldCoodinates();
 			if(oldCoodinates.length>0)
