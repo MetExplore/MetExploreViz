@@ -46,7 +46,6 @@ text.reaction{
 	max-width: 200px;
 }
 .brush{
-	fill: #99BCE8;
 	fill-opacity: 0.1;
 	stroke: #99BCE8;
 	shape-rendering: crispEdges;
