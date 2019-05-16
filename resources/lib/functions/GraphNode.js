@@ -1437,9 +1437,24 @@ metExploreD3.GraphNode = {
                     return d.getBiologicalType() === 'reaction';
                 })
                 .addNodeText(reactionStyle);
-
-
         }
+
+
+        metExploreD3.GraphNode.updatedNodes
+            .each(function (d) {
+                // set corresponding event handler
+                var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
+                metExploreD3.GraphStyleEdition.changeNodeLabel(d, parent, name);
+
+
+                if (metExploreD3.GraphStyleEdition.editMode == true) {
+                    metExploreD3.GraphStyleEdition.startDragLabel(parent);
+                }
+                else {
+                    metExploreD3.GraphStyleEdition.endDragLabel(parent);
+                    metExploreD3.GraphNode.applyEventOnNode(parent);
+                }
+            });
 
         metExploreD3.GraphNode.updatedNodes
             .filter(function (d) {
