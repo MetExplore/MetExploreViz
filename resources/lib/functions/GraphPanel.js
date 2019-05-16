@@ -1032,7 +1032,6 @@ metExploreD3.GraphPanel = {
 					metExploreD3.displayMessageYesNo("Coodinates",'Do you want keep node coordinates.',function(btn){
 		                if(btn=="yes")
 		                {
-                            metExploreD3.GraphNetwork.refreshViz("viz");
 		                	var selected = [];
 				            oldCoodinates.forEach(function(coor){
 				            	var node = networkData.getNodeById(coor.id);
@@ -1051,7 +1050,7 @@ metExploreD3.GraphPanel = {
 						        .each(function(d) { 
 						        	d.setLocked(!d.isLocked());
 									d.fixed=d.isLocked();
-									if(isLocked())
+									if(d.isLocked())
 										metExploreD3.GraphNode.fixNode(d);
 						        });
 
@@ -1059,7 +1058,8 @@ metExploreD3.GraphPanel = {
 								.selectAll("g.node")
 						        .filter(function(d) { return selected.indexOf(d.id)!=-1; })
 						        .each(function(d) { _MyThisGraphNode.selection(d, "viz"); });
-						 
+
+							metExploreD3.GraphNetwork.tick("viz");
 		                }
 		          	});
 				}
