@@ -165,7 +165,6 @@ metExploreD3.GraphFunction = {
     },
 
 	horizontalAlign : function(panel) {
-		metExploreD3.GraphNode.fixSelectedNode();
 		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
 		
 		var yRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).y;
@@ -193,16 +192,15 @@ metExploreD3.GraphFunction = {
 				}
 			}
 		})
-    
+
+		metExploreD3.GraphNode.fixSelectedNode();
      	metExploreD3.GraphNetwork.tick(panel);
 	},
 
 	verticalAlign : function(panel) {
-		metExploreD3.GraphNode.fixSelectedNode();
 		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
-		
 		var xRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).x;
-		
+
 		var arrayNode = [];
 		d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.filter(function(node){
@@ -213,7 +211,7 @@ metExploreD3.GraphFunction = {
 				node.px = xRef ;
 				node.x = xRef ;
 			});
-		
+
 		arrayNode.sort(function(node1, node2){
 		   return d3.ascending(node1.y, node2.y);
 		});
@@ -225,8 +223,9 @@ metExploreD3.GraphFunction = {
 					node.y = arrayNode[i-1].y+30  ;
 				}
 			}
-		})
-    
+		});
+
+		metExploreD3.GraphNode.fixSelectedNode();
      	metExploreD3.GraphNetwork.tick(panel);
 	},
 
