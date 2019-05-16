@@ -7,7 +7,7 @@
     /**
      * The version of the application.
      */
-    "version": "2.6.4",
+    "version": "2.6.5",
 
     /**
      * The relative path to the application's markup file (html, jsp, asp, etc.).
@@ -222,8 +222,7 @@
     "js": [
         {
             "path": "app.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "metexploreviz.js"
@@ -244,143 +243,115 @@
         },
         {
             "path": "resources/lib/metExploreViz.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/NetworkVizSession.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/LinkData.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/NodeData.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/NetworkData.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/GeneralStyle.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/LinkStyle.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/MetaboliteStyle.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/ReactionStyle.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/Pathway.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/Compartment.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/Mapping.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/MappingData.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/Scale.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/ColorMapping.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/model/ComparedPanel.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/D3Extention.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphLink.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphNode.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphCaption.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphUtils.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphNetwork.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/Features.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphFunction.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphMapping.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphPanel.js",  
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphPath.js",  
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         },
         {
             "path": "resources/lib/functions/GraphStyleEdition.js",
-            "bundle": true,
-            "update": "delta"
+            "bundle": true
         }
     ], 
 
@@ -620,8 +591,7 @@
     */
     
     "cache": {
-        "enable": false,
-        "daelts": true
+        "enable": false
     },
     
 
