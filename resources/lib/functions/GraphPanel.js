@@ -88,6 +88,8 @@ metExploreD3.GraphPanel = {
 
 
             // Redefine Zoom and brush
+			var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+			var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 			var scaleZ = scale.getZoomScale();
 			metExploreD3.GraphNetwork.zoomListener
 				.scaleExtent([ 0.01, 30 ])
@@ -97,7 +99,7 @@ metExploreD3.GraphPanel = {
 
 			var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
 			scale.getZoom().scaleTo(d3.select("#"+panel).select("#D3viz"), scaleZ);
-			scale.getZoom().translateTo(d3.select("#"+panel).select("#D3viz"), transform.x/2, transform.y/2);
+			scale.getZoom().translateTo(d3.select("#"+panel).select("#D3viz"), transform.x, transform.y);
             scale.setScale(scaleZ, 1, metExploreD3.GraphNetwork.zoomListener);
 
 
@@ -129,10 +131,11 @@ metExploreD3.GraphPanel = {
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
 
+		console.log(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn"));
 
-		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn")[0]!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut")[0]!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand")[0]!=null)
+		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn").node()!=null
+			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut").node()!=null
+			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand").node()!=null)
 		{
 			var x = d3
 				.select("#"+panel)

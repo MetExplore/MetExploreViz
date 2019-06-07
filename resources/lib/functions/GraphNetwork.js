@@ -1178,7 +1178,7 @@ metExploreD3.GraphNetwork = {
             }, 200);
     },
 
-    rescale : function(panel){
+    rescale : function(panel, func){
         var mask = metExploreD3.createLoadMask("Rescaling graph", panel);
         metExploreD3.showMask(mask);
 
@@ -1271,6 +1271,7 @@ metExploreD3.GraphNetwork = {
 
                     scaleViz.setZoomScale(scale);
                     metExploreD3.hideMask(mask);
+                    if (func) func();
                 }), scale);
             });
     },

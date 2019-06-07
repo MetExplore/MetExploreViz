@@ -1071,74 +1071,23 @@ metExploreD3.GraphNode = {
             metExploreD3.displayMessage("Warning", 'The node "' + selectedVal + '" doesn\'t exist.')
         }
         else {
+            metExploreD3.GraphNetwork.rescale("viz", function(){
+                var scaleViz = metExploreD3.getScaleById("viz");
+                var zoom = scaleViz.getZoom();
 
-            var scaleViz = metExploreD3.getScaleById("viz");
-            var zoom = scaleViz.getZoom();
+                d3.select("#viz").select("#D3viz").select("#graphComponent")
+                    .transition()
+                    .duration(750)
+                    .attr("transform", "translate(0,0)scale(1)")
+                    .each(function () {
+                        selected.each(
+                            function (aSelectedNode) {
+                                _MyThisGraphNode.highlightANode(aSelectedNode, 'viz');
 
-            d3.select("#viz").select("#D3viz").select("#graphComponent")
-                .transition()
-                .duration(750)
-                .attr("transform", "translate(0,0)scale(1)")
-                .each(function () {
-                    zoom.translateBy( d3.select("#viz").select("#D3viz"),0 ,0);
-
-                    zoom.scaleBy(d3.select("#viz").select("#D3viz"),1);
-                    scaleViz.setZoomScale(1);
-
-                    var maxX = -100000;
-                    var maxY = -100000;
-                    var minX = 100000;
-                    var minY = 100000;
-
-                    selected.each(
-                        function (aSelectedNode) {
-                            if (maxX < aSelectedNode.x)
-                                maxX = aSelectedNode.x;
-                            if (maxY < aSelectedNode.y)
-                                maxY = aSelectedNode.y;
-                            if (minX > aSelectedNode.x)
-                                minX = aSelectedNode.x;
-                            if (minY > aSelectedNode.y)
-                                minY = aSelectedNode.y;
-
-                        });
-
-                    var dx = maxX - minX,
-                        dy = maxY - minY;
-
-
-                    var rectPanel = d3.select("#viz").select("#D3viz").node().getBoundingClientRect();
-
-                    var width = parseInt(metExploreD3.GraphPanel.getWidth("viz").replace("px", ""));
-                    var height = parseInt(metExploreD3.GraphPanel.getHeight("viz").replace("px", ""));
-
-                    // var scale = 1;
-                    var scale = (Math.min(height / dy, width / dx)) * 0.7;
-
-                    var transX = scale * (rectPanel.left - minX);
-                    var transY = scale * (rectPanel.top - minY);
-
-
-                    d3.select("#viz").select("#D3viz").select("#graphComponent")
-                        .transition()
-                        .duration(750)
-                        .attr("transform", "translate(" + transX + "," + transY + ")scale(" + scale + ")")
-                        .each(function () {
-                            metExploreD3.GraphLink.tick("viz", scale);
-                            metExploreD3.GraphNode.tick("viz");
-                            metExploreD3.hideMask(mask);
-                        });
-
-                    zoom.translateBy( d3.select("#viz").select("#D3viz"),transX ,transY);
-					zoom.scaleBy(d3.select("#viz").select("#D3viz"), scale);
-					scaleViz.setZoomScale(scale);
-
-
-                    selected.each(
-                        function (aSelectedNode) {
-                            _MyThisGraphNode.highlightANode(aSelectedNode, 'viz');
-                        });
-                });
+                                metExploreD3.hideMask(mask);
+                            });
+                    });
+            });
         }
     },
 
