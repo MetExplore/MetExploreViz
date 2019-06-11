@@ -1001,8 +1001,8 @@ metExploreD3.GraphNetwork = {
             .force('x', forceX)
             .force('y', forceY)
             .force("collide", forceCollide)
-            .alphaDecay(0.1)
-            .velocityDecay(0.2);
+            .alphaDecay(0.02)
+            .velocityDecay(0.1);
 
         session.setForce(force);
 
