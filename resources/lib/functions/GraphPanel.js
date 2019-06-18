@@ -383,6 +383,7 @@ metExploreD3.GraphPanel = {
 				   					source=link.getSource();
 				   				}	
 				   			});
+				   			
 				   			if(source && target) {
                                 var sourceNode = graph.setNode(source, {label: source.id});
 

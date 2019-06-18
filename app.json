@@ -7,7 +7,7 @@
     /**
      * The version of the application.
      */
-    "version": "2.6.9",
+    "version": "2.6.10",
 
     /**
      * The relative path to the application's markup file (html, jsp, asp, etc.).
@@ -228,7 +228,7 @@
             "path": "metexploreviz.js"
         },
         {
-            "path": "resources/lib/d3.js/d3.min.js"
+            "path": "resources/lib/d3.js/d3.js"
         },
         {
             "path": "resources/lib/dagre.js"
