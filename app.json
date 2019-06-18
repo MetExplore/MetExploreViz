@@ -228,8 +228,7 @@
             "path": "metexploreviz.js"
         },
         {
-            "path": "resources/lib/d3.js/d3.min.js",
-            "bundle": true
+            "path": "resources/lib/d3.js/d3.min.js"
         },
         {
             "path": "resources/lib/dagre.js"
