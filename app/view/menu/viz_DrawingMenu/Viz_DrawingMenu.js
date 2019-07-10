@@ -92,9 +92,9 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
               //  id:'hierarchicalLayoutMenuID',
                 reference:'hierarchicalLayout',
                 tooltip:'Apply hierarchical drawing algorithm on the network',
-                iconCls:'hierarchicalDrawing',
+                iconCls:'hierarchicalDrawing'
               //  padding:'0 0 0 0',
               //  iconCls:'hierarchicalLayoutMenu'
-             },
+             }
         ]
 });

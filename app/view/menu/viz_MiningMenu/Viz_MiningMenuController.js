@@ -62,5 +62,5 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenuController', {
 	},
 	highlightSubnetwork : function(){
 		metExploreD3.GraphFunction.highlightSubnetwork();
-	},
+	}
 });

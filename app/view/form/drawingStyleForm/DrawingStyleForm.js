@@ -37,7 +37,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 // text: 'Charge',
                 html:" <h2>Charge</h2> Attracts (+) or repels (-) nodes to/from each other.\n",
                 // style: " font-size:20px;",
-                margin:'5 5 5 5',
+                margin:'5 5 5 5'
             },
             {
                 xtype: 'slider',
@@ -120,7 +120,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 xtype: 'label',
                 forId: 'myFieldId',
                 html:" <h2>Collide</h2> Prevents nodes from overlapping\n",
-                margin:'5 5 5 5',
+                margin:'5 5 5 5'
             },
             {
                 xtype: 'slider',
@@ -201,7 +201,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 xtype: 'label',
                 forId: 'myFieldId',
                 html:" <h2>Gravity</h2> Pulls all points towards window center\n",
-                margin:'5 5 5 5',
+                margin:'5 5 5 5'
             },
             {
                 xtype: 'slider',
@@ -236,7 +236,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                 xtype: 'label',
                 forId: 'myFieldId',
                 html:" <h2>Link</h2> Sets link length\n",
-                margin:'5 5 5 5',
+                margin:'5 5 5 5'
             },
             {
                 xtype: 'slider',
