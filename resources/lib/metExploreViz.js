@@ -845,8 +845,7 @@ var metExploreD3 = {
     },
     resizeViz:function(){
         metExploreD3.fireEventArg('networkPanel', "resizeViz", _metExploreViz.panel);
-    },
-
+    }
 };
 
 var _metExploreViz;
