@@ -97,14 +97,14 @@ metExploreD3.GraphPanel = {
 				.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
 
 
-			var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
-			scale.getZoom().scaleTo(d3.select("#"+panel).select("#D3viz"), scaleZ);
-			scale.getZoom().translateTo(d3.select("#"+panel).select("#D3viz"), transform.x, transform.y);
-            scale.setScale(scaleZ, 1, metExploreD3.GraphNetwork.zoomListener);
-
-
-
-            metExploreD3.setScale(scale, panel);
+			// var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
+			// scale.getZoom().scaleTo(d3.select("#"+panel).select("#D3viz"), scaleZ);
+			// scale.getZoom().translateTo(d3.select("#"+panel).select("#D3viz"), transform.x, transform.y);
+            // scale.setScale(scaleZ, 1, metExploreD3.GraphNetwork.zoomListener);
+			//
+			//
+			//
+            // metExploreD3.setScale(scale, panel);
 
             metExploreD3.GraphNetwork.defineBrush(panel);
 
