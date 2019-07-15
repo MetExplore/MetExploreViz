@@ -2570,7 +2570,7 @@ metExploreD3.GraphNode = {
 
                 if (!d.isLocked()) {
                     d.fixed = false;
-                    metExploreD3.GraphNode.fixNode(d);
+                    metExploreD3.GraphNode.unfixNode(d);
                 }
                 var linkStyle = metExploreD3.getLinkStyle();
 
