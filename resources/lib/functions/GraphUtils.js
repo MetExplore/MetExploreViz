@@ -1499,11 +1499,12 @@ clone.setAttribute("version", "1.1");
                             networkJSON+=","+"\"svgHeight\":"+JSON.stringify(node.getSvgHeight());
                         }
 
-						if(node.getLabelFont()!=undefined)
-                        	networkJSON+=","+"\"labelFont\":"+JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node, key));
+                        var labelStyle = JSON.stringify(metExploreD3.GraphStyleEdition.createLabelStyleObject(node, key));
+						if(labelStyle !== undefined)
+                        	networkJSON+=","+"\"labelFont\":"+labelStyle ;
                         
                         var imagePosition = metExploreD3.GraphStyleEdition.createImageStyleObject(node, key);
-                        if (imagePosition != undefined) {
+                        if (imagePosition !== undefined) {
                             networkJSON += ","+"\"imagePosition\":" + JSON.stringify(imagePosition);
                         }
 
