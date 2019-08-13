@@ -223,10 +223,12 @@ metExploreD3.GraphCaption = {
                 .attr('x', $("#viz").width() - 110)
                 .attr('y', $("#viz").height() - 75);
 
+
+
             logo.append("svg:text")
                 .attr('id', 'metexplore')
-                .text('MetExploreViz')
-                .attr('x', $("#viz").width() - 130)
+                .text('MetExploreViz v'+Ext.manifest.version)
+                .attr('x', $("#viz").width() - 150)
                 .attr('y', $("#viz").height() - 10);
 
         }
@@ -459,8 +461,8 @@ metExploreD3.GraphCaption = {
 
             logo.append("svg:text")
                 .attr('id', 'metexplore')
-                .text('MetExploreViz')
-                .attr('x', $("#viz").width() - 130)
+                .text('MetExploreViz v'+Ext.manifest.version)
+                .attr('x', $("#viz").width() - 150)
                 .attr('y', $("#viz").height() - 10);
 
         }
