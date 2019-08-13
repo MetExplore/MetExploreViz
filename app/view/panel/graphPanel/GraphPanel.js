@@ -230,7 +230,15 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                   }
                                 ]
     
-                            }
+                            },
+                           {
+                               xtype:'label',
+                               forId: 'version',
+                               text: 'v'+Ext.manifest.version,
+                               margin: '0 0 0 10',
+                               flex:1,
+                               border:false
+                           }
                           ]}
 
            },
