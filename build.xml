@@ -6,7 +6,11 @@
     limit your changes to this file.
     -->
     <import file="${basedir}/.sencha/app/build-impl.xml"/>
-
+    <target name="-after-build">
+        <replace file="${build.out.page.path}"
+                 token="#disableAppJsonCacheScript"
+                 value="${workspace.disableAppJsonCacheScript}"/>
+    </target>
     <!--
     The following targets can be provided to inject logic before and/or after key steps
     of the build process:
