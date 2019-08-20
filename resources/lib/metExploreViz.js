@@ -850,9 +850,119 @@ var metExploreD3 = {
 
 var _metExploreViz;
 var metExploreViz = function(panel, webSite){
-    window.onerror = function(error) {
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
       // do something clever here
+      console.log(msg); // do NOT do this for real!
+      console.log(url); // do NOT do this for real!
+      console.log(lineNo); // do NOT do this for real!
+      console.log(columnNo); // do NOT do this for real!
       console.log(error); // do NOT do this for real!
+
+        var nVer = navigator.appVersion;
+        var nAgt = navigator.userAgent;
+        var browserName  = navigator.appName;
+        var fullVersion  = ''+parseFloat(navigator.appVersion);
+        var majorVersion = parseInt(navigator.appVersion,10);
+        var nameOffset,verOffset,ix;
+
+// In Opera, the true version is after "Opera" or after "Version"
+        if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
+            browserName = "Opera";
+            fullVersion = nAgt.substring(verOffset+6);
+            if ((verOffset=nAgt.indexOf("Version"))!=-1)
+                fullVersion = nAgt.substring(verOffset+8);
+        }
+// In MSIE, the true version is after "MSIE" in userAgent
+        else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
+            browserName = "Microsoft Internet Explorer";
+            fullVersion = nAgt.substring(verOffset+5);
+        }
+// In Chrome, the true version is after "Chrome"
+        else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
+            browserName = "Chrome";
+            fullVersion = nAgt.substring(verOffset+7);
+        }
+// In Safari, the true version is after "Safari" or after "Version"
+        else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+            browserName = "Safari";
+            fullVersion = nAgt.substring(verOffset+7);
+            if ((verOffset=nAgt.indexOf("Version"))!=-1)
+                fullVersion = nAgt.substring(verOffset+8);
+        }
+// In Firefox, the true version is after "Firefox"
+        else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
+            browserName = "Firefox";
+            fullVersion = nAgt.substring(verOffset+8);
+        }
+// In most other browsers, "name/version" is at the end of userAgent
+        else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < (verOffset=nAgt.lastIndexOf('/')) ) {
+            browserName = nAgt.substring(nameOffset,verOffset);
+            fullVersion = nAgt.substring(verOffset+1);
+            if (browserName.toLowerCase()==browserName.toUpperCase()) {
+                browserName = navigator.appName;
+            }
+        }
+// trim the fullVersion string at semicolon/space if present
+        if ((ix=fullVersion.indexOf(";"))!=-1)
+            fullVersion=fullVersion.substring(0,ix);
+        if ((ix=fullVersion.indexOf(" "))!=-1)
+            fullVersion=fullVersion.substring(0,ix);
+
+        majorVersion = parseInt(''+fullVersion,10);
+        if (isNaN(majorVersion)) {
+            fullVersion  = ''+parseFloat(navigator.appVersion);
+            majorVersion = parseInt(navigator.appVersion,10);
+        }
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.readyState);
+            }
+        };
+
+        var urlWebHook = "https://hooks.slack.com/services/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"; //the URL you get on your "incoming web hooks" page.
+
+        function sendToSlack (s, theUsername, theIconUrl, attachments) {
+            var payload = {
+                text: s
+            };
+            if (theUsername !== undefined) {
+                payload.username = theUsername;
+            }
+            if (theIconUrl !== undefined) {
+                payload.icon_url = theIconUrl;
+            }
+
+            var functionsUsed="...";
+            payload.attachments = [
+                {
+                    "title": "MetExploreViz error report",
+                    "text":
+                        'Date : '+ new Date() + '\n' +
+                        'Browser : '+ browserName + '\n' + 'Version : '+ fullVersion + '\n' +
+                        'Functions used : '+ functionsUsed + '\n'+
+                        '```\n'+msg+'\n'+url+'\nline n.'+lineNo+' column n.'+columnNo+'\n```'
+                }
+            ];
+            // payload.attachments = [
+            //     {
+            //         "title": "MetExploreViz error report",
+            //         "text":
+            //             'Date : '+ new Date() + '\n' +
+            //             'Browser : '+ browserName + '\n' +
+            //             'Full version : '+ fullVersion + '\n' +
+            //             'Major version : '+ majorVersion + '\n' +
+            //             '``` \n'+msg+'\n'+url+'\nline n.'+lineNo+' column n.'+columnNo+'\n ```'+
+            //             'Functions used : '+ functionsUsed + '\n',
+            //     }
+            // ];
+
+            xhttp.open("POST", urlWebHook);
+            xhttp.send(JSON.stringify(payload));
+        }
+
+        sendToSlack('An error occured in MetExploreViz! :warning:', "MetExploreViz Error", "https://metexplore.toulouse.inra.fr/tmp/bug.png");
     };
     _metExploreViz = this;
 
