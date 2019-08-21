@@ -851,12 +851,9 @@ var metExploreD3 = {
 var _metExploreViz;
 var metExploreViz = function(panel, webSite){
     window.onerror = function(msg, url, lineNo, columnNo, error) {
-      // do something clever here
-      console.log(msg); // do NOT do this for real!
-      console.log(url); // do NOT do this for real!
-      console.log(lineNo); // do NOT do this for real!
-      console.log(columnNo); // do NOT do this for real!
-      console.log(error); // do NOT do this for real!
+
+      if(window.location.href==="https://metexplore.toulouse.inra.fr/metexplore2/resources/lib/javascript/metExploreViz/index.html")
+      {
 
         var nVer = navigator.appVersion;
         var nAgt = navigator.userAgent;
@@ -963,6 +960,7 @@ var metExploreViz = function(panel, webSite){
         }
 
         sendToSlack('An error occured in MetExploreViz! :warning:', "MetExploreViz Error", "https://metexplore.toulouse.inra.fr/tmp/bug.png");
+      }
     };
     _metExploreViz = this;
 
