@@ -1145,36 +1145,43 @@ metExploreD3.GraphNetwork = {
         metExploreD3.showMask(mask);
         setTimeout(
             function() {
-                var linkStyle = metExploreD3.getLinkStyle();
-                var generalStyle = metExploreD3.getGeneralStyle();
+                try{
+                    var linkStyle = metExploreD3.getLinkStyle();
+                    var generalStyle = metExploreD3.getGeneralStyle();
 
-                metExploreD3.GraphLink.refreshLink(panel, linkStyle);
+                    metExploreD3.GraphLink.refreshLink(panel, linkStyle);
 
-                metExploreD3.GraphNode.refreshNode(panel);
+                    metExploreD3.GraphNode.refreshNode(panel);
 
-                var isDisplay = generalStyle.isDisplayedConvexhulls();
-
-
-                if (isDisplay) metExploreD3.GraphLink.displayConvexhulls(panel);
+                    var isDisplay = generalStyle.isDisplayedConvexhulls();
 
 
-                // Sort compartiments store
-                metExploreD3.sortCompartmentInBiosource();
+                    if (isDisplay) metExploreD3.GraphLink.displayConvexhulls(panel);
 
-                metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
 
-                metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+                    // Sort compartiments store
+                    metExploreD3.sortCompartmentInBiosource();
 
-                metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
+                    metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
 
-                // reinitialize
-                metExploreD3.GraphStyleEdition.allDrawnCycles = [];
+                    metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 
-                var session = _metExploreViz.getSessionById(panel);
+                    metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
-                if (!session.isAnimated())
-                    metExploreD3.GraphNetwork.tick(panel);
-                metExploreD3.hideMask(mask);
+                    // reinitialize
+                    metExploreD3.GraphStyleEdition.allDrawnCycles = [];
+
+                    var session = _metExploreViz.getSessionById(panel);
+
+                    if (!session.isAnimated())
+                        metExploreD3.GraphNetwork.tick(panel);
+                }
+                catch (e) {
+
+                    metExploreD3.hideMask(mask);
+                    metExploreD3.displayMessage("Warning", 'An error occurs durding loading graph please contact <a href="mailto:contact-metexplore@inra.fr">contact-metexplore@inra.fr</a>.')
+                    throw e;
+                }
             }, 200);
     },
 

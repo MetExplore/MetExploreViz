@@ -257,33 +257,41 @@ metExploreD3.GraphPanel = {
 					var that = this;
 			        setTimeout(
 						function() {
-							metExploreD3.fireEvent('selectConditionForm', "resetMapping");
+							try{
+								metExploreD3.fireEvent('selectConditionForm', "resetMapping");
 
-							// var startall = new Date().getTime();
-							// var start = new Date().getTime();
-							// console.log("----Viz: START refresh/init Viz");
+								// var startall = new Date().getTime();
+								// var start = new Date().getTime();
+								// console.log("----Viz: START refresh/init Viz");
 
-							if(jsonParsed.sessions!=undefined)
-								metExploreD3.GraphPanel.loadDataJSON(json, end);
-							else
-								metExploreD3.GraphPanel.initDataJSON(json, end); // Init of metabolite network
+								if(jsonParsed.sessions!=undefined)
+									metExploreD3.GraphPanel.loadDataJSON(json, end);
+								else
+									metExploreD3.GraphPanel.initDataJSON(json, end); // Init of metabolite network
 
-							// 62771 ms for recon before refactoring
-							// 41465 ms now
-							// var endall = new Date().getTime();
-							// var timeall = endall - startall;
-							// console.log("----Viz: FINISH refresh/ all "+timeall);
-							/*metExploreD3.hideMask(myMask);
-							metExploreD3.fireEvent('graphPanel', 'afterrefresh');*/
-							function end(){
-								metExploreD3.hideMask(myMask);
+								// 62771 ms for recon before refactoring
+								// 41465 ms now
+								// var endall = new Date().getTime();
+								// var timeall = endall - startall;
+								// console.log("----Viz: FINISH refresh/ all "+timeall);
+								/*metExploreD3.hideMask(myMask);
+								metExploreD3.fireEvent('graphPanel', 'afterrefresh');*/
+								function end(){
+									metExploreD3.hideMask(myMask);
 
-								metExploreD3.fireEvent('graphPanel', 'afterrefresh');
-								if(metExploreD3.isNewBioSource()){
-									metExploreD3.hideInitialMask();
-									metExploreD3.setIsNewBioSource(false);
-									_metExploreViz.setLaunched(true);
+									metExploreD3.fireEvent('graphPanel', 'afterrefresh');
+									if(metExploreD3.isNewBioSource()){
+										metExploreD3.hideInitialMask();
+										metExploreD3.setIsNewBioSource(false);
+										_metExploreViz.setLaunched(true);
+									}
 								}
+							}
+							catch (e) {
+
+								metExploreD3.hideMask(myMask);
+								metExploreD3.displayMessage("Warning", 'An error occurs durding loading graph please contact <a href="mailto:contact-metexplore@inra.fr">contact-metexplore@inra.fr</a>.')
+								throw e;
 							}
 				    }, 100);
 			    }
