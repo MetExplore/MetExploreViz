@@ -1073,68 +1073,83 @@ metExploreD3.GraphFunction = {
 
 				metExploreD3.showMask(myMask);
 				metExploreD3.deferFunction(function() {
-					var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession, nodeToLink);
-					console.log("graph after extraction ",graph);
-					if(graph!=null)
-					{
-						var subEmpty = true;
-						for ( var i in nodeToLink) {
-							var nodeID = nodeToLink[i];
-							if (graph.nodes[nodeID].inSubNet)
-								subEmpty = false;
-						}
+					try{
+						var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession, nodeToLink);
+						console.log("graph after extraction ",graph);
+						if(graph!=null)
+						{
+							var subEmpty = true;
+							for ( var i in nodeToLink) {
+								var nodeID = nodeToLink[i];
+								if (graph.nodes[nodeID].inSubNet)
+									subEmpty = false;
+							}
 
-						if (subEmpty)
-							metExploreD3.displayMessage("Warning", "There is no path between the selected nodes !!");
-						else {
-							var vis = d3.select("#viz").select("#D3viz");
+							if (subEmpty)
+								metExploreD3.displayMessage("Warning", "There is no path between the selected nodes !!");
+							else {
+								var vis = d3.select("#viz").select("#D3viz");
 
-							vis.selectAll("g.node")
-								.filter(function(d) {
-									if( d.getBiologicalType() == 'metabolite' )
-									{
-										var id = d.getId();
-										return !graph.nodes[id].inSubNet ;
-
-									}
-									else
-									{
-										if(d.getBiologicalType() == 'reaction')
+								vis.selectAll("g.node")
+									.filter(function(d) {
+										if( d.getBiologicalType() == 'metabolite' )
 										{
 											var id = d.getId();
-											var backID = d.getId() + "_back";
-											if (graph.nodes[backID] == undefined)
-												return !graph.nodes[id].inSubNet
-											else
-												return !(graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
+											return !graph.nodes[id].inSubNet ;
+
 										}
-									}
-								})
-								.each(function(node){
-                                    networkData.removeNode(node);
-								});
+										else
+										{
+											if(d.getBiologicalType() == 'reaction')
+											{
+												var id = d.getId();
+												var backID = d.getId() + "_back";
+												if (graph.nodes[backID] == undefined)
+													return !graph.nodes[id].inSubNet
+												else
+													return !(graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
+											}
+										}
+									})
+									.each(function(node){
+										networkData.removeNode(node);
+									});
+							}
 						}
-					}
 
-                    var activePanel = _MyThisGraphNode.activePanel;
-                    if(!activePanel) activePanel='viz';
-                    metExploreD3.applyTolinkedNetwork(
-                        activePanel,
-                        function(panelLinked, sessionLinked) {
-                            metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
-                        });
+						var activePanel = _MyThisGraphNode.activePanel;
+						if(!activePanel) activePanel='viz';
+						metExploreD3.applyTolinkedNetwork(
+							activePanel,
+							function(panelLinked, sessionLinked) {
+								metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
+							});
 
-                    metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
+						metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
-					if(session!=undefined)
-					{
-						if(force!=undefined)
+						if(session!=undefined)
 						{
-							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-								force.alpha(1).restart();
+							if(force!=undefined)
+							{
+								if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+									force.alpha(1).restart();
+							}
 						}
+						metExploreD3.hideMask(myMask);
 					}
-					metExploreD3.hideMask(myMask);
+					catch (e) {
+						if(session!=undefined)
+						{
+							if(force!=undefined)
+							{
+								if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+									force.alpha(1).restart();
+							}
+						}
+						metExploreD3.hideMask(myMask);
+						metExploreD3.displayMessage("Warning", 'An error occurs during extracting subnetwork please contact <a href="mailto:contact-metexplore@inra.fr">contact-metexplore@inra.fr</a>.')
+						throw e;
+					}
 				}, 10);
 			}
 	    }
@@ -1150,214 +1165,228 @@ metExploreD3.GraphFunction = {
 
 			metExploreD3.showMask(myMask);
 			metExploreD3.deferFunction(function() {			         
-				
-		        
-	        	var vis = d3.select("#"+'viz').select("#D3viz");
-				
-				if(session!=undefined) 
-				{
-					// We stop the previous animation
-					var force = session.getForce();
-					if(force!=undefined)  
+				try{
+
+					var vis = d3.select("#"+'viz').select("#D3viz");
+
+					if(session!=undefined)
 					{
-						if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
-							force.stop();
-												
-					}
-				}
-		
-				var graphSession = metExploreD3.GraphFunction.getGraph();
+						// We stop the previous animation
+						var force = session.getForce();
+						if(force!=undefined)
+						{
+							if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
+								force.stop();
 
-				var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession, nodeToLink);
-				
-				console.log("graph after extraction in highlight subnetwork ",graph);
-				if(graph!=null)
-				{
-					var subEmpty = true;
-					for ( var i in nodeToLink) {
-						var nodeID = nodeToLink[i];
-						if (graph.nodes[nodeID].inSubNet)
-							subEmpty = false;
+						}
 					}
 
-					if (subEmpty)
-						metExploreD3.displayMessage("Warning", "There is no path between the selected nodes !!");
-					else {
-						var vis = d3.select("#viz").select("#D3viz");
-						// If the metabolite is in the subnetwork then
-						// opacity is set to 1 and color to red
-						vis.selectAll("g.node").filter(function(d) {
-							return d.getBiologicalType() == 'metabolite'
-						}).filter(function(d) {
-							var id = d.getId();
-							return graph.nodes[id].inSubNet
-						}).selectAll(".metabolite").transition().duration(4000)
-								.style("opacity", 1);// .style("stroke-width","2");
+					var graphSession = metExploreD3.GraphFunction.getGraph();
 
-						// If the metabolite is NOT in the subnetwork then
-						// opacity is set to 0.5 and color to black
-						vis.selectAll("g.node").filter(function(d) {
-							return d.getBiologicalType() == 'metabolite'
-						}).filter(function(d) {
-							var id = d.getId();
-							return !graph.nodes[id].inSubNet
-						}).selectAll(".metabolite").transition().duration(4000)
-								.style("stroke", "gray").style("opacity",
-										0.25);// .style("stroke-width","2");
+					var graph = metExploreD3.GraphFunction.extractSubNetwork(graphSession, nodeToLink);
 
-						// If the metabolite is in the subnetwork then
-						// opacity is set to 1 and color to red
-						vis.selectAll("g.node").filter(function(d) {
-							return d.getBiologicalType() == 'metabolite'
-						}).filter(function(d) {
-							var id = d.getId();
-							return graph.nodes[id].inSubNet
-						}).selectAll("text").transition().duration(4000)
-								.style("opacity", 1);// .style("stroke-width","2");
+					console.log("graph after extraction in highlight subnetwork ",graph);
+					if(graph!=null)
+					{
+						var subEmpty = true;
+						for ( var i in nodeToLink) {
+							var nodeID = nodeToLink[i];
+							if (graph.nodes[nodeID].inSubNet)
+								subEmpty = false;
+						}
 
-						// If the metabolite is NOT in the subnetwork then
-						// opacity is set to 0.5 and color to black
-						vis.selectAll("g.node").filter(function(d) {
-							return d.getBiologicalType() == 'metabolite'
-						}).filter(function(d) {
-							var id = d.getId();
-							return !graph.nodes[id].inSubNet
-						}).selectAll("text").transition().duration(4000)
-								.style("opacity", 0.25);// .style("stroke-width","2");
+						if (subEmpty)
+							metExploreD3.displayMessage("Warning", "There is no path between the selected nodes !!");
+						else {
+							var vis = d3.select("#viz").select("#D3viz");
+							// If the metabolite is in the subnetwork then
+							// opacity is set to 1 and color to red
+							vis.selectAll("g.node").filter(function(d) {
+								return d.getBiologicalType() == 'metabolite'
+							}).filter(function(d) {
+								var id = d.getId();
+								return graph.nodes[id].inSubNet
+							}).selectAll(".metabolite").transition().duration(4000)
+									.style("opacity", 1);// .style("stroke-width","2");
 
-						// vis.selectAll("g.node").filter(function(d) {var
-						// id=d.getId(); return !graph.nodes[id].inSubNet})
-						// .transition().duration(4000).style("opacity",0.5);//.style("stroke-width","2");
+							// If the metabolite is NOT in the subnetwork then
+							// opacity is set to 0.5 and color to black
+							vis.selectAll("g.node").filter(function(d) {
+								return d.getBiologicalType() == 'metabolite'
+							}).filter(function(d) {
+								var id = d.getId();
+								return !graph.nodes[id].inSubNet
+							}).selectAll(".metabolite").transition().duration(4000)
+									.style("stroke", "gray").style("opacity",
+											0.25);// .style("stroke-width","2");
 
-						vis
-								.selectAll("g.node")
-								.filter(function(d) {
-									return d.getBiologicalType() == 'reaction'
-								})
-								.filter(
-										function(d) {
-											var id = d.getId();
-											var backID = d.getId() + "_back";
-											if (graph.nodes[backID] == undefined)
-												return graph.nodes[id].inSubNet;
-											else
-												return (graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
-										}).selectAll(".reaction").transition()
-								.duration(4000)
-								.style("opacity", 1);// .style("stroke-width","2");
+							// If the metabolite is in the subnetwork then
+							// opacity is set to 1 and color to red
+							vis.selectAll("g.node").filter(function(d) {
+								return d.getBiologicalType() == 'metabolite'
+							}).filter(function(d) {
+								var id = d.getId();
+								return graph.nodes[id].inSubNet
+							}).selectAll("text").transition().duration(4000)
+									.style("opacity", 1);// .style("stroke-width","2");
 
-						vis
-								.selectAll("g.node")
-								.filter(function(d) {
-									return d.getBiologicalType() == 'reaction'
-								})
-								.filter(
-										function(d) {
-											var id = d.getId();
-											var backID = d.getId() + "_back";
-											if (graph.nodes[backID] == undefined)
-												return !graph.nodes[id].inSubNet;
-											else
-												return !(graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
-										}).selectAll('.reaction').transition()
-								.duration(4000).style("stroke", "gray")
-								.style("opacity", 0.25);// .style("stroke-width","2");
+							// If the metabolite is NOT in the subnetwork then
+							// opacity is set to 0.5 and color to black
+							vis.selectAll("g.node").filter(function(d) {
+								return d.getBiologicalType() == 'metabolite'
+							}).filter(function(d) {
+								var id = d.getId();
+								return !graph.nodes[id].inSubNet
+							}).selectAll("text").transition().duration(4000)
+									.style("opacity", 0.25);// .style("stroke-width","2");
 
-						vis
-								.selectAll("g.node")
-								.filter(function(d) {
-									return d.getBiologicalType() == 'reaction'
-								})
-								.filter(
-										function(d) {
-											var id = d.getId();
-											var backID = d.getId() + "_back";
-											if (graph.nodes[backID] == undefined)
-												return graph.nodes[id].inSubNet;
-											else
-												return (graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
-										}).selectAll("text").transition()
-								.duration(4000).style("opacity", 1);// .style("stroke-width","2");
+							// vis.selectAll("g.node").filter(function(d) {var
+							// id=d.getId(); return !graph.nodes[id].inSubNet})
+							// .transition().duration(4000).style("opacity",0.5);//.style("stroke-width","2");
 
-						vis
-								.selectAll("g.node")
-								.filter(function(d) {
-									return d.getBiologicalType() == 'reaction'
-								})
-								.filter(
-										function(d) {
-											var id = d.getId();
-											var backID = d.getId() + "_back";
-											if (graph.nodes[backID] == undefined)
-												return !graph.nodes[id].inSubNet;
-											else
-												return !(graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
-										}).selectAll("text").transition()
-								.duration(4000).style("opacity", 0.25);// .style("stroke-width","2");
-
-						vis
-								.selectAll("path.link.reaction")
-								.filter(
-										function(d) {
-											var source = d.source.getId();
-											var target = d.target.getId();
-											if (d.source.getBiologicalType() == 'reaction') {
-												var back = source + "_back";
-												if (graph.nodes[back] == undefined)
-													return (graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+							vis
+									.selectAll("g.node")
+									.filter(function(d) {
+										return d.getBiologicalType() == 'reaction'
+									})
+									.filter(
+											function(d) {
+												var id = d.getId();
+												var backID = d.getId() + "_back";
+												if (graph.nodes[backID] == undefined)
+													return graph.nodes[id].inSubNet;
 												else
-													return (graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
-															|| (graph.nodes[back].inSubNet && graph.nodes[target].inSubNet)
-											} else {
-												var back = target + "_back";
-												if (graph.nodes[back] == undefined)
-													return (graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+													return (graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
+											}).selectAll(".reaction").transition()
+									.duration(4000)
+									.style("opacity", 1);// .style("stroke-width","2");
+
+							vis
+									.selectAll("g.node")
+									.filter(function(d) {
+										return d.getBiologicalType() == 'reaction'
+									})
+									.filter(
+											function(d) {
+												var id = d.getId();
+												var backID = d.getId() + "_back";
+												if (graph.nodes[backID] == undefined)
+													return !graph.nodes[id].inSubNet;
 												else
-													return (graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
-															|| (graph.nodes[source].inSubNet && graph.nodes[back].inSubNet)
-											}
+													return !(graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
+											}).selectAll('.reaction').transition()
+									.duration(4000).style("stroke", "gray")
+									.style("opacity", 0.25);// .style("stroke-width","2");
 
-										})
-
-								.transition().duration(4000)
-								.style("opacity", 1);// .style("stroke-width","2");
-
-						vis
-								.selectAll("path.link.reaction")
-								.filter(
-										function(d) {
-											var source = d.source.getId();
-											var target = d.target.getId();
-											if (d.source.getBiologicalType() == 'reaction') {
-												var back = source + "_back";
-												if (graph.nodes[back] == undefined)
-													return !(graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+							vis
+									.selectAll("g.node")
+									.filter(function(d) {
+										return d.getBiologicalType() == 'reaction'
+									})
+									.filter(
+											function(d) {
+												var id = d.getId();
+												var backID = d.getId() + "_back";
+												if (graph.nodes[backID] == undefined)
+													return graph.nodes[id].inSubNet;
 												else
-													return !(graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
-															&& !(graph.nodes[back].inSubNet && graph.nodes[target].inSubNet)
-											} else {
-												var back = target + "_back";
-												if (graph.nodes[back] == undefined)
-													return !(graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
-												else
-													return !(graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
-															&& !(graph.nodes[source].inSubNet && graph.nodes[back].inSubNet)
-											}
+													return (graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
+											}).selectAll("text").transition()
+									.duration(4000).style("opacity", 1);// .style("stroke-width","2");
 
-										}).transition().duration(4000)
-								.style("stroke", "gray").style("opacity",
-										0.25);// .remove();//.style("stroke-width","2");
+							vis
+									.selectAll("g.node")
+									.filter(function(d) {
+										return d.getBiologicalType() == 'reaction'
+									})
+									.filter(
+											function(d) {
+												var id = d.getId();
+												var backID = d.getId() + "_back";
+												if (graph.nodes[backID] == undefined)
+													return !graph.nodes[id].inSubNet;
+												else
+													return !(graph.nodes[id].inSubNet || graph.nodes[backID].inSubNet)
+											}).selectAll("text").transition()
+									.duration(4000).style("opacity", 0.25);// .style("stroke-width","2");
+
+							vis
+									.selectAll("path.link.reaction")
+									.filter(
+											function(d) {
+												var source = d.source.getId();
+												var target = d.target.getId();
+												if (d.source.getBiologicalType() == 'reaction') {
+													var back = source + "_back";
+													if (graph.nodes[back] == undefined)
+														return (graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+													else
+														return (graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+																|| (graph.nodes[back].inSubNet && graph.nodes[target].inSubNet)
+												} else {
+													var back = target + "_back";
+													if (graph.nodes[back] == undefined)
+														return (graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+													else
+														return (graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+																|| (graph.nodes[source].inSubNet && graph.nodes[back].inSubNet)
+												}
+
+											})
+
+									.transition().duration(4000)
+									.style("opacity", 1);// .style("stroke-width","2");
+
+							vis
+									.selectAll("path.link.reaction")
+									.filter(
+											function(d) {
+												var source = d.source.getId();
+												var target = d.target.getId();
+												if (d.source.getBiologicalType() == 'reaction') {
+													var back = source + "_back";
+													if (graph.nodes[back] == undefined)
+														return !(graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+													else
+														return !(graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+																&& !(graph.nodes[back].inSubNet && graph.nodes[target].inSubNet)
+												} else {
+													var back = target + "_back";
+													if (graph.nodes[back] == undefined)
+														return !(graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+													else
+														return !(graph.nodes[source].inSubNet && graph.nodes[target].inSubNet)
+																&& !(graph.nodes[source].inSubNet && graph.nodes[back].inSubNet)
+												}
+
+											}).transition().duration(4000)
+									.style("stroke", "gray").style("opacity",
+											0.25);// .remove();//.style("stroke-width","2");
+						}
 					}
+					if(session!=undefined)
+					{
+						if(force!=undefined)
+						{
+							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+								force.alpha(1).restart();
+						}
+					}
+					metExploreD3.hideMask(myMask);
 				}
-				if(session!=undefined)  
-				{
-					if(force!=undefined)  
-					{		
-						if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
-							force.alpha(1).restart();
-					}	
+				catch (e) {
+					if(session!=undefined)
+					{
+						if(force!=undefined)
+						{
+							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+								force.alpha(1).restart();
+						}
+					}
+					metExploreD3.hideMask(myMask);
+					metExploreD3.displayMessage("Warning", 'An error occurs during highlighting subnetwork please contact <a href="mailto:contact-metexplore@inra.fr">contact-metexplore@inra.fr</a>.')
+					throw e;
 				}
-		    	metExploreD3.hideMask(myMask);
 	    	}, 10);
 		}
 	},
