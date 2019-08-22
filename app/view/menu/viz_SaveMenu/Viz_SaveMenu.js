@@ -21,7 +21,7 @@ Ext.define('metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenu', {
              {
                  text: 'Save Viz as json',
                  reference:'exportJSON',
-                 tooltip:'Save network viz as a json file',
+                 tooltip:'Save network viz session as json',
                  iconCls:'saveNetwork'
                 },
                 {
