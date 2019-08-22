@@ -65,7 +65,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 		    });
 
             Ext.create('Ext.button.Button',{
-		        text: 'JSON File',
+		        text: 'Saved session',
 		        id: 'butloadnetworkfromjson',
 		        style:'margin : 10px 10px 10px 10px',
 		        handler: function(){
@@ -89,7 +89,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 		    // });
 
 		    Ext.create('Ext.button.Button',{
-		        text: metExploreD3.getGeneralStyle().getWebsiteName(),
+		        text: metExploreD3.getGeneralStyle().getWebsiteName()+" selection",
 		        id:'buttonImportToNetworkFromWebsite',
 	            disabled:true,
 	            hidden:false,
@@ -108,7 +108,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 						mask.hide();
                     },
 			        setGeneralStyle: function(){
-			        	this.setText(metExploreD3.getGeneralStyle().getWebsiteName());
+			        	this.setText(metExploreD3.getGeneralStyle().getWebsiteName()+" selection");
 			        },
 			        cartFilled: function() {
 			            this.setDisabled(false);

@@ -19,16 +19,16 @@ Ext.define('metExploreViz.view.menu.viz_LoadMenu.Viz_LoadMenu', {
     id:"viz_LoadMenu",
     items:  [
         {
-            text: 'Load network from json file',
+            text: 'Load network from saved session',
             reference:'loadNetworkFromJSON',
-            tooltip:'Load network from json file',
+            tooltip:'Load network from saved session',
             iconCls:'importToRsxFromJSON'
         }
         ,
         {
-            text: 'Load network from website',
+            text: 'Load network from website selection',
             reference:'loadNetworkFromWebsite',
-            tooltip:'Load network from website',
+            tooltip:'Load network from website selection',
             iconCls:'importToRsxFromWS',
             disabled:true,
             hidden:false
