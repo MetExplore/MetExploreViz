@@ -256,6 +256,9 @@ metExploreD3.GraphUtils = {
 		if(buttonZoomOut!=null)  
 		  buttonZoomOut.style("display", "none");
 
+		d3.selectAll("#D3viz")
+			.style("box-shadow", "");
+
 		// var tooltip = d3.selectAll("#tooltip");
 		// if(tooltip!=null)  
 		//   tooltip.style("display", "none");
@@ -487,6 +490,9 @@ metExploreD3.GraphUtils = {
 		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
 		if(buttonZoomOut!=null)  
 		  buttonZoomOut.style("display", "inline");
+
+		d3.select("#"+_MyThisGraphNode.activePanel).select("#D3viz")
+			.style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
 
 		// var tooltip = d3.selectAll("#tooltip");
 		// if(tooltip!=null)  
