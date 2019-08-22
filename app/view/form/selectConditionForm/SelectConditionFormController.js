@@ -457,6 +457,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		else
 			fluxType = 'Compare';
 
+		console.log(view.lookupReference('valueonarrow'));
 		this.graphMapping(dataType, selectedCondition, selectedMapping, fluxType);
 	},
 
@@ -477,6 +478,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
         }
 
         if(dataType==="Flux"){
+			console.log(Ext.getCmp("valueonarrowCheck").checked);
             metExploreD3.GraphMapping.graphMappingFlux(mappingName, conditionName, fluxType, undefined, undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
             session.setMappingDataType(dataType);
         }
