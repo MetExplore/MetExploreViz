@@ -926,7 +926,7 @@ metExploreD3.GraphMapping = {
 
 										}
 
-										if (scaleValue(mapVal) == 0) {
+										if (scaleValue(mapVal) === 0 || scaleValue(mapVal) === 0.0) {
 											var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
 
 											d3.select(this)
@@ -956,7 +956,7 @@ metExploreD3.GraphMapping = {
 
 										}
 
-										if (scaleValue(mapVal) == 0) {
+										if (scaleValue(mapVal) === 0 || scaleValue(mapVal) === 0.0) {
 											var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
 
 											d3.select(this)
@@ -1216,7 +1216,7 @@ metExploreD3.GraphMapping = {
 											var mapVal = map.getMapValue();
 									}
 
-									if (scaleValue(mapVal) == 0) {
+									if (scaleValue(mapVal) == 0 || scaleValue(mapVal) === 0.0) {
 										var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path:link");
 
 										d3.select(this)
@@ -3036,7 +3036,7 @@ metExploreD3.GraphMapping = {
         for (var i=0; i<allValues.length; i++) {
             var value = Math.abs(Number(allValues[i].mapValue));
             if (!valueList.length || valueList[valueList.length - 1] !== value) {
-                if (value !== 0) {
+                if (value !== 0 && value !== 0.0) {
                     valueList.push(value);
                 }
             }
