@@ -842,6 +842,7 @@ metExploreD3.GraphLink = {
                 .style("opacity", 0.1);
         }
     },
+
     reloadLinks : function(panel, networkData, linkStyle, metaboliteStyle){
         d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(networkData.getLinks())
