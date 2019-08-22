@@ -209,7 +209,7 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
             });
 
 
-		metExploreD3.fireEvent("generalStyleForm", "setGeneralStyle");
+		metExploreD3.fireEvent("vizIdDrawing", "disableMakeClusters");
 		metExploreD3.fireEvent("vizIdDrawing", "disableMakeClusters");
 	},
 

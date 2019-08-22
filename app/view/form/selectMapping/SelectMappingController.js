@@ -25,7 +25,6 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 			},
 			change : function(that, newMapping, old){
 				var component = Ext.getCmp("selectConditionForm");
-
 				if(component){
 					_metExploreViz.getSessionById('viz').setActiveMapping(newMapping);
 					component.fireEvent("closeMapping", newMapping);
@@ -34,19 +33,20 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 						var theMapping = _metExploreViz.getMappingByName(newMapping);
 						if(theMapping)
 						{
-							if(theMapping)
+							if(theMapping){
 								me.fillComboSelectCondition(that, theMapping, old);
+								metExploreD3.GraphMapping.mapNodes(theMapping.getName());
+							}
 						}
 					}
 				}
 			},
-			collapse : function(field){
-				if (_metExploreViz.getMappingsLength()!==0) {
-					
-					var theMapping = _metExploreViz.getMappingByName(field.getValue());
-					if(theMapping)
-						metExploreD3.GraphMapping.mapNodes(theMapping.getName());
-				}
+			disableMapping : function(){
+				var comboCond = Ext.getCmp('selectCondition');
+				var selectConditionType = Ext.getCmp('selectConditionType');
+				comboCond.clearValue();
+				comboCond.setDisabled(true);
+				selectConditionType.setDisabled(true);
 			},
 			scope:me
 		});
@@ -159,8 +159,7 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
  			else
  			{
 				selectConditionType.setValue(selectConditionType.getStore().first()); 
-				//comboCond.setValue(storeCond.first());  
-       
+				//comboCond.setValue(storeCond.first());
  				comboCond.setDisabled(false);
  				selectConditionType.setDisabled(false);
  			}
