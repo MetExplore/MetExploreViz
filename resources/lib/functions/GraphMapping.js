@@ -196,9 +196,7 @@ metExploreD3.GraphMapping = {
 	* This function will assignmapping value to each nodes in datas
 	*/
 	mapNodeData: function(mapping, lines) {
-		var session = _metExploreViz.getSessionById('viz');
-		var force = session.getForce();
-		force.stop(); 
+		
 		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
 		if(myMask!= undefined){
 
@@ -206,6 +204,9 @@ metExploreD3.GraphMapping = {
 	        setTimeout(
 			function() {
 				try {
+					var session = _metExploreViz.getSessionById('viz');
+					var force = session.getForce();
+					force.stop(); 
 					var networkData = session.getD3Data();
 					var conditions = mapping.getConditions().filter(function (c) {
 						return c !== "PathwayCoverage" && c !== "PathwayEnrichment"
@@ -1380,12 +1381,12 @@ metExploreD3.GraphMapping = {
 
 			if(fluxType=='Compare') {
                 metExploreD3.GraphMapping.mapFluxes(mappingName, conditionName, colorMax, colorMin, isOpac, isBinned, function() {
-                    metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
+                    if(showValues) metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
                 });
             }
 			else {
                 metExploreD3.GraphMapping.mapUniqueFlux(mappingName, conditionName, colorMax, isOpac, isBinned, function(){
-                    metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
+					if(showValues) metExploreD3.GraphLink.showValue("viz", conditionName, fluxType);
                 });
             }
 
