@@ -1175,6 +1175,8 @@ metExploreD3.GraphNetwork = {
 
                     if (!session.isAnimated())
                         metExploreD3.GraphNetwork.tick(panel);
+
+                    metExploreD3.hideMask(mask);
                 }
                 catch (e) {
 
