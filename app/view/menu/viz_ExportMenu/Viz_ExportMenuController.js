@@ -22,16 +22,6 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenuController', {
 			scope : me
 		});
 
-		view.lookupReference('exportPNG').on({
-			click : me.exportPNG,
-			scope : me
-		});
-
-		view.lookupReference('exportJPG').on({
-			click : me.exportJPG,
-			scope : me
-		});
-
 		// view.lookupReference('exportComparison').on({
 		// 	click : me.exportComparison,
 		// 	scope : me
@@ -41,12 +31,7 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenuController', {
 	exportSVG : function(){
 		metExploreD3.GraphUtils.exportSVG();
 	},
-	exportPNG : function(){
-		metExploreD3.GraphUtils.exportPNG();
-	},
-	exportJPG : function(){
-		metExploreD3.GraphUtils.exportJPG();
-	}
+
 	// ,
 	// exportComparison : function(){
 	// 	if(_metExploreViz.getComparedPanelsLength()==2){

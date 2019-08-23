@@ -9,7 +9,8 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenu', {
         
         requires: [
             'metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenuController',
-            'metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenuModel'
+            'metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenuModel',
+
         ],
 
         controller: "menu-vizExportMenu-vizExportMenu",
@@ -24,18 +25,26 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenu', {
                  tooltip:'Export network viz as a svg file',
                  iconCls:'exportSvg'
                 },
-                {
-                 text: 'Export Viz as png',
-                 reference:'exportPNG',
-                 tooltip:'Export network viz as a png file',
-                 iconCls:'exportPng'
-                },
-                {
-                 text: 'Export Viz as jpeg',
-                 reference:'exportJPG',
-                 tooltip:'Export network viz as a jpeg file',
-                 iconCls:'exportJpg'
-                }
+            {
+                text: 'Export Viz as png',
+                scale: 'large',
+                menu:{id:'vizExportPNG',xtype: 'vizExportPNG'},
+                id:'vizExportPNGID',
+                reference:'vizExportPNGID',
+                padding:'0 0 0 0',
+                iconCls:'exportPng',
+                tooltip:'Export network viz as a png file'
+            },
+            {
+                text: 'Export Viz as jpeg',
+                scale: 'large',
+                menu:{id:'vizExportJPG',xtype: 'vizExportJPG'},
+                id:'vizExportJPGID',
+                reference:'vizExportJPGID',
+                padding:'0 0 0 0',
+                iconCls:'exportJpg',
+                tooltip:'Export network viz as a jpeg file'
+            }
             // ,
             //     {
             //      text: 'Export Comparison of Condition',
