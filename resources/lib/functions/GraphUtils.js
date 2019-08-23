@@ -213,24 +213,24 @@ metExploreD3.GraphUtils = {
     * Export a metabolic network in PNG. 
     * You can choice the png
     */
-	exportPNG : function(){
+	exportPNG : function(size){
 	    metExploreD3.GraphUtils.escapeUnExportNode();
 
 		window.URL = (window.URL || window.webkitURL);
 
-		metExploreD3.GraphUtils.initialize('png');
+		metExploreD3.GraphUtils.initialize('png', size);
 	},
 
 	/*******************************************
     * Export a metabolic network in JPG. 
     * You can choice the png
     */
-	exportJPG : function(){
+	exportJPG : function(size){
 		metExploreD3.GraphUtils.escapeUnExportNode();
 		
 		window.URL = (window.URL || window.webkitURL);
 
-		metExploreD3.GraphUtils.initialize('jpeg');
+		metExploreD3.GraphUtils.initialize('jpeg', size);
 	},
 
 	/*******************************************
@@ -290,7 +290,7 @@ metExploreD3.GraphUtils = {
 	/*******************************************
     * Initialize exportSVG  
     */
-	initialize : function(type){
+	initialize : function(type, size){
 		var session = _metExploreViz.getSessionById('viz');
 		var force = session.getForce();
 		if(session!=undefined) 
@@ -361,9 +361,9 @@ metExploreD3.GraphUtils = {
 				parent.removeChild(emptySvg);
 
 				if (SVGSources.length > 1) {
-				  metExploreD3.GraphUtils.createPopover(SVGSources, type);
+				  metExploreD3.GraphUtils.createPopover(SVGSources, type, size);
 				} else if (SVGSources.length > 0) {
-				  return metExploreD3.GraphUtils.download(SVGSources[0], type);
+				  return metExploreD3.GraphUtils.download(SVGSources[0], type, size);
 				} else {
 				  alert("Couldn’t find any SVG nodes.");
 				}
@@ -374,7 +374,7 @@ metExploreD3.GraphUtils = {
 	/*******************************************
     * Permit to make a choice between all networks  
     */
-	createPopover : function(sources, type) {
+	createPopover : function(sources, type, size) {
 		metExploreD3.GraphUtils.cleanup();
 
 		sources.forEach(function(s1) {
@@ -437,7 +437,7 @@ metExploreD3.GraphUtils = {
 		  button.textContent = "Download";
 
 		  button.onclick = function(el) {
-		    metExploreD3.GraphUtils.download(d, type);
+		    metExploreD3.GraphUtils.download(d, type, size);
 		  };
 
 		});
@@ -516,14 +516,11 @@ metExploreD3.GraphUtils = {
 			{
 				function clonef(selector) {
 					var node = d3.select(selector).node();
-					console.log(node);
 					return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling)).node();
 				};
-				
-console.log(svg);
+
 var clone = clonef(svg);
-				
-console.log(clone);
+
 clone.setAttribute("version", "1.1");
 
 				// removing attributes so they aren't doubled up
@@ -859,13 +856,13 @@ clone.setAttribute("version", "1.1");
      * @param {} uri: file or data to download
      * @param {} filename: default filename of the downloaded file
      */
-    saveAsBinary: function(source, filename, type) {
+    saveAsBinary: function(source, filename, type, size) {
 		var imgsrc = 'data:image/svg+xml;base64,'+ window.btoa(unescape(encodeURIComponent(source.source)));
 
 		var canvas = document.createElement('canvas');
 		canvas.id = "canvas";
-		canvas.height = source.height*4;
-		canvas.width = source.width*4;
+		canvas.height = source.height*size;
+		canvas.width = source.width*size;
 		canvas.style.zIndex = 8;
 		canvas.style.position = "absolute";
 		canvas.style.border = "1px solid";
@@ -881,7 +878,7 @@ clone.setAttribute("version", "1.1");
 
 				metExploreD3.showMask(myMask);
 				metExploreD3.deferFunction(function() {
-					context.drawImage(image, 0, 0, source.width*4, source.height*4);
+					context.drawImage(image, 0, 0, source.width*size, source.height*size);
 
 					var newurl = metExploreD3.GraphUtils.binaryblob(canvas, type);
 
@@ -927,7 +924,7 @@ clone.setAttribute("version", "1.1");
 	/*******************************************
     * Download the svg
     */
-	download : function(source, type) {
+	download : function(source, type, size) {
 
 	    var today = new Date();
 		var dd = today.getDate();
@@ -945,7 +942,7 @@ clone.setAttribute("version", "1.1");
 		today = mm+'-'+dd+'-'+yyyy;
 
 		if(type=='jpeg' || type=='png')
-			metExploreD3.GraphUtils.saveAsBinary(source, "MetExploreViz_"+today+"."+type, type);
+			metExploreD3.GraphUtils.saveAsBinary(source, "MetExploreViz_"+today+"."+type, type, size);
 		
 		if(type=='svg'){
 			var blob = new Blob([source.source], {type: "data:image/svg+xml"}); // pass a useful mime type here
