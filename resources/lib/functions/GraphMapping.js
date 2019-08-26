@@ -347,6 +347,28 @@ metExploreD3.GraphMapping = {
                         pathwaySize*3/5
                     );
 
+                    // thePathwayElement.select("text")
+					// 	.select("text")
+					// 	.style("stroke-width", 10)
+					// 	.style("font-weight", 'bold')
+					// 	.each(function (text) {
+					// 		d3.select(this).selectAll("tspan")
+					// 			.each(function (tspan, i) {
+					// 				console.log(tspan);
+					// 				if (i > 0)
+					// 					d3.select(this).attr("dy", ".4em");
+					// 			});
+					// 	})
+                    // 	.style("font-size",function(node) {
+                    // 		console.log(node.labelFont);
+					// 		if (node.labelFont) {
+					// 			if (node.labelFont.fontSize)
+					// 				return node.labelFont.fontSize;
+					// 		}
+					//
+					// 		return metExploreD3.getMetaboliteStyle();
+					//
+					// 	});
 
                     // Lock Image definition
                     var box = thePathwayElement.select("locker")
@@ -431,7 +453,7 @@ metExploreD3.GraphMapping = {
 
 														if (d.getMappingDataByNameAndCond(mapping.getName(), condition) != null) {
 															nbMapped++;
-															var metaboliteStyle = metExploreD3.getReactionStyle();
+															var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 
 															_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
 
@@ -452,109 +474,115 @@ metExploreD3.GraphMapping = {
 														}
 													} else {
 														if (d.getBiologicalType() == 'pathway') {
+
+															var thePathwayElement = d3.select(this);
+															var reactionStyle = metExploreD3.getReactionStyle();
+															thePathwayElement.select("text").remove();
+															thePathwayElement
+																.addNodeText(reactionStyle);
+
 															if (condition === "PathwayEnrichment" && d.getMappingDataByNameAndCond(mapping.getName(), condition) != null) {
 
 																nbMapped++;
-																var thePathwayElement = d3.select(this);
-																var metaboliteStyle = metExploreD3.getReactionStyle();
 
-																_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
 
 																d3.select(this)
 																	.attr("mapped", "true");
+
 																var mapData = d.getMappingDataByNameAndCond(mapping.getName(), condition);
 
-																var exposant = 0;
+																if (mapData.getMapValue() < 0.05) {
+																	var exposant = 0;
 
-																if (mapData.getMapValue() < 0.001) {
-																	exposant = 1.2;
-																} else {
-																	if (mapData.getMapValue() < 0.01) {
-																		exposant = 0.9;
+																	if (mapData.getMapValue() < 0.001) {
+																		exposant = 1.2;
 																	} else {
-																		if (mapData.getMapValue() < 0.05) {
-																			exposant = 0.6;
+																		if (mapData.getMapValue() < 0.01) {
+																			exposant = 0.9;
+																		} else {
+																			if (mapData.getMapValue() < 0.05) {
+																				exposant = 0.6;
+																			}
 																		}
 																	}
+
+																	var pathwaySize = 20 + 100 * exposant;
+
+																	//interligne
+																	d3.select(this)
+																		.select("text")
+																		.style("stroke-width", 10)
+																		.style("font-weight", 'bold')
+																		.style("font-size", pathwaySize - 40 + "px")
+																		.each(function (text) {
+																			d3.select(this).selectAll("tspan")
+																				.each(function (tspan, i) {
+																					if (i > 0)
+																						d3.select(this).attr("dy", pathwaySize - 40);
+																				});
+																		});
+
+																	var thePathwayElement = d3.select(this);
+
+																	var width = pathwaySize * 3;
+																	var height = pathwaySize * 3;
+																	var rx = pathwaySize * 3;
+																	var ry = pathwaySize * 3;
+																	var strokewidth = pathwaySize * 3 / 5;
+
+																	thePathwayElement.select("rect.pathway")
+																		.attr("width", width)
+																		.attr("height", height)
+																		.attr("rx", rx)
+																		.attr("ry", ry)
+																		.attr("transform", "translate(-" + width / 2 + ",-"
+																			+ height / 2
+																			+ ")")
+																		.style("stroke-width", strokewidth);
+
+																	thePathwayElement.select("rect.fontSelected")
+																		.attr("width", width)
+																		.attr("height", height)
+																		.attr("rx", rx)
+																		.attr("ry", ry)
+																		.attr("transform", "translate(-" + width / 2 + ",-" + height / 2 + ")");
+
+
+																	// Lock Image definition
+																	var box = thePathwayElement.select(".locker").attr(
+																		"viewBox",
+																		function (d) {
+																			+" " + pathwaySize * 3;
+																		}
+																	)
+																		.attr("width", pathwaySize * 3)
+																		.attr("height", pathwaySize * 3)
+																		.attr("preserveAspectRatio", "xMinYMin")
+																		.attr("y", -pathwaySize * 3)
+																		.attr("x", -pathwaySize * 3);
+
+																	box
+																		.select(".backgroundlocker")
+																		.attr("d", function (node) {
+																			var pathBack = "M" + pathwaySize * 3 + "," + pathwaySize * 3 +
+																				" L0," + pathwaySize * 3 +
+																				" L0," + pathwaySize * 3 / 2 * 2 +
+																				" A" + pathwaySize * 3 / 2 * 2 + "," + pathwaySize * 3 / 2 * 2 + ",0 0 1 " + pathwaySize * 3 / 2 * 2 + ",0" +
+																				" L" + pathwaySize * 3 + ",0";
+																			return pathBack;
+																		})
+																		.attr("opacity", "0.20")
+																		.attr("fill", "black");
+
+																	box
+																		.select(".iconlocker")
+																		.attr("y", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
+																		.attr("x", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
+																		.attr("width", "40%")
+																		.attr("height", "40%");
+
+																	session.addMappedNode(d.getId());
 																}
-
-																var pathwaySize = 20 + 100 * exposant;
-
-																//interligne
-																d3.select(this)
-																	.select("text")
-																	.style("stroke-width", 10)
-																	.style("font-weight", 'bold')
-																	.style("font-size", pathwaySize - 40 + "px")
-																	.each(function (text) {
-																		d3.select(this).selectAll("tspan")
-																			.each(function (tspan, i) {
-																				if (i > 0)
-																					d3.select(this).attr("dy", pathwaySize - 40);
-																			});
-																	});
-
-																var thePathwayElement = d3.select(this);
-
-																var width = pathwaySize * 3;
-																var height = pathwaySize * 3;
-																var rx = pathwaySize * 3;
-																var ry = pathwaySize * 3;
-																var strokewidth = pathwaySize * 3 / 5;
-
-																thePathwayElement.select("rect.pathway")
-																	.attr("width", width)
-																	.attr("height", height)
-																	.attr("rx", rx)
-																	.attr("ry", ry)
-																	.attr("transform", "translate(-" + width / 2 + ",-"
-																		+ height / 2
-																		+ ")")
-																	.style("stroke-width", strokewidth);
-
-																thePathwayElement.select("rect.fontSelected")
-																	.attr("width", width)
-																	.attr("height", height)
-																	.attr("rx", rx)
-																	.attr("ry", ry)
-																	.attr("transform", "translate(-" + width / 2 + ",-" + height / 2 + ")");
-
-
-																// Lock Image definition
-																var box = thePathwayElement.select(".locker").attr(
-																	"viewBox",
-																	function (d) {
-																		+" " + pathwaySize * 3;
-																	}
-																)
-																	.attr("width", pathwaySize * 3)
-																	.attr("height", pathwaySize * 3)
-																	.attr("preserveAspectRatio", "xMinYMin")
-																	.attr("y", -pathwaySize * 3)
-																	.attr("x", -pathwaySize * 3);
-
-																box
-																	.select(".backgroundlocker")
-																	.attr("d", function (node) {
-																		var pathBack = "M" + pathwaySize * 3 + "," + pathwaySize * 3 +
-																			" L0," + pathwaySize * 3 +
-																			" L0," + pathwaySize * 3 / 2 * 2 +
-																			" A" + pathwaySize * 3 / 2 * 2 + "," + pathwaySize * 3 / 2 * 2 + ",0 0 1 " + pathwaySize * 3 / 2 * 2 + ",0" +
-																			" L" + pathwaySize * 3 + ",0";
-																		return pathBack;
-																	})
-																	.attr("opacity", "0.20")
-																	.attr("fill", "black");
-
-																box
-																	.select(".iconlocker")
-																	.attr("y", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
-																	.attr("x", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
-																	.attr("width", "40%")
-																	.attr("height", "40%");
-
-																session.addMappedNode(d.getId());
-
 																if (d.getMappingDataByNameAndCond(mapping.getName(), "PathwayCoverage") !== null) {
 
 																	var thePathwayElement = d3.select(this);
@@ -598,66 +626,6 @@ metExploreD3.GraphMapping = {
 																		.style('transform', 'rotate(' + degreesDrawn + 'deg)');
 
 																}
-															}
-														}
-													}
-												}
-											}
-										)
-
-										//d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-										.each(
-											function (d) {
-												if (d3.select(this).select(".stroke")[0] == null) {
-													if (d.getBiologicalType() == 'reaction') {
-														if (d.getMappingDataByNameAndCond(mapping.getName(), condition) != null) {
-															var reactionStyle = metExploreD3.getReactionStyle();
-
-															_MyThisGraphNode.addText(d, 'viz', reactionStyle);
-
-															d3.select(this)
-																.insert("rect", ":first-child")
-																.attr("class", "stroke")
-																.attr("width", parseInt(d3.select(this).select(".reaction").attr("width")) + 10)
-																.attr("height", parseInt(d3.select(this).select(".reaction").attr("height")) + 10)
-																.attr("rx", parseInt(d3.select(this).select(".reaction").attr("rx")) + 5)
-																.attr("ry", parseInt(d3.select(this).select(".reaction").attr("ry")) + 5)
-																.attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select(".reaction").attr("width")) + 10) / 2 + ",-"
-																	+ parseInt(parseInt(d3.select(this).select(".reaction").attr("height")) + 10) / 2
-																	+ ")")
-																.style("opacity", '0.5')
-																.style("fill", 'red');
-															session.addMappedNode(d.getId());
-
-															return true;
-														} else {
-															return false;
-														}
-													} else {
-														if (d.getBiologicalType() == 'metabolite') {
-															var id = d3.select(this).select(".metabolite").attr("identifier");
-
-															if (d.getMappingDataByNameAndCond(mapping.getName(), condition) != null) {
-																var metaboliteStyle = metExploreD3.getReactionStyle();
-
-																_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
-
-																d3.select(this)
-																	.insert("rect", ":first-child")
-																	.attr("class", "stroke")
-																	.attr("width", parseInt(d3.select(this).select(".metabolite").attr("width")) + 10)
-																	.attr("height", parseInt(d3.select(this).select(".metabolite").attr("height")) + 10)
-																	.attr("rx", parseInt(d3.select(this).select(".metabolite").attr("rx")) + 5)
-																	.attr("ry", parseInt(d3.select(this).select(".metabolite").attr("ry")) + 5)
-																	.attr("transform", "translate(-" + parseInt(parseInt(d3.select(this).select(".metabolite").attr("width")) + 10) / 2 + ",-"
-																		+ parseInt(parseInt(d3.select(this).select(".metabolite").attr("height")) + 10) / 2
-																		+ ")")
-																	.style("opacity", '0.5')
-																	.style("fill", 'red');
-																session.addMappedNode(d.getId());
-																return true;
-															} else {
-																return false;
 															}
 														}
 													}
