@@ -892,9 +892,8 @@ metExploreD3.GraphNode = {
     addText: function (d, panel) {
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         var reactionStyle = metExploreD3.getReactionStyle();
-        var sessionMain = _metExploreViz.getSessionById('viz');
 
-        if (d.getBiologicalType() == 'metabolite') {
+        if (d.getBiologicalType() === 'metabolite') {
             var minDim = Math.min(metaboliteStyle.getWidth(), metaboliteStyle.getHeight());
 
             // if there is no text we define it for a metabolite WITHOUT the corresponding SVG image
@@ -959,7 +958,7 @@ metExploreD3.GraphNode = {
         }
 
         // Same thing for a reaction
-        if (d.getLabelVisible() == true && d.getBiologicalType() == 'reaction') {
+        if (d.getLabelVisible() === true && d.getBiologicalType() === 'reaction') {
 
             if (d3.select("#" + panel).select("#D3viz").select("#graphComponent")
                     .selectAll("g.node")
@@ -977,6 +976,43 @@ metExploreD3.GraphNode = {
             var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
             metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
             if (metExploreD3.GraphStyleEdition.editMode == true) {
+                metExploreD3.GraphStyleEdition.startDragLabel(panel);
+            }
+            else {
+                metExploreD3.GraphStyleEdition.endDragLabel(panel);
+                metExploreD3.GraphNode.applyEventOnNode(panel);
+            }
+        }
+
+        // Same thing for a reaction
+        if (d.getLabelVisible() === true && d.getBiologicalType() === 'pathway') {
+
+            var hasText = d3.select("#viz").select("#D3viz").select("#graphComponent")
+                .selectAll("g.node")
+                .filter(function (node) {
+                    return d.getId() === node.getId();
+                })
+                .select("text").nodes().length>0;
+
+            var textIsEmpty = d3.select("#" + panel).select("#D3viz").select("#graphComponent")
+                .selectAll("g.node")
+                .filter(function (node) {
+                    return d.getId() === node.getId();
+                }).text() === "";
+
+            if (!hasText || textIsEmpty) {
+                d3.select("#" + panel).select("#D3viz").select("#graphComponent")
+                    .selectAll("g.node")
+                    .filter(function (node) {
+                        return d.getId() === node.getId();
+                    })
+                    .addNodeText(reactionStyle);
+            }
+
+            // set corresponding event handler
+            var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
+            metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
+            if (metExploreD3.GraphStyleEdition.editMode === true) {
                 metExploreD3.GraphStyleEdition.startDragLabel(panel);
             }
             else {
