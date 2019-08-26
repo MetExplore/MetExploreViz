@@ -325,15 +325,23 @@ metExploreD3.GraphLink = {
             else
                 reaction = target;
 
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                // if(value<0)
-                path = pathForReversibleReactions(source, target);
-                // else
-                // 	path = pathSimple(source, target);
+            if (source !== undefined && target !== undefined) {
+                if (source.x !== undefined && source.y !== undefined && target.x !== undefined && target.y !== undefined) {
+                    var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
+                    if(d!==0){
+                        path = pathForReversibleReactions(source, target);
+                    }else {
+                        path = "M0,0L0,0Z";
+                    }
+                }
+                else {
+                    path = "M0,0L0,0Z";
+                }
             }
             else {
                 path = "M0,0L0,0Z";
             }
+
         }
         else {
             source = link.getSource();
@@ -344,11 +352,18 @@ metExploreD3.GraphLink = {
             else
                 reaction = target;
 
-            if (source.x != undefined && source.y != undefined && target.x != undefined && target.y != undefined) {
-                // if(value<0)
-                path = pathForReversibleReactions(source, target);
-                // else
-                // path = pathSimple(source, target);
+            if (source !== undefined && target !== undefined) {
+                if (source.x !== undefined && source.y !== undefined && target.x !== undefined && target.y !== undefined) {
+                    var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
+                    if(d!==0){
+                        path = pathForReversibleReactions(source, target);
+                    }else {
+                        path = "M0,0L0,0Z";
+                    }
+                }
+                else {
+                    path = "M0,0L0,0Z";
+                }
             }
             else {
                 path = "M0,0L0,0Z";
@@ -664,12 +679,8 @@ metExploreD3.GraphLink = {
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup").remove();
         _metExploreViz.getSessionById(parent).setMappingDataType("Flux");
 
-        var linksToLoad = networkData.getLinks().filter(function (link) {
-            return link.getSource().getBiologicalType()!=="pathways" && link.getTarget().getBiologicalType()!=="pathways"
-        });
-
         var divs = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .data(linksToLoad)
+            .data(networkData.getLinks())
             .enter()
             .insert("svg:g", ":first-child")
             .attr("class", "linkGroup");
@@ -900,7 +911,7 @@ metExploreD3.GraphLink = {
 
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
 
-            if(scale.getZoomScale()<0.5){
+            if(scale.getZoomScale()<0.4){
                 funcPath = metExploreD3.GraphLink.funcPath1;
             }
             else
