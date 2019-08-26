@@ -476,160 +476,160 @@ metExploreD3.GraphMapping = {
 														if (d.getBiologicalType() == 'pathway') {
 
 															var thePathwayElement = d3.select(this);
-															var reactionStyle = metExploreD3.getReactionStyle();
-															thePathwayElement.select("text").remove();
+
 															thePathwayElement
-																.addNodeText(reactionStyle);
+																.select("text")
+																.remove();
+
+															metExploreD3.GraphNode.addText(d, "viz");
+
+															var exposant = 0;
 
 															if (condition === "PathwayEnrichment" && d.getMappingDataByNameAndCond(mapping.getName(), condition) != null) {
 
 																nbMapped++;
-
 
 																d3.select(this)
 																	.attr("mapped", "true");
 
 																var mapData = d.getMappingDataByNameAndCond(mapping.getName(), condition);
 
-																if (mapData.getMapValue() < 0.05) {
-																	var exposant = 0;
-
-																	if (mapData.getMapValue() < 0.001) {
-																		exposant = 1.2;
+																if (mapData.getMapValue() < 0.001) {
+																	exposant = 1.2;
+																} else {
+																	if (mapData.getMapValue() < 0.01) {
+																		exposant = 0.9;
 																	} else {
-																		if (mapData.getMapValue() < 0.01) {
-																			exposant = 0.9;
-																		} else {
-																			if (mapData.getMapValue() < 0.05) {
-																				exposant = 0.6;
-																			}
+																		if (mapData.getMapValue() < 0.05) {
+																			exposant = 0.6;
 																		}
 																	}
+																}
+																session.addMappedNode(d.getId());
+															}
 
-																	var pathwaySize = 20 + 100 * exposant;
+															var pathwaySize = 20 + 100 * exposant;
 
-																	//interligne
-																	d3.select(this)
-																		.select("text")
-																		.style("stroke-width", 10)
-																		.style("font-weight", 'bold')
-																		.style("font-size", pathwaySize - 40 + "px")
-																		.each(function (text) {
-																			d3.select(this).selectAll("tspan")
-																				.each(function (tspan, i) {
-																					if (i > 0)
-																						d3.select(this).attr("dy", pathwaySize - 40);
-																				});
+															//interligne
+															d3.select(this)
+																.select("text")
+																.style("stroke-width", 10)
+																.style("font-weight", 'bold')
+																.style("font-size", pathwaySize - 40 + "px")
+																.each(function (text) {
+																	d3.select(this).selectAll("tspan")
+																		.each(function (tspan, i) {
+																			if (i > 0)
+																				d3.select(this).attr("dy", pathwaySize - 40);
 																		});
+																});
 
-																	var thePathwayElement = d3.select(this);
+															var width = pathwaySize * 3;
+															var height = pathwaySize * 3;
+															var rx = pathwaySize * 3;
+															var ry = pathwaySize * 3;
+															var strokewidth = pathwaySize * 3 / 5;
 
-																	var width = pathwaySize * 3;
-																	var height = pathwaySize * 3;
-																	var rx = pathwaySize * 3;
-																	var ry = pathwaySize * 3;
-																	var strokewidth = pathwaySize * 3 / 5;
+															thePathwayElement.select("rect.pathway")
+																.attr("width", width)
+																.attr("height", height)
+																.attr("rx", rx)
+																.attr("ry", ry)
+																.attr("transform", "translate(-" + width / 2 + ",-"
+																	+ height / 2
+																	+ ")")
+																.style("stroke-width", strokewidth);
 
-																	thePathwayElement.select("rect.pathway")
-																		.attr("width", width)
-																		.attr("height", height)
-																		.attr("rx", rx)
-																		.attr("ry", ry)
-																		.attr("transform", "translate(-" + width / 2 + ",-"
-																			+ height / 2
-																			+ ")")
-																		.style("stroke-width", strokewidth);
-
-																	thePathwayElement.select("rect.fontSelected")
-																		.attr("width", width)
-																		.attr("height", height)
-																		.attr("rx", rx)
-																		.attr("ry", ry)
-																		.attr("transform", "translate(-" + width / 2 + ",-" + height / 2 + ")");
+															thePathwayElement.select("rect.fontSelected")
+																.attr("width", width)
+																.attr("height", height)
+																.attr("rx", rx)
+																.attr("ry", ry)
+																.attr("transform", "translate(-" + width / 2 + ",-" + height / 2 + ")");
 
 
-																	// Lock Image definition
-																	var box = thePathwayElement.select(".locker").attr(
-																		"viewBox",
-																		function (d) {
-																			+" " + pathwaySize * 3;
-																		}
-																	)
-																		.attr("width", pathwaySize * 3)
-																		.attr("height", pathwaySize * 3)
-																		.attr("preserveAspectRatio", "xMinYMin")
-																		.attr("y", -pathwaySize * 3)
-																		.attr("x", -pathwaySize * 3);
-
-																	box
-																		.select(".backgroundlocker")
-																		.attr("d", function (node) {
-																			var pathBack = "M" + pathwaySize * 3 + "," + pathwaySize * 3 +
-																				" L0," + pathwaySize * 3 +
-																				" L0," + pathwaySize * 3 / 2 * 2 +
-																				" A" + pathwaySize * 3 / 2 * 2 + "," + pathwaySize * 3 / 2 * 2 + ",0 0 1 " + pathwaySize * 3 / 2 * 2 + ",0" +
-																				" L" + pathwaySize * 3 + ",0";
-																			return pathBack;
-																		})
-																		.attr("opacity", "0.20")
-																		.attr("fill", "black");
-
-																	box
-																		.select(".iconlocker")
-																		.attr("y", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
-																		.attr("x", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
-																		.attr("width", "40%")
-																		.attr("height", "40%");
-
-																	session.addMappedNode(d.getId());
+															// Lock Image definition
+															var box = thePathwayElement.select(".locker").attr(
+																"viewBox",
+																function (d) {
+																	+" " + pathwaySize * 3;
 																}
-																if (d.getMappingDataByNameAndCond(mapping.getName(), "PathwayCoverage") !== null) {
+															)
+																.attr("width", pathwaySize * 3)
+																.attr("height", pathwaySize * 3)
+																.attr("preserveAspectRatio", "xMinYMin")
+																.attr("y", -pathwaySize * 3)
+																.attr("x", -pathwaySize * 3);
 
-																	var thePathwayElement = d3.select(this);
-																	var mapped = thePathwayElement.select(".mapped-segment");
-																	var notmapped = thePathwayElement.select(".notmapped-segment");
+															box
+																.select(".backgroundlocker")
+																.attr("d", function (node) {
+																	var pathBack = "M" + pathwaySize * 3 + "," + pathwaySize * 3 +
+																		" L0," + pathwaySize * 3 +
+																		" L0," + pathwaySize * 3 / 2 * 2 +
+																		" A" + pathwaySize * 3 / 2 * 2 + "," + pathwaySize * 3 / 2 * 2 + ",0 0 1 " + pathwaySize * 3 / 2 * 2 + ",0" +
+																		" L" + pathwaySize * 3 + ",0";
+																	return pathBack;
+																})
+																.attr("opacity", "0.20")
+																.attr("fill", "black");
 
-																	thePathwayElement.select(".mapped-segment").classed("hide", false);
-																	thePathwayElement.select(".notmapped-segment").classed("hide", false);
-																	var mapData = d.getMappingDataByNameAndCond(mapping.getName(), "PathwayCoverage");
+															box
+																.select(".iconlocker")
+																.attr("y", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
+																.attr("x", pathwaySize * 3 / 2 / 4 - (pathwaySize * 3 - pathwaySize * 3 * 2) / 8)
+																.attr("width", "40%")
+																.attr("height", "40%");
 
-																	var coverage = mapData.getMapValue();
-																	var radius = (width - strokewidth) / 2;
-																	var halfRadius = radius / 2;
-																	var halfCircumference = 2 * Math.PI * halfRadius;
 
-																	// 0deg drawn up to this point
-																	var degreesDrawn = -90;
 
-																	mapped
-																		.attr('r', halfRadius)
-																		.attr('stroke-width', radius)
-																		.attr('stroke', "#FF7560")
-																		.attr('stroke-dasharray',
-																			halfCircumference * coverage
-																			+ ' '
-																			+ halfCircumference)
-																		.style('transform', 'rotate(' + degreesDrawn + 'deg)');
+															if (d.getMappingDataByNameAndCond(mapping.getName(), "PathwayCoverage") !== null) {
 
-																	// 119.988deg drawn up to this point
-																	degreesDrawn += 360 * coverage;
+																var thePathwayElement = d3.select(this);
+																var mapped = thePathwayElement.select(".mapped-segment");
+																var notmapped = thePathwayElement.select(".notmapped-segment");
 
-																	notmapped
-																		.attr('fill', 'transparent')
-																		.attr('r', halfRadius)
-																		.attr('stroke-width', radius)
-																		.attr('stroke', '#5fa2dd')
-																		.attr('stroke-dasharray',
-																			halfCircumference * (1.0 - coverage)
-																			+ ' '
-																			+ halfCircumference)
-																		.style('transform', 'rotate(' + degreesDrawn + 'deg)');
+																thePathwayElement.select(".mapped-segment").classed("hide", false);
+																thePathwayElement.select(".notmapped-segment").classed("hide", false);
+																var mapData = d.getMappingDataByNameAndCond(mapping.getName(), "PathwayCoverage");
 
-																}
+																var coverage = mapData.getMapValue();
+																var radius = (width - strokewidth) / 2;
+																var halfRadius = radius / 2;
+																var halfCircumference = 2 * Math.PI * halfRadius;
+
+																// 0deg drawn up to this point
+																var degreesDrawn = -90;
+
+																mapped
+																	.attr('r', halfRadius)
+																	.attr('stroke-width', radius)
+																	.attr('stroke', "#FF7560")
+																	.attr('stroke-dasharray',
+																		halfCircumference * coverage
+																		+ ' '
+																		+ halfCircumference)
+																	.style('transform', 'rotate(' + degreesDrawn + 'deg)');
+
+																// 119.988deg drawn up to this point
+																degreesDrawn += 360 * coverage;
+
+																notmapped
+																	.attr('fill', 'transparent')
+																	.attr('r', halfRadius)
+																	.attr('stroke-width', radius)
+																	.attr('stroke', '#5fa2dd')
+																	.attr('stroke-dasharray',
+																		halfCircumference * (1.0 - coverage)
+																		+ ' '
+																		+ halfCircumference)
+																	.style('transform', 'rotate(' + degreesDrawn + 'deg)');
+
 															}
 														}
 													}
 												}
+
 											}
 										)
 								}
