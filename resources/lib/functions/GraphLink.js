@@ -664,8 +664,12 @@ metExploreD3.GraphLink = {
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup").remove();
         _metExploreViz.getSessionById(parent).setMappingDataType("Flux");
 
+        var linksToLoad = networkData.getLinks().filter(function (link) {
+            return link.getSource().getBiologicalType()!=="pathways" && link.getTarget().getBiologicalType()!=="pathways"
+        });
+
         var divs = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .data(networkData.getLinks())
+            .data(linksToLoad)
             .enter()
             .insert("svg:g", ":first-child")
             .attr("class", "linkGroup");

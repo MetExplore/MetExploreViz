@@ -1396,6 +1396,7 @@ metExploreD3.GraphMapping = {
 	        setTimeout(
 			function() {
 				try {
+					var session = _metExploreViz.getSessionById('viz');
 					var networkData = session.getD3Data();
 					var conditions = mapping.getConditions().filter(function (c) {
 						return c !== "PathwayCoverage" && c !== "PathwayEnrichment"
