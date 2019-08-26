@@ -1860,7 +1860,7 @@ metExploreD3.GraphNetwork = {
                     false,
                     "pathway",
                     false,
-                    "true",//theNode.getLabelVisible(),
+                    true,//theNode.getLabelVisible(),
                     "",
                     "",
                     "",
@@ -1960,10 +1960,8 @@ metExploreD3.GraphNetwork = {
         thePathwayElement
             .append('circle')
             .classed('notmapped-segment', true);
-        thePathwayElement
-            .addNodeText(metaboliteStyle);
 
-
+        thePathwayElement.each(function(node){metExploreD3.GraphNode.addText(node, "viz");});
 
         var minDim = pathwaySize*3;
 
