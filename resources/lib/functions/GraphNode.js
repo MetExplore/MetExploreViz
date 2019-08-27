@@ -909,7 +909,7 @@ metExploreD3.GraphNode = {
 
             }
             // set corresponding event handler
-            var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel())
+            var name = metaboliteStyle.getDisplayLabel(d, metaboliteStyle.getLabel(), metaboliteStyle.isUseAlias())
             metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
             if (metExploreD3.GraphStyleEdition.editMode == true) {
                 metExploreD3.GraphStyleEdition.startDragLabel(panel);
@@ -970,7 +970,7 @@ metExploreD3.GraphNode = {
                     .addNodeText(reactionStyle);
             }
             // set corresponding event handler
-            var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
+            var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel(), reactionStyle.isUseAlias());
             metExploreD3.GraphStyleEdition.changeNodeLabel(d, panel, name);
             if (metExploreD3.GraphStyleEdition.editMode == true) {
                 metExploreD3.GraphStyleEdition.startDragLabel(panel);
@@ -1817,77 +1817,88 @@ metExploreD3.GraphNode = {
         var me = this;
         var networkData = _metExploreViz.getSessionById("viz").getD3Data();
         var nodes = networkData.getNodes();
-        if (nodes != undefined) {
+        var network = JSON.parse(_metExploreViz.getDataFromWebSite());
+
+        if (nodes !== undefined) {
             var node = networkData.getNodeByDbIdentifier(dbId);
-            if (node != undefined)
+            if (node !== undefined){
+
                 node.setAlias(alias);
 
-            var sessions = _metExploreViz.getSessionsSet();
-            for (var key in sessions) {
-                if (sessions[key].getId() != 'viz') {
-                    var nodeLinked = sessions[key].getD3Data().getNodeByDbIdentifier(dbId)
-                    nodeLinked.setAlias(alias);
-                    if (nodeLinked != undefined)
+                var sessions = _metExploreViz.getSessionsSet();
+                for (var key in sessions) {
+                    if (sessions[key].getId() != 'viz') {
+                        var nodeLinked = sessions[key].getD3Data().getNodeByDbIdentifier(dbId)
                         nodeLinked.setAlias(alias);
+                        if (nodeLinked != undefined)
+                            nodeLinked.setAlias(alias);
+                    }
                 }
-            }
 
-            var network = JSON.parse(_metExploreViz.getDataFromWebSite());
 
-            network.nodes
-                .filter(function (node) {
-                    return node.dbIdentifier == dbId;
-                })
-                .forEach(function (node) {
-                    node.alias = alias;
-                });
+                var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+                var reactionStyle = metExploreD3.getReactionStyle();
+                var generalStyle = metExploreD3.getGeneralStyle();
 
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
-            var generalStyle = metExploreD3.getGeneralStyle();
+                var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent")
+                    .selectAll("g.node");
 
-            var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent")
-                .selectAll("g.node")
+                if(nodes.nodes().length>0){
+                    if (metaboliteStyle.isUseAlias()) {
+                    nodes
+                        .filter(function (n) {
+                            return node.getId() == n.getId();
+                        })
+                        .filter(function (n) {
+                            return node.getBiologicalType() == 'metabolite';
+                        })
+                        .each(function (node) {
+                            if (networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
+                                metExploreD3.GraphNode.addText(node, "viz");
 
-            if (metaboliteStyle.isUseAlias()) {
-                nodes
-                    .filter(function (n) {
-                        return node.getId() == n.getId();
-                    })
-                    .filter(function (n) {
-                        return node.getBiologicalType() == 'metabolite';
-                    })
-                    .each(function (node) {
-                        node.setLabel(alias);
-                        if (networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt()) {
-                            d3.select(this)
-                                .select("text")
-                                .remove();
+                        });
+                    }
 
-                            metExploreD3.GraphNode.addText(node, "viz");
-                        }
-                    });
-            }
+                    if (reactionStyle.isUseAlias()) {
+                        nodes
+                            .filter(function (n) {
+                                return node.getId() == n.getId();
+                            })
+                            .filter(function (n) {
+                                return node.getBiologicalType() == 'reaction';
+                            })
+                            .each(function (node) {
+                                if (networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
+                                    metExploreD3.GraphNode.addText(node, "viz");
 
-            if (reactionStyle.isUseAlias()) {
-                nodes
-                    .filter(function (n) {
-                        return node.getId() == n.getId();
-                    })
-                    .filter(function (n) {
-                        return node.getBiologicalType() == 'reaction';
-                    })
-                    .each(function (node) {
-                        node.setLabel(alias);
-                        if (networkData.getNodes().length < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt()) {
-                            metExploreD3.GraphNode.removeText(node, "viz");
-                            metExploreD3.GraphNode.addText(node, "viz");
-                        }
-                    });
+                            });
+                    }
+
+                    network.nodes
+                        .filter(function (n) {
+                            return n.dbIdentifier == dbId;
+                        })
+                        .forEach(function (n) {
+                            n.alias = alias;
+                        });
+                }
             }
             _metExploreViz.setDataFromWebSite(JSON.stringify(network));
         }
 
+    },
+
+    setAliasesFromJSON: function (json, type) {
+        var style = metExploreD3.getMetaboliteStyle();
+        if(type==="reaction")
+            style = metExploreD3.getReactionStyle();
+        style.setUseAlias(true);
+
+        json.forEach(function(node) {
+            metExploreD3.GraphNode.setAliasByDBId(node.dbIdentifier, node.alias);
+        });
+
+        metExploreD3.fireEvent("metaboliteStyleForm", "checkCheckboxAlias");
     },
 
     /*******************************************

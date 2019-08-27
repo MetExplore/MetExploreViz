@@ -3115,7 +3115,8 @@ metExploreD3.GraphMapping = {
                     .selectAll("g.node")
                     .filter(function (d) {
                         var style = (d.getBiologicalType() === "metabolite") ? metExploreD3.getMetaboliteStyle() : metExploreD3.getReactionStyle();
-                        var label = style.getDisplayLabel(d, style.getLabel());
+						var label = style.getDisplayLabel(d, style.getLabel(), style.isUseAlias());
+
                         //var target = (arg === "Name") ? d.name : d.dbIdentifier;
                         var target = (arg === "Name") ? label : d.dbIdentifier;
                         return (nodeName === target);
