@@ -28,6 +28,13 @@ metExploreD3.GraphUtils = {
         }); 
     },
 
+	onlyUnique : function(value, index, self) {
+		return self
+			.findIndex(
+				function(link){return link.getId()===value.getId();}
+			) === index;
+	},
+
     parseWebServiceMapping : function(myJsonMapping){
         //var mapJSON = '{"name": "mapping_D-Galactose", "mappings":[{"name": "conditionName1", "data": [{"node" : "D-Galactose"}, {"node" : "D-galactose"}]  }]}';
         var mappingJSON = Ext.decode(myJsonMapping); 

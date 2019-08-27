@@ -133,9 +133,6 @@ metExploreD3.GraphNode = {
                             var x = d3.select(this).select("text").attr("x");
                             var y = d3.select(this).select("text").attr("y");
                             var transform = d3.select(this).select("text").attr("transform");
-                            d3.select(this)
-                                .select("text")
-                                .remove();
 
                             metExploreD3.GraphNode.addText(node, "viz");
                             d3.select(this).select("text").attr("opacity", opacity).attr("transform", transform).attr("x", x).attr("y", y)
@@ -1241,8 +1238,6 @@ metExploreD3.GraphNode = {
                     node.getLabelFont(),
                     node.isHidden()
                 );
-
-                metExploreD3.fireEventParentWebSite("sideCompound", clone);
             })
             .addNodeForm(
                 metaboliteStyle.getWidth() / 2,
@@ -1428,8 +1423,8 @@ metExploreD3.GraphNode = {
         metExploreD3.GraphNode.updatedNodes
             .each(function (d) {
                 // set corresponding event handler
-                var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
-                metExploreD3.GraphStyleEdition.changeNodeLabel(d, parent, name);
+                // var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
+                // metExploreD3.GraphStyleEdition.changeNodeLabel(d, parent, name);
 
 
                 if (metExploreD3.GraphStyleEdition.editMode == true) {
@@ -1880,7 +1875,7 @@ metExploreD3.GraphNode = {
                         return node.getId() == n.getId();
                     })
                     .filter(function (n) {
-                        return node.getBiologicalType() == 'reac';
+                        return node.getBiologicalType() == 'reaction';
                     })
                     .each(function (node) {
                         node.setLabel(alias);
