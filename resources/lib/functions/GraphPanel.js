@@ -802,6 +802,14 @@ metExploreD3.GraphPanel = {
 						});
 					}
 
+					if(sessions[key].duplicatedNodes)
+					{
+						sessions[key].duplicatedNodes.filter(metExploreD3.GraphUtils.onlyUnique).forEach(function(nodeId){
+							var nodeSC = sessions[key].getD3Data().getNodeById();
+							metExploreD3.fireEventParentWebSite("sideCompound", nodeSC);
+						});
+					}
+
 
 					if(_metExploreViz.getMappingsLength()>0 && key=="viz" && !metExploreD3.getGeneralStyle().windowsAlertIsDisable())
 					{

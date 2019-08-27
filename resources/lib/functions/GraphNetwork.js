@@ -1772,8 +1772,6 @@ metExploreD3.GraphNetwork = {
 
         var scale = metExploreD3.getScaleById(panel);
 
-        metExploreD3.fireEventParentWebSite("sideCompound", theNode);
-
         //create the node in the data structure
         var newNode=networkData.addNode(
             theNode.getName(),
@@ -2460,6 +2458,9 @@ metExploreD3.GraphNetwork = {
                     }
                 }
             });
+
+
+        metExploreD3.fireEventParentWebSite("sideCompound", theNode);
 
         reactionsConsumingNode.forEach(function(reaction){
             var newID=theNode.getId()+"-"+reaction.getId();
