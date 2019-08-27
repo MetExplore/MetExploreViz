@@ -36,6 +36,14 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 			scope:me
 		});
 
+		view.on({
+			checkCheckboxAlias : function(){
+				view.lookupReference('checkboxAlias').setValue(true);
+				view.lookupReference('checkboxAlias').checked=true;
+			},
+			scope : me
+		});
+
 		view.lookupReference('refreshMetaboliteStyle').on({
 			click : function() 
 			{	

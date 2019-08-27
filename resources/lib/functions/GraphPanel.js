@@ -48,7 +48,6 @@ metExploreD3.GraphPanel = {
 	* To resize svg viz when layout is modified
 	*/
 	resizeViz : function(panel){
-		console.log("resizeViz");
 		var scale = metExploreD3.getScaleById(panel);
 		if(scale!=undefined){
 
@@ -125,13 +124,10 @@ metExploreD3.GraphPanel = {
     * @param {} panel : active panel
 	*/
 	resizePanels : function(panel){
-		console.log("resizePanels");
 		var sessionsStore = _metExploreViz.getSessionsSet();
 		var session = _metExploreViz.getSessionById(panel);
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
-
-		console.log(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn"));
 
 		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn").node()!=null
 			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut").node()!=null
