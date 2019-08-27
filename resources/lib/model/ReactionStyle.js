@@ -121,11 +121,14 @@ ReactionStyle.prototype = {
                 displayedLabel = node.getAlias();
                 if(displayedLabel === undefined)
                     displayedLabel = this.labelToDisplay(node, label);
+                else
+                    if(displayedLabel.isEmpty()) displayedLabel = this.labelToDisplay(node, label);
+
             }
             else
             {
                 displayedLabel = this.labelToDisplay(node, label);
-            } 
+            }
         }
         return displayedLabel;
     },

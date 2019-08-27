@@ -2,6 +2,11 @@
  * @author MC
  * (a)description : Basic functions
  */
+
+String.prototype.isEmpty = function() {
+	return (!this.trim());
+};
+
 metExploreD3.GraphUtils = {
     decodeJSON : function(json){
     	try {
@@ -510,9 +515,6 @@ metExploreD3.GraphUtils = {
     * Get all networks displayed all networks  
     */
 	getSources : function(doc, emptySvgDeclarationComputed, prefix) {
-		console.log(doc);
-		console.log(emptySvgDeclarationComputed);
-		console.log(prefix);
 		var svgInfo = [],
 		svgs = doc.querySelectorAll("svg");
 
@@ -808,7 +810,6 @@ clone.setAttribute("version", "1.1");
         XMLrequest.open("GET", url, false); // URL of the SVG file on server
         XMLrequest.send(null); // get the SVG file
 		var res = XMLrequest.responseXML;
-        console.log(res);
         if (res!==null){
 			var mySVG = res.getElementsByTagName("svg")[0];
 
