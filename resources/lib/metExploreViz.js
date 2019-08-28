@@ -852,7 +852,7 @@ var _metExploreViz;
 var metExploreViz = function(panel, webSite){
     window.onerror = function(msg, url, lineNo, columnNo, error) {
 
-      if(window.location.href==="https://metexplore.toulouse.inra.fr/metexplore2/resources/lib/javascript/metExploreViz/index.html")
+      if(window.location.href==="https://metexplore.toulouse.inra.fr/metexplore2/resources/lib/javascript/metExploreViz/index.html" && url.includes("https://metexplore.toulouse.inra.fr/metexplore2/resources/lib/javascript/metExploreViz"))
       {
 
         var nVer = navigator.appVersion;
