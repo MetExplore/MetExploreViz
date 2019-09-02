@@ -2813,7 +2813,7 @@ metExploreD3.GraphMapping = {
 	generateMapping: function(mapping, nodeMappingByCondition){
 		var session = _metExploreViz.getSessionById('viz');
 		var networkData = session.getD3Data();
-		if(mappingJSON.mappings){
+		if(nodeMappingByCondition[0]!=="undefined"){
 
 			switch (mapping.getTargetLabel()) {
 				case "reactionDBIdentifier":
