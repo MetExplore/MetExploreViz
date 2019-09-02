@@ -2722,29 +2722,44 @@ metExploreD3.GraphMapping = {
 
 				metExploreD3.showMask(myMask);
 		        setTimeout(
-				function() {	
-					var conds =[];
-					mappingJSON.mappings.forEach(function(condition){
-			        	conds.push(condition.name);
-			        });
-		   			var mapping = new Mapping(mappingJSON.name, conds, mappingJSON.targetLabel, mappingJSON.id);
-							                
-					_metExploreViz.addMapping(mapping);
+				function() {
+					try {
+						var conds = [];
+						mappingJSON.mappings.forEach(function (condition) {
+							conds.push(condition.name);
+						});
+						var mapping = new Mapping(mappingJSON.name, conds, mappingJSON.targetLabel, mappingJSON.id);
 
-	        		metExploreD3.GraphMapping.generateMapping(mapping, mappingJSON.mappings);
-					
-					metExploreD3.hideMask(myMask);
+						_metExploreViz.addMapping(mapping);
+
+						metExploreD3.GraphMapping.generateMapping(mapping, mappingJSON.mappings);
+
+						metExploreD3.hideMask(myMask);
 
 
-			        metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
-					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
-					if (anim=='true') {
-						var force = session.getForce();
-						
-						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
-							force.alpha(1).restart();
+						metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+						var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+						if (anim == 'true') {
+							var force = session.getForce();
+
+							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+								force.alpha(1).restart();
+							}
 						}
 					}
+					catch (e) {
+
+							metExploreD3.hideMask(myMask);
+
+							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							if (anim=='true') {
+								var force = session.getForce();
+
+								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+									force.alpha(1).restart();
+								}
+							}
+						}
 				}, 1);
 			}
 		}
@@ -2798,186 +2813,191 @@ metExploreD3.GraphMapping = {
 	generateMapping: function(mapping, nodeMappingByCondition){
 		var session = _metExploreViz.getSessionById('viz');
 		var networkData = session.getD3Data();
+		if(mappingJSON.mappings){
 
-		switch (mapping.getTargetLabel()) {
-            case "reactionDBIdentifier":
-                if(nodeMappingByCondition[0].name!=="undefined")
-                {
-                    nodeMappingByCondition.forEach(function(condition){
-                        condition.data
-                            .filter(function(map){
-                                return (!isNaN(map.value) && map.value!=null)
-                            })
-                            .forEach(function(map){
-                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-                                mapping.addMap(mapData);
-                                var node = networkData.getNodeByDbIdentifier(map.node);
-                                if(node!=undefined){
-                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                    node.addMappingData(mapNode);
-                                }
-                                else
-                                {
-                                    node = networkData.getNodeByName(map.node);
-                                    if(node!=undefined){
-                                        var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                        node.addMappingData(mapNode);
-                                    }
-                                }
-                            });
-                    });
-                }
-                else
-                {
-                    nodeMappingByCondition.forEach(function(condition){
-                        condition.data
-                            .forEach(function(map){
-                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-                                mapping.addMap(mapData);
-                                var node = networkData.getNodeByDbIdentifier(map.node);
-                                if(node!=undefined){
-                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                    node.addMappingData(mapNode);
-                                }
-                                else
-                                {
-                                    node = networkData.getNodeByName(map.node);
-                                    if(node!=undefined){
-                                        var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                        node.addMappingData(mapNode);
-                                    }
-                                }
-                            });
-                    });
-                }
-                break;
-            case "metaboliteDBIdentifier":
-                if(nodeMappingByCondition[0].name!=="undefined")
-                {
-                    nodeMappingByCondition.forEach(function(condition){
-                        condition.data
-                            .filter(function(map){
-                                return (!isNaN(map.value) && map.value!=null)
-                            })
-                            .forEach(function(map){
-                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-                                mapping.addMap(mapData);
-                                var node = networkData.getNodeByDbIdentifier(map.node);
-                                if(node!=undefined){
-                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                    node.addMappingData(mapNode);
-                                }
-                                else
-                                {
-                                    node = networkData.getNodeByName(map.node);
-                                    if(node!=undefined){
-                                        var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                        node.addMappingData(mapNode);
-                                    }
-                                }
-                            });
-                    });
-                }
-                else
-                {
-                    nodeMappingByCondition.forEach(function(condition){
-                        condition.data
-                            .forEach(function(map){
-                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-                                mapping.addMap(mapData);
-                                var node = networkData.getNodeByDbIdentifier(map.node);
-                                if(node!=undefined){
-                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                    node.addMappingData(mapNode);
-                                }
-                                else
-                                {
-                                    node = networkData.getNodeByName(map.node);
-                                    if(node!=undefined){
-                                        var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                        node.addMappingData(mapNode);
-                                    }
-                                }
-                            });
-                    });
-                }
-                break;
-            case "reactionId":
-                if(nodeMappingByCondition[0].name!=="undefined")
-                {
-                    nodeMappingByCondition.forEach(function(condition){
-                        condition.data
-                            .filter(function(map){
-                                return (!isNaN(map.value) && map.value!=null)
-                            })
-                            .forEach(function(map){
-                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-                                mapping.addMap(mapData);
-                                var node = networkData.getNodeByDbIdentifier(map.node);
-                                if(node!=undefined){
-                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                    node.addMappingData(mapNode);
-                                }
-                            });
-                    });
-                }
-                else
-                {
-                    nodeMappingByCondition.forEach(function(condition){
-                        condition.data
-                            .forEach(function(map){
-                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-                                mapping.addMap(mapData);
-                                var node = networkData.getNodeByDbIdentifier(map.node);
-                                if(node!=undefined){
-                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                    node.addMappingData(mapNode);
-                                }
-                            });
-                    });
-                }
-                break;
-            case "metaboliteId":
-                if(nodeMappingByCondition[0].name!=="undefined")
-                {
-                    nodeMappingByCondition.forEach(function(condition){
-                        condition.data
-                            .filter(function(map){
-                                return (!isNaN(map.value) && map.value!=null)
-                            })
-                            .forEach(function(map){
-                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-                                mapping.addMap(mapData);
-                                var node = networkData.getNodeByDbIdentifier(map.node);
-                                if(node!=undefined){
-                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                    node.addMappingData(mapNode);
-                                }
-                            });
-                    });
-                }
-                else
-                {
-                    nodeMappingByCondition.forEach(function(condition){
-                        condition.data
-                            .forEach(function(map){
-                                var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
-                                mapping.addMap(mapData);
-                                var node = networkData.getNodeByDbIdentifier(map.node);
-                                if(node!=undefined){
-                                    var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
-                                    node.addMappingData(mapNode);
-                                }
-                            });
-                    });
-                }
-                break;
-            case "inchi":
-                // Blah
-                break;
-            default:
-                metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
-        }
+			switch (mapping.getTargetLabel()) {
+				case "reactionDBIdentifier":
+					if(nodeMappingByCondition[0].name!=="undefined")
+					{
+						nodeMappingByCondition.forEach(function(condition){
+							condition.data
+								.filter(function(map){
+									return (!isNaN(map.value) && map.value!=null)
+								})
+								.forEach(function(map){
+									var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+									mapping.addMap(mapData);
+									var node = networkData.getNodeByDbIdentifier(map.node);
+									if(node!=undefined){
+										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+										node.addMappingData(mapNode);
+									}
+									else
+									{
+										node = networkData.getNodeByName(map.node);
+										if(node!=undefined){
+											var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+											node.addMappingData(mapNode);
+										}
+									}
+								});
+						});
+					}
+					else
+					{
+						nodeMappingByCondition.forEach(function(condition){
+							condition.data
+								.forEach(function(map){
+									var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+									mapping.addMap(mapData);
+									var node = networkData.getNodeByDbIdentifier(map.node);
+									if(node!=undefined){
+										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+										node.addMappingData(mapNode);
+									}
+									else
+									{
+										node = networkData.getNodeByName(map.node);
+										if(node!=undefined){
+											var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+											node.addMappingData(mapNode);
+										}
+									}
+								});
+						});
+					}
+					break;
+				case "metaboliteDBIdentifier":
+					if(nodeMappingByCondition[0].name!=="undefined")
+					{
+						nodeMappingByCondition.forEach(function(condition){
+							condition.data
+								.filter(function(map){
+									return (!isNaN(map.value) && map.value!=null)
+								})
+								.forEach(function(map){
+									var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+									mapping.addMap(mapData);
+									var node = networkData.getNodeByDbIdentifier(map.node);
+									if(node!=undefined){
+										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+										node.addMappingData(mapNode);
+									}
+									else
+									{
+										node = networkData.getNodeByName(map.node);
+										if(node!=undefined){
+											var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+											node.addMappingData(mapNode);
+										}
+									}
+								});
+						});
+					}
+					else
+					{
+						nodeMappingByCondition.forEach(function(condition){
+							condition.data
+								.forEach(function(map){
+									var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+									mapping.addMap(mapData);
+									var node = networkData.getNodeByDbIdentifier(map.node);
+									if(node!=undefined){
+										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+										node.addMappingData(mapNode);
+									}
+									else
+									{
+										node = networkData.getNodeByName(map.node);
+										if(node!=undefined){
+											var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+											node.addMappingData(mapNode);
+										}
+									}
+								});
+						});
+					}
+					break;
+				case "reactionId":
+					if(nodeMappingByCondition[0].name!=="undefined")
+					{
+						nodeMappingByCondition.forEach(function(condition){
+							condition.data
+								.filter(function(map){
+									return (!isNaN(map.value) && map.value!=null)
+								})
+								.forEach(function(map){
+									var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+									mapping.addMap(mapData);
+									var node = networkData.getNodeByDbIdentifier(map.node);
+									if(node!=undefined){
+										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+										node.addMappingData(mapNode);
+									}
+								});
+						});
+					}
+					else
+					{
+						nodeMappingByCondition.forEach(function(condition){
+							condition.data
+								.forEach(function(map){
+									var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+									mapping.addMap(mapData);
+									var node = networkData.getNodeByDbIdentifier(map.node);
+									if(node!=undefined){
+										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+										node.addMappingData(mapNode);
+									}
+								});
+						});
+					}
+					break;
+				case "metaboliteId":
+					if(nodeMappingByCondition[0].name!=="undefined")
+					{
+						nodeMappingByCondition.forEach(function(condition){
+							condition.data
+								.filter(function(map){
+									return (!isNaN(map.value) && map.value!=null)
+								})
+								.forEach(function(map){
+									var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+									mapping.addMap(mapData);
+									var node = networkData.getNodeByDbIdentifier(map.node);
+									if(node!=undefined){
+										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+										node.addMappingData(mapNode);
+									}
+								});
+						});
+					}
+					else
+					{
+						nodeMappingByCondition.forEach(function(condition){
+							condition.data
+								.forEach(function(map){
+									var mapData = new MappingData(map.node, mapping.getName(), condition.name, map.value);
+									mapping.addMap(mapData);
+									var node = networkData.getNodeByDbIdentifier(map.node);
+									if(node!=undefined){
+										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
+										node.addMappingData(mapNode);
+									}
+								});
+						});
+					}
+					break;
+				case "inchi":
+					// Blah
+					break;
+				default:
+					metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
+			}
+
+		}
+		else
+			metExploreD3.displayMessage("Warning", 'Mapping Failed.')
 	},
 
     /*******************************************
