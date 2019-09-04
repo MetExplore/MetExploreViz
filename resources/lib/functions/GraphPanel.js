@@ -303,31 +303,38 @@ metExploreD3.GraphPanel = {
 		metExploreD3.hideInitialMask();
 
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
-		if(jsonParsed.nodes || jsonParsed.sessions){
-			if(metExploreD3.isNewBioSource() || !_metExploreViz.isLaunched() || metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
+		if(jsonParsed){
+			if(jsonParsed.nodes || jsonParsed.sessions){
+				if(metExploreD3.isNewBioSource() || !_metExploreViz.isLaunched() || metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
 
-                metExploreD3.GraphPanel.refreshJSON(json);
-				if(typeof func==='function') func();
+					metExploreD3.GraphPanel.refreshJSON(json);
+					if(typeof func==='function') func();
+				}
+				else
+				{
+					Ext.Msg.show({
+						title:'Are you sure?',
+						msg: 'This action will remove previous network. <br />Would you like to do this?',
+						buttons: Ext.Msg.OKCANCEL,
+						fn: function(btn){
+							if(btn=="ok")
+							{
+								metExploreD3.GraphPanel.refreshJSON(json);
+								if(func!=undefined && typeof func==='function') func();
+								Ext.getCmp('cycleDetection').setVisible(false);
+								if (metExploreD3.GraphStyleEdition.editMode){
+									metExploreD3.fireEvent("enterEditMode", "click");
+								}
+							}
+						},
+						icon: Ext.Msg.QUESTION
+					});
+				}
 			}
 			else
 			{
-				Ext.Msg.show({
-		           title:'Are you sure?',
-		           msg: 'This action will remove previous network. <br />Would you like to do this?',
-		           buttons: Ext.Msg.OKCANCEL,
-		           fn: function(btn){
-						if(btn=="ok")
-						{
-							metExploreD3.GraphPanel.refreshJSON(json);
-							if(func!=undefined && typeof func==='function') func();
-                            Ext.getCmp('cycleDetection').setVisible(false);
-                            if (metExploreD3.GraphStyleEdition.editMode){
-                            	metExploreD3.fireEvent("enterEditMode", "click");
-							}
-						}
-		           },
-		           icon: Ext.Msg.QUESTION
-		       });
+				//SYNTAX ERROR
+				metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. Use a saved file from MetExploreViz or see <a href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#generalfunctioning">MetExploreViz documentation</a>.');
 			}
 		}
 		else
@@ -335,6 +342,7 @@ metExploreD3.GraphPanel = {
 			//SYNTAX ERROR
 			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. Use a saved file from MetExploreViz or see <a href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#generalfunctioning">MetExploreViz documentation</a>.');
 		}
+
 	},
 
 	/*****************************************************
