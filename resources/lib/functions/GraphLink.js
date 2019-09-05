@@ -550,12 +550,12 @@ metExploreD3.GraphLink = {
             .selectAll(".linkGroup")
             .remove();
 
-        function onlyUnique(value, index, self) {
-            return self
-                .findIndex(
-                    function(link){return link.getId()===value.getId();}
-                ) === index;
-        }
+        // function onlyUnique(value, index, self) {
+        //     return self
+        //         .findIndex(
+        //             function(link){return link.getId()===value.getId();}
+        //         ) === index;
+        // }
 
         var links = networkData.getLinks();
         links.forEach(function(link){
@@ -569,10 +569,10 @@ metExploreD3.GraphLink = {
                 link.setSource(networkData.getNodes()[link.getSource()]);
         });
 
-        var link = networkData.getLinks();
-        var unique = link.filter( onlyUnique );
+        // var link = networkData.getLinks();
+        //var unique = link.filter( onlyUnique );
 
-        networkData.links=unique;
+        //networkData.links=unique;
         metExploreD3.GraphLink.visibleLinks = networkData.getLinks()
             .filter(function (link) {
                 var target, source;
