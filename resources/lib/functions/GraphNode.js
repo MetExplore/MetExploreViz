@@ -1188,11 +1188,13 @@ metExploreD3.GraphNode = {
         metExploreD3.GraphNode.applyEventOnNode(parent);
 
         // For each metabolite we append a division of the class "rect" with the metabolite style by default or create by the user
-        metExploreD3.GraphNode.updatedNodes
+        var updatedNodesMetabolite = metExploreD3.GraphNode.updatedNodes
             .filter(function (d) {
                 return d.getBiologicalType() === 'metabolite'
-            })
-            .filter(function (d) {
+            });
+
+
+        updatedNodesMetabolite.filter(function (d) {
                 return !d.isDuplicated();
             })
             .addNodeForm(
@@ -1205,10 +1207,7 @@ metExploreD3.GraphNode = {
             );
 
         // Duplicated metabolites
-        metExploreD3.GraphNode.updatedNodes
-            .filter(function (d) {
-                return d.getBiologicalType() === 'metabolite'
-            })
+        updatedNodesMetabolite
             .filter(function (d) {
                 return d.isDuplicated();
             })
@@ -1420,21 +1419,13 @@ metExploreD3.GraphNode = {
         }
 
 
-        metExploreD3.GraphNode.updatedNodes
-            .each(function (d) {
-                // set corresponding event handler
-                // var name = reactionStyle.getDisplayLabel(d, reactionStyle.getLabel());
-                // metExploreD3.GraphStyleEdition.changeNodeLabel(d, parent, name);
-
-
-                if (metExploreD3.GraphStyleEdition.editMode == true) {
-                    metExploreD3.GraphStyleEdition.startDragLabel(parent);
-                }
-                else {
-                    metExploreD3.GraphStyleEdition.endDragLabel(parent);
-                    metExploreD3.GraphNode.applyEventOnNode(parent);
-                }
-            });
+        if (metExploreD3.GraphStyleEdition.editMode == true) {
+            metExploreD3.GraphStyleEdition.startDragLabel(parent);
+        }
+        else {
+            metExploreD3.GraphStyleEdition.endDragLabel(parent);
+            metExploreD3.GraphNode.applyEventOnNode(parent);
+        }
 
         metExploreD3.GraphNode.updatedNodes
             .filter(function (d) {
