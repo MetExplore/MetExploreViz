@@ -787,17 +787,12 @@ metExploreD3.GraphNetwork = {
         metExploreD3.GraphNetwork.initShortCut();
 
 
+
         var networkData = _metExploreViz.getSessionById(panel).getD3Data();
         var nodes = networkData.getNodes();
 
         metExploreD3.GraphPanel.setActivePanel(panel);
         metExploreD3.fireEventParentWebSite("refreshCart", nodes);
-
-        var optArray = [];
-        for (var i = 0; i < nodes.length - 1; i++) {
-            optArray.push(nodes[i].name);
-        }
-        optArray = optArray.sort();
 
         // Get height and witdh of panel
         var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
