@@ -7,12 +7,36 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    width="512"
    height="512"
    viewBox="0 0 512 512"
    id="svg2"
-   style="fill:#000000">
+   style="fill:#000000"
+   sodipodi:docname="del.svg"
+   inkscape:version="0.92.1 r15371">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1058"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="0.4609375"
+     inkscape:cx="-14.101695"
+     inkscape:cy="256"
+     inkscape:window-x="3832"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
   <metadata
      id="metadata10">
     <rdf:RDF>
@@ -21,13 +45,15 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <defs
      id="defs8" />
   <path
-     d="M 256,512 C 114.625,512 0,397.391 0,256 0,114.609 114.625,0 256,0 397.391,0 512,114.609 512,256 512,397.391 397.391,512 256,512 z M 256,64 C 149.969,64 64,149.969 64,256 64,362.031 149.969,448 256,448 362.047,448 448,362.031 448,256 448,149.969 362.047,64 256,64 z m 32,224 -64,0 0,0 -96,0 0,-64 96,0 0,0 64,0 0,0 96,0 0,64 -96,0 z"
-     id="path4" />
+     d="M 256,512 C 114.625,512 0,397.391 0,256 0,114.609 114.625,0 256,0 397.391,0 512,114.609 512,256 512,397.391 397.391,512 256,512 Z M 256,64 C 149.969,64 64,149.969 64,256 64,362.031 149.969,448 256,448 362.047,448 448,362.031 448,256 448,149.969 362.047,64 256,64 Z m 32,224 h -64 v 0 h -96 v -64 h 96 v 0 h 64 v 0 h 96 v 64 z"
+     id="path4"
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff" />
 </svg>
