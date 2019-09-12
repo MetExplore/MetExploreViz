@@ -35,10 +35,17 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 						{
 							if(theMapping){
 								me.fillComboSelectCondition(that, theMapping, old);
-								metExploreD3.GraphMapping.mapNodes(theMapping.getName());
 							}
 						}
 					}
+				}
+			},
+			collapse : function(field) {
+				if (_metExploreViz.getMappingsLength() !== 0) {
+
+					var theMapping = _metExploreViz.getMappingByName(field.getValue());
+					if (theMapping)
+						metExploreD3.GraphMapping.mapNodes(theMapping.getName());
 				}
 			},
 			disableMapping : function(){
