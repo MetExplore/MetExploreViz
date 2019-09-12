@@ -504,7 +504,7 @@ metExploreD3.GraphUtils = {
 		  buttonZoomOut.style("display", "inline");
 
 		d3.select("#"+_MyThisGraphNode.activePanel).select("#D3viz")
-			.style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
+			.style("box-shadow", " 0px 0px 10px 3px #144778 inset");
 
 		// var tooltip = d3.selectAll("#tooltip");
 		// if(tooltip!=null)  

@@ -26,7 +26,7 @@ metExploreD3.GraphPanel = {
         {
             _MyThisGraphNode.activePanel=panel;
             d3.select("#"+panel).select("#D3viz")
-                .style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
+                .style("box-shadow", " 0px 0px 10px 3px #144778 inset");
         }
         else
 		{
@@ -34,7 +34,7 @@ metExploreD3.GraphPanel = {
             {
                 _MyThisGraphNode.activePanel=panel;
                 d3.select("#"+panel).select("#D3viz")
-                    .style("box-shadow", " 0px 0px 10px 3px rgba(95, 162, 221) inset");
+                    .style("box-shadow", " 0px 0px 10px 3px #144778 inset");
 
 
                 d3.select("#"+lastPanel).select("#D3viz")

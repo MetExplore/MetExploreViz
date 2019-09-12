@@ -91,6 +91,13 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			scope:me
 		});
 		
+		view.lookupReference('vizLoadMenuID').on({
+			mouseover : function(){this.lookupReference('vizLoadMenuID').setIconCls("importToRsx");},
+			mouseout : function(){this.lookupReference('vizLoadMenuID').setIconCls("importToRsxwhite");},
+			menuhide : function(){this.lookupReference('vizLoadMenuID').setIconCls("importToRsxwhite");},
+			scope : me
+		});
+
 		view.lookupReference('searchNodeButton').on({
 			click : me.searchNode,
 			scope : me
