@@ -38,7 +38,7 @@ x-form-checkbox-default {
 .loadButton{
     padding: 5px;
     margin: 5px;
-    background:#5FA2DD;
+    background:#144778;
 }
 .loadButton span{
     color:#FFFFFF ;
@@ -46,7 +46,7 @@ x-form-checkbox-default {
 .loadButton.x-btn-focus{
     padding: 5px;
     margin: 5px;
-    background:#5FA2DD;
+    background:#144778;
 }
 .loadButton.x-btn-focus span {
     color:#FFFFFF ;
@@ -315,6 +315,13 @@ p {
 
 .importToRsx {
        background-image: url(../icons/importToRsx.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+
+.importToRsxwhite {
+       background-image: url(../icons/importToRsxwhite.png);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;

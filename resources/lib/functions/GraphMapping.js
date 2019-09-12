@@ -618,7 +618,7 @@ metExploreD3.GraphMapping = {
 																	.attr('fill', 'transparent')
 																	.attr('r', halfRadius)
 																	.attr('stroke-width', radius)
-																	.attr('stroke', '#5fa2dd')
+																	.attr('stroke', '#144778')
 																	.attr('stroke-dasharray',
 																		halfCircumference * (1.0 - coverage)
 																		+ ' '
