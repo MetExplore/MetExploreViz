@@ -11,6 +11,9 @@ Ext.define('metExploreViz.view.menu.viz_LoadMenu.Viz_LoadMenuController', {
 		view      	= me.getView();
 		
 		view.on({
+			mouseenter: function( menu, e, eOpts){
+				Ext.getCmp("graphPanel").lookupReference('vizLoadMenuID').setIconCls("importToRsx");
+			},
 			mouseleave: function( menu, e, eOpts){
 				menu.hide();
 			},
@@ -26,8 +29,6 @@ Ext.define('metExploreViz.view.menu.viz_LoadMenu.Viz_LoadMenuController', {
      	
 		view.lookupReference('loadNetworkFromJSON').on({
 			click : function(){
-				// console.log(Ext.getCmp("IDload"));
-				// console.log(Ext.getCmp("buttonMap"));
 				var component = Ext.getCmp("IDimportNetwork");
 		        if(component!= undefined){
 					component.fileInputEl.dom.click();

@@ -63,7 +63,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 id:'vizLoadMenuID',
                                 reference:'vizLoadMenuID',
                                 padding:'5px 5px 5px 5px',
-                                iconCls: 'importToRsx',
+                                iconCls: 'importToRsxwhite',
                                 cls:"loadButton",
                                 iconAlign: 'left'
                           },
