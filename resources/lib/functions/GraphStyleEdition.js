@@ -142,6 +142,7 @@ metExploreD3.GraphStyleEdition = {
 
                 deltaX = parseFloat(d3.select(this).attr("x"));
                 deltaY = parseFloat(d3.select(this).attr("y"));
+
                 if(isNaN(deltaX)) deltaX=0;
                 if(isNaN(deltaY)) deltaY=0;
 
@@ -159,18 +160,14 @@ metExploreD3.GraphStyleEdition = {
                     function(panelLinked, sessionLinked) {
                         var theD3Node=d3.select(me);
                         var transform = theD3Node.attr("transform");
-                        console.log(transform);
-                        console.log(theD3Node);
 
                         var newX = 0;
                         var newY = 0;
-
                         newX=d3.event.x-d3.event.subject.x+deltaX;
                         newY=d3.event.y-d3.event.subject.y+deltaY;
 
                         if(me.classList.contains("imageNode")) {
                             if (transform && transform.indexOf("scale") != -1) {
-                                console.log(transform.indexOf("scale"));
                                 var transform = theD3Node.attr("transform");
                                 var scale = transform.substring(transform.indexOf("scale"), transform.length);
                                 var elemtScale = scale.substring(6, scale.indexOf(')'));
@@ -181,9 +178,12 @@ metExploreD3.GraphStyleEdition = {
                             }
                         }
 
-                        theD3Node.attr("x", newX);
-                        theD3Node.attr("y", newY);
-                    });
+                        theD3Node
+                            .attr('x', newX)
+                            .attr('y', newY)
+                            .selectAll('tspan').attr('x', newX);
+
+                        });
             })
             .on("end", function (d,i) {
                 d3.selectAll("#D3viz")
