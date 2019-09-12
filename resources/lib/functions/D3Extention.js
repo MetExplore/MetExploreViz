@@ -62,8 +62,22 @@ d3.selection.prototype.addNodeText = function(style) {
 			for (var i = 0; i < name.length; i++) {
 				var nameDOMFormat = $("<div/>").html(name[i]).text();
 				var tspan = el.append('tspan').text(nameDOMFormat);
-				if (i > 0)
-					tspan.attr('x', 0).attr('dy', '10');
+
+				if (d.labelFont){
+					if (d.labelFont.fontX) {
+						tspan
+							.attr('x', function () {
+								return d.labelFont.fontX;
+							});
+					}
+					else tspan.attr('x', 0);
+				}
+				else tspan.attr('x', 0);
+
+
+				if (i > 0){
+					tspan.attr('dy', '10');
+				}
 			}
 		})
 		.style("font-size",style.getFontSize())
@@ -75,15 +89,72 @@ d3.selection.prototype.addNodeText = function(style) {
 		.style("font-weight", 'bold')
 		.style("pointer-events", 'none')
 		.style("text-anchor", 'middle')
-		.attr("y",minDim/2+5)
 		.style("font-family",function(node) { if (node.labelFont) if (node.labelFont.font) return node.labelFont.font; })
 		.style("font-size",function(node) { if (node.labelFont) if (node.labelFont.fontSize) return node.labelFont.fontSize; })
 		.style("font-weight",function(node) { if (node.labelFont) if (node.labelFont.fontBold) return node.labelFont.fontBold; })
 		.style("font-style",function(node) { if (node.labelFont) if (node.labelFont.fontItalic) return node.labelFont.fontItalic; })
 		.style("text-decoration-line",function(node) { if (node.labelFont) if (node.labelFont.fontUnderline) return node.labelFont.fontUnderline; })
 		.style("opacity",function(node) { if (node.labelFont) if (node.labelFont.fontOpacity) return node.labelFont.fontOpacity; })
-		.style("x",function(node) { if (node.labelFont) if (node.labelFont.fontX) return node.labelFont.fontX; })
-		.style("y",function(node) { if (node.labelFont) if (node.labelFont.fontY) return node.labelFont.fontY; })
+		.attr("x",function(node) {
+			if (node.labelFont) {
+				if (node.labelFont.fontX){
+					return node.labelFont.fontX;
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			else
+			{
+				return 0;
+			}
+		})
+		.attr("y",function(node) {
+			if (node.labelFont) {
+				if (node.labelFont.fontY){
+					return node.labelFont.fontY;
+				}
+				else
+				{
+					return minDim/2+5;
+				}
+			}
+			else
+			{
+				return minDim/2+5;
+			}
+		})
+		.style("x",function(node) {
+			if (node.labelFont) {
+				if (node.labelFont.fontX){
+					return node.labelFont.fontX;
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			else
+			{
+				return 0;
+			}
+		})
+		.style("y",function(node) {
+			if (node.labelFont) {
+				if (node.labelFont.fontY){
+					return node.labelFont.fontY;
+				}
+				else
+				{
+					return minDim/2+5;
+				}
+			}
+			else
+			{
+				return minDim/2+5;
+			}
+		})
 		.style("transform",function(node) { if (node.labelFont) if (node.labelFont.fontTransform) return node.labelFont.fontTransform; });
 
 };
