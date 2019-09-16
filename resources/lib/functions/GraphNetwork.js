@@ -835,7 +835,7 @@ metExploreD3.GraphNetwork = {
             })
             .scaleExtent([ 0.01, 30 ])
             .extent([[w*.45, h*.45], [w*.55, h*.55]])
-            .translateExtent([[-w*2, -h*2], [w*3, h*3]])
+            .translateExtent([[-w*10, -h*10], [w*10, h*10]])
             .on("zoom", function(e){
 
                 that.zoom(panel);
