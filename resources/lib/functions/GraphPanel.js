@@ -93,7 +93,7 @@ metExploreD3.GraphPanel = {
 			metExploreD3.GraphNetwork.zoomListener
 				.scaleExtent([ 0.01, 30 ])
 				.extent([[w*.45, h*.45], [w*.55, h*.55]])
-				.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
+				.translateExtent([[-w*10, -h*10], [w*10, h*10]]);
 
 
 			// var transform = d3.zoomTransform(d3.select("#viz").select("#D3viz").node());
@@ -196,7 +196,7 @@ metExploreD3.GraphPanel = {
 					metExploreD3.GraphNetwork.zoomListener
 						.scaleExtent([ 0.01, 30 ])
 						.extent([[w*.45, h*.45], [w*.55, h*.55]])
-						.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
+						.translateExtent([[-w*10, -h*10], [w*10, h*10]]);
 				}
 			}
 			else
@@ -220,7 +220,7 @@ metExploreD3.GraphPanel = {
 					metExploreD3.GraphNetwork.zoomListener
 						.scaleExtent([ 0.01, 30 ])
 						.extent([[w*.45, h*.45], [w*.55, h*.55]])
-						.translateExtent([[-w*2, -h*2], [w*3, h*3]]);
+						.translateExtent([[-w*10, -h*10], [w*10, h*10]]);
 	            }
 			}
 		}
