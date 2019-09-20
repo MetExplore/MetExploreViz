@@ -15,6 +15,10 @@ metExploreD3.GraphLink = {
         metExploreD3.GraphLink.panelParent = parent;
     },
 
+    /**
+     * Color links in function of pathways
+     * @param parent : active panel
+     */
     pathwaysOnLink: function (parent) {
 
         d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
@@ -77,7 +81,13 @@ metExploreD3.GraphLink = {
             });
     },
 
-    //arrayValue already scale
+    /**
+     * Drawing edges to compare 2 fluxes conditions
+     * @param link
+     * @param panel
+     * @param linkId
+     * @returns {string}
+     */
     funcPathForFlux: function (link, panel, linkId) {
         var source, target, path, reaction;
         var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
@@ -373,6 +383,12 @@ metExploreD3.GraphLink = {
         return path;
     },
 
+    /**
+     * Drawing edge when zoom is low (contextual zoom)
+     * @param link
+     * @param panel
+     * @returns {function(*, *): string}
+     */
     funcPath1: function (link, panel) {
         var source, target, path;
 
@@ -392,6 +408,12 @@ metExploreD3.GraphLink = {
         return path;
     },
 
+    /**
+     * Default drawing of links
+     * @param link
+     * @param panel
+     * @returns {function(*, *): string}
+     */
     funcPath3: function (link, panel) {
         var source, target, path;
 
@@ -675,6 +697,15 @@ metExploreD3.GraphLink = {
 
     },
 
+    /**
+     * Change function used to drawing links to fluxes
+     * @param parent
+     * @param networkData
+     * @param linkStyle
+     * @param metaboliteStyle
+     * @param showValues
+     * @param conditionName
+     */
     loadLinksForFlux: function (parent, networkData, linkStyle, metaboliteStyle, showValues, conditionName) {
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup").remove();
         _metExploreViz.getSessionById(parent).setMappingDataType("Flux");
@@ -715,6 +746,12 @@ metExploreD3.GraphLink = {
         metExploreD3.GraphNetwork.tick('viz');
     },
 
+    /**
+     * Display flux values on links
+     * @param parent
+     * @param conditionName
+     * @param fluxType
+     */
     showValue : function(parent, conditionName, fluxType){
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup")
             .append("svg:text")
@@ -944,6 +981,10 @@ metExploreD3.GraphLink = {
         }
     },
 
+    /**
+     * Display convex hull on network
+     * @param panel
+     */
     displayConvexhulls : function(panel){
 
         var generalStyle = _metExploreViz.getGeneralStyle();

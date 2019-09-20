@@ -1,3 +1,17 @@
+/*******************************
+ * @author MC
+ * Functions to extend d3js selection function
+ */
+
+/*******************************
+ * Node shape generation
+ * @param width
+ * @param height
+ * @param rx
+ * @param ry
+ * @param stroke
+ * @param strokewidth
+ */
 d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, strokewidth) {
 	this.append("rect")
 			.attr("class", function(d) { return d.getBiologicalType(); })
@@ -23,6 +37,15 @@ d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, str
 		.style("fill", '#000');
 };
 
+/****************************************
+ * Node shape setter
+ * @param width
+ * @param height
+ * @param rx
+ * @param ry
+ * @param stroke
+ * @param strokewidth
+ */
 d3.selection.prototype.setNodeForm = function(width, height, rx, ry, stroke, strokewidth) {
 	this.style("opacity", 1)
 		.select("rect")
@@ -45,6 +68,10 @@ d3.selection.prototype.setNodeForm = function(width, height, rx, ry, stroke, str
 		.style("stroke-width", strokewidth);
 };
 
+/*******************************
+ * Add text to node
+ * @param style in function of node biological type
+ */
 d3.selection.prototype.addNodeText = function(style) {
 
 	var minDim = Math.min(style.getWidth(),style.getHeight());

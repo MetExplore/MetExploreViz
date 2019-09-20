@@ -1930,11 +1930,11 @@ metExploreD3.GraphNode = {
             });
 
             session.groups = metExploreD3.getCompartmentsGroup();
-            metExploreD3.GraphNetwork.initCentroids(parent);
+           // metExploreD3.GraphNetwork.initCentroids(parent);
         }
         else {
             session.groups = metExploreD3.getPathwaysGroup(parent);
-            metExploreD3.GraphNetwork.initCentroids(parent);
+            //metExploreD3.GraphNetwork.initCentroids(parent);
         }
         session.groupPath = function (d) {
 

@@ -174,8 +174,8 @@ metExploreD3.GraphMapping = {
 				}
 				catch (e) {
 
+					e.functionUsed="mapNodeDataFile";
 					metExploreD3.hideMask(myMask);
-
 					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
 					if (anim=='true') {
 						var session = _metExploreViz.getSessionById('viz');
@@ -290,6 +290,7 @@ metExploreD3.GraphMapping = {
 				}
 				catch (e) {
 
+					e.functionUsed="mapNodeData";
 					metExploreD3.hideMask(myMask);
 
 					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
@@ -660,6 +661,7 @@ metExploreD3.GraphMapping = {
 						}
 						catch (e) {
 
+							e.functionUsed="mapNodes";
 							metExploreD3.hideMask(myMask);
 
 							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
@@ -979,7 +981,7 @@ metExploreD3.GraphMapping = {
 						}
 					}
 					catch (e) {
-
+						e.functionUsed="mapFluxes";
 						metExploreD3.hideMask(myMask);
 
 						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
@@ -1254,6 +1256,7 @@ metExploreD3.GraphMapping = {
 
 					}
 					catch (e) {
+						e.functionUsed="mapUniqueFlux";
 
 							metExploreD3.hideMask(myMask);
 
@@ -1348,7 +1351,7 @@ metExploreD3.GraphMapping = {
 						metExploreD3.hideMask(myMask);
 					}
 					catch (e) {
-
+						e.functionUsed="parseFluxValues";
 						metExploreD3.hideMask(myMask);
 
 						throw e;
@@ -1477,7 +1480,7 @@ metExploreD3.GraphMapping = {
 					}
 				}
 				catch (e) {
-
+					e.functionUsed="reloadMapping";
 					metExploreD3.hideMask(myMask);
 
 					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
@@ -1644,7 +1647,7 @@ metExploreD3.GraphMapping = {
 							}
 						}
 						catch (e) {
-
+							e.functionUsed="graphMappingDiscreteData";
 							metExploreD3.hideMask(myMask);
 
 							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
@@ -2003,7 +2006,7 @@ metExploreD3.GraphMapping = {
 
 						}
 						catch (e) {
-
+							e.functionUsed="graphMappingContinuousData";
 							metExploreD3.hideMask(myMask);
 
 							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
@@ -2066,7 +2069,7 @@ metExploreD3.GraphMapping = {
 						}
 					}
 					catch (e) {
-
+						e.functionUsed="graphMappingBinary";
 						metExploreD3.hideMask(myMask);
 
 						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
@@ -2190,7 +2193,7 @@ metExploreD3.GraphMapping = {
 						}
 					}
 					catch (e) {
-
+						e.functionUsed="removeMappingSuggestion";
 						metExploreD3.hideMask(myMask);
 
 						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
@@ -2327,7 +2330,7 @@ metExploreD3.GraphMapping = {
 						metExploreD3.hideMask(myMask);
 					}
 					catch (e) {
-
+						e.functionUsed="setSuggestionColor";
 						metExploreD3.hideMask(myMask);
 
 						throw e;
@@ -2553,7 +2556,7 @@ metExploreD3.GraphMapping = {
 						metExploreD3.hideMask(myMask);
 					}
 					catch (e) {
-
+						e.functionUsed="setDiscreteMappingColor";
 						metExploreD3.hideMask(myMask);
 
 						throw e;
@@ -2748,7 +2751,7 @@ metExploreD3.GraphMapping = {
 						}
 					}
 					catch (e) {
-
+						    e.functionUsed="loadDataFromJSON";
 							metExploreD3.hideMask(myMask);
 
 							var anim=metExploreD3.GraphNetwork.isAnimated("viz");

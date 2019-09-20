@@ -853,15 +853,18 @@ var metExploreViz = function(panel, webSite){
     window.onerror = function(msg, url, lineNo, columnNo, error) {
         console.log(url);
         console.log(window.location.href);
-      if(window.location.href.includes("https://metexplore.toulouse.inra.fr/metexplore2/resources/lib/javascript/metExploreViz") && url.includes("https://metexplore.toulouse.inra.fr/metexplore2/resources/lib/javascript/metExploreViz"))
-      {
+        if(window.location.href.includes("https://metexplore.toulouse.inra.fr/metexplore2/resources/lib/javascript/metExploreViz") && url.includes("https://metexplore.toulouse.inra.fr/metexplore2/resources/lib/javascript/metExploreViz"))
+        {
 
-        var nVer = navigator.appVersion;
-        var nAgt = navigator.userAgent;
-        var browserName  = navigator.appName;
-        var fullVersion  = ''+parseFloat(navigator.appVersion);
-        var majorVersion = parseInt(navigator.appVersion,10);
-        var nameOffset,verOffset,ix;
+            var nVer = navigator.appVersion;
+            var nAgt = navigator.userAgent;
+            var browserName  = navigator.appName;
+            var fullVersion  = ''+parseFloat(navigator.appVersion);
+            var majorVersion = parseInt(navigator.appVersion,10);
+            var nameOffset,verOffset,ix;
+
+            var functionsUsed = "";
+            if(error.functionUsed)  functionsUsed='Functions used : '+ functionsUsed + '\n';
 
 // In Opera, the true version is after "Opera" or after "Version"
         if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
@@ -932,29 +935,16 @@ var metExploreViz = function(panel, webSite){
                 payload.icon_url = theIconUrl;
             }
 
-            var functionsUsed="...";
             payload.attachments = [
                 {
                     "title": "MetExploreViz error report",
                     "text":
                         'Date : '+ new Date() + '\n' +
                         'Browser : '+ browserName + '\n' + 'Version : '+ fullVersion + '\n' +
-                        'Functions used : '+ functionsUsed + '\n'+
+                        functionsUsed+
                         '```\n'+msg+'\n'+url+'\nline n.'+lineNo+' column n.'+columnNo+'\n```'
                 }
             ];
-            // payload.attachments = [
-            //     {
-            //         "title": "MetExploreViz error report",
-            //         "text":
-            //             'Date : '+ new Date() + '\n' +
-            //             'Browser : '+ browserName + '\n' +
-            //             'Full version : '+ fullVersion + '\n' +
-            //             'Major version : '+ majorVersion + '\n' +
-            //             '``` \n'+msg+'\n'+url+'\nline n.'+lineNo+' column n.'+columnNo+'\n ```'+
-            //             'Functions used : '+ functionsUsed + '\n',
-            //     }
-            // ];
 
             xhttp.open("POST", urlWebHook);
             xhttp.send(JSON.stringify(payload));
