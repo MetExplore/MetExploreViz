@@ -330,6 +330,10 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/functions/NodeStyleForm.js",
+            "bundle": true
+        },
+        {
             "path": "resources/lib/functions/Features.js",
             "bundle": true
         },
@@ -562,6 +566,9 @@
      */
 
     "output": {
+        "js": {
+            "version": "ES6"
+        },
         "base": "${workspace.build.dir}/${build.environment}/${app.name}",
         "appCache": {
             "enable": false

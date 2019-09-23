@@ -34,7 +34,7 @@ Ext.define('metExploreViz.view.panel.editModePanel.EditModePanelController', {
                 }
                 else {
                     metExploreD3.GraphStyleEdition.curvedPath = false;
-                    d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction").attr("marker-end", "none");
+                    metExploreD3.GraphNetwork.removeMarkerEnd();
                     metExploreD3.GraphCaption.drawCaption();
                     metExploreD3.GraphLink.tick("viz");
                 }

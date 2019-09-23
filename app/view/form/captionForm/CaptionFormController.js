@@ -105,18 +105,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                                 var comp = metExploreD3.getCompartmentByName(component.getName());
 
                                                             comp.setHidden(!newValue);
-                                                            d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
-                                                                .classed("hide", function (conv) {
-                                                                    if (view.getTitle() == "Pathways"){
-                                                                        var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
-                                                                        if(com.isCollapsed()) return true;
-                                                                    }
-                                                                    else
-                                                                        var com = metExploreD3.getCompartmentByName(conv.key);
-                                                                    if(com)
-                                                                        return com.hidden();
-                                                                    return false;
-                                                                });
+                                                            metExploreD3.GraphLink.majConvexhullsVisibility(panelLinked);
                                                             if (view.getTitle() == "Pathways"){
                                                                 metExploreD3.GraphCaption.majCaptionPathwayOnLink();
                                                             }

@@ -2,9 +2,6 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.panel-graphpanel-graphpanel',
 
-	// requires:['metexplore.model.d3.Network','metexplore.global.Graph'],
-
-
 /**
  * Aplies event linsteners to the view
  */
@@ -145,194 +142,14 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 		var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
-		if(view.lookupReference("searchNodeTextField").getValue()=="happyfox")
-		{
-			d3.select("#viz").select("#D3viz")
-				.style("background-image","url('resources/images/easteregg/foxegg.jpg')")
-				.style("background-repeat","round");
-		}
 		if(view.lookupReference("searchNodeTextField").getValue()=="joyeuxnoel")
 		{
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.linkGroup").selectAll("*").remove();
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("*").remove();
-
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-				.filter(
-					function(d) {
-						return (d.getBiologicalType() == 'reaction');
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/giftegg.svg")
-				.attr("width", "50px")
-				.attr("height", "50px")
-				.attr("transform", "translate(-25,-25)");
-
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-				.filter(
-					function(d) {
-						return (d.getBiologicalType() == 'metabolite');
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/sapinegg.svg")
-				.attr("width", "70px")
-				.attr("height", "70px")
-				.attr("transform", "translate(-35,-35)");
+			metExploreD3.GraphNetwork.easterEggNoel();
 		}
 
 		if(view.lookupReference("searchNodeTextField").getValue()=="halloween")
 		{
-			d3.select("#viz").select("#D3viz")
-				.style("background-image","url('resources/images/easteregg/happyhalloween.png')")
-				.style("background-repeat","round");
-			
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.linkGroup").selectAll("*").remove();
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("*").remove();
-
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-				.filter(
-					function(d) {
-						return (d.getBiologicalType() == 'reaction');
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/pumpkin.png")
-				.attr("width", "70px")
-				.attr("height", "70px")
-				.attr("transform", "translate(-25,-25)");
-
-			var metabolites = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-				.filter(
-					function(d) {
-						return (d.getBiologicalType() == 'metabolite');
-					}
-				)
-
-			metabolites
-				.filter(
-					function(d, i) {
-						return (i <= metabolites.size()/4*3);
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/bat.gif")
-				.attr("width", "70px")
-				.attr("height", "70px")
-				.attr("transform", "translate(-35,-35)");
-			
-			metabolites
-				.filter(
-					function(d, i) {
-						return (i > metabolites.size()/6*5 && i!=metabolites.size()-1);
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/witch.png")
-				.attr("width", "120px")
-				.attr("height", "120px")
-				.attr("transform", "translate(-35,-35)");
-
-			metabolites
-				.filter(
-					function(d, i) {
-						return (i == metabolites.size()-1);
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/feedme.png")
-				.attr("width", "170px")
-				.attr("height", "170px")
-				.attr("transform", "translate(-35,-35)");
-
-		}
-
-		if(view.lookupReference("searchNodeTextField").getValue()=="worldchampion")
-		{
-			// d3.select("#viz").select("#D3viz")
-			// 	.style("background-image","url('resources/images/easteregg/happyhalloween.png')")
-			// 	.style("background-repeat","round");
-			
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("*").remove();
-
-			d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-				.filter(
-					function(d) {
-						return (d.getBiologicalType() == 'reaction');
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/wc/drapeau-tricolore.png")
-				.attr("width", "70px")
-				.attr("height", "70px")
-				.attr("transform", "translate(-35,-35)");
-
-			var metabolites = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-				.filter(
-					function(d) {
-						return (d.getBiologicalType() == 'metabolite');
-					}
-				)
-
-			metabolites
-				.filter(
-					function(d, i) {
-						return (i > 5);
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/wc/drapeau-tricolore.png")
-				.attr("width", "70px")
-				.attr("height", "70px")
-				.attr("transform", "translate(-35,-35)");
-
-			metabolites
-				.filter(
-					function(d, i) {
-						return (i == 0 || i == 1);
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/wc/coupe_du_monde.png")
-				.attr("width", "120px")
-				.attr("height", "120px")
-				.attr("transform", "translate(-60,-60)");
-
-			metabolites.filter(
-					function(d, i) {
-						return (i == 2);
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/wc/zizou.png")
-				.attr("width", "300px")
-				.attr("height", "300px")
-				.attr("transform", "translate(-150,-150)");
-
-			metabolites
-				.filter(
-					function(d, i) {
-						return (i == 3);
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/wc/francais.png")
-				.attr("width", "300px")
-				.attr("height", "300px")
-				.attr("transform", "translate(-150,-150)");
-
-			metabolites
-				.filter(
-					function(d, i) {
-						return (i == 5 || i == 4);
-					}
-				)
-				.append("image")
-				.attr("xlink:href","resources/images/easteregg/wc/star.png")
-				.attr("width", "100px")
-				.attr("height", "100px")
-				.attr("transform", "translate(-50,-50)");
-
+			metExploreD3.GraphNetwork.easterEggHalloween();
 		}
 
 		metExploreD3.GraphNode.searchNode(view.lookupReference("searchNodeTextField").getValue());

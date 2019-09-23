@@ -1007,6 +1007,22 @@ metExploreD3.GraphLink = {
         }
     },
 
+    majConvexhullsVisibility : function(panelLinked){
+        d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
+            .classed("hide", function (conv) {
+                if (view.getTitle() == "Pathways"){
+                    var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
+                    if(com.isCollapsed()) return true;
+                }
+                else
+                    var com = metExploreD3.getCompartmentByName(conv.key);
+                if(com)
+                    return com.hidden();
+                return false;
+            });
+    },
+
+
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction.
      * @param {String} panel : The panel in which to draw the links.
@@ -1546,5 +1562,9 @@ metExploreD3.GraphLink = {
         var centroidTargetY = targetY / countExit;
 
         return [centroidSourceX, centroidSourceY, centroidTargetX, centroidTargetY];
+    },
+
+    removeReactionLinks: function (node, enteringLinks, exitingLinks) {
+        d3.selectAll("path.link.reaction").remove();
     }
-}
+};
