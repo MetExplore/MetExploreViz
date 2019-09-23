@@ -6,7 +6,7 @@ metExploreD3.GraphCaption = {
 
 
     /*****************************************************
-     * refreshStyleOfReaction in caption
+     * refresh reactions style in caption
      */
     refreshStyleOfReaction : function(){
 
@@ -31,7 +31,7 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
-     * refreshStyleOfMetabolite in caption
+     * refresh metabolites style in caption
      */
     refreshStyleOfMetabolite : function(){
 
@@ -54,6 +54,7 @@ metExploreD3.GraphCaption = {
             .attr("transform","translate(15,130)");
 
     },
+
     /*****************************************************
      * Draw caption
      */
@@ -280,7 +281,7 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
-     * Draw caption
+     * Draw caption for edit mode
      */
     drawCaptionEditMode : function(){
         d3.select("#viz")
@@ -492,7 +493,7 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
-     * Maj caption
+     * Maj caption for convex hulls
      */
     majCaption : function(panel){
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
@@ -525,7 +526,7 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
-     * Maj caption
+     * Maj caption of link to display pathways
      */
     majCaptionPathwayOnLink : function(){
 
@@ -616,7 +617,7 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
-     * Maj caption color
+     * Maj caption color for convex hulls and links
      */
     majCaptionColor : function(components, selectedComponent, panel){
         var generalStyle = _metExploreViz.getGeneralStyle();
@@ -672,7 +673,6 @@ metExploreD3.GraphCaption = {
 
     /*****************************************************
      * Draw caption of metabolic compartiments
-     * @param {} top : top of the metabolite caption
      */
     colorMetaboliteLegend : function(){
         // Load user's preferences
@@ -701,9 +701,9 @@ metExploreD3.GraphCaption = {
         }
         metExploreD3.fireEvent("captionFormCompartments", "afterColorCalculating");
     },
+
     /*****************************************************
-     * Draw caption of metabolic compartiments
-     * @param {} top : top of the metabolite caption
+     * Draw caption of pathways
      */
     colorPathwayLegend : function(){
 

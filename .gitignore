@@ -33,3 +33,4 @@ jasmine/src/
 node_modules/
 
 package-lock\.json
+sencha-error-*

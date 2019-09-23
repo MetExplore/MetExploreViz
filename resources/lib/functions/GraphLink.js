@@ -15,6 +15,10 @@ metExploreD3.GraphLink = {
         metExploreD3.GraphLink.panelParent = parent;
     },
 
+    /**
+     * Color links in function of pathways
+     * @param parent : active panel
+     */
     pathwaysOnLink: function (parent) {
 
         d3.select("#"+parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
@@ -77,7 +81,13 @@ metExploreD3.GraphLink = {
             });
     },
 
-    //arrayValue already scale
+    /**
+     * Drawing edges to compare 2 fluxes conditions
+     * @param link
+     * @param panel
+     * @param linkId
+     * @returns {string}
+     */
     funcPathForFlux: function (link, panel, linkId) {
         var source, target, path, reaction;
         var mappingName = _metExploreViz.getSessionById('viz').getActiveMapping();
@@ -373,6 +383,12 @@ metExploreD3.GraphLink = {
         return path;
     },
 
+    /**
+     * Drawing edge when zoom is low (contextual zoom)
+     * @param link
+     * @param panel
+     * @returns {function(*, *): string}
+     */
     funcPath1: function (link, panel) {
         var source, target, path;
 
@@ -392,6 +408,12 @@ metExploreD3.GraphLink = {
         return path;
     },
 
+    /**
+     * Default drawing of links
+     * @param link
+     * @param panel
+     * @returns {function(*, *): string}
+     */
     funcPath3: function (link, panel) {
         var source, target, path;
 
@@ -675,6 +697,15 @@ metExploreD3.GraphLink = {
 
     },
 
+    /**
+     * Change function used to drawing links to fluxes
+     * @param parent
+     * @param networkData
+     * @param linkStyle
+     * @param metaboliteStyle
+     * @param showValues
+     * @param conditionName
+     */
     loadLinksForFlux: function (parent, networkData, linkStyle, metaboliteStyle, showValues, conditionName) {
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup").remove();
         _metExploreViz.getSessionById(parent).setMappingDataType("Flux");
@@ -715,6 +746,12 @@ metExploreD3.GraphLink = {
         metExploreD3.GraphNetwork.tick('viz');
     },
 
+    /**
+     * Display flux values on links
+     * @param parent
+     * @param conditionName
+     * @param fluxType
+     */
     showValue : function(parent, conditionName, fluxType){
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup")
             .append("svg:text")
@@ -944,6 +981,10 @@ metExploreD3.GraphLink = {
         }
     },
 
+    /**
+     * Display convex hull on network
+     * @param panel
+     */
     displayConvexhulls : function(panel){
 
         var generalStyle = _metExploreViz.getGeneralStyle();
@@ -965,6 +1006,22 @@ metExploreD3.GraphLink = {
                 .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
         }
     },
+
+    majConvexhullsVisibility : function(panelLinked){
+        d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
+            .classed("hide", function (conv) {
+                if (view.getTitle() == "Pathways"){
+                    var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
+                    if(com.isCollapsed()) return true;
+                }
+                else
+                    var com = metExploreD3.getCompartmentByName(conv.key);
+                if(com)
+                    return com.hidden();
+                return false;
+            });
+    },
+
 
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction.
@@ -1505,5 +1562,9 @@ metExploreD3.GraphLink = {
         var centroidTargetY = targetY / countExit;
 
         return [centroidSourceX, centroidSourceY, centroidTargetX, centroidTargetY];
+    },
+
+    removeReactionLinks: function (node, enteringLinks, exitingLinks) {
+        d3.selectAll("path.link.reaction").remove();
     }
-}
+};

@@ -1,10 +1,15 @@
 /**
  * @author MC
- * (a)description : Basic functions
+ * (a)description : Basic graph functions
  */
     
 metExploreD3.GraphFunction = {
 
+	/**
+	 * Breadth First Search
+	 * @param node
+	 * @returns {*|Graph}
+	 */
     bfs : function (node){
 	    var graph = metExploreD3.GraphFunction.getGraphNotDirected();
 
@@ -37,6 +42,9 @@ metExploreD3.GraphFunction = {
 		return graph;          
 	},
 
+	/**
+	 *  Function to align isolated sinks or isolated sources to its reaction
+	 */
     alignSinkSource : function(){
         function launch(fun){
             var nodes=d3.select("#viz").select("#D3viz").selectAll("g.node");
@@ -108,6 +116,10 @@ metExploreD3.GraphFunction = {
         });
     },
 
+	/**
+	 * Highlight sinks in visualisation
+	 * @param panel
+	 */
     highlightSink : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
 
@@ -136,6 +148,10 @@ metExploreD3.GraphFunction = {
             });
     },
 
+	/**
+	 * Highlight sinks in visualisation
+	 * @param panel
+	 */
     highlightSource : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
 
@@ -164,6 +180,10 @@ metExploreD3.GraphFunction = {
             });
     },
 
+	/**
+	 * Allows horizontal alignment of selected nodes
+	 * @param panel
+	 */
 	horizontalAlign : function(panel) {
 		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
 		
@@ -197,6 +217,10 @@ metExploreD3.GraphFunction = {
      	metExploreD3.GraphNetwork.tick(panel);
 	},
 
+	/**
+	 * Allows vertical alignment of selected nodes
+	 * @param panel
+	 */
 	verticalAlign : function(panel) {
 		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
 		var xRef = _metExploreViz.getSessionById(panel).getD3Data().getNodeById(nodes[0]).x;
@@ -230,6 +254,10 @@ metExploreD3.GraphFunction = {
 	},
 
 
+	/**
+	 * Inverse x axis position of selected nodes from them median x
+	 * @param panel
+	 */
     horizontalReverse : function(panel) {
         metExploreD3.GraphNode.fixSelectedNode();
         var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
@@ -261,6 +289,10 @@ metExploreD3.GraphFunction = {
         metExploreD3.GraphNetwork.tick(panel);
     },
 
+	/**
+	 * Inverse y axis position of selected nodes from them median y
+	 * @param panel
+	 */
     verticalReverse : function(panel) {
         metExploreD3.GraphNode.fixSelectedNode();
         var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
@@ -292,7 +324,11 @@ metExploreD3.GraphFunction = {
         metExploreD3.GraphNetwork.tick(panel);
     },
 
-    colorDistanceOnNode : function(graph, func){
+
+	/**
+	 *	Color nodes in function of graph distances
+	 */
+	colorDistanceOnNode : function(graph, func){
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();
 		var maxDistance = 0; 
 		for (var key in graph.nodes) {	
@@ -302,10 +338,9 @@ metExploreD3.GraphFunction = {
 	        networkData.getNodeById(key).distance = dist;
 	    }
 
-    	var color = d3.scale.category20();
 		var color = d3.scaleLinear()
 			.domain([0, 4])
-			.range(["blue", "yellow"]);
+			.range(["blue", "white"]);
 
 
 		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
@@ -347,21 +382,8 @@ metExploreD3.GraphFunction = {
 			       	if(finalGraph.nodes[key].distance=="Infinity") finalGraph.nodes[key].distance=10000;
 			       	
 				};
-				metExploreD3.GraphFunction.colorDistanceOnNode(finalGraph, setCharge);
+				metExploreD3.GraphFunction.colorDistanceOnNode(finalGraph);
 		});
-		function setCharge(){
-			var color = d3.scaleLinear()
-				.domain([0, 1, 2, 3])
-				.range([-600, -500, -400, -30]);
-
-			metExploreD3.getGlobals().getSessionById('viz').getForce().charge(function(node){
-				var value = node.distance;
-				if(node.distance>3) 
-					value = 3;
-				var val = color(value);
-				return val;
-			});	
-		};
     },
     testFlux : function(){
 		
@@ -384,21 +406,8 @@ metExploreD3.GraphFunction = {
 		
 		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.on("click", function(node){
-				metExploreD3.GraphFunction.colorDistanceOnNode(metExploreD3.GraphFunction.bfs(node), setCharge);
+				metExploreD3.GraphFunction.colorDistanceOnNode(metExploreD3.GraphFunction.bfs(node));
 		});
-		function setCharge(){
-			var color = d3.scaleLinear()
-				.domain([0, 1, 2, 3])
-				.range([-600, -500, -400, -30]);
-
-			metExploreD3.getGlobals().getSessionById('viz').getForce().charge(function(node){
-				var value = node.distance;
-				if(node.distance>3) 
-					value = 3;
-				var val = color(value);
-				return val;
-			});	
-		};
     },
 
     /*******************************************
@@ -1138,6 +1147,7 @@ metExploreD3.GraphFunction = {
 						metExploreD3.hideMask(myMask);
 					}
 					catch (e) {
+						e.functionUsed="keepOnlySubnetwork";
 						if(session!=undefined)
 						{
 							if(force!=undefined)
@@ -1375,6 +1385,7 @@ metExploreD3.GraphFunction = {
 					metExploreD3.hideMask(myMask);
 				}
 				catch (e) {
+					e.functionUsed="highlightSubnetwork";
 					if(session!=undefined)
 					{
 						if(force!=undefined)

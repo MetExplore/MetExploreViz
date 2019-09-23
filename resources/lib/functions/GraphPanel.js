@@ -285,6 +285,7 @@ metExploreD3.GraphPanel = {
 							}
 							catch (e) {
 
+								e.functionUsed="refreshJSON";
 								metExploreD3.hideMask(myMask);
 								metExploreD3.displayMessage("Warning", 'An error occurs durding loading graph please contact <a href="mailto:contact-metexplore@inra.fr">contact-metexplore@inra.fr</a>.')
 								throw e;
