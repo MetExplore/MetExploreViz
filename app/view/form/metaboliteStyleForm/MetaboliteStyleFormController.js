@@ -194,34 +194,15 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormContr
 		});
 	},
 	changeHeight : function(height) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
-					
-			var vis = d3.select("#vizExempleMetabolite")
-						.select("#D3vizExemple");
-			vis.select("g.node").select("rect").attr("height", height);
-
-			vis.select("g.node")
-				.select("text")
-				.attr("y",height);
-		}
+		metExploreD3.NodeStyleForm.changeHeightExemple(height, "Metabolite");
 	},
 
 	changeWidth : function(width) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
-					
-			var vis = d3.select("#vizExempleMetabolite")
-						.select("#D3vizExemple");
-			vis.select("g.node").select("rect").attr("width", width);
-		}
+		metExploreD3.NodeStyleForm.changeWidthExemple(width, "Metabolite");
 	},
 
 	changeStroke : function(stroke) {
-		if(d3.select("#vizExempleMetabolite").select("#D3vizExemple")[0]!=null){
-					
-			var vis = d3.select("#vizExempleMetabolite")
-						.select("#D3vizExemple");
-			vis.select("g.node").select("rect").style("stroke-width", stroke);
-		}
+		metExploreD3.NodeStyleForm.changeStrokeExemple(width, "Metabolite");
 	},
 
 	changeRx : function(rx) {

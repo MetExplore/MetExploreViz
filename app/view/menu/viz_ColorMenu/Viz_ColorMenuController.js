@@ -67,27 +67,8 @@ Ext.define('metExploreViz.view.menu.viz_ColorMenu.Viz_ColorMenuController', {
 			scope : me
 		});
 	},
-	blackWhite: function (item, checked){
-        var me 		= this;
-        var filter = d3.select("#viz").select("#D3viz").select('#grayscale');
-        
-        if(filter.size()==0)
-            d3.select("#viz").select("#D3viz")
-				.append('filter')
-				.attr('id',"grayscale")
-				.append('feColorMatrix')
-				.attr('type', "matrix")
-				.attr('values', "0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0");
-
-		if(item.checked){
-			d3.select("#viz").select("#D3viz")
-				.attr("filter", "url(#grayscale)");
-        }
-        else
-        {
-			d3.select("#viz").select("#D3viz")
-                .attr("filter", false);
-		}
+	blackWhite: function (item){
+        metExploreD3.GraphNetwork.blackWhite(item.checked);
     },
     highlightComponents : function(component){
 

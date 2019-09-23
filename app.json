@@ -330,6 +330,10 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/functions/NodeStyleForm.js",
+            "bundle": true
+        },
+        {
             "path": "resources/lib/functions/Features.js",
             "bundle": true
         },

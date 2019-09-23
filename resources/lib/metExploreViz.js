@@ -4,6 +4,7 @@ var metExploreD3 = {
     GraphUtils:"",
     GraphCaption:"",
     GraphNetwork:"",
+    NodeStyleForm:"",
     GraphLink:"",
     GraphFunction:"",
     GraphMapping:"",

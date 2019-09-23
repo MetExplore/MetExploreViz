@@ -2,9 +2,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.panel-viz-viz',
 
-	// requires:['metexplore.model.d3.Network','metexplore.global.Graph'],
-
-
 /**
  * Aplies event linsteners to the view
  */
