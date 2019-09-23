@@ -566,6 +566,9 @@
      */
 
     "output": {
+        "js": {
+            "version": "ES6"
+        },
         "base": "${workspace.build.dir}/${build.environment}/${app.name}",
         "appCache": {
             "enable": false
