@@ -1007,10 +1007,10 @@ metExploreD3.GraphLink = {
         }
     },
 
-    majConvexhullsVisibility : function(panelLinked){
+    majConvexhullsVisibility : function(panelLinked, type){
         d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
             .classed("hide", function (conv) {
-                if (view.getTitle() == "Pathways"){
+                if (type == "Pathways"){
                     var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
                     if(com.isCollapsed()) return true;
                 }
