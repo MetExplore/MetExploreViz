@@ -105,7 +105,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                                 var comp = metExploreD3.getCompartmentByName(component.getName());
 
                                                             comp.setHidden(!newValue);
-                                                            metExploreD3.GraphLink.majConvexhullsVisibility(panelLinked);
+                                                            metExploreD3.GraphLink.majConvexhullsVisibility(panelLinked, view.getTitle());
                                                             if (view.getTitle() == "Pathways"){
                                                                 metExploreD3.GraphCaption.majCaptionPathwayOnLink();
                                                             }
