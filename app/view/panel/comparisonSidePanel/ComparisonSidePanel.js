@@ -3,30 +3,34 @@
  * (a)description 
  */
 Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
-	extend: 'Ext.panel.Panel',	
+	extend: 'Ext.tab.Panel',
 	alias: 'widget.comparisonSidePanel',
 	requires: [
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.form.selectConditionForm.SelectConditionForm",
         "metExploreViz.view.form.drawingStyleForm.DrawingStyleForm",
-        "metExploreViz.view.form.captionForm.CaptionForm"
+        "metExploreViz.view.form.captionForm.CaptionForm",
+        "metExploreViz.view.form.allStylesForm.AllStylesForm"
     ],
  	controller: "panel-comparisonSidePanel-comparisonSidePanel",
 	/*requires: ['MetExplore.view.form.V_SelectConditionForm',
 	           'MetExplore.view.form.V_UpdateStyleForm'
 	           ],
 */
-	collapsible: true,
-	collapsed:true,
+
 	width: '20%',
 	height: '100%',
 	margins:'0 0 2 0',
 	split:true,
-	layout:'accordion', 
+	collapsible: true,
+	collapsed: false,
 	closable: false,
 	region: 'west',
 	// hidden:true,
+	tabBar:{
+		cls:"vizTBar"
+	},
 	items: [
 	{
 	   title:'Omics',
@@ -44,6 +48,12 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	// }
 	,
 	{
+		title:'Styles',
+		id:'allStylesForm',
+		xtype:'allStylesForm'
+	}
+	,
+	{
 		title:'Pathways',
 		id:'captionFormPathways',
 		xtype:'captionForm'
@@ -55,7 +65,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 		xtype:'captionForm'
 	},
 	{
-        title:'Drawing parameters',
+        title:'Drawing param.',
         id:'drawingStyleForm',
 		xtype:'drawingStyleForm'
 	},

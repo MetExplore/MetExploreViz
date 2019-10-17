@@ -790,3 +790,61 @@ p {
 .font12 {
 	font-size: 12pt;
 }
+
+.vizTBar .x-tab-bar-body{
+    background-color: rgb(95, 130, 163);
+    padding-top: 0px;
+}
+.vizTBar .x-box-scroller{
+    background-color: rgb(95, 130, 163);
+    margin-top: -16px;
+}
+
+.vizTBarStyle .x-tab-bar-body{
+    background-color: rgb(170, 170, 170);
+    padding-top: 2px;
+}
+.vizTBarStyle .x-box-scroller{
+    background-color: rgb(170, 170, 170);
+    margin-top: -14px;
+}
+
+.aStyleForm .x-title {
+    padding-left: 10px;
+}
+
+.aStyleFormButton {
+    margin: 0px 5px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    border-color: rgb(170, 170, 170);
+    background-color: white;
+}
+.aStyleFormButton span{
+    padding: 0px 0px 0px 0px;
+    color: #0f0f0f;
+    font-size: 0.9vw;
+}
+
+.aStyleFormColor {
+    margin: 0px 5px 0px 0px;
+}
+
+.aStyleFormButton.x-focus {
+    margin: 0px 5px 0px 0px;
+    border-color: rgb(170, 170, 170);
+    background-color: white;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.aStyleFormButton.focus{
+    background-color: rgb(170, 170, 170) !important;
+    border-color: rgb(170, 170, 170);
+    -webkit-box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
+    box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
+}
+
+.aStyleFormButton.x-btn-over{
+    background-color: rgb(170, 170, 170) !important;
+    border-color: rgb(170, 170, 170);
+}

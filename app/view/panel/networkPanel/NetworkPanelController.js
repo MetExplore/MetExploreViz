@@ -43,12 +43,12 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
         if(Ext.getCmp("networkPanel")!= undefined){
 
         	var mask = new Ext.LoadMask({
-                    target: Ext.getCmp("networkPanel"), 
-                    msg: 'This panel allows to visualize metabolic network.', 
+                    target: Ext.getCmp("networkPanel"),
+                    msg: 'This panel allows to visualize metabolic network.',
                     id:"maskInit",
                     msgCls:'msgClsLaunchMask'
                 });
-            mask.show();
+            // mask.show();
             var maskMsgDiv = mask.getEl().down('.x-mask-msg');
             var buttonDiv = maskMsgDiv.getFirstChild()
 								.appendChild({
