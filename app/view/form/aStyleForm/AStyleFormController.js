@@ -26,6 +26,18 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 				var bypassButton = header.lookupReference('bypassButton');
 
+				header.lookupReference('mappingButton').on({
+					click: function(){
+						if(view.collapsed){
+							view.expand();
+						}
+						else{
+							view.collapse();
+						}
+					},
+					scope : me
+				});
+
 				if(view.styleType==="number"){
 					var numberButton = header.lookupReference('numberButton');
 					var numberButtonBypass = header.lookupReference('numberButtonBypass');
@@ -37,6 +49,15 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 					numberButton.on({
 						click: function(){
+							me.numberPrompt(numberButton.el.dom);
+							// OPEN WINDOWS
+						},
+						scope : me
+					});
+
+					numberButtonBypass.on({
+						click: function(){
+							me.numberPrompt(numberButtonBypass.el.dom);
 							// OPEN WINDOWS
 						},
 						scope : me
@@ -45,10 +66,9 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 					bypassButton.on({
 						click: function(target){
 							target.hide();
-							numberButtonBypassEl.setAttribute("value", "20");
 							numberButtonBypass.show();
 
-							me.resizeText(numberButtonBypass.el.dom);
+							me.replaceText(numberButtonBypass.el.dom, "2000");
 						},
 						scope : me
 					});
@@ -84,18 +104,8 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 							console.log(evt);
 						});
 				}
-				
-				header.lookupReference('mappingButton').on({
-					click: function(){
-						if(view.collapsed){
-							view.expand();
-						}
-						else{
-							view.collapse();
-						}
-					},
-					scope : me
-				});
+
+
 			},
 			expand: function (panel) {
 				var header = panel.down('header');
@@ -107,7 +117,24 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			}
 		});
 	},
+	numberPrompt : function(target, func){
+		var me = this;
+		var view = me.getView();
 
+		Ext.Msg.prompt(view.title, 'Enter a number >= 0.0 :',
+			function(btn, text){
+				if (btn == 'ok'){
+					if(text!="") {
+						me.replaceText(target, text);
+					}
+					else
+					{
+						alert("Please enter a valid number");
+						me.numberPrompt(target);
+					}
+				}
+			}, this, false);
+	},
 	resizeText : function(target){
 		d3.select(target).select("#textNumberButton").style("font-size", function(){
 			var initialValue = parseFloat(d3.select(this).style("font-size").replace("px", ""));
@@ -116,6 +143,12 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 			return Math.min(attendingLenght*initialValue/correspondingLenght-2, 15);
 		});
+	},
+	replaceText : function(target, text){
+		var me = this;
+		d3.select(target).select("#textNumberButton")
+			.text(text);
+		me.resizeText(target);
 	}
 
 });
