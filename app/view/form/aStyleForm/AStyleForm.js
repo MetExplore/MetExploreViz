@@ -109,13 +109,13 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
             reference: "numberButtonBypass",
             hidden: true,
             cls: "aStyleFormButton",
+            // text: '2000',
             html:"<svg width='30px' height='30px'><text id='textNumberButton' font-family='Verdana' font-size='10' text-anchor='middle' x='46%' y='50%' dominant-baseline='middle'>test</text></svg>",
             height:"30px",
             width:"30px"
         }],
         titlePosition: 6
     },
-    html: "Mapping",
     items: [
         {
             xtype: 'form',
@@ -125,104 +125,9 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
             top:'10',
             border: false,
             items: [
-
                 {
-                    xtype: 'box',
-                    margin:'15 0 0 0',
-                    autoEl: {tag: 'hr'}
-                },
-                {
-                    xtype: 'label',
-                    forId: 'myFieldId',
-                    html:" <h2>Link</h2> Sets link length\n",
-                    margin:'5 5 5 5'
-                },
-                {
-                    xtype: 'slider',
-                    reference:'linkDistance',
-                    fieldLabel: "Distance :",
-                    margin:'5 5 5 15',
-                    width:"80%",
-                    value: 30,
-                    increment: 1,
-                    minValue: 0,
-                    maxValue: 1000,
-                    listeners: {
-                        changecomplete: function(slider, newValue){
-                            var session = _metExploreViz.getSessionById('viz');
-                            var force = session.getForce();
-                            force.force("link").distance(newValue);
-                            var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                            if (anim === "true"){
-                                force.alphaTarget(0.3).restart();
-                            }
-                            this.lastValue = newValue;
-                        }
-                    }
-                },
-                {
-                    xtype: 'slider',
-                    reference:'linkIterations',
-                    fieldLabel: "Iterations :",
-                    margin:'5 5 5 15',
-                    width:"80%",
-                    value: 1,
-                    increment: 1,
-                    minValue: 1,
-                    maxValue: 100,
-                    listeners: {
-                        changecomplete: function(slider, newValue){
-                            var session = _metExploreViz.getSessionById('viz');
-                            var force = session.getForce();
-                            force.force("link").iterations(newValue);
-                            var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                            if (anim === "true"){
-                                force.alphaTarget(0.3).restart();
-                            }
-                            this.lastValue = newValue;
-                        }
-                    }
+                    xtype:'selectConditionForm'
                 }
-                // {
-                //     xtype: 'box',
-                //     margin:'15 0 15 0',
-                //     autoEl: {tag: 'hr'}
-                // },{
-                //     xtype: 'label',
-                //     forId: 'myFieldId',
-                //     text: 'Collide',
-                //     style: " font-size:20px;",
-                //     margin:'15 5 5 5'
-                // },
-                // {
-                //     xtype: 'label',
-                //     forId: 'myFieldId',
-                //     text: 'Prevents nodes from overlapping',
-                //     padding:'5 5 5 5'
-                // },
-                // {
-                //     xtype: 'slider',
-                //     value:6,
-                //     reference:'forceGravity',
-                //     fieldLabel: "Gravity :",
-                //     margin:'5 5 5 5',
-                //     width:"80%",
-                //     increment: 1,
-                //     minValue: 0,
-                //     maxValue: 100,
-                //     listeners: {
-                //         changecomplete: function(slider, newValue){
-                //             var session = _metExploreViz.getSessionById('viz');
-                //             var force = session.getForce();
-                //             force.gravity(newValue/100);
-                //             var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                //             if (anim === "true"){
-                //                 force.alpha(1).restart();
-                //             }
-                //             this.lastValue = newValue;
-                //         }
-                //     }
-                // },
             ]
         }
     ]
