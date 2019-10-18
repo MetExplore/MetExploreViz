@@ -768,6 +768,24 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.continue {
+  background-image: url(../icons/continue.png) !important;
+  background-size: 80% 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.discrete {
+  background-image: url(../icons/discrete.png) !important;
+    background-size: 80% 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.alias {
+  background-image: url(../icons/alias.png) !important;
+    background-size: 80% 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
 .x-tip {
 

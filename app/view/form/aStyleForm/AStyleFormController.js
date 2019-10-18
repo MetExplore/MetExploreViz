@@ -35,8 +35,16 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 							view.collapse();
 						}
 					},
+					setIcon: function(type){
+						header.lookupReference('mappingButton').removeCls('continue');
+						header.lookupReference('mappingButton').removeCls('discrete');
+						header.lookupReference('mappingButton').removeCls('alias');
+						header.lookupReference('mappingButton').addCls(type);
+					},
 					scope : me
 				});
+
+				header.lookupReference('mappingButton').fireEvent("setIcon", "continue");
 
 				if(view.styleType==="number"){
 					var numberButton = header.lookupReference('numberButton');
