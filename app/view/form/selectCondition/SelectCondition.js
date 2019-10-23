@@ -7,12 +7,11 @@ Ext.define('metExploreViz.view.form.selectCondition.SelectCondition', {
     extend: 'Ext.form.field.ComboBox',
 	alias: 'widget.selectCondition',
 	requires: [
-            "metExploreViz.view.form.selectCondition.SelectConditionController"
+	    "metExploreViz.view.form.selectCondition.SelectConditionController",
+        "metExploreViz.view.form.selectCondition.ConditionStore"
     ],
     controller: "form-selectCondition-selectCondition",
-    store: {
-        fields: ['name']
-    },
+    store: Ext.create('metExploreViz.view.form.selectCondition.ConditionStore'),
     listeners: {
         render: function(c) {
             new Ext.ToolTip({
@@ -22,7 +21,6 @@ Ext.define('metExploreViz.view.form.selectCondition.SelectCondition', {
         }
     }, 
     flex:1,
-    multiSelect:true,
 	displayField: 'name',
 	valueField: 'name',
 	queryMode: 'local',

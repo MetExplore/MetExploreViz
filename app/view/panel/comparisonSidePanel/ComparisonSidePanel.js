@@ -32,11 +32,11 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 		cls:"vizTBar"
 	},
 	items: [
-	{
-	   title:'Omics',
-	   id:'selectConditionForm',
-	   xtype:'selectConditionForm'   
-	}
+	// {
+	//    title:'Omics',
+	//    id:'selectConditionForm',
+	//    xtype:'selectConditionForm'
+	// }
 	//{
 	//  title:'Compare',
 	//  id:'updateSelectionForm',
@@ -46,7 +46,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	//   align:'stretch'
 	//  }
 	// }
-	,
+	// ,
 	{
 		title:'Styles',
 		id:'allStylesForm',

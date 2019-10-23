@@ -112,8 +112,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 							console.log(evt);
 						});
 				}
-
-
 			},
 			expand: function (panel) {
 				var header = panel.down('header');

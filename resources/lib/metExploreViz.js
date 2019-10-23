@@ -12,6 +12,7 @@ var metExploreD3 = {
     GraphPath:"",
     GraphNode:"",
     GraphStyleEdition:"",
+    GraphColorScaleEditor:"",
     Features:"",
     user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
@@ -460,7 +461,8 @@ var metExploreD3 = {
 
     // Metabolite
     setMetabolitesSet : function(store){
-        Ext.getStore("S_Metabolite") = store;
+        var metaboliteStore = Ext.getStore("S_Metabolite");
+        metaboliteStore = store;
     },
     getMetabolitesSet : function(){
         return Ext.getStore("S_Metabolite");
@@ -472,7 +474,8 @@ var metExploreD3 = {
 
     // Reaction
     setReactionsSet : function(store){
-        Ext.getStore("S_Reaction") = store;
+        var reactionStore = Ext.getStore("S_Reaction");
+        reactionStore = store;
     },
     getReactionsSet : function(){
         return Ext.getStore("S_Reaction");
@@ -522,7 +525,8 @@ var metExploreD3 = {
 
     // Condition
     setConditionsSet : function(store){
-        Ext.getStore("S_Condition") = store;
+        var conditionStore = Ext.getStore("S_Condition");
+        conditionStore= store;
     },
     getConditionsSet : function(){
         return Ext.getStore("S_Condition");
@@ -542,7 +546,8 @@ var metExploreD3 = {
 
     // MappingInfo
     setMappingInfosSet : function(store){
-        Ext.getStore("S_MappingInfo") = store;
+        var mapStore = Ext.getStore("S_MappingInfo");
+        mapStore = store;
     },
     getMappingInfosSet : function(){
         return Ext.getStore("S_MappingInfo");

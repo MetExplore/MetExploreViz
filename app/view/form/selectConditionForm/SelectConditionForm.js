@@ -20,8 +20,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
        type:'vbox',
        align:'stretch'
     },
-    // collapsible: true,
-    // collapsed:false,
     region:'north',
     width:'100%', 
     margins:'0 0 0 0',
@@ -31,11 +29,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
     autoHeight: true,
 
     items: [
-    {
-        reference:'selectMappingVisu',
-        xtype:'selectMapping',
-        disabled:true
-    },
     {
         border:false,
         reference:'chooseCondition',
@@ -47,19 +40,17 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
         },
         items:[{
             xtype:'selectCondition',
-            reference:'selectCondition',
-            disabled:true
+            reference:'selectCondition'
         }
         ]
-    },
-    {
-        xtype: 'menuseparator'
     },
     {
         reference:'selectConditionType',
         xtype:'selectConditionType',
         reference:'selectConditionType',
-        disabled:true
+    },
+    {
+        xtype: 'menuseparator'
     }
     ]  
 });

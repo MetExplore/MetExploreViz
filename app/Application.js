@@ -9,6 +9,7 @@ Ext.define('metExploreViz.Application', {
     name: 'metExploreViz',
 
     stores: [
+        'ConditionStore'
         // TODO: add global / shared stores here
     ],
     

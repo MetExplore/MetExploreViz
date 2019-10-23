@@ -6,7 +6,9 @@
 Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.form-selectConditionForm-selectConditionForm',
-
+	requires: [
+		"metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor"
+	],
 	/**
 	 * Aplies event linsteners to the view
 	 */
@@ -60,26 +62,34 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 		view.lookupReference('selectConditionType').on({
 			change : function(that, newVal){
-				if(newVal=="Flux"){
-					view.lookupReference('opacity').setHidden(false);  
-					view.lookupReference('valueonarrow').setHidden(false);
-                    view.lookupReference('regroupValuesIntoClass').setHidden(false);
-					view.lookupReference('threshold').setHidden(true);
-				}
-				else{
-					if(newVal=="Suggestion"){
-						view.lookupReference('opacity').setHidden(true);
-						view.lookupReference('valueonarrow').setHidden(true);
-                        view.lookupReference('regroupValuesIntoClass').setHidden(true);
-					view.lookupReference('threshold').setHidden(false);
-					}
-					else{
-						view.lookupReference('opacity').setHidden(true);
-						view.lookupReference('valueonarrow').setHidden(true);
-                        view.lookupReference('regroupValuesIntoClass').setHidden(true);
-					view.lookupReference('threshold').setHidden(true);
-					}
-				}
+				console.log(newVal);
+                if(newVal==="Continuous"){
+					var win = Ext.create("metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor", {
+						height : 300
+					});
+
+					win.show();
+                }
+				// if(newVal=="Flux"){
+				// 	view.lookupReference('opacity').setHidden(false);
+				// 	view.lookupReference('valueonarrow').setHidden(false);
+                //     view.lookupReference('regroupValuesIntoClass').setHidden(false);
+				// 	view.lookupReference('threshold').setHidden(true);
+				// }
+				// else{
+				// 	if(newVal=="Suggestion"){
+				// 		view.lookupReference('opacity').setHidden(true);
+				// 		view.lookupReference('valueonarrow').setHidden(true);
+                //         view.lookupReference('regroupValuesIntoClass').setHidden(true);
+				// 	view.lookupReference('threshold').setHidden(false);
+				// 	}
+				// 	else{
+				// 		view.lookupReference('opacity').setHidden(true);
+				// 		view.lookupReference('valueonarrow').setHidden(true);
+                //         view.lookupReference('regroupValuesIntoClass').setHidden(true);
+				// 	view.lookupReference('threshold').setHidden(true);
+				// 	}
+				// }
 			},
 			collapse : function(){
 				var networkVizSession = _metExploreViz.getSessionById("viz");
@@ -272,10 +282,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	resetMapping:function(){
 		var session = _metExploreViz.getSessionById('viz');
 		var component = Ext.getCmp("selectConditionForm");
-
+		console.log(component);
 		var me = this;
         var view = me.getView();
-
+		console.log(view);
         if(component){
             var colors = session.getColorSuggestionsSet();
             colors.forEach(function (color) {
