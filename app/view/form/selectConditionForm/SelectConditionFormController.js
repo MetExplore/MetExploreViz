@@ -61,36 +61,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		});
 
 		view.lookupReference('selectConditionType').on({
-			change : function(that, newVal){
-				console.log(newVal);
-                if(newVal==="Continuous"){
-					var win = Ext.create("metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor", {
-						height : 300
-					});
-
-					win.show();
-                }
-				// if(newVal=="Flux"){
-				// 	view.lookupReference('opacity').setHidden(false);
-				// 	view.lookupReference('valueonarrow').setHidden(false);
-                //     view.lookupReference('regroupValuesIntoClass').setHidden(false);
-				// 	view.lookupReference('threshold').setHidden(true);
-				// }
-				// else{
-				// 	if(newVal=="Suggestion"){
-				// 		view.lookupReference('opacity').setHidden(true);
-				// 		view.lookupReference('valueonarrow').setHidden(true);
-                //         view.lookupReference('regroupValuesIntoClass').setHidden(true);
-				// 	view.lookupReference('threshold').setHidden(false);
-				// 	}
-				// 	else{
-				// 		view.lookupReference('opacity').setHidden(true);
-				// 		view.lookupReference('valueonarrow').setHidden(true);
-                //         view.lookupReference('regroupValuesIntoClass').setHidden(true);
-				// 	view.lookupReference('threshold').setHidden(true);
-				// 	}
-				// }
-			},
 			collapse : function(){
 				var networkVizSession = _metExploreViz.getSessionById("viz");
 				// If the main network is already mapped we inform the user: OK/CANCEL

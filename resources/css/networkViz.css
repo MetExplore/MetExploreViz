@@ -5,13 +5,9 @@ rect.reaction{
 		stroke:black;
 }    
 text.metabolite{
-	fill:black;
-	font:10px sans-serif;
 	text-anchor:middle;
 }
 text.reaction{
-	fill:black;
-	font:10px sans-serif;
 	text-anchor:middle;
 }
 

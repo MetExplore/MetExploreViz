@@ -19,7 +19,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	           ],
 */
 
-	width: '20%',
+	width: '30%',
 	height: '100%',
 	margins:'0 0 2 0',
 	split:true,

@@ -16,6 +16,13 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 
+
+		view.lookupReference('selectConditionForm').lookupReference('selectConditionType').on({
+			change : function(that, newVal){
+				console.log(newVal);
+			}
+		});
+
 		view.on(
 		{
 			afterrender: function (panel) {
@@ -47,18 +54,20 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				header.lookupReference('mappingButton').fireEvent("setIcon", "continue");
 
 				if(view.styleType==="number"){
+
 					var numberButton = header.lookupReference('numberButton');
 					var numberButtonBypass = header.lookupReference('numberButtonBypass');
 					var numberButtonBypassEl = numberButtonBypass.el.dom.querySelector("#textNumberButton");
 
 					numberButton.show();
 
-					me.resizeText(numberButton.el.dom);
+					me.replaceText(numberButton.el.dom, view.default);
 
 					numberButton.on({
 						click: function(){
-							me.numberPrompt(numberButton.el.dom);
-							// OPEN WINDOWS
+							me.numberPrompt(numberButton.el.dom, function(text){
+								metExploreD3.GraphStyleEdition.setCollectionStyle(view.target, view.attrType, view.attrName, view.biologicalType, text);
+							});
 						},
 						scope : me
 					});
@@ -76,17 +85,37 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 							target.hide();
 							numberButtonBypass.show();
 
-							me.replaceText(numberButtonBypass.el.dom, "2000");
+							me.numberPrompt(numberButtonBypass.el.dom);
 						},
 						scope : me
 					});
-				}
+
+                    var margin = 0;
+                    var width = 190;
+                    var height = 50;
+
+                    var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+
+                    metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin);
+
+                    svg.on("click", function(){
+                        var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
+                            height : 300
+                        });
+
+                        win.show();
+                    });
+                }
 
 				if(view.styleType==="color"){
+
+
 					var colorButton = header.lookupReference('colorButton');
 					var colorButtonEl = colorButton.el.dom.querySelector("#html5colorpicker");
 					var colorButtonBypass = header.lookupReference('colorButtonBypass');
 					var colorButtonBypassEl = colorButtonBypass.el.dom.querySelector("#html5colorpicker");
+
+					colorButtonEl.setAttribute("value", view.default);
 
 					colorButton.show();
 
@@ -94,6 +123,8 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 						.addEventListener("change", function (evt) {
 							var color = evt.target.value;
 							colorButtonEl.setAttribute("value", color);
+
+							metExploreD3.GraphStyleEdition.setCollectionStyle(view.target, view.attrType, view.attrName, view.biologicalType, color);
 						});
 
 					bypassButton.on({
@@ -111,7 +142,25 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 							console.log(newVal);
 							console.log(evt);
 						});
+
+					var margin = 0;
+					var width = 150;
+					var height = 50;
+
+					var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+
+					metExploreD3.GraphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, colorButtonEl);
+
+					svg.on("click", function(){
+						var win = Ext.create("metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor", {
+							height : 300
+						});
+
+						win.show();
+					});
+
 				}
+
 			},
 			expand: function (panel) {
 				var header = panel.down('header');
@@ -132,6 +181,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				if (btn == 'ok'){
 					if(text!="") {
 						me.replaceText(target, text);
+						func(text);
 					}
 					else
 					{

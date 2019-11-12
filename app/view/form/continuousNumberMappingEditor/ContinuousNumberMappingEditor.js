@@ -1,17 +1,17 @@
 /**
  * @author MC
  * (a)description combobox to select condition in mapping
- * continuousColorMappingEditor
+ * continuousNumberMappingEditor
  */
-Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor', {
+Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor', {
     extend: 'Ext.window.Window',
-	alias: 'widget.continuousColorMappingEditor',
+	alias: 'widget.continuousNumberMappingEditor',
 	requires: [
-	    "metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditorController"
+	    "metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditorController"
     ],
-    controller: "form-continuousColorMappingEditor-continuousColorMappingEditor",
+    controller: "form-continuousNumberMappingEditor-continuousNumberMappingEditor",
 
-    title: 'Continuous color scale mapping editor',
+    title: 'Continuous number scale mapping editor',
     height: "400px",
     maxWidth: 600,
     minWidth: 600,
@@ -33,8 +33,8 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
         },
         {
             xtype: 'fieldset',
-            title: 'Edit position and value of selected color',
-            instructions: 'Edit position and value of selected color',
+            title: 'Edit position and value of selected number',
+            instructions: 'Edit position and value of selected number',
             layout:{
                 type:'hbox'
             },
@@ -53,7 +53,7 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
                 },{
                     margin: "10 0 10 0",
                     xtype: 'label',
-                    html: 'Color :'
+                    html: 'Number :'
                 },{
                     xtype: 'button',
                     margin: "5 40 5 10",
@@ -68,10 +68,10 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
                     listeners : {
                         render: function(c) {
                             if(c.isDisabled())
-                                c.setTooltip("To set the color property, select a slider");
+                                c.setTooltip("To set the number property, select a slider");
                         },
                         disable: function(c) {
-                            c.setTooltip("To set the color property, select a slider");
+                            c.setTooltip("To set the number property, select a slider");
                         },
                         enable: function(c) {
                             c.setTooltip("");
@@ -79,17 +79,17 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
                     }
                 },{
                     xtype: 'panel',
-                    html: 'Color :',
-                    reference: "colorButton",
+                    html: 'Number :',
+                    reference: "numberButton",
                     hidden: false,
                     border: false,
-                    cls: "aStyleFormColor",
+                    cls: "aStyleFormNumber",
                     margin: "5 40 5 10",
                     height:"30px",
                     width:"30px",
                     html: '<input ' +
-                        'type="color" ' +
-                        'id="html5colorpicker" ' +
+                        'type="number" ' +
+                        'id="html5numberpicker" ' +
                         'value="#1698ff" ' +
                         'style="width:30px; height:30px;">'
                 },

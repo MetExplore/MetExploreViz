@@ -19,8 +19,13 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 		view.store.data.forEach(function (styleBar) {
 			var myPanel = Ext.create('metExploreViz.view.form.aStyleForm.AStyleForm', {
 				title: styleBar.title,
+				biologicalType: styleBar.biologicalType,
 				styleType: styleBar.type,
-				styleSelector: styleBar.selector
+				default: styleBar.default,
+				styleName: styleBar.style,
+				attrName: styleBar.attr,
+				attrType: styleBar.attrType,
+				target: styleBar.target
 			});
 			view.add(myPanel);
 		})

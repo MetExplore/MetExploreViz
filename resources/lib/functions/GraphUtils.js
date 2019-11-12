@@ -146,6 +146,26 @@ metExploreD3.GraphUtils = {
     * Choose text color in function of contrast with background  
     * @param {} backgroundColor : Color of background 
     */
+    RGBString2Color : function(backgroundColor){ 
+	    if(backgroundColor!=undefined){	
+			var color;
+    		if(backgroundColor.slice(0,3) == "rgb"){
+    			backgroundColor = backgroundColor.replace("rgb","");
+    			backgroundColor = backgroundColor.replace("(","");
+    			backgroundColor = backgroundColor.replace(")","");
+    			rgb = backgroundColor.split(",");
+	    		var red = rgb[0];
+				var green = rgb[1];
+				var blue = rgb[2];
+				return metExploreD3.GraphUtils.RGB2Color(red, green, blue)
+    		}
+    	}
+    },
+
+    /*******************************************
+    * Choose text color in function of contrast with background  
+    * @param {} backgroundColor : Color of background 
+    */
     chooseTextColor : function(backgroundColor){ 
 	    if(backgroundColor!=undefined){	
 			var color;

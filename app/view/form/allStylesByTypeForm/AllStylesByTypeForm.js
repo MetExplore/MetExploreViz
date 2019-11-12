@@ -27,21 +27,6 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm', {
         collapsed: true,
         reorderable: true
     },
-    store: {
-        data: [{
-            "type": "color",
-            "selector": "fill",
-            "title": "Node background"
-        }, {
-            "type": "color",
-            "selector": "fill",
-            "title": "Border color"
-        }, {
-            "type": "number",
-            "selector": "stroke-width",
-            "title": "Border width"
-        }]
-    },
     items: [{
         collapsed: false,
         border: 0,

@@ -3,9 +3,9 @@
  * (a)description class to control contion selection panel and to draw mapping in the mapping story
  */
 
-Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditorController', {
+Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditorController', {
 	extend: 'Ext.app.ViewController',
-	alias: 'controller.form-continuousColorMappingEditor-continuousColorMappingEditor',
+	alias: 'controller.form-continuousNumberMappingEditor-continuousNumberMappingEditor',
 
 /**
  * Aplies event linsteners to the view
@@ -22,45 +22,44 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
 
 		view.on({
 			afterrender : function(that){
-				var margin = 50;
-				var width = 450 - margin;
-				var height = 160 - margin;
+				var width = 450;
+				var height = 85;
 
 				var svg = d3.select(that.el.dom).select("#svgScaleEditor");
 
-				var colorButton = view.lookupReference('colorButton');
-				var colorButtonEl = colorButton.getEl().dom.querySelector("#html5colorpicker");
+				var numberButton = view.lookupReference('numberButton');
+				var numberButtonEl = numberButton.getEl().dom.querySelector("#html5numberpicker");
 
-				metExploreD3.GraphColorScaleEditor.createColorScaleEditor(svg, width, height, margin, colorButtonEl);
+				metExploreD3.GraphNumberScaleEditor.createNumberScaleEditor(svg, width, height, numberButtonEl);
 
-				colorButtonEl
+				numberButtonEl
 					.addEventListener("change", function (evt) {
-						metExploreD3.GraphColorScaleEditor.updateColor(evt.target.value, svg);
+						metExploreD3.GraphNumberScaleEditor.updateNumber(evt.target.value, svg);
 					});
 			}
 		});
 
 		view.lookupReference('addButton').on({
 			click : function(that){
-				metExploreD3.GraphColorScaleEditor.addColor();
+				metExploreD3.GraphNumberScaleEditor.addNumber();
 			}
 		});
 
 		view.lookupReference('resetButton').on({
 			click : function(that){
-				metExploreD3.GraphColorScaleEditor.reset();
+				metExploreD3.GraphNumberScaleEditor.reset();
 			}
 		});
 
 		view.lookupReference('delButton').on({
 			click : function(that){
-				metExploreD3.GraphColorScaleEditor.delColor();
+				metExploreD3.GraphNumberScaleEditor.delNumber();
 			}
 		});
 
 		view.lookupReference('okButton').on({
 			click : function(that){
-				//Set color caption and nodes
+				//Set number caption and nodes
 			}
 		});
 

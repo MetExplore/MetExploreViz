@@ -29,7 +29,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
             hidden: true,
             cls: "aStyleFormButton",
             // text: '2000',
-            html:"<svg width='30px' height='30px'><text id='textNumberButton' font-family='Verdana' font-size='10' text-anchor='middle' x='46%' y='50%' dominant-baseline='middle'>test</text></svg>",
+            html:"<svg width='30px' height='30px'><text id='textNumberButton' font-family='Verdana' font-size='10' text-anchor='middle' x='46%' y='50%' dominant-baseline='middle'></text></svg>",
             height:"30px",
             width:"30px"
         },{
@@ -110,7 +110,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
             hidden: true,
             cls: "aStyleFormButton",
             // text: '2000',
-            html:"<svg width='30px' height='30px'><text id='textNumberButton' font-family='Verdana' font-size='10' text-anchor='middle' x='46%' y='50%' dominant-baseline='middle'>test</text></svg>",
+            html:"<svg width='30px' height='30px'><text id='textNumberButton' font-family='Verdana' font-size='10' text-anchor='middle' x='46%' y='50%' dominant-baseline='middle'></text></svg>",
             height:"30px",
             width:"30px"
         }],
@@ -126,7 +126,15 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
             border: false,
             items: [
                 {
+                    reference: "selectConditionForm",
                     xtype:'selectConditionForm'
+                },
+                {
+                    xtype: "panel",
+                    reference: "scaleCaption",
+                    height: 150,
+                    width: 550,
+                    html: "<svg id='scaleCaption' height='150' width='250px'> </svg>"
                 }
             ]
         }

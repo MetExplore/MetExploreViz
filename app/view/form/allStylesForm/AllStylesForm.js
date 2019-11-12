@@ -8,7 +8,10 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesForm', {
     requires: [
         "metExploreViz.view.form.allStylesForm.AllStylesFormController",
         "metExploreViz.view.form.allStylesForm.AllStylesFormModel",
-        "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm"
+        "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm",
+        "metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm",
+        "metExploreViz.view.form.reactionStyleForm.ReactionStyleForm",
+        "metExploreViz.view.form.linkStyleForm.LinkStyleForm"
     ],
     controller: "form-allStylesForm-allStylesForm",
     viewModel: {
@@ -29,15 +32,15 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesForm', {
     items: [
         {
             title:'Metabolite',
-            xtype: "allStylesByTypeForm"
+            xtype: "metaboliteStyleForm"
         },
         {
             title:'Reaction',
-            xtype: "allStylesByTypeForm"
+            xtype: "reactionStyleForm"
         },
         {
             title:'Link',
-            xtype: "allStylesByTypeForm"
+            xtype: "linkStyleForm"
         }
     ]
 });

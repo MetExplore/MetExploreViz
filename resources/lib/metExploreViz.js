@@ -13,6 +13,7 @@ var metExploreD3 = {
     GraphNode:"",
     GraphStyleEdition:"",
     GraphColorScaleEditor:"",
+    GraphNumberScaleEditor:"",
     Features:"",
     user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
@@ -969,7 +970,7 @@ var metExploreViz = function(panel, webSite){
     this.panel = panel;
     this.linkStyle = new LinkStyle(25, 2, 5, 5, 'red', 'green', 'black', '0.7', 'black');
     this.reactionStyle = new ReactionStyle(7, 7, 0, 0, 'dbIdentifier', 9, 'black', 1, false);
-    this.metaboliteStyle = new MetaboliteStyle(14, 14, 7, 7, 7, 1,'name', '#b2ae92', false, false);
+    this.metaboliteStyle = new MetaboliteStyle('#FFFFFF',14, 14, 7, 7, 1, '#b2ae92', 1, '#000000', 10, 1, 'name',  false);
     this.generalStyle = new GeneralStyle("Website", "#FFFF00", "#0000ff", 500, false, false, false, false, false, false, false);
     this.initialData = undefined;
     this.biosource = undefined; 

@@ -3,170 +3,124 @@
  * (a)description GeneralStyleForm : Reaction style configs
  */
 Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
-    extend: 'Ext.panel.Panel',  
+    extend: 'metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm',
     alias: 'widget.reactionStyleForm',
     requires: [
-        "metExploreViz.view.form.reactionStyleForm.ReactionStyleFormController"
+        "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm"
     ],
-    controller: "form-reactionStyleForm-reactionStyleForm",
-    
-    region:'north',
-    height: '100%',
-    width:'100%', 
-    margin:'0 0 0 0',
-    flex:1,
-    border:false,
-    autoScroll:true,
-    layout: {
-        type: 'vbox',
-        align: 'stretch'
-    },
-    items: 
-    [
-    {   
-        border:false,
-        id:'chooseStrokeColorReaction',
-        reference:'chooseStrokeColorReaction',
-        xtype:'panel',
-        margin:'5 5 5 5',
-        hidden:true,
-        layout:{
-           type:'hbox',
-           align:'stretch'
-        },
-        items:[{
-            xtype: 'label',
-            forId: 'color',
-            margin:'0 68 0 0',
-            text: 'Color :'      
-        },{
-            border:false,
-            xtype: 'hiddenfield',
-            itemId: 'hiddenColor',
-            value: 'init'    
+
+    store: {
+        data: [{
+            "type": "color",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction"],
+            "attrType": "style",
+            "attr": "fill",
+            "title": "Node background",
+            "default": "#FFFFFF"
+        }, {
+            "type": "number",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "attr",
+            "attr": "width",
+            "title": "Width",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "number",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "attr",
+            "attr": "height",
+            "title": "Height",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "number",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "attr",
+            "attr": "rx",
+            "title": "Rx",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "number",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "attr",
+            "attr": "ry",
+            "title": "Ry",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "number",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "style",
+            "biologicalType":"reaction",
+            "attr": "opacity",
+            "title": "Transparency",
+            "min": 0,
+            "max": 1,
+            "default": 1
         }
-        ]
+            ,{
+                "type": "color",
+                "target": ["rect.reaction", "rect.fontSelected"],
+                "attrType": "style",
+                "biologicalType":"reaction",
+                "attr": "stroke",
+                "title": "Border color",
+                "default": "#000000"
+            }, {
+                "type": "number",
+                "target": ["rect.reaction", "rect.fontSelected"],
+                "attrType": "style",
+                "attr": "stroke-width",
+                "biologicalType":"reaction",
+                "title": "Border width",
+                "min": 0,
+                "max": 50,
+                "default": 1
+            }
+            // , {
+            //     "type": "text",
+            //     "attr": "text",
+            //     "title": "Label"
+            // }
+            , {
+                "type": "color",
+                "target": ["text.reaction"],
+                "attrType": "attr",
+                "attr": "fill",
+                "biologicalType":"reaction",
+                "title": "Label color",
+                "default": "#000000"
+            }, {
+                "type": "number",
+                "target": ["text.reaction"],
+                "attrType": "style",
+                "attr": "font-size",
+                "biologicalType":"reaction",
+                "title": "Label font size",
+                "min": 1,
+                "max": 200,
+                "default": 20
+            }, {
+                "type": "number",
+                "target": ["text.reaction"],
+                "attrType": "style",
+                "attr": "opacity",
+                "title": "Label transparency",
+                "min": 0,
+                "biologicalType":"reaction",
+                "max": 1,
+                "default": 1
+            }]
     }
-    ,
-    {   
-        reference:'selectDisplayReactionLabel',
-        id:'selectDisplayReactionLabel',
-        xtype:'selectDisplayReactionLabel'  
-    }
-    , 
-    {
-        xtype: 'checkboxfield',
-        boxLabel  : 'Uses aliases',
-        inputValue: '0',
-        margin:'5 5 5 5',
-        checked   : true,
-        reference:'checkboxAlias'
-    },
-    {   
-        xtype: 'textfield',
-        reference:'chooseStrokeReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Stroke width:",
-        displayField: 'stroke',
-        editable:true,
-        width:'100%',
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        scale: 'small',
-        reference:'chooseHeightReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Height :",
-        displayField: 'height',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseWidthReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Width :",
-        displayField: 'width',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseRxReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Rx :",
-        displayField: 'rx',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseRyReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Ry :",
-        displayField: 'ry',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {
-        xtype: 'menuseparator'
-    }
-    ,
-    {
-        layout: {
-            type: 'hbox',
-            align: 'center',
-            pack: 'center'
-        },
-        items:[{
-            id :'vizExempleReaction',
-            xtype : 'panel',
-            margins:'0 0 0 0',
-            closable: false,
-            region:'center',
-            height:100,
-            width:100, 
-            flex:1,
-            split:true
-        }]
-    },
-    {
-        xtype:'button',
-        iconCls:'refresh',
-        margin:'5 5 5 0',
-        reference: 'refreshReactionStyle',
-        action: 'refreshReactionStyle'  
-        
-    }
-    ]   
 });

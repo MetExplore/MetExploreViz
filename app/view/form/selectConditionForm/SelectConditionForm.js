@@ -47,7 +47,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
     {
         reference:'selectConditionType',
         xtype:'selectConditionType',
-        reference:'selectConditionType',
     },
     {
         xtype: 'menuseparator'

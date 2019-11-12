@@ -521,5 +521,25 @@ metExploreD3.GraphStyleEdition = {
         else {
             return undefined;
         }
+    },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
+    setCollectionStyle : function (targetSet, attrType, attrName, biologicalType, value) {
+        targetSet.forEach(function setStyles(target) {
+            var selection;
+            if(biologicalType==="metabolite")
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node").filter(function(d){return d.getBiologicalType()==="metabolite"});
+
+            if(biologicalType==="reaction")
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node").filter(function(d){return d.getBiologicalType()==="reaction"});
+
+            if(biologicalType==="link")
+                selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+            selection.selectAll(target)[attrType](attrName, value);
+        });
     }
 };

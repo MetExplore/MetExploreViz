@@ -868,8 +868,7 @@ metExploreD3.GraphPanel = {
 
 				if(jsonParsed.metaboliteStyle)
 				{
-					var style = new MetaboliteStyle(jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.label, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.useAlias);
-					metExploreD3.setMetaboliteStyle(style);
+					var style = new MetaboliteStyle(jsonParsed.metaboliteStyle.backgroundColor,jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.opacity, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.fontColor, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.labelOpacity, jsonParsed.metaboliteStyle.label,  jsonParsed.metaboliteStyle.useAlias);
 				}
 
 				if(jsonParsed.reactionStyle)
