@@ -8,7 +8,6 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
     requires: [
         "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm"
     ],
-
     store: {
         data: [{
             "type": "color",
@@ -17,9 +16,10 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
             "attrType": "style",
             "attr": "fill",
             "title": "Node background",
-            "default": "#FFFFFF"
+            "default": "#FFFFFF",
+            "access":"backgroundColor"
         }, {
-            "type": "number",
+            "type": "int",
             "biologicalType":"metabolite",
             "target": ["rect.metabolite", "rect.fontSelected"],
             "attrType": "attr",
@@ -27,47 +27,52 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
             "title": "Width",
             "min": 1,
             "max": 100,
-            "default": 5
+            "default": 5,
+            "access":"width"
         }, {
-            "type": "number",
+            "type": "int",
             "biologicalType":"metabolite",
             "target": ["rect.metabolite", "rect.fontSelected"],
             "attrType": "attr",
             "attr": "height",
             "title": "Height",
+            "access": "height",
             "min": 1,
             "max": 100,
             "default": 5
         }, {
-            "type": "number",
+            "type": "int",
             "biologicalType":"metabolite",
             "target": ["rect.metabolite", "rect.fontSelected"],
             "attrType": "attr",
             "attr": "rx",
+            "access": "rx",
             "title": "Rx",
             "min": 1,
             "max": 100,
             "default": 5
         }, {
-            "type": "number",
+            "type": "int",
             "biologicalType":"metabolite",
             "target": ["rect.metabolite", "rect.fontSelected"],
             "attrType": "attr",
             "attr": "ry",
+            "access": "ry",
             "title": "Ry",
             "min": 1,
             "max": 100,
             "default": 5
         }, {
-            "type": "number",
+            "type": "float",
             "target": ["rect.metabolite", "rect.fontSelected"],
             "attrType": "style",
             "biologicalType":"metabolite",
             "attr": "opacity",
+            "access": "opacity",
             "title": "Transparency",
-            "min": 0,
-            "max": 1,
-            "default": 1
+            "min": 0.0,
+            "max": 1.0,
+            "default": 1.0
         }
         ,{
             "type": "color",
@@ -75,52 +80,52 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
             "attrType": "style",
             "biologicalType":"metabolite",
             "attr": "stroke",
+            "access": "strokeColor",
             "title": "Border color",
             "default": "#000000"
         }, {
-            "type": "number",
+            "type": "int",
             "target": ["rect.metabolite", "rect.fontSelected"],
             "attrType": "style",
             "attr": "stroke-width",
+            "access": "strokeWidth",
             "biologicalType":"metabolite",
             "title": "Border width",
             "min": 0,
             "max": 50,
             "default": 1
         }
-            // , {
-            //     "type": "text",
-            //     "attr": "text",
-            //     "title": "Label"
-            // }
-        , {
+        ,{
             "type": "color",
             "target": ["text.metabolite"],
             "attrType": "attr",
             "attr": "fill",
+            "access": "fontColor",
             "biologicalType":"metabolite",
             "title": "Label color",
             "default": "#000000"
-        }, {
-            "type": "number",
+        },{
+            "type": "int",
             "target": ["text.metabolite"],
             "attrType": "style",
             "attr": "font-size",
+            "access": "fontSize",
             "biologicalType":"metabolite",
             "title": "Label font size",
             "min": 1,
             "max": 200,
             "default": 20
-        }, {
-            "type": "number",
+        },{
+            "type": "float",
             "target": ["text.metabolite"],
             "attrType": "style",
             "attr": "opacity",
+            "access": "labelOpacity",
             "title": "Label transparency",
-            "min": 0,
+            "min": 0.0,
             "biologicalType":"metabolite",
-            "max": 1,
-            "default": 1
+            "max": 1.0,
+            "default": 1.0
         }]
     }
 });

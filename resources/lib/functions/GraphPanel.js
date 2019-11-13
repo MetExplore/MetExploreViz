@@ -873,7 +873,7 @@ metExploreD3.GraphPanel = {
 
 				if(jsonParsed.reactionStyle)
 				{
-					var style = new ReactionStyle(jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.label, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth, jsonParsed.metaboliteStyle.useAlias);
+					var style = new ReactionStyle(jsonParsed.reactionStyle.backgroundColor,jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.opacity, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth, jsonParsed.reactionStyle.fontColor, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.labelOpacity, jsonParsed.reactionStyle.label,  jsonParsed.reactionStyle.useAlias);
 					metExploreD3.setReactionStyle(style);
 				}
 
