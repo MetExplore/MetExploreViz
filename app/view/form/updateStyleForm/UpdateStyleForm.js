@@ -5,9 +5,7 @@
 Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleForm', {
     extend: 'Ext.panel.Panel',  
     alias: 'widget.updateStyleForm',
-    requires: [ 
-        "metExploreViz.view.form.reactionStyleForm.ReactionStyleForm",
-        "metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm",
+    requires: [
         "metExploreViz.view.form.generalStyleForm.GeneralStyleForm",
         "metExploreViz.view.form.updateStyleForm.UpdateStyleFormController"
     ],
@@ -39,17 +37,17 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleForm', {
     },{
         xtype: 'menuseparator'
     }
-    ,
-    {   
-        id:'reactionStyleForm',
-        xtype:'reactionStyleForm',
-        hidden:true
-    }
-    ,{   
-        id:'metaboliteStyleForm',
-        xtype:'metaboliteStyleForm',
-        hidden:true
-    }
+    // ,
+    // {
+    //     id:'reactionStyleForm',
+    //     xtype:'reactionStyleForm',
+    //     hidden:true
+    // }
+    // ,{
+    //     id:'metaboliteStyleForm',
+    //     xtype:'metaboliteStyleForm',
+    //     hidden:true
+    // }
     ,{
         id:'generalStyleForm',
         xtype:'generalStyleForm',

@@ -32,14 +32,17 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesForm', {
     items: [
         {
             title:'Metabolite',
+            id:'metaboliteStyleForm',
             xtype: "metaboliteStyleForm"
         },
         {
             title:'Reaction',
+            id:'reactionStyleForm',
             xtype: "reactionStyleForm"
         },
         {
             title:'Link',
+            id:'linkStyleForm',
             xtype: "linkStyleForm"
         }
     ]
