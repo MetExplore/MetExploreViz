@@ -113,9 +113,6 @@ metExploreD3.GraphColorScaleEditor = {
                 .attr("y", -32);
 
         })
-
-
-
     },
 
     createColorScaleEditor : function(svg, width, height, margin, but){

@@ -17,8 +17,6 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 		view      	= me.getView();
 
 		view.store.data.forEach(function (styleBar) {
-			// console.log(me);
-			// console.log(view);
 
 			var myPanel = Ext.create('metExploreViz.view.form.aStyleForm.AStyleForm', {
 				title: styleBar.title,
@@ -32,23 +30,37 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 				target: styleBar.target
 			});
 			view.add(myPanel);
-			console.log(view);
 		});
 
 		view.on(
 		{
-			afterStyleLoading : me.upadateForm,
+			afterStyleLoading : me.updateForm,
+			updateSelectionSet : me.updateSelection,
 			scope:me
 		});
 	},
-    upadateForm : function(panel, func){
-		console.log("upadateForm");
+    updateForm : function(){
 		var me = this;
 		var view = me.getView();
-		Ext.getCmp("metaboliteStyleForm").query("aStyleForm").forEach(function (aStyleForm) {
-			metExploreD3.fireEvent(aStyleForm.id, "afterStyleLoading");
-		});
-
+		if(view)
+		{
+			view.query("aStyleForm").forEach(function (aStyleForm) {
+				metExploreD3.fireEvent(aStyleForm.id, "afterStyleLoading");
+			});
+		}
+	},
+	updateSelection : function(){
+		var me = this;
+		var view = me.getView();
+		if(view)
+		{
+			if(view.rendered)
+			{
+				view.query("aStyleForm").forEach(function (aStyleForm) {
+					metExploreD3.fireEvent(aStyleForm.id, "updateSelectionSet");
+				});
+			}
+		}
 	}
 });
 

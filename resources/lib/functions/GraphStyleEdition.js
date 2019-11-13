@@ -530,16 +530,51 @@ metExploreD3.GraphStyleEdition = {
     setCollectionStyle : function (targetSet, attrType, attrName, biologicalType, value) {
         targetSet.forEach(function setStyles(target) {
             var selection;
-            if(biologicalType==="metabolite")
-                selection = d3.select("#viz").select("#D3viz").selectAll("g.node").filter(function(d){return d.getBiologicalType()==="metabolite"});
-
-            if(biologicalType==="reaction")
-                selection = d3.select("#viz").select("#D3viz").selectAll("g.node").filter(function(d){return d.getBiologicalType()==="reaction"});
+            if(biologicalType==="metabolite" || biologicalType==="reaction")
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node").filter(function(d){return d.getBiologicalType()===biologicalType});
 
             if(biologicalType==="link")
                 selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
             selection.selectAll(target)[attrType](attrName, value);
         });
+    },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
+    setCollectionStyleBypass : function (targetSet, attrType, attrName, biologicalType, value) {
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+        if(activeSession) {
+            targetSet.forEach(function setStyles(target) {
+
+                var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
+                    return activeSession.getD3Data().getNodeById(nodeId);
+                });
+
+                var selectedNodesId = mapNodes.filter(function (node) {
+                    return node.getBiologicalType() === biologicalType;
+                }).map(function (node) {
+                    return node.getId();
+                });
+
+                if(selectedNodesId.length>0){
+                    var selection;
+                    selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                        .filter(function (d) {
+                            return d.getBiologicalType() === biologicalType;
+                        })
+                        .filter(function (d) {
+                            return selectedNodesId.includes(d.getId());
+                        });
+
+                    if (biologicalType === "link")
+                        selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+                    selection.selectAll(target)[attrType](attrName, value);
+                }
+            });
+        }
     }
 };

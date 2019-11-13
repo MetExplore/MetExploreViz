@@ -144,6 +144,9 @@ NetworkVizSession.prototype = {
         if(this.selectedNodes==undefined)
             this.selectedNodes = [];
         this.selectedNodes.push(nodeId);
+
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
     addSelectedPathway : function(pathid){
         if(this.selectedPathways==undefined)
@@ -188,6 +191,8 @@ NetworkVizSession.prototype = {
         {
             this.selectedNodes.push(nodeId);                
         }
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
 
     /**
@@ -209,6 +214,8 @@ NetworkVizSession.prototype = {
         this.selectedPathways = [];
         this.groups = [];
         this.nodesMap = [];
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
 
     getId:function()
@@ -347,11 +354,14 @@ NetworkVizSession.prototype = {
             }
             i++;
         }
-        //console.log(this.selectedNodes);
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
 
     removeAllSelectedNodes:function(){
         this.selectedNodes = [];
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
 
     getSelectedNodes:function(){
@@ -371,7 +381,6 @@ NetworkVizSession.prototype = {
             }
             i++;
         }
-        //console.log(this.PathwayNodes);
     },
 
     removeAllSelectedPathways:function(){
@@ -395,7 +404,6 @@ NetworkVizSession.prototype = {
             }
             i++;
         }
-        //console.log(this.selectedNodes);
     },
 
     removeAllDuplicatedNodes:function(){

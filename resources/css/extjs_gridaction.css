@@ -866,3 +866,7 @@ p {
     background-color: rgb(170, 170, 170) !important;
     border-color: rgb(170, 170, 170);
 }
+
+.aStyleFormButton.x-unselectable.x-item-disabled.x-btn-disabled{
+ pointer-events: all;
+}

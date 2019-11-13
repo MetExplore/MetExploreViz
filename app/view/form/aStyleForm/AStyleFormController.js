@@ -26,6 +26,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		view.on(
 		{
 			afterStyleLoading : me.updateFormValues,
+			updateSelectionSet : me.updateSelectionSet,
 			afterrender: me.initForm,
 			expand: function (panel) {
 				var header = panel.down('header');
@@ -38,13 +39,62 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			scope:me
 		});
 	},
-	updateFormValues : function(){
-		console.log("initForm");
+
+	updateSelectionSet : function() {
 		var me = this;
 		var view = me.getView();
 
+		// WARNING Header render is executed afterrender view
+		// As a result, render and afterrender can't be used on header
+		var header = view.down('header');
 
-		console.log(view);
+		var bypassButton = header.lookupReference('bypassButton');
+		var colorButtonBypass = header.lookupReference('colorButtonBypass');
+		var numberButtonBypass = header.lookupReference('numberButtonBypass');
+
+		var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+		if(activeSession) {
+
+			var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
+				return activeSession.getD3Data().getNodeById(nodeId);
+			});
+
+			var selection;
+			if(view.biologicalType==="metabolite"){
+				selection = mapNodes.filter(function (node) {
+					return node.getBiologicalType()==="metabolite";
+				});
+			}
+
+			if(view.biologicalType==="reaction"){
+				selection = mapNodes.filter(function (node) {
+					return node.getBiologicalType()==="reaction";
+				});
+			}
+
+
+			if(selection.length>0) {
+				bypassButton.enable();
+			}
+			else {
+				bypassButton.show();
+				numberButtonBypass.hide();
+				colorButtonBypass.hide();
+				bypassButton.disable();
+			}
+		}
+		else {
+			bypassButton.show();
+			numberButtonBypass.hide();
+			colorButtonBypass.hide();
+			bypassButton.disable();
+		}
+	},
+
+	updateFormValues : function(){
+		var me = this;
+		var view = me.getView();
+
 		var styleToUse;
 		if(view.biologicalType==="metabolite")
 			styleToUse = metExploreD3.getMetaboliteStyle();
@@ -57,10 +107,12 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 		view.default = styleToUse[view.access];
 
-		console.log(view.default);
 		// WARNING Header render is executed afterrender view
 		// As a result, render and afterrender can't be used on header
 		var header = view.down('header');
+
+
+		me.updateSelectionSet();
 
 		header.lookupReference('mappingButton').fireEvent("setIcon", "continue");
 
@@ -97,8 +149,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			var colorButtonBypass = header.lookupReference('colorButtonBypass');
 			var colorButtonBypassEl = colorButtonBypass.el.dom.querySelector("#html5colorpicker");
 
-			console.log(view.default);
-			console.log(colorButtonEl);
 			colorButtonEl.setAttribute("value", view.default);
 			colorButton.show();
 
@@ -107,6 +157,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			var height = 50;
 
 			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+			svg.selectAll("*").remove();
 
 			metExploreD3.GraphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, colorButtonEl);
 
@@ -121,13 +172,12 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		}
 
 	},
+
 	initForm : function(func){
-		console.log("initForm");
 		var me = this;
 		var view = me.getView();
 
 
-		console.log(view);
 		var styleToUse;
 		if(view.biologicalType==="metabolite")
 			styleToUse = metExploreD3.getMetaboliteStyle();
@@ -145,6 +195,20 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		var header = view.down('header');
 
 		var bypassButton = header.lookupReference('bypassButton');
+
+		var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+
+		if(activeSession) {
+			if(activeSession.getSelectedNodes().length>0) {
+				bypassButton.enable();
+			}
+			else {
+				bypassButton.disable();
+			}
+		}
+		else {
+			bypassButton.disable();
+		}
 
 		header.lookupReference('mappingButton').on({
 			click: function(){
@@ -192,10 +256,22 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				scope : me
 			});
 
+
+			function setValueWithPrompt(){
+				me.numberPrompt(numberButtonBypass.el.dom, function(text){
+					var val = text;
+					if(view.styleType==="int")
+						val = parseInt(text);
+					if(view.styleType==="float")
+						val = parseFloat(text);
+
+					var bypass = true;
+					metExploreD3.GraphStyleEdition.setCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType, val, bypass);
+				});
+			}
 			numberButtonBypass.on({
 				click: function(){
-					me.numberPrompt(numberButtonBypass.el.dom);
-					// OPEN WINDOWS
+					setValueWithPrompt();
 				},
 				scope : me
 			});
@@ -204,8 +280,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				click: function(target){
 					target.hide();
 					numberButtonBypass.show();
-
-					me.numberPrompt(numberButtonBypass.el.dom);
+					setValueWithPrompt();
 				},
 				scope : me
 			});
@@ -236,6 +311,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			var colorButtonBypassEl = colorButtonBypass.el.dom.querySelector("#html5colorpicker");
 
 			colorButtonEl.setAttribute("value", view.default);
+			colorButtonBypassEl.setAttribute("value", view.default);
 
 			colorButton.show();
 
@@ -252,17 +328,21 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			bypassButton.on({
 				click: function(target){
 					target.hide();
-					colorButtonBypassEl.setAttribute("value", "#666666");
+
 					colorButtonBypass.show();
+					colorButtonBypassEl.click()
 				},
 				scope : me
 			});
 
 			colorButtonBypassEl
 				.addEventListener("change", function (evt, newVal) {
-					console.log(this);
-					console.log(newVal);
-					console.log(evt);
+
+					var color = evt.target.value;
+					colorButtonBypassEl.setAttribute("value", color);
+
+					var bypass = true;
+					metExploreD3.GraphStyleEdition.setCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType, color, bypass);
 				});
 
 			var margin = 0;
