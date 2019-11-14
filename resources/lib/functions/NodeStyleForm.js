@@ -131,7 +131,7 @@ metExploreD3.NodeStyleForm = {
             .append("svg:text")
             .attr("class", "metabolite")
             .attr("id", "metabolite")
-            .attr("fill", "black")
+            .attr("fill", "#000000")
             .text(function(d) {
 
                 var text=$("<div/>").html(style.getLabel()).text();

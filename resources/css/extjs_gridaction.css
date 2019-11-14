@@ -787,6 +787,19 @@ p {
   background-repeat: no-repeat;
 }
 
+.mapMultipleColors {
+  background-image: url(../icons/mapMultipleColors.svg) !important;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.mapMultipleNumbers {
+  background-image: url(../icons/mapMultipleNumbers.svg) !important;
+  background-size: 90% 90%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .x-tip {
 
   width: auto !important;

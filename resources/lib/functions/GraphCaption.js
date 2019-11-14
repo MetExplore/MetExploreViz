@@ -49,7 +49,7 @@ metExploreD3.GraphCaption = {
             .attr("rx", metaboliteStyle.getRX()*xMet)
             .attr("ry", metaboliteStyle.getRY()*xMet)
             .attr("fill", "white")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", 2)
             .attr("transform","translate(15,130)");
 
@@ -266,7 +266,7 @@ metExploreD3.GraphCaption = {
             .attr("rx", metaboliteStyle.getRX()*xMet)
             .attr("ry", metaboliteStyle.getRY()*xMet)
             .attr("fill", "white")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", 2)
             .attr("transform","translate(15,130)");
 
@@ -333,7 +333,7 @@ metExploreD3.GraphCaption = {
             .attr("markerHeight", 20)
             .attr("orient", "auto")
             .attr("fill", "red")
-            .attr("stroke", "black")
+            .attr("stroke", "#000000")
             .append("path")
             .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
         d3.select("#viz").select("#D3viz").append("defs").append("marker")
@@ -346,7 +346,7 @@ metExploreD3.GraphCaption = {
             .attr("markerHeight", 20)
             .attr("orient", "auto")
             .attr("fill", "green")
-            .attr("stroke", "black")
+            .attr("stroke", "#000000")
             .append("path")
             .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
 
@@ -478,7 +478,7 @@ metExploreD3.GraphCaption = {
             .attr("rx", metaboliteStyle.getRX()*xMet)
             .attr("ry", metaboliteStyle.getRY()*xMet)
             .attr("fill", "white")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", 2)
             .attr("transform","translate(15,130)");
 

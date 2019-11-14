@@ -209,7 +209,7 @@ metExploreD3.GraphStyleEdition = {
         var dy = nodeElement.select("text").attr("dy");
         nodeElement.select("text").remove();
         nodeElement.append("svg:text")
-            .attr("fill", "black")
+            .attr("fill", "#000000")
             .attr("class", function(d) { return d.getBiologicalType(); })
             .each(function(d) {
                 var el = d3.select(this);
@@ -576,5 +576,55 @@ metExploreD3.GraphStyleEdition = {
                 }
             });
         }
+    },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
+    getCollectionStyleBypass : function (targetSet, attrType, attrName, biologicalType) {
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+        var values = [];
+        if(activeSession) {
+            var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
+                return activeSession.getD3Data().getNodeById(nodeId);
+            });
+
+            var selectedNodesId = mapNodes.filter(function (node) {
+                return node.getBiologicalType() === biologicalType;
+            }).map(function (node) {
+                return node.getId();
+            });
+            var selection;
+            selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                .filter(function (d) {
+                    return d.getBiologicalType() === biologicalType;
+                })
+                .filter(function (d) {
+                    return selectedNodesId.includes(d.getId());
+                });
+
+            if (biologicalType === "link")
+                selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+            if(selectedNodesId.length>0){
+                targetSet.forEach(function setStyles(target) {
+
+                    var arr=[];
+
+                    selection.selectAll(target)
+                        .each(function(){
+                            arr.push(d3.select(this)[attrType](attrName));
+                        });
+
+                    values = arr.filter(function onlyUnique(value, index, self) {
+                        return self.indexOf(value) === index;
+                    });
+
+
+                });
+            }
+        }
+        return values;
     }
 };

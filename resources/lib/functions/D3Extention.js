@@ -3,6 +3,20 @@
  * Functions to extend d3js selection function
  */
 
+d3.selection.prototype.attrEditor = function(attr, val) {
+	if(!val)
+		return this.attr(attr);
+	else
+	{
+		this.attr(attr, val);
+
+		if(attr === "height" || attr === "width"){
+			this.attr("transform", "translate(-"+(parseFloat(this.attr("width"))/2)+",-"+(parseFloat(this.attr("height"))/2)+") scale(1)");
+		}
+
+	}
+};
+
 /*******************************
  * Node shape generation
  * @param width
@@ -78,7 +92,7 @@ d3.selection.prototype.addNodeText = function(style) {
 
 	this
 		.append("svg:text")
-		.attr("fill", "black")
+		.attr("fill", "#000000")
 		.attr("class", function(d) { return d.getBiologicalType(); })
 		.each(function(d) {
 			var el = d3.select(this);

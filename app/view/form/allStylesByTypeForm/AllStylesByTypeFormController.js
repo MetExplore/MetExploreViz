@@ -24,6 +24,8 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 				biologicalType: styleBar.biologicalType,
 				styleType: styleBar.type,
 				default: styleBar.default,
+				min: styleBar.min,
+				max: styleBar.max,
 				styleName: styleBar.style,
 				attrName: styleBar.attr,
 				attrType: styleBar.attrType,

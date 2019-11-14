@@ -22,7 +22,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
             "type": "int",
             "biologicalType":"metabolite",
             "target": ["rect.metabolite", "rect.fontSelected"],
-            "attrType": "attr",
+            "attrType": "attrEditor",
             "attr": "width",
             "title": "Width",
             "min": 1,

@@ -159,6 +159,8 @@ metExploreD3.GraphUtils = {
 				var blue = rgb[2];
 				return metExploreD3.GraphUtils.RGB2Color(red, green, blue)
     		}
+    		if(backgroundColor.slice(0,1) == "#")
+    			return backgroundColor;
     	}
     },
 
@@ -175,7 +177,7 @@ metExploreD3.GraphUtils = {
 				var green = rgb.g;
 				var blue = rgb.b;
 				if ((red*0.299 + green*0.687 + blue*0.114) > 186) 
-					color = "black";
+					color = "#000000";
 				else 
 					color = "white";
 	    	}
@@ -190,17 +192,17 @@ metExploreD3.GraphUtils = {
 					var green = rgb[1];
 					var blue = rgb[2];
 					if ((red*0.299 + green*0.687 + blue*0.114) > 186) 
-						color = "black";
+						color = "#000000";
 					else 
 						color = "white";
 	    		}
 	    		else
-	    			color = "black";
+	    			color = "#000000";
 	    	}
 			return color;
 		}
 		else
-			return "black";
+			return "#000000";
     },
 
     /*******************************************

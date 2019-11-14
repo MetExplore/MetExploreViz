@@ -330,7 +330,7 @@ metExploreD3.GraphNode = {
                 return pathBack;
             })
             .attr("opacity", "0.20")
-            .attr("fill", "black");
+            .attr("fill", "#000000");
 
         box.select(".iconlocker")
             .attr("y", function (node) {
@@ -442,7 +442,7 @@ metExploreD3.GraphNode = {
 
             })
             .attr("opacity", "0.20")
-            .attr("fill", "black");
+            .attr("fill", "#000000");
 
         box.select(".iconlocker")
             .attr("y", function (node) {
@@ -1388,7 +1388,7 @@ metExploreD3.GraphNode = {
 
                 })
                 .attr("opacity", "0.20")
-                .attr("fill", "black");
+                .attr("fill", "#000000");
 
             box.append("image")
                 .attr("class", "iconlocker")
@@ -2034,7 +2034,7 @@ metExploreD3.GraphNode = {
                             d.isSelected = true;
                             session.addSelectedPathway(d.key);
                             d3.select(this)
-                                .style("stroke", "black")
+                                .style("stroke", "#000000")
                                 .style("stroke-width", 20)
                                 .style("stroke-linejoin", "round")
                         }
@@ -2044,7 +2044,7 @@ metExploreD3.GraphNode = {
                             d.isSelected = true;
                             session.addSelectedPathway(d.key);
                             d3.select(this)
-                                .style("stroke", "black")
+                                .style("stroke", "#000000")
                                 .style("stroke-width", 20)
                                 .style("stroke-linejoin", "round")
                         }

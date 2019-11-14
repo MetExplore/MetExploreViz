@@ -390,7 +390,7 @@ metExploreD3.GraphMapping = {
                             return pathBack;
                         })
                         .attr("opacity", "0.20")
-                        .attr("fill", "black");
+                        .attr("fill", "#000000");
 
                     box
                         .select("iconlocker")
@@ -573,7 +573,7 @@ metExploreD3.GraphMapping = {
 																	return pathBack;
 																})
 																.attr("opacity", "0.20")
-																.attr("fill", "black");
+																.attr("fill", "#000000");
 
 															box
 																.select(".iconlocker")
@@ -901,7 +901,7 @@ metExploreD3.GraphMapping = {
 
 											d3.select(this)
 												.style("opacity", 0.5)
-												.style("stroke", "black")
+												.style("stroke", "#000000")
 												.style("stroke-width", 0.5)
 												.style("stroke-dasharray", "2,3")
 											// .each(function(link){
@@ -931,7 +931,7 @@ metExploreD3.GraphMapping = {
 
 											d3.select(this)
 												.style("opacity", 0.5)
-												.style("stroke", "black")
+												.style("stroke", "#000000")
 												.style("stroke-width", 0.5)
 												.style("stroke-dasharray", "2,3")
 											// .each(function(link){
@@ -1191,7 +1191,7 @@ metExploreD3.GraphMapping = {
 
 										d3.select(this)
 											.style("opacity", 0.5)
-											.style("stroke", "black")
+											.style("stroke", "#000000")
 											.style("stroke-width", 0.5)
 											.style("stroke-dasharray", "2,3")
 										// .each(function(link){
@@ -2270,7 +2270,7 @@ metExploreD3.GraphMapping = {
                     // .attr("points","9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78")
 	                // .attr("transform", "translate(0, 0) scale(0.7)")
 	                // .style("fill", color)
-	                // // .style("stroke","black").style("stroke-width", 2)
+	                // // .style("stroke","#000000").style("stroke-width", 2)
 	                // .style("fill-rule","nonzero")
                     .append("svg:path")
                     .attr("class", String)
@@ -2661,7 +2661,7 @@ metExploreD3.GraphMapping = {
 					if(node.isSelected())
 						d3.select(this).select('text').transition().duration(4000).style("fill", "white");
 					else
-						d3.select(this).select('text').transition().duration(4000).style("fill", "black");
+						d3.select(this).select('text').transition().duration(4000).style("fill", "#000000");
 				}
 			});
 

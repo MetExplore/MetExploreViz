@@ -85,7 +85,7 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("y", 0)
             .attr("width", width+40)
             .attr("height", height)
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("fill-opacity", "0")
             .style("stroke-width", 2);
 
@@ -183,7 +183,7 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("width", "50px")
             .attr("height", "50px")
             .style("fill", me.colorMin)
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", 4)
             .attr("points", "35,15 35,35 20,25");
 
@@ -213,7 +213,7 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("width", "50px")
             .attr("height", "50px")
             .style("fill", me.colorMax)
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", 4)
             .attr("points", "15,15 30,25 15,35");
 
@@ -223,7 +223,7 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("y", 0)
             .attr("width", width+100)
             .attr("height", height)
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("fill-opacity", "0")
             .style("stroke-width", 4);
 
@@ -389,7 +389,7 @@ metExploreD3.GraphColorScaleEditor = {
                 .attr("id", "sliderId")
                 .append('path')
                 .attr("transform", "translate(8, 2) scale(0.4)")
-                .attr("stroke", "black")
+                .attr("stroke", "#000000")
                 .attr("stroke-width", "10px")
                 .attr("d", pathD)
                 .attr("fill", me.color(iCol))

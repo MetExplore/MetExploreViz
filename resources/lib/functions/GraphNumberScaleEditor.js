@@ -80,7 +80,7 @@ metExploreD3.GraphNumberScaleEditor = {
             .attr("y", 0)
             .attr("width", width)
             .attr("height", height)
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("fill-opacity", 0)
             .style("stroke-width", 2);
 
@@ -211,7 +211,7 @@ metExploreD3.GraphNumberScaleEditor = {
             .attr("y", 0)
             .attr("width", me.width)
             .attr("height", me.height)
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("fill-opacity", 0)
             .style("stroke-width", 4);
 
@@ -289,7 +289,7 @@ metExploreD3.GraphNumberScaleEditor = {
             .style("paint-order","stroke")
             .style("stroke-width", 2)
             .style("fill", "none")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-opacity", "0.8")
             .attr("dy", ".4em")
             .style("font-weight", 'bold')
@@ -331,7 +331,7 @@ metExploreD3.GraphNumberScaleEditor = {
             .style("paint-order","stroke")
             .style("stroke-width", 2)
             .style("fill", "none")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-opacity", "0.8")
             .attr("dy", ".4em")
             .style("font-weight", 'bold')
@@ -443,7 +443,7 @@ metExploreD3.GraphNumberScaleEditor = {
             .style("paint-order","stroke")
             .style("stroke-width", 2)
             .style("fill", "none")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-opacity", "0.8")
             .attr("dy", ".4em")
             .style("font-weight", 'bold')
@@ -485,7 +485,7 @@ metExploreD3.GraphNumberScaleEditor = {
             .style("paint-order","stroke")
             .style("stroke-width", 2)
             .style("fill", "none")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-opacity", "0.8")
             .attr("dy", ".4em")
             .style("font-weight", 'bold')

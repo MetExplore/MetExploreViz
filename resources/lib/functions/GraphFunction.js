@@ -1793,7 +1793,7 @@ metExploreD3.GraphFunction = {
         // Side compounds are not included in the new graph structures
         // From each edges exiting or entering from a reversible reaction, a new edge between the same vertices but going into the opposite direction is created
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", "0.5")
             .filter(function (d) {
                 return (d.getSource().isSideCompound !== true && d.getTarget().isSideCompound !== true)
@@ -2029,7 +2029,7 @@ metExploreD3.GraphFunction = {
     highlightCycle: function (cycle) {
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("path.link.reaction")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", "0.5");
         var cycleLinks = metExploreD3.GraphFunction.getLinksFromCycle(cycle);
         var nodesCycle = [];
@@ -2062,7 +2062,7 @@ metExploreD3.GraphFunction = {
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .filter(function (d) {
                 return (cycleLinks.includes(d));
-            }).style("stroke", "black")
+            }).style("stroke", "#000000")
             .style("stroke-width", "0.5");
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
             .filter(function (d) {

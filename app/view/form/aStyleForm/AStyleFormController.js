@@ -40,6 +40,9 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		});
 	},
 
+	/**
+	 * Define displayed icons on values in function of selected nodes
+	 */
 	updateSelectionSet : function() {
 		var me = this;
 		var view = me.getView();
@@ -50,6 +53,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 		var bypassButton = header.lookupReference('bypassButton');
 		var colorButtonBypass = header.lookupReference('colorButtonBypass');
+		var colorButtonBypassEl = colorButtonBypass.el.dom.querySelector("#html5colorpicker");
 		var numberButtonBypass = header.lookupReference('numberButtonBypass');
 
 		var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
@@ -59,22 +63,74 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				return activeSession.getD3Data().getNodeById(nodeId);
 			});
 
-			var selection;
-			if(view.biologicalType==="metabolite"){
-				selection = mapNodes.filter(function (node) {
-					return node.getBiologicalType()==="metabolite";
-				});
-			}
+			var selectedNodes = mapNodes.filter(function (node) {
+				return node.getBiologicalType()===view.biologicalType;
+			});
 
-			if(view.biologicalType==="reaction"){
-				selection = mapNodes.filter(function (node) {
-					return node.getBiologicalType()==="reaction";
-				});
-			}
+			var selection = d3.select("#"+metExploreD3.GraphNode.activePanel)
+				.select("#D3viz")
+				.selectAll("g.node")
+				.filter(function (n) { return n.getBiologicalType()===view.biologicalType});
 
-
-			if(selection.length>0) {
+			if(selectedNodes.length>0) {
 				bypassButton.enable();
+				if(selection){
+					var values = metExploreD3.GraphStyleEdition.getCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType);
+					if(values.length===1) {
+						numberButtonBypass.fireEvent("setIcon", "noneIcon");
+						colorButtonBypass.fireEvent("setIcon", "noneIcon");
+
+						if (view.styleType === "float") {
+							if (parseFloat(view.default) !== parseFloat(values[0])){
+								numberButtonBypass.show();
+								bypassButton.hide();
+
+								me.replaceText(numberButtonBypass.el.dom, parseFloat(values[0]));
+							}
+
+						}
+						if (view.styleType === "int") {
+							if (parseInt(view.default) !== parseInt(values[0])){
+								numberButtonBypass.show();
+								bypassButton.hide();
+
+								me.replaceText(numberButtonBypass.el.dom, parseInt(values[0]));
+							}
+						}
+						if (view.styleType === "color") {
+
+							if (view.default !== metExploreD3.GraphUtils.RGBString2Color(values[0]))
+							{
+								colorButtonBypass.show();
+								bypassButton.hide();
+
+								colorButtonBypassEl.setAttribute("value", metExploreD3.GraphUtils.RGBString2Color(values[0]));
+							}
+						}
+					}
+					else
+					{
+						bypassButton.show();
+						numberButtonBypass.hide();
+						colorButtonBypass.hide();
+
+						if(values.length>1){
+							if (view.styleType === "float" || view.styleType === "int") {
+								numberButtonBypass.fireEvent("setIcon", "mapMultipleNumbers");
+							}
+
+							if (view.styleType === "color")
+								colorButtonBypass.fireEvent("setIcon", "mapMultipleColors");
+
+						}
+						else
+						{
+
+							numberButtonBypass.fireEvent("setIcon", "noneIcon");
+							colorButtonBypass.fireEvent("setIcon", "noneIcon");
+						}
+					}
+				}
 			}
 			else {
 				bypassButton.show();
@@ -173,6 +229,10 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 	},
 
+	/**
+	 * Define listeners to manage each style
+	 * @param func
+	 */
 	initForm : function(func){
 		var me = this;
 		var view = me.getView();
@@ -251,6 +311,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 						metExploreD3.GraphStyleEdition.setCollectionStyle(view.target, view.attrType, view.attrName, view.biologicalType, val);
 						styleToUse[view.access]=val;
+						view.default = parseInt(val);
 					});
 				},
 				scope : me
@@ -273,6 +334,10 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				click: function(){
 					setValueWithPrompt();
 				},
+				setIcon: function(type){
+					bypassButton.removeCls('mapMultipleNumbers');
+					if(type!=="noneIcon") bypassButton.addCls("mapMultipleNumbers");
+				},
 				scope : me
 			});
 
@@ -284,6 +349,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				},
 				scope : me
 			});
+
 
 			var margin = 0;
 			var width = 190;
@@ -319,18 +385,16 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				.addEventListener("change", function (evt) {
 					var color = evt.target.value;
 					colorButtonEl.setAttribute("value", color);
-
+					view.default = color;
 					metExploreD3.GraphStyleEdition.setCollectionStyle(view.target, view.attrType, view.attrName, view.biologicalType, color);
 
 					styleToUse[view.access]=color;
 				});
 
-			bypassButton.on({
-				click: function(target){
-					target.hide();
-
-					colorButtonBypass.show();
-					colorButtonBypassEl.click()
+			colorButtonBypass.on({
+				setIcon: function(type){
+					bypassButton.removeCls('mapMultipleColors');
+					if(type!=="noneIcon") bypassButton.addCls("mapMultipleColors");
 				},
 				scope : me
 			});
@@ -344,6 +408,18 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 					var bypass = true;
 					metExploreD3.GraphStyleEdition.setCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType, color, bypass);
 				});
+
+			bypassButton.on({
+				click: function(target){
+					target.hide();
+
+					colorButtonBypass.show();
+					colorButtonBypassEl.click()
+				},
+				scope : me
+			});
+
+
 
 			var margin = 0;
 			var width = 150;
@@ -364,25 +440,69 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		}
 
 	},
+
 	numberPrompt : function(target, func){
 		var me = this;
 		var view = me.getView();
 
-		Ext.Msg.prompt(view.title, 'Enter a number >= 0.0 :',
+		Ext.Msg.prompt(view.title, 'Enter a number('+ view.styleType +') '+ view.min +'<= x <= '+ view.max +' :',
 			function(btn, text){
 				if (btn == 'ok'){
 					if(text!="") {
-						me.replaceText(target, text);
-						func(text);
+						var min, max, number;
+						if(view.styleType==="float"){
+							min = parseFloat(view.min);
+							max = parseFloat(view.max);
+							number = parseFloat(text);
+						}
+
+						if(view.styleType==="int"){
+							min = parseInt(view.min);
+							max = parseInt(view.max);
+							number = parseInt(text);
+						}
+
+						if(isNaN(number)){
+							Ext.Msg.show({
+								title:'Warning',
+								msg: "Please enter a number between "+view.min+" et "+view.max,
+								icon: Ext.Msg.WARNING,
+								fn:function(){ me.numberPrompt(target, func); }
+							});
+
+						}
+						else
+						{
+							if(min <= number && number <= max){
+								me.replaceText(target, number);
+								func(number);
+							}
+							else
+							{
+								Ext.Msg.show({
+									title:'Warning',
+									msg: "Please enter a number between "+view.min+" et "+view.max,
+									icon: Ext.Msg.WARNING,
+									fn:function(){ me.numberPrompt(target, func); }
+								});
+							}
+						}
+
 					}
 					else
 					{
-						alert("Please enter a valid number");
-						me.numberPrompt(target);
+						Ext.Msg.show({
+							title:'Warning',
+							msg: "Please enter a number between "+view.min+" et "+view.max,
+							icon: Ext.Msg.WARNING,
+							fn:function(){ me.numberPrompt(target, func); }
+						});
+						me.numberPrompt(target, func);
 					}
 				}
 			}, this, false);
 	},
+
 	resizeText : function(target){
 		d3.select(target).select("#textNumberButton").style("font-size", function(){
 			var initialValue = parseFloat(d3.select(this).style("font-size").replace("px", ""));
@@ -392,6 +512,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			return Math.min(attendingLenght*initialValue/correspondingLenght-2, 15);
 		});
 	},
+
 	replaceText : function(target, text){
 		var me = this;
 		d3.select(target).select("#textNumberButton")

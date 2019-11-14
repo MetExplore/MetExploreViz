@@ -1046,7 +1046,7 @@ metExploreD3.GraphLink = {
             .attr("markerUnits", "userSpaceOnUse")
             .attr("markerWidth", 15).attr("markerHeight", 10)
             .attr("orient", "auto-start-reverse")
-            .attr("fill", "green").attr("stroke", "black")
+            .attr("fill", "green").attr("stroke", "#000000")
             .append("path")
             .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
         d3.select("#"+panel).select("#D3viz").select("#graphComponent").append("defs").append("marker")
@@ -1056,7 +1056,7 @@ metExploreD3.GraphLink = {
             .attr("markerUnits", "userSpaceOnUse")
             .attr("markerWidth", 15).attr("markerHeight", 10)
             .attr("orient", "auto-start-reverse")
-            .attr("fill", "red").attr("stroke", "black")
+            .attr("fill", "red").attr("stroke", "#000000")
             .append("path")
             .attr("d", "M0,6L-5,12L9,6L-5,0L0,6");
 

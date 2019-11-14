@@ -2093,7 +2093,7 @@ metExploreD3.GraphNetwork = {
                 return pathBack;
             })
             .attr("opacity", "0.20")
-            .attr("fill", "black");
+            .attr("fill", "#000000");
 
         box.append("image")
             .attr("class", "iconlocker")
