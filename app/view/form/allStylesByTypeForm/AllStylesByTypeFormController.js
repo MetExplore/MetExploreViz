@@ -16,6 +16,7 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 
+
 		view.store.data.forEach(function (styleBar) {
 
 			var myPanel = Ext.create('metExploreViz.view.form.aStyleForm.AStyleForm', {
@@ -38,8 +39,58 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 		{
 			afterStyleLoading : me.updateForm,
 			updateSelectionSet : me.updateSelection,
+			afterrender : me.createCaption,
 			scope:me
 		});
+	},
+    createCaption : function(){
+		var me = this;
+		var view = me.getView();
+		if(view)
+		{
+			var parentElement = view.el.dom;;
+			// Obtenir une référence au premier enfant
+			var theFirstChild = parentElement.firstChild;
+
+			// Créer un nouvel élément
+			var newElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			parentElement.insertBefore(newElement, theFirstChild);
+			var svg = d3.select(newElement)
+				.style("background-color", "#eee")
+				.attr("height", "38")
+				.attr("width", "100%");
+
+			svg.append("polygon")
+				.attr("points", "6,38 6,20 36,0 72,0 42,20 42,38")
+				.attr("fill", "rgb(20, 71, 120)");
+
+			svg.append("text")
+				.text("Default")
+				.attr("transform","translate(34, 20) rotate(-35)")
+				.style("text-anchor","middle")
+				.style("fill", "#ffffff");
+
+			svg.append("polygon")
+				.attr("points", "42,38 42,20 72,0 108,0 78,20 78,38")
+				.attr("fill", "rgb(95, 130, 163)");
+
+			svg.append("text")
+				.text("Mapping")
+				.attr("transform","translate(69, 20) rotate(-35)")
+				.style("text-anchor","middle")
+				.style("fill", "#ffffff");
+
+			svg.append("polygon")
+				.attr("points", "78,38 78,20 108,0 144,0 114,20 114,38")
+				.attr("fill", "rgb(20, 71, 120)");
+
+			svg.append("text")
+				.text("Bypass")
+				.attr("transform","translate(104, 20) rotate(-35)")
+				.style("text-anchor","middle")
+				.style("fill", "#ffffff");
+
+		}
 	},
     updateForm : function(){
 		var me = this;
