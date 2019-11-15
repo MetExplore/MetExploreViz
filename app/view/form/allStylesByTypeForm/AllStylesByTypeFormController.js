@@ -57,36 +57,36 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 			parentElement.insertBefore(newElement, theFirstChild);
 			var svg = d3.select(newElement)
 				.style("background-color", "#eee")
-				.attr("height", "38")
+				.attr("height", "40")
 				.attr("width", "100%");
 
 			svg.append("polygon")
-				.attr("points", "6,38 6,20 36,0 72,0 42,20 42,38")
+				.attr("points", "6,38 6,25 40,0 78,0 42,25 42,38")
 				.attr("fill", "rgb(20, 71, 120)");
 
 			svg.append("text")
 				.text("Default")
-				.attr("transform","translate(34, 20) rotate(-35)")
+				.attr("transform","translate(36, 22) rotate(-35)")
 				.style("text-anchor","middle")
 				.style("fill", "#ffffff");
 
 			svg.append("polygon")
-				.attr("points", "42,38 42,20 72,0 108,0 78,20 78,38")
+				.attr("points", "42,38 42,25 78,0 114,0 78,25 78,38")
 				.attr("fill", "rgb(95, 130, 163)");
 
 			svg.append("text")
 				.text("Mapping")
-				.attr("transform","translate(69, 20) rotate(-35)")
+				.attr("transform","translate(71, 22) rotate(-35)")
 				.style("text-anchor","middle")
 				.style("fill", "#ffffff");
 
 			svg.append("polygon")
-				.attr("points", "78,38 78,20 108,0 144,0 114,20 114,38")
+				.attr("points", "78,38 78,25 114,0 150,0 114,25 114,38")
 				.attr("fill", "rgb(20, 71, 120)");
 
 			svg.append("text")
 				.text("Bypass")
-				.attr("transform","translate(104, 20) rotate(-35)")
+				.attr("transform","translate(106, 22) rotate(-35)")
 				.style("text-anchor","middle")
 				.style("fill", "#ffffff");
 
