@@ -536,7 +536,7 @@ metExploreD3.GraphStyleEdition = {
             if(biologicalType==="link")
                 selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
-            selection.selectAll(target)[attrType](attrName, value);
+            selection.selectAll(target+":not(.bypassed)")[attrType](attrName, value);
         });
     },
 
@@ -572,7 +572,7 @@ metExploreD3.GraphStyleEdition = {
                     if (biologicalType === "link")
                         selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
-                    selection.selectAll(target)[attrType](attrName, value);
+                    selection.selectAll(target)[attrType](attrName, value).classed("bypassed", true);
                 }
             });
         }

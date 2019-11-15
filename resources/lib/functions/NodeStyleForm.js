@@ -88,10 +88,6 @@ metExploreD3.NodeStyleForm = {
                 .attr("id", "D3vizExemple")
         }
 
-        if(object==="Metabolite")
-            var style = metExploreD3.getMetaboliteStyle();
-        else
-            var style = metExploreD3.getReactionStyle();
 
         var that = this;
 

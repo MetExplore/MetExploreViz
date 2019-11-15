@@ -22,12 +22,46 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm', {
         expandedItem: false
     },
     defaults: {
+
+        padding:'0',
         width: '100%',
         collapsible: true,
         collapsed: true,
         reorderable: true
     },
-    items: [{
+    items: [
+    //     {
+    //     xtype:"panel",
+    //     layout: 'hbox',
+    //     width: '100%',
+    //     collapsible: false,
+    //     collapsed: false,
+    //     items:[
+    //         {
+    //             xtype:'label',
+    //             forId: 'version',
+    //             text: 'Default',
+    //             margin: '0 0 0 10',
+    //             flex:1,
+    //             border:false
+    //         },{
+    //             xtype:'label',
+    //             forId: 'version',
+    //             text: 'Default',
+    //             margin: '0 0 0 10',
+    //             flex:1,
+    //             border:false
+    //         },{
+    //             xtype:'label',
+    //             forId: 'version',
+    //             text: 'Default',
+    //             margin: '0 0 0 10',
+    //             flex:1,
+    //             border:false
+    //         }
+    //     ]
+    // },
+        {
         collapsed: false,
         border: 0,
         height: 0,

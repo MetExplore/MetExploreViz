@@ -8,6 +8,9 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
     requires: [
         "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm"
     ],
+    style : {
+        padding:'0px 0px 0px 0px'
+    },
     store: {
         data: [{
             "type": "color",
@@ -33,7 +36,7 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
             "type": "int",
             "biologicalType":"metabolite",
             "target": ["rect.metabolite", "rect.fontSelected"],
-            "attrType": "attr",
+            "attrType": "attrEditor",
             "attr": "height",
             "title": "Height",
             "access": "height",
@@ -127,5 +130,5 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
             "max": 1.0,
             "default": 1.0
         }]
-    }
+    },
 });

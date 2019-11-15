@@ -22,10 +22,11 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesForm', {
        align:'stretch'
     },
     region:'north',
-    width:'100%', 
+    width:'100%',
+    height:'20%',
+    maxHeight:'20%',
     margins:'0 0 0 0',
     autoScroll: true,
-    // height: '100%',
     tabBar:{
         cls:"vizTBarStyle"
     },

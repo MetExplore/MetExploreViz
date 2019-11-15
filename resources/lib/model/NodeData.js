@@ -210,6 +210,16 @@ NodeData.prototype = {
       return this.svgWidth;
     },
 
+    setSvgHeight:function(h)
+    {
+      this.svgHeight = h;
+    },
+
+    setSvgWidth:function(w)
+    {
+      this.svgWidth = w;
+    },
+
     getCompartment:function()
     {
       return this.compartment;

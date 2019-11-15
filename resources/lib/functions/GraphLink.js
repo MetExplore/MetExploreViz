@@ -115,8 +115,6 @@ metExploreD3.GraphLink = {
             .range([-7, -1, 1, 7]);
 
         function pathForReversibleReactions(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
 
             map1 = reaction.getMappingDataByNameAndCond(mappingName, conditions[0]);
             map2 = reaction.getMappingDataByNameAndCond(mappingName, conditions[1]);
@@ -184,21 +182,19 @@ metExploreD3.GraphLink = {
 
         function pathSimpleOtherSide(source, target, value) {
 
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
             var diffX = dX / Math.abs(dX);
             var diffY = dY / Math.abs(dY);
             if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
 
@@ -256,19 +252,17 @@ metExploreD3.GraphLink = {
 
         function pathSimple(source, target, value) {
 
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
             if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
 
@@ -418,20 +412,18 @@ metExploreD3.GraphLink = {
         var source, target, path;
 
         function pathForReversibleReactions(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
 
             if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             var heightArrow = 5;
@@ -463,20 +455,18 @@ metExploreD3.GraphLink = {
         }
 
         function path(source, target) {
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
 
             if (source.getBiologicalType() == "metabolite") {
-                var rTW = (Math.abs(d) * reactionStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * reactionStyle.getHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             else {
-                var rTW = (Math.abs(d) * metaboliteStyle.getWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * metaboliteStyle.getHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
 
@@ -660,7 +650,7 @@ metExploreD3.GraphLink = {
      * @param {} linkStyle : Store which contains links style
      * @param {} metaboliteStyle : Store which contains metabolites style
      */
-    refreshLinkActivity: function (parent, session, linkStyle, metaboliteStyle) {
+    refreshLinkActivity: function (parent, session, linkStyle) {
         metExploreD3.GraphLink.panelParent = "#" + parent;
         var networkData = session.getD3Data();
 
@@ -895,7 +885,7 @@ metExploreD3.GraphLink = {
         }
     },
 
-    reloadLinks : function(panel, networkData, linkStyle, metaboliteStyle){
+    reloadLinks : function(panel, networkData, linkStyle){
         d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(networkData.getLinks())
             .enter()

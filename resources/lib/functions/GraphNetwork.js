@@ -1208,7 +1208,6 @@ metExploreD3.GraphNetwork = {
 
         // Refresh coresponding nodes and links
         var linkStyle = metExploreD3.getLinkStyle();
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 
         metExploreD3.GraphNetwork.initPathwaysData();
 
@@ -1303,7 +1302,7 @@ metExploreD3.GraphNetwork = {
             .on("end", function(){
                 var scale = metExploreD3.getScaleById(panel);
                 if ((networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())) {
-                    metExploreD3.GraphLink.reloadLinks(panel, networkData, linkStyle, metaboliteStyle);
+                    metExploreD3.GraphLink.reloadLinks(panel, networkData, linkStyle);
                 }
                 metExploreD3.GraphLink.tick(panel, scale);
             })
@@ -1886,8 +1885,8 @@ metExploreD3.GraphNetwork = {
             false,
             theNode.getLabelVisible(),
             theNode.getSvg(),
-            theNode.getSvgWidth(),
-            theNode.getSvgHeight(),
+            metaboliteStyle.getWidth()/2,
+            metaboliteStyle.getHeight()/2,
             theNode.getIsSideCompound(),
             undefined,
             true,
@@ -2010,7 +2009,6 @@ metExploreD3.GraphNetwork = {
         var panel = "viz";
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 
         networkData.getPathwayByName(pathwayName).setCollapsed(true);
 

@@ -58,16 +58,8 @@ metExploreD3.GraphPanel = {
             // Get height and witdh of panel
             var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
             var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
-            var linkStyle = metExploreD3.getLinkStyle();
-            var generalStyle = metExploreD3.getGeneralStyle();
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
 
-            var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
-            var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
-            var maxDim = Math.max(maxDimRea, maxDimMet);
             // Initiate the D3 force drawing algorithm
-
             var session = _metExploreViz.getSessionById(panel);
 
 			var forceX = d3.forceX()
@@ -712,6 +704,26 @@ metExploreD3.GraphPanel = {
 					metExploreD3.setGeneralStyle(style);
 				}
 
+				var linkStyle;
+				if(jsonParsed.linkStyle)
+				{
+					linkStyle = new LinkStyle(jsonParsed.linkStyle.size, jsonParsed.linkStyle.lineWidth, jsonParsed.linkStyle.markerWidth, jsonParsed.linkStyle.markerHeight, jsonParsed.linkStyle.markerInColor, jsonParsed.linkStyle.markerOutColor, jsonParsed.linkStyle.markerStrokeColor, jsonParsed.linkStyle.markerStrokeWidth, jsonParsed.linkStyle.strokeColor);
+					metExploreD3.setLinkStyle(linkStyle);
+
+				}
+				var metaboliteStyle
+				if(jsonParsed.metaboliteStyle)
+				{
+					metaboliteStyle = new MetaboliteStyle(jsonParsed.metaboliteStyle.backgroundColor,jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.opacity, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.fontColor, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.labelOpacity, jsonParsed.metaboliteStyle.label,  jsonParsed.metaboliteStyle.useAlias);
+				}
+
+				var reactionStyle;
+				if(jsonParsed.reactionStyle)
+				{
+					var reactionStyle = new ReactionStyle(jsonParsed.reactionStyle.backgroundColor,jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.opacity, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth, jsonParsed.reactionStyle.fontColor, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.labelOpacity, jsonParsed.reactionStyle.label,  jsonParsed.reactionStyle.useAlias);
+					metExploreD3.setReactionStyle(reactionStyle);
+				}
+
 				var sessions = jsonParsed.sessions;
 				for (var key in sessions) {
 					if(key!='viz')
@@ -767,13 +779,26 @@ metExploreD3.GraphPanel = {
 					nodes.forEach(function(node){
 						if(node.getBiologicalType()=="metabolite")
 						{
+							if(node.svgWidth==="0" || node.svgWidth===undefined)
+								node.svgWidth= metaboliteStyle.getWidth();
+
+							if(node.svgHeight==="0" || node.svgHeight===undefined)
+								node.svgHeight= metaboliteStyle.getHeight();
+
 							if(networkData.getCompartmentByName(node.getCompartment())==null)
 								networkData.addCompartment(node.getCompartment());
                             }
 						else
 						{
                             if(node.getBiologicalType()=="reaction") {
-                                node.getPathways().forEach(function (pathway) {
+								if(node.svgWidth==="0" || node.svgWidth===undefined)
+									node.svgWidth= reactionStyle.getWidth();
+
+								if(node.svgHeight==="0" || node.svgHeight===undefined)
+									node.svgHeight= reactionStyle.getHeight();
+
+
+								node.getPathways().forEach(function (pathway) {
                                     if (networkData.getPathwayByName(pathway) == null)
                                         networkData.addPathway(pathway);
                                 });
@@ -859,23 +884,7 @@ metExploreD3.GraphPanel = {
 				}
 
 
-				if(jsonParsed.linkStyle)
-				{
-					var style = new LinkStyle(jsonParsed.linkStyle.size, jsonParsed.linkStyle.lineWidth, jsonParsed.linkStyle.markerWidth, jsonParsed.linkStyle.markerHeight, jsonParsed.linkStyle.markerInColor, jsonParsed.linkStyle.markerOutColor, jsonParsed.linkStyle.markerStrokeColor, jsonParsed.linkStyle.markerStrokeWidth, jsonParsed.linkStyle.strokeColor);
-					metExploreD3.setLinkStyle(style);
 
-				}
-
-				if(jsonParsed.metaboliteStyle)
-				{
-					var style = new MetaboliteStyle(jsonParsed.metaboliteStyle.backgroundColor,jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.opacity, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.fontColor, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.labelOpacity, jsonParsed.metaboliteStyle.label,  jsonParsed.metaboliteStyle.useAlias);
-				}
-
-				if(jsonParsed.reactionStyle)
-				{
-					var style = new ReactionStyle(jsonParsed.reactionStyle.backgroundColor,jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.opacity, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth, jsonParsed.reactionStyle.fontColor, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.labelOpacity, jsonParsed.reactionStyle.label,  jsonParsed.reactionStyle.useAlias);
-					metExploreD3.setReactionStyle(style);
-				}
 
 				for (var key in sessions) {
 					metExploreD3.GraphNetwork.first=true;
@@ -935,12 +944,26 @@ metExploreD3.GraphPanel = {
 			nodes.forEach(function(node){
 				if(node.getBiologicalType()=="metabolite")
 				{
+					if(node.svgWidth==="0" || node.svgWidth===undefined)
+						node.svgWidth= metaboliteStyle.getWitdh();
+
+					if(node.svgHeight==="0" || node.svgHeight===undefined)
+						node.svgHeight= metaboliteStyle.getHeight();
+
 					if(networkData.getCompartmentByName(node.getCompartment())==null)
 						networkData.addCompartment(node.getCompartment());
                     if(networkData.getCompartmentsLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Compartments", data:networkData.getCompartments()});
 				}
 				else
 				{
+					if(node.getBiologicalType()==="reaction"){
+						if(node.svgWidth==="0" || node.svgWidth===undefined)
+							node.svgWidth= reactionStyle.getWitdh();
+
+						if(node.svgHeight==="0" || node.svgHeight===undefined)
+							node.svgHeight= reactionStyle.getHeight();
+					}
+
 					node.getPathways().forEach(function(pathway){
 						if(networkData.getPathwayByName(pathway)==null)
 							networkData.addPathway(pathway);
