@@ -5,7 +5,7 @@ var NetworkVizSession = function(){
     this.active = false;
     this.activeMapping = "";
     this.animated = false;
-    this.colorMappings = [];
+    this.valueMappings = [];
     this.colorSuggestions = [];
     this.colorComponents = [];
     this.displayNodeName = "";
@@ -67,26 +67,26 @@ NetworkVizSession.prototype = {
         this.activeMapping = activeMapping;
     },
 
-    // ColorMapping
-    getColorMappingsSet : function(){
-        return this.colorMappings;
+    // ValueMapping
+    getValueMappingsSet : function(){
+        return this.valueMappings;
     },
-    getColorMappingById : function(id){
-        var theColorMapping = null;
-        this.colorMappings.forEach(function(aColorMapping){            
-            if(aColorMapping.getName()==id)
-                theColorMapping = aColorMapping;
+    getValueMappingById : function(id){
+        var theValueMapping = null;
+        this.valueMappings.forEach(function(aValueMapping){
+            if(aValueMapping.getName()==id)
+                theValueMapping = aValueMapping;
         });
-        return theColorMapping;
+        return theValueMapping;
     }, 
-    getColorMappingsSetLength : function(){
-        return this.colorMappings.length;
+    getValueMappingsSetLength : function(){
+        return this.valueMappings.length;
     },
-    resetColorMapping : function(){
-        this.colorMappings = [];
+    resetValueMapping : function(){
+        this.valueMappings = [];
     },
-    addColorMapping : function(n, c){
-        this.colorMappings.push(new ColorMapping(n,c)); 
+    addValueMapping : function(n, c){
+        this.valueMappings.push(new ValueMapping(n,c));
     },
 
     // ColorSuggestion
@@ -115,7 +115,7 @@ NetworkVizSession.prototype = {
         this.colorSuggestions = [];
     },
     addColorSuggestion : function(n, c){
-        this.colorSuggestions.push(new ColorMapping(n,c));
+        this.colorSuggestions.push(new ValueMapping(n,c));
     },
 
     // ColorComponent

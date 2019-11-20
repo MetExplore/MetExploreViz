@@ -1310,33 +1310,33 @@ metExploreD3.GraphNode = {
             })
             .filter(function (node) {
                 var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
-                return (mappingData !== null && session.getColorMappingById(mappingData.getMapValue()) !== null);
+                return (mappingData !== null && aStyleFormParent.getController().getValueMappingById(mappingData.getMapValue()) !== null);
             })
             .attr("mapped", function (node) {
                 var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
 
                 if (session.getMappingDataType() === "Continuous") {
-                    if (session.getColorMappingsSet()[0] < session.getColorMappingsSet()[1]) {
-                        maxValue = session.getColorMappingsSet()[1];
-                        minValue = session.getColorMappingsSet()[0];
+                    if (aStyleFormParent.getController().getValueMappingsSet()[0] < aStyleFormParent.getController().getValueMappingsSet()[1]) {
+                        maxValue = aStyleFormParent.getController().getValueMappingsSet()[1];
+                        minValue = aStyleFormParent.getController().getValueMappingsSet()[0];
                     }
                     else {
-                        maxValue = session.getColorMappingsSet()[0];
-                        minValue = session.getColorMappingsSet()[1];
+                        maxValue = aStyleFormParent.getController().getValueMappingsSet()[0];
+                        minValue = aStyleFormParent.getController().getValueMappingsSet()[1];
                     }
 
                     var generalStyle = _metExploreViz.getGeneralStyle();
-                    var colorMin = generalStyle.getColorMinMappingContinuous();
-                    var colorMax = generalStyle.getColorMaxMappingContinuous();
+                    var valueMin = generalStyle.getValueMinMappingContinuous();
+                    var valueMax = generalStyle.getValueMaxMappingContinuous();
 
                     var colorScale = d3.scaleLinear()
                         .domain([parseFloat(minValue), parseFloat(maxValue)])
-                        .range([colorMin, colorMax]);
+                        .range([valueMin, valueMax]);
 
                     return colorScale(parseFloat(mappingData.getMapValue()));
                 }
 
-                var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
+                var color = aStyleFormParent.getController().getValueMappingById(mappingData.getMapValue()).getValue();
                 return color;
             })
             .style("fill", function (node) {
@@ -1354,27 +1354,27 @@ metExploreD3.GraphNode = {
                     .style("opacity", '0.5')
                     .style("fill", 'red');
                 if (session.getMappingDataType() === "Continuous") {
-                    if (parseFloat(session.getColorMappingsSet()[0].getName()) < parseFloat(session.getColorMappingsSet()[1].getName())) {
-                        maxValue = parseFloat(session.getColorMappingsSet()[1].getName());
-                        minValue = parseFloat(session.getColorMappingsSet()[0].getName());
+                    if (parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName()) < parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName())) {
+                        maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName());
+                        minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName());
                     }
                     else {
-                        maxValue = parseFloat(session.getColorMappingsSet()[0].getName());
-                        minValue = parseFloat(session.getColorMappingsSet()[1].getName());
+                        maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName());
+                        minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName());
                     }
 
                     var generalStyle = _metExploreViz.getGeneralStyle();
-                    var colorMin = generalStyle.getColorMinMappingContinuous();
-                    var colorMax = generalStyle.getColorMaxMappingContinuous();
+                    var valueMin = generalStyle.getValueMinMappingContinuous();
+                    var valueMax = generalStyle.getValueMaxMappingContinuous();
 
                     var colorScale = d3.scaleLinear()
                         .domain([parseFloat(minValue), parseFloat(maxValue)])
-                        .range([colorMin, colorMax]);
+                        .range([valueMin, valueMax]);
 
                     return colorScale(parseFloat(mappingData.getMapValue()));
 
                 }
-                var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
+                var color = aStyleFormParent.getController().getValueMappingById(mappingData.getMapValue()).getValue();
                 return color;
             });
 

@@ -68,6 +68,17 @@ Ext.define('metExploreViz.view.form.linkStyleForm.LinkStyleForm', {
                 "max": 200,
                 "default": 20
             }, {
+                "type": "int",
+                "target": ["text.link"],
+                "attrType": "style",
+                "attr": "font-weight",
+                "access": "fontWeight",
+                "biologicalType":"link",
+                "title": "Label font weight",
+                "min": 100,
+                "max": 1000,
+                "default": 500
+            }, {
                 "type": "float",
                 "target": ["text.link"],
                 "attrType": "style",

@@ -996,12 +996,6 @@ metExploreD3.GraphNetwork = {
                             }
                         });
                 });
-
-            session.setActiveMapping(mainSession.getActiveMapping().valueOf());
-            session.resetColorMapping();
-            mainSession.getColorMappingsSet().forEach(function(colorMap){
-                session.addColorMapping(colorMap.getName().valueOf(), colorMap.getValue().valueOf());
-            });
         }
         else
         {

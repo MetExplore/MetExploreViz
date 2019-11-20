@@ -1,3 +1,5 @@
+
+
 /**
  * @author Maxime Chazalviel
  * (a)description : Style Edition
@@ -13,38 +15,53 @@ metExploreD3.GraphColorScaleEditor = {
     scaleXInPercent: undefined,
     scalePercentInX: undefined,
     button: undefined,
-    colorMin: undefined,
-    colorMax: undefined,
+    valueMin: undefined,
+    valueMax: undefined,
     selectedValue:"",
 
     colorRangeInit: undefined,
     colorPercentInit: undefined,
     colorDomainInit: undefined,
-    colorMinInit: undefined,
-    colorMaxInit: undefined,
+    valueMinInit: undefined,
+    valueMaxInit: undefined,
 
-    createColorScaleCaption : function(svg, width, height, margin){
-        var colorRangeCaption = ['#6f867b', '#F6F6F4', '#925D60'];
-        var colorPercentCaption = [0, 50, 100];
-        var colorDomainCaption = [1,2,3];
+    createColorScaleCaption : function(svg, width, height, margin, scaleRange){
+        var me = this;
+        console.log(scaleRange);
+        var begin = scaleRange.find(function (sr) { return sr.id==="begin"; });
+        var end = scaleRange.find(function (sr) { return sr.id==="end"; });
+
+        var colorDomainCaption = [];
+        var colorRangeCaption = scaleRange.filter(function (sr) { return !isNaN(sr.id); })
+            .map(function (sr, i) {
+                colorDomainCaption.push(i+1);
+                return sr.color;
+            });
+
+        var colorPercentCaption = scaleRange.filter(function (sr) { return !isNaN(sr.id); })
+            .map(function (sr) {
+                return sr.value;
+            });
+
         var colorCaption = d3.scaleLinear().range(colorRangeCaption).domain(colorDomainCaption);
 
-        var colorMin = "#6f867b";
-        var colorMax = "#925D60";
+        var valueMin = begin.color;
+        var valueMax = end.color;
 
-        var xScaleCaption = d3.scaleLinear()
-            .domain([60, width+60])
-            .range([0, width]);
+        console.log(colorRangeCaption);
+        console.log(colorPercentCaption);
+        console.log(colorDomainCaption);
+        console.log(scaleRange);
+        console.log(begin);
+        console.log(end);
 
-        var scaleXInPercentCaption = d3.scaleLinear()
-            .domain([0, width])
-            .range([0, 100]);
 
         var scalePercentInXCaption = d3.scaleLinear()
             .domain([0, 100])
             .range([0, width]);
 
-
+        console.log(svg);
+        var linearUniqueId = "linear-gradientCaption" + svg.node().parentNode.id;
         var group= svg.append("g")
             .attr("transform", "translate(" + (margin + 30) + ",30)");
 
@@ -53,14 +70,14 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("y", 0)
             .attr("width", "20px")
             .attr("height", height)
-            .style("fill", colorMin);
+            .style("fill", valueMin);
 
         group.append("rect")
             .attr("x", 20)
             .attr("y", 0)
             .attr("width", width)
             .attr("height", height)
-            .style("fill", "url(#linear-gradientCaption)");
+            .style("fill", "url(#"+linearUniqueId+")");
 
 
         group.append("text")
@@ -73,7 +90,7 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("y", 0)
             .attr("width", "20px")
             .attr("height", height)
-            .style("fill", colorMax);
+            .style("fill", valueMax);
 
         group.append("text")
             .attr("x", width+5)
@@ -89,12 +106,12 @@ metExploreD3.GraphColorScaleEditor = {
             .style("fill-opacity", "0")
             .style("stroke-width", 2);
 
-        group.select("#linear-gradientCaption").remove();
+        group.select("#"+linearUniqueId).remove();
         group.selectAll("#sliderId").remove();
 
         var linearGradient = group.append("defs")
             .append("linearGradient")
-            .attr("id", "linear-gradientCaption");
+            .attr("id", linearUniqueId);
 
         colorPercentCaption.forEach(function(aColorPercent, index){
             var iCol = index+1;
@@ -109,28 +126,43 @@ metExploreD3.GraphColorScaleEditor = {
                 .attr("height", "45px")
                 .attr("width", "40px")
                 .attr("transform", "translate(8, 0)")
-                .attr("x", scalePercentInXCaption( metExploreD3.GraphColorScaleEditor.round(parseFloat(theLinearGradient.attr("offset").replace("%","")))) )
+                .attr("x", scalePercentInXCaption( me.round(parseFloat(theLinearGradient.attr("offset").replace("%","")))) )
                 .attr("y", -32);
 
         })
     },
 
-    createColorScaleEditor : function(svg, width, height, margin, but){
+    createColorScaleEditor : function(svg, width, height, margin, but, scaleRange){
         var me = this;
         me.svg=svg;
         me.button=but;
-        me.colorRange = ['#6f867b', '#F6F6F4', '#925D60'];
-        me.colorPercent = [0, 50, 100];
-        me.colorDomain = [1,2,3];
+
+
+        me.begin = scaleRange.find(function (sr) { return sr.id==="begin"; });
+        me.end = scaleRange.find(function (sr) { return sr.id==="end"; });
+
+        me.colorDomain = [];
+        me.colorRange = scaleRange.filter(function (sr) { return !isNaN(sr.id); })
+            .map(function (sr, i) {
+                me.colorDomain.push(i+1);
+                return sr.color;
+            });
+
+        me.colorPercent = scaleRange.filter(function (sr) { return !isNaN(sr.id); })
+            .map(function (sr) {
+                return sr.value;
+            });
+
         me.color = d3.scaleLinear().range(me.colorRange).domain(me.colorDomain);
-        me.colorMin = "#6f867b";
-        me.colorMax = "#925D60";
+
+        me.valueMin = me.begin.color;
+        me.valueMax = me.end.color;
 
         me.colorRangeInit = me.colorRange.slice(0);
         me.colorPercentInit = me.colorPercent.slice(0);
         me.colorDomainInit =  me.colorDomain.slice(0);
-        me.colorMinInit = me.colorMin.slice(0);
-        me.colorMaxInit = me.colorMax.slice(0);
+        me.valueMinInit = me.valueMin.slice(0);
+        me.valueMaxInit = me.valueMax.slice(0);
 
         me.xScale = d3.scaleLinear()
             .domain([60, width+60])
@@ -144,6 +176,7 @@ metExploreD3.GraphColorScaleEditor = {
             .domain([0, 100])
             .range([0, width]);
 
+        me.linearUniqueId = "linear-gradientCaption" + svg.node().parentNode.id;
 
         var group= svg.append("g")
             .attr("id", "groupId")
@@ -155,7 +188,7 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("width", width)
             .attr("height", height)
             .attr("id", "rectId")
-            .style("fill", "url(#linear-gradient)");
+            .style("fill", "url(#"+me.linearUniqueId+")");
 
         group.append("rect")
             .attr("x", -33)
@@ -163,7 +196,7 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("id", "minRect")
             .attr("width", "50px")
             .attr("height", height)
-            .style("fill", me.colorMin);
+            .style("fill", me.valueMin);
 
         group.append("text")
             .attr("x", 7)
@@ -175,14 +208,14 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("x", -78)
             .attr("y", -10)
             .on("click", function () {
-                me.button.value=me.colorMin;
+                me.button.value=me.valueMin;
                 me.selectedValue="min";
             })
             .append("polygon")
             .attr("id", "min")
             .attr("width", "50px")
             .attr("height", "50px")
-            .style("fill", me.colorMin)
+            .style("fill", me.valueMin)
             .style("stroke", "#000000")
             .style("stroke-width", 4)
             .attr("points", "35,15 35,35 20,25");
@@ -193,7 +226,7 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("id", "maxRect")
             .attr("width", "50px")
             .attr("height", height)
-            .style("fill", me.colorMax);
+            .style("fill", me.valueMax);
 
         group.append("text")
             .attr("x", width+5)
@@ -205,14 +238,14 @@ metExploreD3.GraphColorScaleEditor = {
             .attr("x", width+50+10)
             .attr("y", -10)
             .on("click", function () {
-                me.button.value=me.colorMax;
+                me.button.value=me.valueMax;
                 me.selectedValue="max";
             })
             .append("polygon")
             .attr("id", "max")
             .attr("width", "50px")
             .attr("height", "50px")
-            .style("fill", me.colorMax)
+            .style("fill", me.valueMax)
             .style("stroke", "#000000")
             .style("stroke-width", 4)
             .attr("points", "15,15 30,25 15,35");
@@ -227,7 +260,7 @@ metExploreD3.GraphColorScaleEditor = {
             .style("fill-opacity", "0")
             .style("stroke-width", 4);
 
-        metExploreD3.GraphColorScaleEditor.update();
+        me.update();
     },
 
     reset : function(){
@@ -236,24 +269,24 @@ metExploreD3.GraphColorScaleEditor = {
         me.colorPercent = me.colorPercentInit.slice(0);
         me.colorDomain = me.colorDomainInit.slice(0);
 
-        me.colorMin = me.colorMinInit.slice(0);
-        me.colorMax = me.colorMaxInit.slice(0);
+        me.valueMin = me.valueMinInit.slice(0);
+        me.valueMax = me.valueMaxInit.slice(0);
         me.color.range(me.colorRange).domain(me.colorDomain);
 
-        metExploreD3.GraphColorScaleEditor.update();
+        me.update();
     },
     updateColorPercent : function(indexVal,theLinearGradient, deltaX){
-        this.colorPercent.splice(indexVal, 1, metExploreD3.GraphColorScaleEditor.round(this.scaleXInPercent(d3.event.x+deltaX)));
+        this.colorPercent.splice(indexVal, 1, this.round(this.scaleXInPercent(d3.event.x+deltaX)));
         theLinearGradient
-            .attr("offset", metExploreD3.GraphColorScaleEditor.round(this.scaleXInPercent(d3.event.x+deltaX))+"%");
+            .attr("offset", this.round(this.scaleXInPercent(d3.event.x+deltaX))+"%");
     },
     updateColor : function(color, svg){
 
         if(isNaN(this.selectedValue)){
             if(this.selectedValue==="min")
-                this.colorMin=color;
+                this.valueMin=color;
             else
-                this.colorMax=color;
+                this.valueMax=color;
 
             svg.select("#"+this.selectedValue).style("fill", color);
             svg.select("#"+this.selectedValue+"Rect").style("fill", color)
@@ -284,7 +317,7 @@ metExploreD3.GraphColorScaleEditor = {
 
         me.color.range(me.colorRange).domain(me.colorDomain);
 
-        metExploreD3.GraphColorScaleEditor.update();
+        me.update();
     },
     delColor : function(){
         var me = this;
@@ -296,7 +329,7 @@ metExploreD3.GraphColorScaleEditor = {
 
         me.color.range(me.colorRange).domain(me.colorDomain);
 
-        metExploreD3.GraphColorScaleEditor.update();
+        me.update();
     },
     update : function(){
         console.log("update");
@@ -304,12 +337,12 @@ metExploreD3.GraphColorScaleEditor = {
         var svg = me.svg;
         var group = svg.select('#groupId');
 
-        group.select("#linear-gradient").remove();
+        group.select("#"+me.linearUniqueId).remove();
         group.selectAll("#sliderId").remove();
 
         var linearGradient = group.append("defs")
             .append("linearGradient")
-            .attr("id", "linear-gradient");
+            .attr("id", me.linearUniqueId);
 
         me.colorPercent.forEach(function(aColorPercent, index){
             var iCol = index+1;
@@ -331,7 +364,7 @@ metExploreD3.GraphColorScaleEditor = {
                     deltaX = current.attr("x") - d3.event.x;
 
                     indexVal = me.colorPercent.findIndex(function(pc){
-                        return metExploreD3.GraphColorScaleEditor.round(parseFloat(pc))===metExploreD3.GraphColorScaleEditor.round(parseFloat(theLinearGradient.attr("offset").replace("%","")))
+                        return me.round(parseFloat(pc))===me.round(parseFloat(theLinearGradient.attr("offset").replace("%","")))
                     });
                 })
                 .on("drag", function () {
@@ -384,7 +417,7 @@ metExploreD3.GraphColorScaleEditor = {
                 .attr("width", "40px")
                 .attr("transform", "translate(8, 0)")
                 .call(dragHandler)
-                .attr("x", me.scalePercentInX( metExploreD3.GraphColorScaleEditor.round(parseFloat(theLinearGradient.attr("offset").replace("%","")))) )
+                .attr("x", me.scalePercentInX( me.round(parseFloat(theLinearGradient.attr("offset").replace("%","")))) )
                 .attr("y", -32)
                 .attr("id", "sliderId")
                 .append('path')
@@ -397,5 +430,34 @@ metExploreD3.GraphColorScaleEditor = {
         })
 
 
+    },
+    getScaleRange: function(){
+        var me = this;
+
+        var scaleRange = [];
+
+        scaleRange.push({
+            id:"begin",
+            value:0,
+            color:this.valueMin
+        });
+
+        me.colorDomain.forEach(function (domain, i) {
+            scaleRange.push(
+                {
+                    id:domain,
+                    value:me.colorPercent[i],
+                    color:me.colorRange[i]
+                }
+            );
+        });
+
+        scaleRange.push({
+            id:"end",
+            value:100,
+            color:this.valueMax
+        });
+
+        return scaleRange;
     }
 };

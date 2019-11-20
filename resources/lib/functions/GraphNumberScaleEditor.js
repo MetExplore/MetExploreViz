@@ -28,17 +28,9 @@ metExploreD3.GraphNumberScaleEditor = {
     numberMinInit: undefined,
     numberMaxInit: undefined,
 
-    createNumberScaleCaption : function(svg, width, height, margin){
+    createNumberScaleCaption : function(svg, width, height, margin, data){
         var height=height;
         var width=width;
-
-        var data = [
-            {id:"begin", value:0, size:1},
-            {id:1, value:10, size:1},
-            {id:2, value:30, size:2},
-            {id:3, value:90, size:10},
-            {id:"end", value:100, size:10}
-        ];
 
         var x = d3.scaleLinear()
             .domain(d3.extent(data, function (d){ return  d.value;}))

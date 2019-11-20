@@ -536,7 +536,7 @@ metExploreD3.GraphStyleEdition = {
             if(biologicalType==="link")
                 selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
-            selection.selectAll(target+":not(.bypassed)")[attrType](attrName, value);
+            selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")")[attrType](attrName, value);
         });
     },
 
@@ -572,8 +572,49 @@ metExploreD3.GraphStyleEdition = {
                     if (biologicalType === "link")
                         selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
-                    selection.selectAll(target)[attrType](attrName, value).classed("bypassed", true);
+                    var targetSelection = selection.selectAll(target);
+                    targetSelection[attrType](attrName, value);
+                    targetSelection.classed("bypassed"+attrType+attrName+biologicalType, true);
                 }
+            });
+        }
+    },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
+    setCollectionStyleDiscreteMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName, valueMapping, valueStyle) {
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+        if(activeSession) {
+            targetSet.forEach(function setStyles(target) {
+
+                var selection;
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                    .filter(function (d) {
+                        return d.getBiologicalType() === biologicalType;
+                    })
+                    .filter(function (d) {
+
+                        var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+
+                        if(map!==null){
+
+                            if(map.getMapValue()===valueMapping)
+                                return true;
+                            else
+                                return false;
+                        }
+                        return false;
+                    });
+
+                if (biologicalType === "link")
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+                var targetSelection = selection.selectAll(target);
+
+                targetSelection[attrType](attrName, valueStyle);
+                targetSelection.classed("mapped", true);
             });
         }
     },
@@ -584,7 +625,10 @@ metExploreD3.GraphStyleEdition = {
      */
     getCollectionStyleBypass : function (targetSet, attrType, attrName, biologicalType) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+        var union  = [];
         var values = [];
+        var valuesBypassed = [];
+
         if(activeSession) {
             var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
                 return activeSession.getD3Data().getNodeById(nodeId);
@@ -610,21 +654,38 @@ metExploreD3.GraphStyleEdition = {
             if(selectedNodesId.length>0){
                 targetSet.forEach(function setStyles(target) {
 
+                    var arrBypass=[];
                     var arr=[];
 
-                    selection.selectAll(target)
+                    selection.selectAll(target+".bypassed"+attrType+attrName+biologicalType)
+                        .each(function(){
+                            arrBypass.push(d3.select(this)[attrType](attrName));
+                        });
+
+                    valuesBypassed = [...new Set(arrBypass)];
+
+                    selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")")
                         .each(function(){
                             arr.push(d3.select(this)[attrType](attrName));
                         });
 
-                    values = arr.filter(function onlyUnique(value, index, self) {
-                        return self.indexOf(value) === index;
-                    });
+                    values = [...new Set(arr)];
 
+                    union = [...new Set(valuesBypassed.concat(values))];
 
                 });
+                if(valuesBypassed.length>0 &&
+                    union.length>1){
+                    return "multiple";
+                }
+                else{
+                    if(valuesBypassed.length===1 && values.length===0)
+                        return valuesBypassed[0];
+                    else
+                        return "none";
+                }
             }
         }
-        return values;
+        return "none";
     }
 };

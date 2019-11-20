@@ -1573,8 +1573,7 @@ clone.setAttribute("version", "1.1");
 				    });
 				    networkJSON+="]},";
 
-			    	networkJSON+="\n\"colorMappings\":" + JSON.stringify(_metExploreViz.getSessionById(key).getColorMappingsSet()) + ",";
-				    networkJSON+="\n\"linked\":" + JSON.stringify(_metExploreViz.getSessionById(key).isLinked()) + ",";
+			    	 networkJSON+="\n\"linked\":" + JSON.stringify(_metExploreViz.getSessionById(key).isLinked()) + ",";
 				    networkJSON+="\n\"active\":" + JSON.stringify(_metExploreViz.getSessionById(key).isActive()) + ",";
 
 				    networkJSON+="\n\"duplicatedNodes\":" + JSON.stringify(_metExploreViz.getSessionById(key).getDuplicatedNodes()) + ",";

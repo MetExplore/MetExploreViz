@@ -2,13 +2,13 @@
  * @author MC
  * (a)description 
  */
-var ColorMapping = function(name, value){
+var ValueMapping = function(name, value){
     this.name = name;
     this.value = value;
 };
 
 
-ColorMapping.prototype = {
+ValueMapping.prototype = {
 	// Getters & Setters
     getName:function()
     {

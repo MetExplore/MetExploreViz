@@ -11,8 +11,10 @@ Ext.define('metExploreViz.view.form.selectCondition.SelectCondition', {
         "metExploreViz.view.form.selectCondition.ConditionStore"
     ],
     controller: "form-selectCondition-selectCondition",
-    store: Ext.create('metExploreViz.view.form.selectCondition.ConditionStore'),
     listeners: {
+        beforerender: function(c) {
+            this.setStore(Ext.getStore("conditionStore"));
+        },
         render: function(c) {
             new Ext.ToolTip({
                 target: c.getEl(),

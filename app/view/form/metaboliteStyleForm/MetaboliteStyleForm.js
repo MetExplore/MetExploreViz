@@ -119,6 +119,17 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
             "max": 200,
             "default": 20
         },{
+            "type": "int",
+            "target": ["text.metabolite"],
+            "attrType": "style",
+            "attr": "font-weight",
+            "access": "fontWeight",
+            "biologicalType":"metabolite",
+            "title": "Label font weight",
+            "min": 100,
+            "max": 1000,
+            "default": 500
+        },{
             "type": "float",
             "target": ["text.metabolite"],
             "attrType": "style",

@@ -46,10 +46,46 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
     },
     {
         reference:'selectConditionType',
-        xtype:'selectConditionType',
+        xtype:'selectConditionType'
     },
     {
         xtype: 'menuseparator'
+    },
+    {
+        border:false,
+        reference:'delConditionPanel',
+        xtype:'panel',
+        region:'north',
+        hidden:true,
+        margins:'0 0 0 0',
+        border:false,
+        bbar: [
+            '->',//spliter to shift next component up to end of right
+            {
+                xtype: 'button',
+                iconCls:'junk',
+                align:"right",
+                scale   : 'small',
+                margin:'5 5 5 0',
+                reference: 'delCondition'
+            }
+        ]
+    },
+    {
+        xtype:"panel",
+        reference:'discreteCaptions',
+        region:'north',
+        margins:'0 0 0 0',
+        hidden:true,
+        border:false
+    },
+    {
+        xtype: "panel",
+        reference: "scaleCaption",
+        height: 110,
+        hidden:true,
+        width: 550,
+        html: "<svg id='scaleCaption' height='110' width='250px'> </svg>"
     }
     ]  
 });

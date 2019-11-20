@@ -14,14 +14,10 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 	init : function() {
 		var me 		= this,
 		viewModel   = me.getViewModel(),
-		view      	= me.getView();
+		view = me.getView();
 
-
-		view.lookupReference('selectConditionForm').lookupReference('selectConditionType').on({
-			change : function(that, newVal){
-				console.log(newVal);
-			}
-		});
+		view.graphColorScaleEditor = Object.create(metExploreD3.GraphColorScaleEditor);
+		console.log(me.graphColorScaleEditor);
 
 		view.on(
 		{
@@ -75,46 +71,14 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			if(selectedNodes.length>0) {
 				bypassButton.enable();
 				if(selection){
-					var values = metExploreD3.GraphStyleEdition.getCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType);
-					if(values.length===1) {
-						numberButtonBypass.fireEvent("setIcon", "noneIcon");
-						colorButtonBypass.fireEvent("setIcon", "noneIcon");
 
-						if (view.styleType === "float") {
-							if (parseFloat(view.default) !== parseFloat(values[0])){
-								numberButtonBypass.show();
-								bypassButton.hide();
-
-								me.replaceText(numberButtonBypass.el.dom, parseFloat(values[0]));
-							}
-
-						}
-						if (view.styleType === "int") {
-							if (parseInt(view.default) !== parseInt(values[0])){
-								numberButtonBypass.show();
-								bypassButton.hide();
-
-								me.replaceText(numberButtonBypass.el.dom, parseInt(values[0]));
-							}
-						}
-						if (view.styleType === "color") {
-
-							if (view.default !== metExploreD3.GraphUtils.RGBString2Color(values[0]))
-							{
-								colorButtonBypass.show();
-								bypassButton.hide();
-
-								colorButtonBypassEl.setAttribute("value", metExploreD3.GraphUtils.RGBString2Color(values[0]));
-							}
-						}
-					}
-					else
-					{
+					var value = metExploreD3.GraphStyleEdition.getCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType);
+					if(value==="multiple" || value==="none") {
 						bypassButton.show();
 						numberButtonBypass.hide();
 						colorButtonBypass.hide();
 
-						if(values.length>1){
+						if(value==="multiple"){
 							if (view.styleType === "float" || view.styleType === "int") {
 								numberButtonBypass.fireEvent("setIcon", "mapMultipleNumbers");
 							}
@@ -128,6 +92,40 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 							numberButtonBypass.fireEvent("setIcon", "noneIcon");
 							colorButtonBypass.fireEvent("setIcon", "noneIcon");
+						}
+					}
+					else
+					{
+
+						numberButtonBypass.fireEvent("setIcon", "noneIcon");
+						colorButtonBypass.fireEvent("setIcon", "noneIcon");
+
+						if (view.styleType === "float") {
+							if (parseFloat(view.default) !== parseFloat(value)){
+								numberButtonBypass.show();
+								bypassButton.hide();
+
+								me.replaceText(numberButtonBypass.el.dom, parseFloat(value));
+							}
+
+						}
+						if (view.styleType === "int") {
+							if (parseInt(view.default) !== parseInt(value)){
+								numberButtonBypass.show();
+								bypassButton.hide();
+
+								me.replaceText(numberButtonBypass.el.dom, parseInt(value));
+							}
+						}
+						if (view.styleType === "color") {
+
+							if (view.default !== metExploreD3.GraphUtils.RGBString2Color(value))
+							{
+								colorButtonBypass.show();
+								bypassButton.hide();
+
+								colorButtonBypassEl.setAttribute("value", metExploreD3.GraphUtils.RGBString2Color(value));
+							}
 						}
 					}
 				}
@@ -212,14 +210,20 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			var width = 150;
 			var height = 50;
 
-			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+			var svg = d3.select(view.lookupReference('selectConditionForm').lookupReference('scaleCaption').el.dom).select("#scaleCaption");
 			svg.selectAll("*").remove();
 
-			metExploreD3.GraphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, colorButtonEl);
+			// var colorRangeCaption = ['#6f867b', '#F6F6F4', '#925D60'];
+			// var colorPercentCaption = [0, 50, 100];
+			// var colorDomainCaption = [1,2,3];
+
+			svg = d3.select(view.lookupReference('selectConditionForm').lookupReference('scaleCaption').el.dom).select("#scaleCaption")
+			view.graphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, view.scaleRange);
 
 			svg.on("click", function(){
 				var win = Ext.create("metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor", {
-					height : 300
+					height : 300,
+					aStyleFormParent : view
 				});
 
 				win.show();
@@ -228,7 +232,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		}
 
 	},
-
 	/**
 	 * Define listeners to manage each style
 	 * @param func
@@ -283,12 +286,11 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				header.lookupReference('mappingButton').removeCls('continue');
 				header.lookupReference('mappingButton').removeCls('discrete');
 				header.lookupReference('mappingButton').removeCls('alias');
-				header.lookupReference('mappingButton').addCls(type);
+				if(type!=="")
+					header.lookupReference('mappingButton').addCls(type);
 			},
 			scope : me
 		});
-
-		header.lookupReference('mappingButton').fireEvent("setIcon", "continue");
 
 		if(view.styleType==="float"  || view.styleType==="int" ){
 
@@ -349,27 +351,9 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				},
 				scope : me
 			});
-
-
-			var margin = 0;
-			var width = 190;
-			var height = 50;
-
-			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
-
-			metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin);
-
-			svg.on("click", function(){
-				var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
-					height : 300
-				});
-
-				win.show();
-			});
 		}
 
 		if(view.styleType==="color"){
-
 
 			var colorButton = header.lookupReference('colorButton');
 			var colorButtonEl = colorButton.el.dom.querySelector("#html5colorpicker");
@@ -418,28 +402,10 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				},
 				scope : me
 			});
-
-
-
-			var margin = 0;
-			var width = 150;
-			var height = 50;
-
-			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
-
-			metExploreD3.GraphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, colorButtonEl);
-
-			svg.on("click", function(){
-				var win = Ext.create("metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor", {
-					height : 300
-				});
-
-				win.show();
-			});
-
 		}
-
 	},
+
+
 
 	numberPrompt : function(target, func){
 		var me = this;
@@ -465,7 +431,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 						if(isNaN(number)){
 							Ext.Msg.show({
 								title:'Warning',
-								msg: "Please enter a number between "+view.min+" et "+view.max,
+								msg: "Please enter a number between "+view.min+" and "+view.max,
 								icon: Ext.Msg.WARNING,
 								fn:function(){ me.numberPrompt(target, func); }
 							});
@@ -481,7 +447,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 							{
 								Ext.Msg.show({
 									title:'Warning',
-									msg: "Please enter a number between "+view.min+" et "+view.max,
+									msg: "Please enter a number between "+view.min+" and "+view.max,
 									icon: Ext.Msg.WARNING,
 									fn:function(){ me.numberPrompt(target, func); }
 								});
@@ -493,7 +459,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 					{
 						Ext.Msg.show({
 							title:'Warning',
-							msg: "Please enter a number between "+view.min+" et "+view.max,
+							msg: "Please enter a number between "+view.min+" and "+view.max,
 							icon: Ext.Msg.WARNING,
 							fn:function(){ me.numberPrompt(target, func); }
 						});
@@ -518,7 +484,33 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		d3.select(target).select("#textNumberButton")
 			.text(text);
 		me.resizeText(target);
-	}
+	},
 
+	// ValueMapping
+	getValueMappingsSet : function(){
+		var view = this.getView();
+		return view.valueMappings;
+	},
+	getValueMappingById : function(id){
+		var view = this.getView();
+		var theValueMapping = null;
+		view.valueMappings.forEach(function(aValueMapping){
+			if(aValueMapping.getName()===id)
+				theValueMapping = aValueMapping;
+		});
+		return theValueMapping;
+	},
+	getValueMappingsSetLength : function(){
+		var view = this.getView();
+		return view.valueMappings.length;
+	},
+	resetValueMapping : function(){
+		var view = this.getView();
+		view.valueMappings = [];
+	},
+	addValueMapping : function(n, c){
+		var view = this.getView();
+		view.valueMappings.push(new ValueMapping(n,c));
+	}
 });
 

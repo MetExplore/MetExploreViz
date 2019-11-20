@@ -688,8 +688,8 @@ metExploreD3.GraphPanel = {
 					var oldGeneralStyle = metExploreD3.getGeneralStyle();
 					var style = new GeneralStyle(
 						oldGeneralStyle.getWebsiteName(),
-						jsonParsed.generalStyle.colorMinMappingContinuous,
-						jsonParsed.generalStyle.colorMaxMappingContinuous,
+						jsonParsed.generalStyle.valueMinMappingContinuous,
+						jsonParsed.generalStyle.valueMaxMappingContinuous,
 						jsonParsed.generalStyle.maxReactionThreshold,
 						jsonParsed.generalStyle.displayLabelsForOpt,
 						jsonParsed.generalStyle.displayLinksForOpt,
@@ -755,14 +755,6 @@ metExploreD3.GraphPanel = {
 						accord.expand();
                         metExploreD3.fireEventArg("comparePanel", 'initiateviz', key);
 						//metExploreD3.GraphNetwork.refreshSvg(panelId);
-					}
-
-
-					if(sessions[key].colorMappings)
-					{
-						sessions[key].colorMappings.forEach(function(colorMapping){
-							networkVizSession.addColorMapping(colorMapping.name, colorMapping.value);
-						});
 					}
 
 					var anim = sessions[key].animated;
@@ -848,7 +840,7 @@ metExploreD3.GraphPanel = {
 			                {
 			                    _metExploreViz.getMappingsSet().forEach(function(mapping){
 			                    	metExploreD3.GraphMapping.reloadMapping(mapping);
-				                	metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+				                	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
 			                    });
 				                metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", true);
 			                }
@@ -1030,7 +1022,7 @@ metExploreD3.GraphPanel = {
 			{
 	            _metExploreViz.getMappingsSet().forEach(function(mapping){
 	            	metExploreD3.GraphMapping.reloadMapping(mapping);
-	            	metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+	            	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
 	            }); 
 	            metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", true);
 			}

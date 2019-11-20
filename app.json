@@ -298,7 +298,7 @@
             "bundle": true
         },
         {
-            "path": "resources/lib/model/ColorMapping.js",
+            "path": "resources/lib/model/ValueMapping.js",
             "bundle": true
         },
         {

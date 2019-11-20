@@ -10,10 +10,11 @@ Ext.define('metExploreViz.view.form.selectCondition.ConditionStore', {
 		"metExploreViz.view.form.selectCondition.ConditionModel"
 	],
 	model: 'metExploreViz.view.form.selectCondition.ConditionModel',
-	data : [
-		{"name":"Map1_c1"},
-		{"name":"Map2_c1"},
-		{"name":"Map2_c2"},
-		{"name":"Map2_c3"}
-	]
+	storeId: 'conditionStore',
+	listeners: {
+		add: function(store, records) {
+			// if(store.count()==1)
+
+		}
+	}
 });

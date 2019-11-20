@@ -128,13 +128,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
                 {
                     reference: "selectConditionForm",
                     xtype:'selectConditionForm'
-                },
-                {
-                    xtype: "panel",
-                    reference: "scaleCaption",
-                    height: 150,
-                    width: 550,
-                    html: "<svg id='scaleCaption' height='150' width='250px'> </svg>"
                 }
             ]
         }

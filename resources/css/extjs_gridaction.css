@@ -200,6 +200,14 @@ p {
     background-position: 0% 0%;
     background-repeat: no-repeat;
 }
+
+.junk {
+    background-image:url(../icons/junk.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
 .cart {
     background-image:url(../icons/cart.png);
 }

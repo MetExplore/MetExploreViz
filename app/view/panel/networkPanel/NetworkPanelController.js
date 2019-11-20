@@ -6,6 +6,11 @@
 Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.panel-networkPanel-networkPanel',
+	stores: [
+		'metExploreViz.view.form.selectCondition.ConditionStore'
+
+		// TODO: add global / shared stores here
+	],
 
 	/**
  * Aplies event linsteners to the view
@@ -14,7 +19,9 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 		var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
-		
+
+		Ext.create('metExploreViz.view.form.selectCondition.ConditionStore');
+
 		view.on({
 			afterrender : me.initParams,
 			scope:me

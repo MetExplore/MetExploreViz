@@ -5,7 +5,7 @@
 /**
  * draw a Reaction
  */
-var ReactionStyle = function(backgroundColor, height, width, rx, ry, opacity, strokeColor, strokeWidth, fontColor, fontSize, labelOpacity, displayNodeName, useAlias){
+var ReactionStyle = function(backgroundColor, height, width, rx, ry, opacity, strokeColor, strokeWidth, fontColor, fontSize, fontWeight, labelOpacity, displayNodeName, useAlias){
 
     if(backgroundColor)
         this.backgroundColor = backgroundColor;
@@ -28,6 +28,7 @@ var ReactionStyle = function(backgroundColor, height, width, rx, ry, opacity, st
     else
         this.fontColor = "#000000";
     this.fontSize = fontSize;
+    this.fontWeight = fontWeight;
     this.labelOpacity = 1.0;
     this.label = displayNodeName;
     this.useAlias = useAlias;
@@ -124,6 +125,15 @@ ReactionStyle.prototype = {
         this.fontSize = newData;
     },
 
+    getFontWeight:function()
+    {
+        return this.fontSize;
+    },
+
+    setFontWeight:function(newData)
+    {
+        this.fontSize = newData;
+    },
 
     isUseAlias:function()
     {

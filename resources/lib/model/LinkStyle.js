@@ -5,7 +5,7 @@
 /**
  * draw a link
  */
-var LinkStyle = function(size, lineWidth, markerWidth, markerHeight, markerInColor, markerOutColor, markerStrokeColor, markerStrokeWidth, strokeColor, opacity, fontColor, fontSize, labelOpacity){
+var LinkStyle = function(size, lineWidth, markerWidth, markerHeight, markerInColor, markerOutColor, markerStrokeColor, markerStrokeWidth, strokeColor, opacity, fontColor, fontSize, fontWeight, labelOpacity){
     this.size = size ;
     this.lineWidth = lineWidth;
     this.markerWidth = markerWidth;
@@ -34,6 +34,8 @@ var LinkStyle = function(size, lineWidth, markerWidth, markerHeight, markerInCol
         this.fontSize = fontSize;
     else
         this.fontSize = 10;
+
+    this.fontWeight = fontWeight;
 
     if(labelOpacity)
         this.labelOpacity = labelOpacity;

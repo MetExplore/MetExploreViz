@@ -15,6 +15,7 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 
+		
 		view.on({
 				setConditionProgramaticaly : me.setConditionProgramaticaly,
 				scope:me
@@ -30,37 +31,40 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
 
 				var colorButton = view.lookupReference('colorButton');
 				var colorButtonEl = colorButton.getEl().dom.querySelector("#html5colorpicker");
+				console.log(view);
 
-				metExploreD3.GraphColorScaleEditor.createColorScaleEditor(svg, width, height, margin, colorButtonEl);
+				view.aStyleFormParent.graphColorScaleEditor.createColorScaleEditor(svg, width, height, margin, colorButtonEl, view.aStyleFormParent.scaleRange);
 
 				colorButtonEl
 					.addEventListener("change", function (evt) {
-						metExploreD3.GraphColorScaleEditor.updateColor(evt.target.value, svg);
+						view.aStyleFormParent.graphColorScaleEditor.updateColor(evt.target.value, svg);
 					});
 			}
 		});
 
 		view.lookupReference('addButton').on({
 			click : function(that){
-				metExploreD3.GraphColorScaleEditor.addColor();
+				view.aStyleFormParent.graphColorScaleEditor.addColor();
 			}
 		});
 
 		view.lookupReference('resetButton').on({
 			click : function(that){
-				metExploreD3.GraphColorScaleEditor.reset();
+				view.aStyleFormParent.graphColorScaleEditor.reset();
 			}
 		});
 
 		view.lookupReference('delButton').on({
 			click : function(that){
-				metExploreD3.GraphColorScaleEditor.delColor();
+				view.aStyleFormParent.graphColorScaleEditor.delColor();
 			}
 		});
 
 		view.lookupReference('okButton').on({
 			click : function(that){
-				//Set color caption and nodes
+				view.aStyleFormParent.scaleRange = view.aStyleFormParent.graphColorScaleEditor.getScaleRange();
+				view.aStyleFormParent.getController().updateFormValues();
+				view.close();
 			}
 		});
 

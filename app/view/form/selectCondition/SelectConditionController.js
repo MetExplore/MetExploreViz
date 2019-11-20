@@ -10,7 +10,8 @@ Ext.define('metExploreViz.view.form.selectCondition.SelectConditionController', 
 /**
  * Aplies event linsteners to the view
  */
-	init:function(){
+
+init:function(){
 		var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
