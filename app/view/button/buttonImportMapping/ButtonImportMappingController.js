@@ -54,7 +54,9 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 		    _metExploreViz.addMapping(mapping);
 
 		    for (var i = lines.length - 1; i >= 0; i--) {
-		    	lines[i] = lines[i].split('\t');
+		    	lines[i] = lines[i].split('\t').map(function (val) {
+					return val.replace(",", ".");
+				});
 		    }
 
 		    // Launch mapping

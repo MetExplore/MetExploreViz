@@ -623,6 +623,47 @@ metExploreD3.GraphStyleEdition = {
      * Create an object containing the image position and dimension data associated to a node
      * @param {Object} node : The node whose image position and dimension data will be put in the object
      */
+    setCollectionStyleContinuousMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName, linearScale) {
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+        if(activeSession) {
+            targetSet.forEach(function setStyles(target) {
+
+                var selection;
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                    .filter(function (d) {
+                        return d.getBiologicalType() === biologicalType;
+                    })
+                    .filter(function (d) {
+
+                        var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+
+                        if(map!==null)
+                            return true;
+
+                        return false;
+                    });
+
+                console.log(selection);
+                if (biologicalType === "link")
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+                var targetSelection = selection.selectAll(target);
+
+                targetSelection[attrType](attrName, function(d){
+                    var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+
+                    return linearScale(map.getMapValue());
+                });
+
+                targetSelection.classed("mapped", true);
+            });
+        }
+    },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
     getCollectionStyleBypass : function (targetSet, attrType, attrName, biologicalType) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
         var union  = [];

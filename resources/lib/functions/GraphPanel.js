@@ -685,11 +685,12 @@ metExploreD3.GraphPanel = {
 
 				if(jsonParsed.generalStyle)
 				{
+					console.log(jsonParsed.generalStyle);
 					var oldGeneralStyle = metExploreD3.getGeneralStyle();
 					var style = new GeneralStyle(
 						oldGeneralStyle.getWebsiteName(),
-						jsonParsed.generalStyle.valueMinMappingContinuous,
-						jsonParsed.generalStyle.valueMaxMappingContinuous,
+						jsonParsed.generalStyle.colorMinMappingContinuous,
+						jsonParsed.generalStyle.colorMaxMappingContinuous,
 						jsonParsed.generalStyle.maxReactionThreshold,
 						jsonParsed.generalStyle.displayLabelsForOpt,
 						jsonParsed.generalStyle.displayLinksForOpt,

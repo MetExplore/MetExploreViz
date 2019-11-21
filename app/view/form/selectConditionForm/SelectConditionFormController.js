@@ -61,14 +61,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		});
 
 		view.lookupReference('selectConditionType').on({
-			change : function(that, newVal, old){me.drawContinuousScaleCaption();
-
-				var captionScales = view.lookupReference('scaleCaption');
-				captionScales.show();
+			change : function(that, newVal, old){
 				var viewAStyleForm = me.getAStyleFormParent();
 
 				this.map(newVal, old, viewAStyleForm);
-
 			},
 			scope:me
 		});
@@ -394,8 +390,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 			if(dataType==="Continuous"){
 				header.lookupReference('mappingButton').fireEvent("setIcon", "continue");
-				me.drawContinuousScaleCaption();
-
 				var captionScales = view.lookupReference('scaleCaption');
 				captionScales.show();
 			}
@@ -462,7 +456,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			view    = me.getView();
 
 		// We add form corresponding to the mapping data type
-	    var captions = view.lookupReference('discreteCaptions');
+		var captions = view.lookupReference('discreteCaptions');
+		var scaleCaption = view.lookupReference('scaleCaption');
 	    var selectCondition = view.lookupReference('selectCondition');
 		var selectedCondition = selectCondition.getValue();
 		var networkVizSession = _metExploreViz.getSessionById("viz");
@@ -482,8 +477,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		else
 			cond = selectedCondition;
 
-		if(captions)
+		if(captions && type==="discrete")
 		{
+
+			console.log(captions);
 			if(Ext.getCmp('panel'+ cond)===undefined || type==="suggestion")
 			{
 
@@ -556,7 +553,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 										value=parseFloat(value);
 									}
 									if(color.getValue()!==value){
-										newValue=value;
+                                            newValue=value;
 										if(isNaN(newValue)){
 											Ext.Msg.show({
 												title:'Warning',
@@ -797,6 +794,13 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			}
 
 		}
+
+		if(scaleCaption && type==="continuous"){
+			console.log(scaleCaption);
+			if(aStyleFormParent.styleType==="color") {
+				me.drawContinuousScaleCaption();
+			}
+		}
 	},
 	drawContinuousScaleCaption : function() {
 		var me = this;
@@ -837,14 +841,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			var width = 150;
 			var height = 50;
 			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
-			svg.attr
+
 			var colorButton = header.lookupReference('colorButton');
 			var colorButtonEl = colorButton.el.dom.querySelector("#html5colorpicker");
 
-
-			// var colorRangeCaption = ['#6f867b', '#F6F6F4', '#925D60'];
-			// var colorPercentCaption = [0, 50, 100];
-			// var colorDomainCaption = [1,2,3];
 			viewAStyleForm.graphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, viewAStyleForm.scaleRange);
 
 			svg.on("click", function(){

@@ -25,15 +25,16 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
 			afterrender : function(that){
 				var margin = 50;
 				var width = 450 - margin;
-				var height = 160 - margin;
+				var height = 145 - margin;
 
 				var svg = d3.select(that.el.dom).select("#svgScaleEditor");
 
 				var colorButton = view.lookupReference('colorButton');
+				var delButton = view.lookupReference('delButton');
+				var textfieldValue = view.lookupReference('textfieldValue');
 				var colorButtonEl = colorButton.getEl().dom.querySelector("#html5colorpicker");
-				console.log(view);
 
-				view.aStyleFormParent.graphColorScaleEditor.createColorScaleEditor(svg, width, height, margin, colorButtonEl, view.aStyleFormParent.scaleRange);
+				view.aStyleFormParent.graphColorScaleEditor.createColorScaleEditor(svg, width, height, margin, colorButtonEl, textfieldValue, delButton, view.aStyleFormParent.scaleRange);
 
 				colorButtonEl
 					.addEventListener("change", function (evt) {
@@ -45,6 +46,31 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
 		view.lookupReference('addButton').on({
 			click : function(that){
 				view.aStyleFormParent.graphColorScaleEditor.addColor();
+			}
+		});
+
+		view.lookupReference('textfieldValue').on({
+			focusleave : function(that){
+
+				var value =parseFloat(that.getRawValue());
+
+				if(value==="< min" || value==="> max")
+					that.disable();
+				else
+				{
+					that.enable();
+					if(isNaN(parseFloat(value))){
+						Ext.Msg.show({
+							title:'Warning',
+							msg: "Please enter a number.",
+							icon: Ext.Msg.WARNING
+						});
+					}
+					else
+					{
+						view.aStyleFormParent.graphColorScaleEditor.updateValues(value);
+					}
+				}
 			}
 		});
 
@@ -61,9 +87,11 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
 		});
 
 		view.lookupReference('okButton').on({
-			click : function(that){
+			click : function(){
 				view.aStyleFormParent.scaleRange = view.aStyleFormParent.graphColorScaleEditor.getScaleRange();
-				view.aStyleFormParent.getController().updateFormValues();
+				view.aStyleFormParent.getController().updateContinuousCaption();
+				view.aStyleFormParent.getController().updateContinuousMapping();
+
 				view.close();
 			}
 		});

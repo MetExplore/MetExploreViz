@@ -17,8 +17,8 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
     minWidth: 600,
     x: 100,
     y: 100,
-    maxHeight: 460,
-    minHeight: 460,
+    maxHeight: 360,
+    minHeight: 360,
     layout:{
         type:'vbox',
         align:'stretch'
@@ -27,29 +27,30 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
         {
             xtype: "panel",
             reference: "scaleEditor",
-            height: 150,
+            height: 165,
             width: 550,
-            html: "<svg id='svgScaleEditor' height='150' width='600px'> </svg>"
+            html: "<svg id='svgScaleEditor' height='170px' width='600px'> </svg>"
         },
         {
             xtype: 'fieldset',
-            title: 'Edit position and value of selected color',
-            instructions: 'Edit position and value of selected color',
+            title: 'Edit color or map value of selected color',
+            instructions: 'Edit color or map value of selected color',
             layout:{
                 type:'hbox'
             },
-            margin: "5 15 0 15",
+            margin: "5 15 5 15",
             items: [
                 {
                     margin: "10 0 10 0",
                     xtype: 'label',
-                    html: 'Position :'
+                    html: 'Value :'
                 },
                 {
                     margin: "5 15 5 15",
+                    reference: "textfieldValue",
                     xtype: 'textfield',
                     label: 'Position',
-                    value: 'Ed Spencer'
+                    value: ''
                 },{
                     margin: "10 0 10 0",
                     xtype: 'label',
@@ -103,57 +104,24 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
         }
         ,
         {
-            xtype: 'fieldset',
-            margin: "5 15 5 15",
-            title: 'Min / Max / Add',
-            instructions: 'Min / Max / Add /',
+            xtype: "panel",
             layout:{
-                type:'hbox'
+                type:'hbox',
+                pack : 'end'
             },
-            items: [
+            items:[
                 {
-                    margin: "10 0 10 0",
-                    xtype: 'label',
-                    html: 'Min :'
-                },
-                {
-                    margin: "5 15 5 15",
-                    xtype: 'textfield',
-                    label: 'Min',
-                    width: "100px"
-                },
-                {
-                    margin: "10 0 10 0",
-                    xtype: 'label',
-                    html: 'Max :'
-                },
-                {
-                    margin: "5 15 5 15",
-                    xtype: 'textfield',
-                    label: 'Max',
-                    width: "100px"
-                },
-                {
-                    margin: "5 15 5 15",
+                    margin: "5 5 5 5",
                     xtype: 'button',
                     reference: 'addButton',
                     text : 'Add'
                 },
                 {
-                    margin: "5 15 5 15",
-                    reference: 'resetButton',
+                    margin: "5 5 5 5",
                     xtype: 'button',
+                    reference: 'resetButton',
                     text : 'Reset'
-                }
-            ]
-        },
-        {
-            xtype: "panel",
-            layout:{
-                type:'hbox'
-            },
-            padding: "0 0 0 460",
-            items:[
+                },
                 {
                     margin: "5 5 5 5",
                     xtype: 'button',
@@ -161,7 +129,7 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
                     text : 'OK'
                 },
                 {
-                    margin: "5 5 5 5",
+                    margin: "5 15 5 5",
                     xtype: 'button',
                     reference: 'cancelButton',
                     text : 'Cancel'

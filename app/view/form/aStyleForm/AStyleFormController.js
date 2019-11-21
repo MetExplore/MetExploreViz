@@ -17,7 +17,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		view = me.getView();
 
 		view.graphColorScaleEditor = Object.create(metExploreD3.GraphColorScaleEditor);
-		console.log(me.graphColorScaleEditor);
 
 		view.on(
 		{
@@ -142,6 +141,71 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			numberButtonBypass.hide();
 			colorButtonBypass.hide();
 			bypassButton.disable();
+		}
+	},
+
+	updateContinuousCaption : function(){
+		var me = this;
+		var view = me.getView();
+
+		if(view.styleType==="float"  || view.styleType==="int" ){
+
+			var margin = 0;
+			var width = 190;
+			var height = 50;
+
+			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+
+			metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin);
+
+			svg.on("click", function(){
+				var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
+					height : 300
+				});
+
+				win.show();
+			});
+		}
+
+		if(view.styleType==="color"){
+			var margin = 0;
+			var width = 150;
+			var height = 50;
+
+			var svg = d3.select(view.lookupReference('selectConditionForm').lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+			svg.selectAll("*").remove();
+
+			// var colorRangeCaption = ['#6f867b', '#F6F6F4', '#925D60'];
+			// var colorPercentCaption = [0, 50, 100];
+			// var colorDomainCaption = [1,2,3];
+
+			svg = d3.select(view.lookupReference('selectConditionForm').lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+			view.graphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, view.scaleRange);
+
+			svg.on("click", function(){
+				var win = Ext.create("metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor", {
+					height : 300,
+					aStyleFormParent : view
+				});
+
+				win.show();
+			});
+		}
+	},
+
+	updateContinuousMapping : function(){
+		var me = this;
+		var view = me.getView();
+
+		if(view.styleType==="float"  || view.styleType==="int" ){
+
+			var margin = 0;
+
+		}
+
+		if(view.styleType==="color"){
+			var conditionName = view.lookupReference('selectConditionForm').lookupReference('selectCondition').getValue();
+			metExploreD3.GraphMapping.graphMappingContinuousData(conditionName, view);
 		}
 	},
 
