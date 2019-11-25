@@ -796,8 +796,11 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		}
 
 		if(scaleCaption && type==="continuous"){
-			console.log(scaleCaption);
+			console.log(aStyleFormParent);
 			if(aStyleFormParent.styleType==="color") {
+				me.drawContinuousScaleCaption();
+			}
+			if(aStyleFormParent.styleType==="float" || aStyleFormParent.styleType==="int") {
 				me.drawContinuousScaleCaption();
 			}
 		}
@@ -807,6 +810,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		var view = me.getView();
 		var viewAStyleForm = me.getAStyleFormParent();
 		var header = viewAStyleForm.down('header');
+		console.log(viewAStyleForm.styleType);
 		if(viewAStyleForm.styleType==="float"  || viewAStyleForm.styleType==="int" ){
 
 			var margin = 0;
@@ -815,15 +819,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
 
-			viewAStyleForm.scaleRange = [
-				{id:"begin", value:1, size:1},
-				{id:1, value:10, size:1},
-				{id:2, value:20, size:2},
-				{id:3, value:90, size:10},
-				{id:"end", value:100, size:10}
-			];
-
-			metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin);
+			console.log(viewAStyleForm.scaleRange);
+			metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin, viewAStyleForm.scaleRange);
 
 			svg.on("click", function(){
 				var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
@@ -843,8 +840,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
 
 			var colorButton = header.lookupReference('colorButton');
-			var colorButtonEl = colorButton.el.dom.querySelector("#html5colorpicker");
 
+			console.log(viewAStyleForm.scaleRange);
 			viewAStyleForm.graphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, viewAStyleForm.scaleRange);
 
 			svg.on("click", function(){

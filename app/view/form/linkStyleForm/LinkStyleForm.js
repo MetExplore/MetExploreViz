@@ -18,6 +18,8 @@ Ext.define('metExploreViz.view.form.linkStyleForm.LinkStyleForm', {
             "attr": "stroke",
             "access":"strokeColor",
             "title": "Link color",
+            "min": "#ffff00",
+            "max": "#0000ff",
             "default": "#FFFFFF"
         }, {
             "type": "int",
@@ -55,6 +57,8 @@ Ext.define('metExploreViz.view.form.linkStyleForm.LinkStyleForm', {
                 "access":"fontColor",
                 "attr": "fill",
                 "title": "Label color",
+                "min": "#ff0000",
+                "max": "#00ffff",
                 "default": "#000000"
             }, {
                 "type": "int",

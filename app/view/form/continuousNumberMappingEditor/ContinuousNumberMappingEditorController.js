@@ -22,44 +22,86 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
 
 		view.on({
 			afterrender : function(that){
+
 				var width = 450;
 				var height = 85;
 
 				var svg = d3.select(that.el.dom).select("#svgScaleEditor");
 
+
 				var numberButton = view.lookupReference('numberButton');
+				var delButton = view.lookupReference('delButton');
+				var textfieldValue = view.lookupReference('textfieldValue');
 				var numberButtonEl = numberButton.getEl().dom.querySelector("#html5numberpicker");
 
-				metExploreD3.GraphNumberScaleEditor.createNumberScaleEditor(svg, width, height, numberButtonEl);
+				view.aStyleFormParent.graphNumberScaleEditor.createNumberScaleEditor(
+					svg,
+					width,
+					height,
+					numberButtonEl,
+					textfieldValue,
+					delButton,
+					view.aStyleFormParent.scaleRange);
 
 				numberButtonEl
 					.addEventListener("change", function (evt) {
-						metExploreD3.GraphNumberScaleEditor.updateNumber(evt.target.value, svg);
+						view.aStyleFormParent.graphNumberScaleEditor.updateNumber(evt.target.value, svg);
 					});
 			}
 		});
 
 		view.lookupReference('addButton').on({
 			click : function(that){
-				metExploreD3.GraphNumberScaleEditor.addNumber();
+				view.aStyleFormParent.graphNumberScaleEditor.addNumber();
 			}
 		});
 
+		view.lookupReference('textfieldValue').on({
+			focusleave : function(that){
+
+				var value =parseFloat(that.getRawValue());
+
+				if(value==="< min" || value==="> max")
+					that.disable();
+				else
+				{
+					that.enable();
+					if(isNaN(parseFloat(value))){
+						Ext.Msg.show({
+							title:'Warning',
+							msg: "Please enter a number.",
+							icon: Ext.Msg.WARNING
+						});
+					}
+					else
+					{
+						view.aStyleFormParent.graphNumberScaleEditor.updateValues(value);
+					}
+				}
+			}
+		});
+
+
 		view.lookupReference('resetButton').on({
 			click : function(that){
-				metExploreD3.GraphNumberScaleEditor.reset();
+				view.aStyleFormParent.graphNumberScaleEditor.reset();
 			}
 		});
 
 		view.lookupReference('delButton').on({
 			click : function(that){
-				metExploreD3.GraphNumberScaleEditor.delNumber();
+				view.aStyleFormParent.graphNumberScaleEditor.delNumber();
 			}
 		});
 
+
 		view.lookupReference('okButton').on({
-			click : function(that){
-				//Set number caption and nodes
+			click : function(){
+				view.aStyleFormParent.scaleRange = view.aStyleFormParent.graphNumberScaleEditor.getScaleRange();
+				view.aStyleFormParent.getController().updateContinuousCaption();
+				view.aStyleFormParent.getController().updateContinuousMapping();
+
+				view.close();
 			}
 		});
 

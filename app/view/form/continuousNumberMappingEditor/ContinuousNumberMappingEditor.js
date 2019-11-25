@@ -38,18 +38,19 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
             layout:{
                 type:'hbox'
             },
-            margin: "5 15 0 15",
+            margin: "5 15 5 15",
             items: [
                 {
                     margin: "10 0 10 0",
                     xtype: 'label',
-                    html: 'Position :'
+                    html: 'Value :'
                 },
                 {
                     margin: "5 15 5 15",
-                    xtype: 'textfield',
+                    reference: "textfieldValue",
+                    xtype: 'numberfield',
                     label: 'Position',
-                    value: 'Ed Spencer'
+                    value: ''
                 },{
                     margin: "10 0 10 0",
                     xtype: 'label',
@@ -86,12 +87,12 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
                     cls: "aStyleFormNumber",
                     margin: "5 40 5 10",
                     height:"30px",
-                    width:"30px",
+                    width:"100px",
                     html: '<input ' +
                         'type="number" ' +
                         'id="html5numberpicker" ' +
                         'value="#1698ff" ' +
-                        'style="width:30px; height:30px;">'
+                        'style="width:100px; height:30px;">'
                 },
                 {
                     margin: "5 15 5 15",
@@ -103,57 +104,24 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
         }
         ,
         {
-            xtype: 'fieldset',
-            margin: "5 15 5 15",
-            title: 'Min / Max / Add',
-            instructions: 'Min / Max / Add /',
+            xtype: "panel",
             layout:{
-                type:'hbox'
+                type:'hbox',
+                pack : 'end'
             },
-            items: [
+            items:[
                 {
-                    margin: "10 0 10 0",
-                    xtype: 'label',
-                    html: 'Min :'
-                },
-                {
-                    margin: "5 15 5 15",
-                    xtype: 'textfield',
-                    label: 'Min',
-                    width: "100px"
-                },
-                {
-                    margin: "10 0 10 0",
-                    xtype: 'label',
-                    html: 'Max :'
-                },
-                {
-                    margin: "5 15 5 15",
-                    xtype: 'textfield',
-                    label: 'Max',
-                    width: "100px"
-                },
-                {
-                    margin: "5 15 5 15",
+                    margin: "5 5 5 5",
                     xtype: 'button',
                     reference: 'addButton',
                     text : 'Add'
                 },
                 {
-                    margin: "5 15 5 15",
-                    reference: 'resetButton',
+                    margin: "5 5 5 5",
                     xtype: 'button',
+                    reference: 'resetButton',
                     text : 'Reset'
-                }
-            ]
-        },
-        {
-            xtype: "panel",
-            layout:{
-                type:'hbox'
-            },
-            padding: "0 0 0 460",
-            items:[
+                },
                 {
                     margin: "5 5 5 5",
                     xtype: 'button',
@@ -161,7 +129,7 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
                     text : 'OK'
                 },
                 {
-                    margin: "5 5 5 5",
+                    margin: "5 15 5 5",
                     xtype: 'button',
                     reference: 'cancelButton',
                     text : 'Cancel'

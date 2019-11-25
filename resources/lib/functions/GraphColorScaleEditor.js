@@ -39,7 +39,7 @@ metExploreD3.GraphColorScaleEditor = {
         var colorRangeCaption = scaleRange.filter(function (sr) { return !isNaN(sr.id); })
             .map(function (sr, i) {
                 colorDomainCaption.push(i+1);
-                return sr.color;
+                return sr.styleValue;
             });
 
         var values = scaleRange.filter(function (sr) { return !isNaN(sr.id); })
@@ -53,8 +53,8 @@ metExploreD3.GraphColorScaleEditor = {
 
         var colorCaption = d3.scaleLinear().range(colorRangeCaption).domain(colorDomainCaption);
 
-        var valueMin = begin.color;
-        var valueMax = end.color;
+        var valueMin = begin.styleValue;
+        var valueMax = end.styleValue;
 
         var scalePercentInXCaption = d3.scaleLinear()
             .domain([0, 100])
@@ -161,7 +161,7 @@ metExploreD3.GraphColorScaleEditor = {
         me.colorRange = scaleRange.filter(function (sr) { return !isNaN(sr.id); })
             .map(function (sr, i) {
                 me.colorDomain.push(i+1);
-                return sr.color;
+                return sr.styleValue;
             });
 
         me.values = scaleRange.filter(function (sr) { return !isNaN(sr.id); })
@@ -179,8 +179,8 @@ metExploreD3.GraphColorScaleEditor = {
 
         me.color = d3.scaleLinear().range(me.colorRange).domain(me.colorDomain);
 
-        me.valueMin = me.begin.color;
-        me.valueMax = me.end.color;
+        me.valueMin = me.begin.styleValue;
+        me.valueMax = me.end.styleValue;
 
         me.colorRangeInit = me.colorRange.slice(0);
         me.valuesInit = me.values.slice(0);
@@ -440,8 +440,7 @@ metExploreD3.GraphColorScaleEditor = {
 
                     me.button.value=metExploreD3.GraphUtils.RGBString2Color(me.color(iCol));
                     me.selectedValue=iCol;
-                    console.log(me.selectedValue);
-                    console.log(me.values.length-1);
+
                     if(1 < me.selectedValue && me.selectedValue < me.values.length)
                         me.delButton.enable();
                     else
@@ -455,7 +454,11 @@ metExploreD3.GraphColorScaleEditor = {
                     });
 
                     if(me.textfieldValue.getValue()!==me.values[indexVal]){
+
+                        me.updateMinMaxNumberField(indexVal);
+
                         me.textfieldValue.setValue(me.values[indexVal]);
+
                         me.textfieldValue.enable();
                     }
 
@@ -547,7 +550,7 @@ metExploreD3.GraphColorScaleEditor = {
         scaleRange.push({
             id:"begin",
             value:me.values[0],
-            color:this.valueMin
+            styleValue:this.valueMin
         });
 
         me.colorDomain.forEach(function (domain, i) {
@@ -555,7 +558,7 @@ metExploreD3.GraphColorScaleEditor = {
                 {
                     id:domain,
                     value:me.values[i],
-                    color:me.colorRange[i]
+                    styleValue:me.colorRange[i]
                 }
             );
         });
@@ -563,7 +566,7 @@ metExploreD3.GraphColorScaleEditor = {
         scaleRange.push({
             id:"end",
             value:me.values[me.values.length-1],
-            color:this.valueMax
+            styleValue:this.valueMax
         });
 
         return scaleRange;

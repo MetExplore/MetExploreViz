@@ -15,8 +15,12 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		var me 		= this,
 		viewModel   = me.getViewModel(),
 		view = me.getView();
-
-		view.graphColorScaleEditor = Object.create(metExploreD3.GraphColorScaleEditor);
+		if (view.styleType === "int" || view.styleType === "float") {
+			view.graphNumberScaleEditor = Object.create(metExploreD3.GraphNumberScaleEditor);
+		}
+		if (view.styleType === "color") {
+			view.graphColorScaleEditor = Object.create(metExploreD3.GraphColorScaleEditor);
+		}
 
 		view.on(
 		{

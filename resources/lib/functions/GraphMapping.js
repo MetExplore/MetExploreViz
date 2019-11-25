@@ -1431,39 +1431,74 @@ metExploreD3.GraphMapping = {
 
 							if(values.length!==0){
 
-                                // Default colors for continuous mapping
-								var valueMin=generalStyle.getValueMinMappingContinuous();
+								var rangeCaption = [];
+								var domainCaption = [];
+								var minValuesParsed, maxValuesParsed;
+								if(aStyleFormParent.styleType==="float"  || aStyleFormParent.styleType==="int" ) {
 
-								var valueMax=generalStyle.getValueMaxMappingContinuous();
+									if(aStyleFormParent.styleType==="float")
+									{
+										minValuesParsed = parseFloat(aStyleFormParent.min);
+										maxValuesParsed = parseFloat(aStyleFormParent.max);
+									}
+									else
+									{
+										minValuesParsed = parseInt(aStyleFormParent.min);
+										maxValuesParsed = parseInt(aStyleFormParent.max);
+									}
+
+									var vis = d3.select("#viz").select("#D3viz");
+
+									if(!aStyleFormParent.scaleRange){
+
+										var minValue = Math.min.apply(null, values);
+										var maxValue = Math.max.apply(null, values);
+
+										aStyleFormParent.scaleRange = [
+											{id:"begin", value:minValue, styleValue:minValuesParsed},
+											{id:1, value:minValue, styleValue:minValuesParsed},
+											{id:2, value:maxValue, styleValue:maxValuesParsed},
+											{id:"end", value:maxValue, styleValue:maxValuesParsed}
+										];
+									}
 
 
-								var vis = d3.select("#viz").select("#D3viz");
+									rangeCaption = aStyleFormParent.scaleRange
+										.map(function (sr, i) {
+											return sr.styleValue;
+										});
+									domainCaption = aStyleFormParent.scaleRange
+										.map(function (sr, i) {
+											return sr.value;
+										});
+								}
+
+								if(aStyleFormParent.styleType==="color" ) {
+
+									if(!aStyleFormParent.scaleRange){
+
+										var minValue = Math.min.apply(null, values);
+										var maxValue = Math.max.apply(null, values);
+
+										aStyleFormParent.scaleRange = [
+											{id:"begin", value:minValue, styleValue:aStyleFormParent.min},
+											{id:1, value:minValue, styleValue:aStyleFormParent.min},
+											{id:2, value:maxValue, styleValue:aStyleFormParent.max},
+											{id:"end", value:maxValue, styleValue:aStyleFormParent.max}
+										];
+									}
 
 
-
-								if(!aStyleFormParent.scaleRange){
-
-									var minValue = Math.min.apply(null, values);
-									var maxValue = Math.max.apply(null, values);
-
-									aStyleFormParent.scaleRange = [
-                                        {id:"begin", value:minValue, color:valueMin},
-                                        {id:1, value:minValue, color:valueMin},
-                                        {id:2, value:maxValue, color:valueMax},
-                                        {id:"end", value:maxValue, color:valueMax}
-                                    ];
-                                }
-
-
-                                var rangeCaption = aStyleFormParent.scaleRange
-                                    .map(function (sr, i) {
-                                        return sr.color;
-                                    });
-                                var domainCaption = aStyleFormParent.scaleRange
-                                    .map(function (sr, i) {
-                                        return sr.value;
-                                    });
-
+									rangeCaption = aStyleFormParent.scaleRange
+										.map(function (sr, i) {
+											return sr.styleValue;
+										});
+									domainCaption = aStyleFormParent.scaleRange
+										.map(function (sr, i) {
+											return sr.value;
+										});
+								}
+console.log(aStyleFormParent.scaleRange );
                                 var linearScale = d3.scaleLinear().range(rangeCaption).domain(domainCaption);
 
                                 metExploreD3.GraphStyleEdition.setCollectionStyleContinuousMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, linearScale);
@@ -1586,15 +1621,7 @@ metExploreD3.GraphMapping = {
 							);
 							stringJSON+=']}\n';
 							if(minValue!=undefined){
-								if(valueMin==undefined)
-									valueMin=generalStyle.getValueMinMappingContinuous();
-								else
-									generalStyle.setMinValueMappingContinuous(valueMin);
 
-								if(valueMax==undefined)
-									valueMax=generalStyle.getValueMaxMappingContinuous();
-								else
-									generalStyle.setMaxValueMappingContinuous(valueMax);
 
 								var vis = d3.select("#viz").select("#D3viz");
 

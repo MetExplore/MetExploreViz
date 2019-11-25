@@ -34,7 +34,15 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
 				var textfieldValue = view.lookupReference('textfieldValue');
 				var colorButtonEl = colorButton.getEl().dom.querySelector("#html5colorpicker");
 
-				view.aStyleFormParent.graphColorScaleEditor.createColorScaleEditor(svg, width, height, margin, colorButtonEl, textfieldValue, delButton, view.aStyleFormParent.scaleRange);
+				view.aStyleFormParent.graphColorScaleEditor.createColorScaleEditor(
+					svg,
+					width,
+					height,
+					margin,
+					colorButtonEl,
+					textfieldValue,
+					delButton,
+					view.aStyleFormParent.scaleRange);
 
 				colorButtonEl
 					.addEventListener("change", function (evt) {

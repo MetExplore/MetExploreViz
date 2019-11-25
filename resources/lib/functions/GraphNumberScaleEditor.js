@@ -15,9 +15,10 @@ metExploreD3.GraphNumberScaleEditor = {
     number: undefined,
     x: undefined,
     y: undefined,
-    scaleXInPercent: undefined,
-    scalePercentInX: undefined,
+    yRect: undefined,
     button: undefined,
+    delButton: undefined,
+    textfieldValue: undefined,
     numberMin: undefined,
     numberMax: undefined,
     selectedValue:"",
@@ -28,31 +29,35 @@ metExploreD3.GraphNumberScaleEditor = {
     numberMinInit: undefined,
     numberMaxInit: undefined,
 
-    createNumberScaleCaption : function(svg, width, height, margin, data){
+    createNumberScaleCaption : function(svg, width, height, margin, scaleRange){
         var height=height;
         var width=width;
 
         var x = d3.scaleLinear()
-            .domain(d3.extent(data, function (d){ return  d.value;}))
-            .range([0, width]);
+            .domain(d3.extent(scaleRange, function (d){ return  d.value;}))
+            .range([20, width-20]);
 
         var y = d3.scaleLinear()
-            .domain([0, d3.max(data, function (d){ return  d.size;})]).nice()
+            .domain([0, d3.max(scaleRange, function (d){ return  d.styleValue;})]).nice()
             .range([ height, 0]);
 
+        var yRect = d3.scaleLinear()
+            .domain([0, d3.max(scaleRange, function (d){ return  d.styleValue;})]).nice()
+            .range([0 , height]);
+
         var xVal = d3.scaleLinear()
-            .domain([0, width])
-            .range(d3.extent(data, function (d){ return  d.value;}));
+            .domain([20, width-20])
+            .range(d3.extent(scaleRange, function (d){ return  d.value;}));
 
         var yVal = d3.scaleLinear()
             .domain([height, 0]).nice()
-            .range([0, d3.max(data, function (d){ return  d.size;})]);
+            .range([0, d3.max(scaleRange, function (d){ return  d.styleValue;})]);
 
         var area = d3.area()
             .curve(d3.curveLinear)
             .x(function (d){ return x(d.value)})
             .y0(y(0))
-            .y1(function (d){ return y(d.size)});
+            .y1(function (d){ return y(d.styleValue)});
 
         svg.select("#groupId").remove();
         var group= svg.append("g")
@@ -61,10 +66,24 @@ metExploreD3.GraphNumberScaleEditor = {
 
         // Area drawing
         group.append("path")
-            .datum(data)
+            .datum(scaleRange)
             .attr("id", "idArea")
             .attr("fill", "rgb(95, 130, 163)")
             .attr("d", area);
+
+        group.append("rect")
+            .attr("x", 0)
+            .attr("y", height-yRect(scaleRange[0].styleValue))
+            .attr("width", 20)
+            .attr("height", yRect(scaleRange[0].styleValue))
+            .attr("fill", "rgb(95, 130, 163)");
+
+        group.append("rect")
+            .attr("x", width-20)
+            .attr("y", height-yRect(scaleRange[scaleRange.length-1].styleValue))
+            .attr("width", 20)
+            .attr("height", yRect(scaleRange[scaleRange.length-1].styleValue))
+            .attr("fill", "rgb(95, 130, 163)");
 
         // diagram rect border drawing
         group.append("rect")
@@ -76,6 +95,7 @@ metExploreD3.GraphNumberScaleEditor = {
             .style("fill-opacity", 0)
             .style("stroke-width", 2);
 
+
         group.append("text")
             .attr("x", 7)
             .attr("y", -10)
@@ -86,44 +106,43 @@ metExploreD3.GraphNumberScaleEditor = {
             .attr("y", -10)
             .text("Max");
     },
+    createNumberScaleEditor : function(svg, width, height, but, textfieldValue, delButton, data){
 
-    createNumberScaleEditor : function(svg, width, height, but){
         var me = this;
         me.svg = svg;
         me.button=but;
+        me.delButton=delButton;
+        me.textfieldValue=textfieldValue;
         me.height=height;
         me.width=width;
 
-        me.data = [
-            {id:"begin", value:0, size:1},
-            {id:1, value:10, size:1},
-            {id:2, value:30, size:2},
-            {id:3, value:90, size:10},
-            {id:"end", value:100, size:10}
-            ];
+        me.data = data;
 
-        console.log("init");
         me.x = d3.scaleLinear()
             .domain(d3.extent(me.data, function (d){ return  d.value;}))
-            .range([0, me.width]);
+            .range([40, me.width-40]);
 
         me.y = d3.scaleLinear()
-            .domain([0, d3.max(me.data, function (d){ return  d.size;})]).nice()
+            .domain([0, d3.max(me.data, function (d){ return  d.styleValue;})]).nice()
             .range([me.height, 0]);
 
+        me.yRect = d3.scaleLinear()
+            .domain([0, d3.max(me.data, function (d){ return  d.styleValue;})]).nice()
+            .range([0 , me.height]);
+
         var xVal = d3.scaleLinear()
-            .domain([0, me.width])
+            .domain([40, me.width-40])
             .range(d3.extent(me.data, function (d){ return  d.value;}));
 
         var yVal = d3.scaleLinear()
             .domain([me.height, 0]).nice()
-            .range([0, d3.max(me.data, function (d){ return  d.size;})]);
+            .range([0, d3.max(me.data, function (d){ return  d.styleValue;})]);
 
         var area = d3.area()
             .curve(d3.curveLinear)
             .x(function (d){ return me.x(d.value)})
             .y0(me.y(0))
-            .y1(function (d){ return me.y(d.size)});
+            .y1(function (d){ return me.y(d.styleValue)});
 
         svg.select("#groupId").remove();
         var group= svg.append("g")
@@ -136,6 +155,22 @@ metExploreD3.GraphNumberScaleEditor = {
             .attr("id", "idArea")
             .attr("fill", "rgb(95, 130, 163)")
             .attr("d", area);
+
+        group.append("rect")
+            .attr("id", "rectInfinitybegin")
+            .attr("x", 0)
+            .attr("y", me.height-me.yRect(me.data[0].styleValue))
+            .attr("width", 40)
+            .attr("height", me.yRect(me.data[0].styleValue))
+            .attr("fill", "rgb(95, 130, 163)");
+
+        group.append("rect")
+            .attr("id", "rectInfinityend")
+            .attr("x", me.width-40)
+            .attr("y", me.height-me.yRect(me.data[me.data.length-1].styleValue))
+            .attr("width", 40)
+            .attr("height", me.yRect(me.data[me.data.length-1].styleValue))
+            .attr("fill", "rgb(95, 130, 163)");
 
         // Y axis drawing
         var yAxis = group.append("svg:g")
@@ -189,9 +224,9 @@ metExploreD3.GraphNumberScaleEditor = {
             .attr("points", "0 0, 5 2, 0 4");
 
         xAxis.append("line")
-            .attr("x1", -2)
+            .attr("x1", 40)
             .attr("y1", me.height+20)
-            .attr("x2", me.width-20)
+            .attr("x2", me.width-60)
             .attr("y2", me.height+20)
             .attr("stroke", "#000")
             .attr("stroke-width", 4)
@@ -228,11 +263,13 @@ metExploreD3.GraphNumberScaleEditor = {
             .on("drag", function (node) {
                 var current = d3.select(this);
                 var text = d3.select(this.parentNode).select("text");
+
                 if(d3.event.y + me.deltaY>0 && d3.event.y + me.deltaY<me.height){
 
                     me.updateSizeNumber(node.id, yVal(d3.event.y + me.deltaY));
 
                     me.updateYOfSizeNode(node, d3.event.y);
+                    text.html(function(d){ return me.round(parseFloat(d.styleValue)); });
                 }
 
             });
@@ -242,8 +279,12 @@ metExploreD3.GraphNumberScaleEditor = {
             .attr("stroke", "#144778")
             .attr("stroke-width", "5px")
             .attr("r", "5px")
-            .attr("cx", function (d){ return me.x(d.value)})
-            .attr("cy", function (d){ return me.y(d.size)})
+            .attr("cx", function (d){
+                if(d.id==="begin") return 0;
+                if(d.id==="end") return me.width;
+                return me.x(d.value);
+            })
+            .attr("cy", function (d){ return me.y(d.styleValue)})
             .on("mouseenter", function () {
                 d3.select(this.parentNode).selectAll("path").classed("hide", false);
             })
@@ -268,8 +309,15 @@ metExploreD3.GraphNumberScaleEditor = {
             .style("font-weight", 'bold')
             .style("pointer-events", 'none')
             .attr("d", function (d){
-                var x = me.x(d.value);
-                var y = me.y(d.size);
+                var x;
+                if(d.id==="begin")  x = 0;
+                else
+                {
+                    if(d.id==="end") x = me.width;
+                    else x = me.x(d.value);
+                }
+
+                var y = me.y(d.styleValue);
                 var points ="M"+(x-8)+","+(y+10)+" L"+(x)+","+(y+13)+" L"+(x+8)+","+(y+10);
                 return points;
             });
@@ -289,8 +337,14 @@ metExploreD3.GraphNumberScaleEditor = {
             .classed("down", true)
             .classed("hide", true)
             .attr("d", function (d){
-                var x = me.x(d.value);
-                var y = me.y(d.size);
+                var x;
+                if(d.id==="begin")  x = 0;
+                else
+                {
+                    if(d.id==="end") x = me.width;
+                    else x = me.x(d.value);
+                }
+                var y = me.y(d.styleValue);
                 var points ="M"+(x-8)+","+(y+10)+" L"+(x)+","+(y+13)+" L"+(x+8)+","+(y+10);
                 return points;
             });
@@ -310,8 +364,14 @@ metExploreD3.GraphNumberScaleEditor = {
             .classed("up", true)
             .classed("hide", true)
             .attr("d", function (d){
-                var x = me.x(d.value);
-                var y = me.y(d.size);
+                var x;
+                if(d.id==="begin")  x = 0;
+                else
+                {
+                    if(d.id==="end") x = me.width;
+                    else x = me.x(d.value);
+                }
+                var y = me.y(d.styleValue);
                 var points ="M"+(x-8)+","+(y-10)+" L"+(x)+","+(y-13)+" L"+(x+8)+","+(y-10);
                 return points;
             });
@@ -331,14 +391,20 @@ metExploreD3.GraphNumberScaleEditor = {
             .classed("up", true)
             .classed("hide", true)
             .attr("d", function (d){
-                var x = me.x(d.value);
-                var y = me.y(d.size);
+                var x;
+                if(d.id==="begin")  x = 0;
+                else
+                {
+                    if(d.id==="end") x = me.width;
+                    else x = me.x(d.value);
+                }
+                var y = me.y(d.styleValue);
                 var points ="M"+(x-8)+","+(y-10)+" L"+(x)+","+(y-13)+" L"+(x+8)+","+(y-10);
                 return points;
             });
 
         nodes.append("svg:text")
-            .html(function(d){ return d.size; })
+            .html(function(d){ return me.round(parseFloat(d.styleValue)); })
             .style("font-size",15)
             .style("paint-order","stroke")
             .style("stroke-width", 3)
@@ -349,12 +415,17 @@ metExploreD3.GraphNumberScaleEditor = {
             .style("pointer-events", 'none')
             .style("text-anchor", 'middle')
             .attr("id", "size")
-            .attr("x", function (d){ return me.x(d.value)})
-            .attr("y", function (d){ return me.y(d.size)-15});
+            .attr("x", function (d){
+                if(d.id==="begin") return 0;
+                if(d.id==="end") return me.width;
+                return me.x(d.value);
+            })
+            .attr("y", function (d){ return me.y(d.styleValue)-15});
 
 
+        var indexVal;
         var dragValueHandler = d3.drag()
-            .on("start", function () {
+            .on("start", function (node) {
                 var current = d3.select(this);
                 var text = d3.select(this.parentNode).select("text");
 
@@ -367,17 +438,39 @@ metExploreD3.GraphNumberScaleEditor = {
                 // indexVal = me.colorPercent.findIndex(function(pc){
                 //     return metExploreD3.GraphColorScaleEditor.round(parseFloat(pc))===metExploreD3.GraphColorScaleEditor.round(parseFloat(theLinearGradient.attr("offset").replace("%","")))
                 // });
-            })
-            .on("drag", function (node) {
-                var indexVal = me.data.findIndex(function(pc){
+                indexVal = me.data.findIndex(function(pc){
                     return pc.id === node.id;
                 });
+                me.selectedValue=indexVal;
+
+                console.log(me.selectedValue);
+                if(1 < me.selectedValue && me.selectedValue < me.data.length)
+                    me.delButton.enable();
+                else
+                    me.delButton.disable();
+
+
+                if(me.textfieldValue.getValue()!==me.data[indexVal].value){
+
+                    me.updateMinMaxNumberField(indexVal);
+
+                    me.textfieldValue.setValue(me.data[indexVal].value);
+
+                    me.textfieldValue.enable();
+                }
+            })
+            .on("drag", function (node) {
+
+                var text = d3.select(this.parentNode).select("text");
+
+                console.log(text.node());
 
                 if(me.x(me.data[indexVal-1].value) < d3.event.x+me.deltaX && d3.event.x + me.deltaX < me.x(me.data[indexVal+1].value)){
-                    // me.updateColorPercent(indexVal, theLinearGradient, me.deltaX);
                     me.updateValueNumber(node.id, xVal(d3.event.x + me.deltaX));
 
                     me.updateXOfValueNode(node, d3.event.x);
+                    text.html(function(d){ return me.round(parseFloat(d.value)); });
+
                 }
             });
 
@@ -522,7 +615,7 @@ metExploreD3.GraphNumberScaleEditor = {
         me.numberMax = me.numberMaxInit.slice(0);
         me.number.range(me.numberRange).domain(me.numberDomain);
 
-        metExploreD3.GraphNumberScaleEditor.update();
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.button, me.textfieldValue, me.delButton, me.data);
     },
     updateNumberPercent : function(indexVal,theLinearGradient, deltaX){
         this.numberPercent.splice(indexVal, 1, metExploreD3.GraphNumberScaleEditor.round(this.scaleXInPercent(d3.event.x+me.deltaX)));
@@ -535,8 +628,22 @@ metExploreD3.GraphNumberScaleEditor = {
             return n.id === id;
         });
 
-        node.size = size;
-        me.updateArea();
+        node.styleValue = size;
+
+        if(id==="begin" || id==="end")
+            me.updateRectHeight(id, size);
+        else
+        {
+            me.updateArea();
+        }
+
+    },
+    updateRectHeight : function(id, value){
+        var me = this;
+        me.svg.select("#rectInfinity"+id)
+            .attr("y", me.height-me.yRect(value))
+            .attr("width", 40)
+            .attr("height", me.yRect(value))
     },
     updateValueNumber : function(id, value){
         var me = this;
@@ -553,22 +660,34 @@ metExploreD3.GraphNumberScaleEditor = {
     },
     addNumber : function(svg){
         var me = this;
-        console.log("add")
 
-        createNumberScaleEditor
-        me.numberPercent.push(70);
-        me.numberPercent.sort(function(a, b) {
-            return a - b;
+        var scalePercentInValueCaption = d3.scaleLinear()
+            .domain([0, 100])
+            .range([ me.data[0].value , me.data[me.data.length-1].value ]);
+
+        var newVal = scalePercentInValueCaption(50);
+        var i = me.data.findIndex(function (node) {
+            return node.value>newVal;
         });
 
-        var i = me.numberPercent.findIndex(function(n){return n===70});
-        me.numberRange.splice(i, 0, "#FFFF00");
+        var styleVal = (me.data[0].styleValue+me.data[me.data.length-1].styleValue)/2;
+        me.data.splice(i, 0, {
+            id:i,
+            value:newVal,
+            styleValue:styleVal
+        });
 
-        me.numberDomain.push(me.numberDomain.length+1);
+console.log({
+    id:i,
+    value:newVal,
+    styleValue:styleVal
+});
+        for (var j = i+1; j < me.data.length-1; j++) {
+            me.data[j].id=j;
+        }
+        console.log(me.data);
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.button, me.textfieldValue, me.delButton, me.data);
 
-        me.number.range(me.numberRange).domain(me.numberDomain);
-
-        metExploreD3.GraphNumberScaleEditor.update();
     },
     delNumber : function(){
         var me = this;
@@ -580,7 +699,8 @@ metExploreD3.GraphNumberScaleEditor = {
 
         me.number.range(me.numberRange).domain(me.numberDomain);
 
-        metExploreD3.GraphNumberScaleEditor.update();
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.button, me.textfieldValue, me.delButton, me.data);
+
     },
     updateArea : function(){
         var me = this;
@@ -588,7 +708,7 @@ metExploreD3.GraphNumberScaleEditor = {
             .curve(d3.curveLinear)
             .x(function (d){ return me.x(d.value)})
             .y0(me.y(0))
-            .y1(function (d){ return me.y(d.size)});;
+            .y1(function (d){ return me.y(d.styleValue)});;
 
         me.svg.select("#idArea")
             .attr("d", dArea);
@@ -690,5 +810,30 @@ metExploreD3.GraphNumberScaleEditor = {
                 return n.id===node.id;
             })
             .attr("d",dDown);
+    },
+
+    updateMinMaxNumberField: function(indexVal){
+        var me = this;
+
+        var min, max;
+
+        if(indexVal===0 || indexVal===me.data.length-1){
+            if(indexVal===0){
+                min = -Infinity;
+                max = me.data[indexVal+1].value;
+            }
+            if(indexVal===me.data.length-1){
+                min = me.data[indexVal-1].value;
+                max = Infinity;
+            }
+        }
+        else
+        {
+            min = me.data[indexVal-1].value;
+            max = me.data[indexVal+1].value;
+        }
+
+        me.textfieldValue.setMinValue(min);
+        me.textfieldValue.setMaxValue(max);
     }
 };

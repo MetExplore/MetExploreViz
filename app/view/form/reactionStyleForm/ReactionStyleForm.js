@@ -17,6 +17,8 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
             "attr": "fill",
             "title": "Node background",
             "default": "#FFFFFF",
+            "min": "#ffff00",
+            "max": "#0000ff",
             "access":"backgroundColor"
         }, {
             "type": "int",
@@ -82,6 +84,8 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
             "attr": "stroke",
             "access": "strokeColor",
             "title": "Border color",
+            "min": "#ff0000",
+            "max": "#00ffff",
             "default": "#000000"
         }, {
             "type": "int",
@@ -103,6 +107,8 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
             "access": "fontColor",
             "biologicalType":"reaction",
             "title": "Label color",
+            "min": "#ff00ff",
+            "max": "#00ff00",
             "default": "#000000"
         },{
             "type": "int",

@@ -17,8 +17,8 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
     minWidth: 600,
     x: 100,
     y: 100,
-    maxHeight: 360,
-    minHeight: 360,
+    maxHeight: 365,
+    minHeight: 365,
     layout:{
         type:'vbox',
         align:'stretch'
@@ -48,7 +48,7 @@ Ext.define('metExploreViz.view.form.continuousColorMappingEditor.ContinuousColor
                 {
                     margin: "5 15 5 15",
                     reference: "textfieldValue",
-                    xtype: 'textfield',
+                    xtype: 'numberfield',
                     label: 'Position',
                     value: ''
                 },{
