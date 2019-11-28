@@ -103,11 +103,6 @@ metExploreD3.GraphColorScaleEditor = {
 
         group.append("text")
             .attr("x", width+5)
-            .attr("y", -10)
-            .text("Max");
-
-        group.append("text")
-            .attr("x", width+5)
             .attr("y", height+20)
             .text(me.round(values[values.length-1]));
 

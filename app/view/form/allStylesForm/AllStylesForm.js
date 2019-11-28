@@ -26,7 +26,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesForm', {
     height:'20%',
     maxHeight:'20%',
     margins:'0 0 0 0',
-    autoScroll: true,
+    scrollable: true,
     tabBar:{
         cls:"vizTBarStyle"
     },

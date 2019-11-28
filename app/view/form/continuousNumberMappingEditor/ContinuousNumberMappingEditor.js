@@ -79,7 +79,7 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
                         }
                     }
                 },{
-                    xtype: 'panel',
+                    xtype: 'numberfield',
                     html: 'Number :',
                     reference: "numberButton",
                     hidden: false,
@@ -87,12 +87,7 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
                     cls: "aStyleFormNumber",
                     margin: "5 40 5 10",
                     height:"30px",
-                    width:"100px",
-                    html: '<input ' +
-                        'type="number" ' +
-                        'id="html5numberpicker" ' +
-                        'value="#1698ff" ' +
-                        'style="width:100px; height:30px;">'
+                    width:"100px"
                 },
                 {
                     margin: "5 15 5 15",

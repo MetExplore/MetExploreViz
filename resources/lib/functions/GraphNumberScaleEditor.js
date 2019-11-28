@@ -15,13 +15,17 @@ metExploreD3.GraphNumberScaleEditor = {
     number: undefined,
     x: undefined,
     y: undefined,
+    xVal: undefined,
+    yVal: undefined,
     yRect: undefined,
-    button: undefined,
+    numberField: undefined,
     delButton: undefined,
     textfieldValue: undefined,
     numberMin: undefined,
     numberMax: undefined,
     selectedValue:"",
+    valueMin: undefined,
+    valueMax: undefined,
 
     numberRangeInit: undefined,
     numberPercentInit: undefined,
@@ -30,6 +34,7 @@ metExploreD3.GraphNumberScaleEditor = {
     numberMaxInit: undefined,
 
     createNumberScaleCaption : function(svg, width, height, margin, scaleRange){
+        var me = this;
         var height=height;
         var width=width;
 
@@ -66,7 +71,11 @@ metExploreD3.GraphNumberScaleEditor = {
 
         // Area drawing
         group.append("path")
-            .datum(scaleRange)
+            .datum(scaleRange.filter(function (n, i) {
+                if(i===0 || i===scaleRange.length-1)
+                    return false;
+                return true;
+            }))
             .attr("id", "idArea")
             .attr("fill", "rgb(95, 130, 163)")
             .attr("d", area);
@@ -102,21 +111,37 @@ metExploreD3.GraphNumberScaleEditor = {
             .text("Min");
 
         group.append("text")
+            .attr("x", 7)
+            .attr("y", height+20)
+            .text(me.round(scaleRange[1].value));
+
+        group.append("text")
             .attr("x", width-35)
             .attr("y", -10)
             .text("Max");
+
+        group.append("text")
+            .attr("x", width-35)
+            .attr("y", height+20)
+            .text(me.round(scaleRange[scaleRange.length-2].value));
     },
     createNumberScaleEditor : function(svg, width, height, but, textfieldValue, delButton, data){
 
         var me = this;
         me.svg = svg;
-        me.button=but;
+        me.numberField=but;
         me.delButton=delButton;
         me.textfieldValue=textfieldValue;
         me.height=height;
         me.width=width;
-
+        console.log(me.textfieldValue);
         me.data = data;
+
+        me.begin = me.data.find(function (sr) { return sr.id==="begin"; });
+        me.end = me.data.find(function (sr) { return sr.id==="end"; });
+
+        me.valueMin = me.begin.styleValue;
+        me.valueMax = me.end.styleValue;
 
         me.x = d3.scaleLinear()
             .domain(d3.extent(me.data, function (d){ return  d.value;}))
@@ -151,7 +176,11 @@ metExploreD3.GraphNumberScaleEditor = {
 
         // Area drawing
         group.append("path")
-            .datum(me.data)
+            .datum(me.data.filter(function (n, i) {
+                if(i===0 || i===me.data.length-1)
+                    return false;
+                return true;
+            }))
             .attr("id", "idArea")
             .attr("fill", "rgb(95, 130, 163)")
             .attr("d", area);
@@ -252,19 +281,39 @@ metExploreD3.GraphNumberScaleEditor = {
         var nodes = groupVal.append("svg:g")
             .attr("id", "node");
 
+        var indexYVal;
         var dragNodeHandler = d3.drag()
-            .on("start", function () {
+            .on("start", function (node) {
                 var current = d3.select(this);
                 var text = d3.select(this.parentNode).select("text");
 
                 me.deltaY = current.attr("cy") - d3.event.y;
                 me.deltaYText = text.attr("y") - d3.event.y;
+
+                indexYVal = me.data.findIndex(function(pc){
+                    return pc.id === node.id;
+                });
+                me.selectedValue=indexYVal;
+
+                console.log(me.selectedValue);
+                if(1 < me.selectedValue && me.selectedValue < me.data.length-2)
+                    me.delButton.enable();
+                else
+                    me.delButton.disable();
+
+                if(me.textfieldValue.getRawValue()!==me.data[indexYVal].value){
+
+                    me.numberField.setRawValue(me.data[indexYVal].styleValue);
+                    me.updateMinMaxNumberField(indexYVal);
+                    me.textfieldValue.setRawValue(me.data[indexYVal].styleValue);
+                    me.updateValNumberField(indexYVal);
+                }
             })
             .on("drag", function (node) {
                 var current = d3.select(this);
                 var text = d3.select(this.parentNode).select("text");
 
-                if(d3.event.y + me.deltaY>0 && d3.event.y + me.deltaY<me.height){
+                if(d3.event.y + me.deltaY>=0 && d3.event.y + me.deltaY<=me.height){
 
                     me.updateSizeNumber(node.id, yVal(d3.event.y + me.deltaY));
 
@@ -272,6 +321,11 @@ metExploreD3.GraphNumberScaleEditor = {
                     text.html(function(d){ return me.round(parseFloat(d.styleValue)); });
                 }
 
+            })
+            .on("end", function () {
+                if(me.numberField.getRawValue()!==me.data[indexYVal]){
+                    me.numberField.setRawValue(me.data[indexYVal].styleValue);
+                }
             });
 
         nodes.append("circle")
@@ -429,7 +483,7 @@ metExploreD3.GraphNumberScaleEditor = {
                 var current = d3.select(this);
                 var text = d3.select(this.parentNode).select("text");
 
-                // me.button.value=metExploreD3.GraphUtils.RGBString2Color(me.color(iCol));
+                // me.numberField.value=metExploreD3.GraphUtils.RGBString2Color(me.color(iCol));
                 // me.selectedValue=iCol;
                 // // if(scalePercentInX(current.attr("x")-d3.event.x)>0 && scalePercentInX(current.attr("x")-d3.event.x)<100)
                 me.deltaX = current.attr("cx") - d3.event.x;
@@ -450,11 +504,11 @@ metExploreD3.GraphNumberScaleEditor = {
                     me.delButton.disable();
 
 
-                if(me.textfieldValue.getValue()!==me.data[indexVal].value){
+                if(me.textfieldValue.getRawValue()!==me.data[indexVal].value){
 
                     me.updateMinMaxNumberField(indexVal);
-
-                    me.textfieldValue.setValue(me.data[indexVal].value);
+                    me.numberField.setRawValue(me.data[indexVal].styleValue);
+                    me.textfieldValue.setRawValue(me.data[indexVal].value);
 
                     me.textfieldValue.enable();
                 }
@@ -463,8 +517,6 @@ metExploreD3.GraphNumberScaleEditor = {
 
                 var text = d3.select(this.parentNode).select("text");
 
-                console.log(text.node());
-
                 if(me.x(me.data[indexVal-1].value) < d3.event.x+me.deltaX && d3.event.x + me.deltaX < me.x(me.data[indexVal+1].value)){
                     me.updateValueNumber(node.id, xVal(d3.event.x + me.deltaX));
 
@@ -472,7 +524,96 @@ metExploreD3.GraphNumberScaleEditor = {
                     text.html(function(d){ return me.round(parseFloat(d.value)); });
 
                 }
+            })
+            .on("end", function () {
+                if(me.textfieldValue.getRawValue()!==me.data[indexVal]){
+                    me.textfieldValue.setRawValue(me.data[indexVal].value);
+                }
             });
+
+        groupVal
+            .filter(function(node){
+                return node.id === "begin";
+            })
+            .append("svg:g")
+            .attr("id", "valuebegin")
+            .append("svg:text")
+            .html("< min")
+            .style("font-size",15)
+            .style("paint-order","stroke")
+            .style("stroke-width", 3)
+            .style("stroke", "white")
+            .style("stroke-opacity", "0.8")
+            .attr("dy", ".4em")
+            .style("font-weight", 'bold')
+            .style("pointer-events", 'none')
+            .style("text-anchor", 'middle')
+            .attr("id", "size")
+            .attr("x", 0)
+            .attr("y", 105-7);
+
+        groupVal
+            .filter(function(node){
+                return node.id === me.data.length-2;
+            })
+            .append("svg:g")
+            .attr("id", "valueend")
+            .append("svg:text")
+            .html("> max")
+            .style("font-size",15)
+            .style("paint-order","stroke")
+            .style("stroke-width", 3)
+            .style("stroke", "white")
+            .style("stroke-opacity", "0.8")
+            .attr("dy", ".4em")
+            .style("font-weight", 'bold')
+            .style("pointer-events", 'none')
+            .style("text-anchor", 'middle')
+            .attr("id", "size")
+            .attr("x", me.width)
+            .attr("y", 105-7);
+
+        groupVal
+            .filter(function(node){
+                return node.id === 1;
+            })
+            .append("svg:g")
+            .attr("id", "valueMin")
+            .append("svg:text")
+            .html(function(d){ return me.round(parseFloat(d.value)); })
+            .style("font-size",15)
+            .style("paint-order","stroke")
+            .style("stroke-width", 3)
+            .style("stroke", "white")
+            .style("stroke-opacity", "0.8")
+            .attr("dy", ".4em")
+            .style("font-weight", 'bold')
+            .style("pointer-events", 'none')
+            .style("text-anchor", 'middle')
+            .attr("id", "size")
+            .attr("x", function (d){ return me.x(d.value)})
+            .attr("y", 105+10);
+
+        groupVal
+            .filter(function(node){
+                return node.id === me.data.length-2;
+            })
+            .append("svg:g")
+            .attr("id", "valueMax")
+            .append("svg:text")
+            .html(function(d){ return me.round(parseFloat(d.value)); })
+            .style("font-size",15)
+            .style("paint-order","stroke")
+            .style("stroke-width", 3)
+            .style("stroke", "white")
+            .style("stroke-opacity", "0.8")
+            .attr("dy", ".4em")
+            .style("font-weight", 'bold')
+            .style("pointer-events", 'none')
+            .style("text-anchor", 'middle')
+            .attr("id", "size")
+            .attr("x", function (d){ return me.x(d.value)})
+            .attr("y", 105+10);
 
         var valueNode = groupVal
             .filter(function(node){
@@ -585,7 +726,7 @@ metExploreD3.GraphNumberScaleEditor = {
             });
 
         valueNode.append("svg:text")
-            .html(function(d){ return d.value; })
+            .html(function(d){ return me.round(parseFloat(d.value)); })
             .style("font-size",15)
             .style("paint-order","stroke")
             .style("stroke-width", 3)
@@ -615,13 +756,9 @@ metExploreD3.GraphNumberScaleEditor = {
         me.numberMax = me.numberMaxInit.slice(0);
         me.number.range(me.numberRange).domain(me.numberDomain);
 
-        me.createNumberScaleEditor(me.svg, me.width, me.height, me.button, me.textfieldValue, me.delButton, me.data);
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
     },
-    updateNumberPercent : function(indexVal,theLinearGradient, deltaX){
-        this.numberPercent.splice(indexVal, 1, metExploreD3.GraphNumberScaleEditor.round(this.scaleXInPercent(d3.event.x+me.deltaX)));
-        theLinearGradient
-            .attr("offset", metExploreD3.GraphNumberScaleEditor.round(this.scaleXInPercent(d3.event.x+me.deltaX))+"%");
-    },
+
     updateSizeNumber : function(id, size){
         var me = this;
         var node = me.data.find(function (n) {
@@ -677,30 +814,19 @@ metExploreD3.GraphNumberScaleEditor = {
             styleValue:styleVal
         });
 
-console.log({
-    id:i,
-    value:newVal,
-    styleValue:styleVal
-});
         for (var j = i+1; j < me.data.length-1; j++) {
             me.data[j].id=j;
         }
         console.log(me.data);
-        me.createNumberScaleEditor(me.svg, me.width, me.height, me.button, me.textfieldValue, me.delButton, me.data);
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
 
     },
     delNumber : function(){
         var me = this;
-        console.log("del");
 
-        me.numberRange.splice(me.selectedValue-1, 1);
-        me.numberPercent.splice(me.selectedValue-1, 1);
-        me.numberDomain = me.numberDomain.pop();
+        me.data.splice(me.selectedValue-1, 1);
 
-        me.number.range(me.numberRange).domain(me.numberDomain);
-
-        me.createNumberScaleEditor(me.svg, me.width, me.height, me.button, me.textfieldValue, me.delButton, me.data);
-
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
     },
     updateArea : function(){
         var me = this;
@@ -708,7 +834,7 @@ console.log({
             .curve(d3.curveLinear)
             .x(function (d){ return me.x(d.value)})
             .y0(me.y(0))
-            .y1(function (d){ return me.y(d.styleValue)});;
+            .y1(function (d){ return me.y(d.styleValue)});
 
         me.svg.select("#idArea")
             .attr("d", dArea);
@@ -835,5 +961,39 @@ console.log({
 
         me.textfieldValue.setMinValue(min);
         me.textfieldValue.setMaxValue(max);
+    },
+    updateValNumberField: function(indexVal){
+        var me = this;
+        console.log(indexVal);
+        if(indexVal===0 || indexVal===me.data.length-1){
+            if(indexVal===0){
+                me.textfieldValue.setRawValue("< min");
+                me.textfieldValue.disable();
+            }
+            if(indexVal===me.data.length-1){
+                me.textfieldValue.setRawValue("> max");
+                me.textfieldValue.disable();
+            }
+        }
+        else
+        {
+            me.textfieldValue.setRawValue(me.data[indexVal].value);
+            me.textfieldValue.enable();
+        }
+    },
+    updateSize : function(value){
+        var me = this;
+        me.data[me.selectedValue].styleValue = value;
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
+    },
+    updateValue : function(value){
+        var me = this;
+        me.data[me.selectedValue].value = value;
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
+    },
+    getScaleRange: function(){
+        var me = this;
+
+        return me.data;
     }
 };

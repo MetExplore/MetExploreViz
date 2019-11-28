@@ -12,6 +12,7 @@ metExploreD3.GraphNetwork = {
     brushEvnt:undefined,
     taskZoom: "",
     first: true,
+    focus: false,
     /*******************************************
      * Initialization of variables
      * @param {string} panel : The panel where are the node
@@ -1015,26 +1016,26 @@ metExploreD3.GraphNetwork = {
                 var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
                 //H	72
-                if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
                 }
 
-                if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.GraphFunction.horizontalReverse(_MyThisGraphNode.activePanel);
                 }
 
                 //V 86
-                if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
                 }
 
-                if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.GraphFunction.verticalReverse(_MyThisGraphNode.activePanel);
                 }
 
 
                 // 65=A
-                if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey) {
+                if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey && metExploreD3.GraphNetwork.focus) {
                     d3.select("#" + _MyThisGraphNode.activePanel).select("#D3viz").select("#graphComponent").selectAll("g.node")
                         .each(function (node) {
                             if (!node.isSelected()) {
@@ -1046,7 +1047,7 @@ metExploreD3.GraphNetwork = {
             .on("keyup", function (e) {
                 // 46=Suppr
                 var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-                if (_MyThisGraphNode.charKey == 46 && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 46 && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.displayMessageYesNo("Selected nodes", 'Do you want remove selected nodes?', function (btn) {
                         if (btn == "yes") {
                             metExploreD3.GraphNetwork.removeSelectedNode(_MyThisGraphNode.activePanel)
@@ -3566,6 +3567,7 @@ metExploreD3.GraphNetwork = {
 
         d3.select('#'+panel)
             .on("mouseover", function(){
+                metExploreD3.GraphNetwork.focus=true;
                 d3.select("#"+panel)
                     .select("#D3viz")
                     .select("#buttonZoomOut")
@@ -3594,6 +3596,7 @@ metExploreD3.GraphNetwork = {
 
             })
             .on("mouseout", function(){
+                metExploreD3.GraphNetwork.focus=false;
                 d3.select("#"+panel)
                     .select("#D3viz")
                     .select("#buttonZoomOut")

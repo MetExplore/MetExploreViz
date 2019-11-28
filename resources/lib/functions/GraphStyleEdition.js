@@ -528,6 +528,7 @@ metExploreD3.GraphStyleEdition = {
      * @param {Object} node : The node whose image position and dimension data will be put in the object
      */
     setCollectionStyle : function (targetSet, attrType, attrName, biologicalType, value) {
+
         targetSet.forEach(function setStyles(target) {
             var selection;
             if(biologicalType==="metabolite" || biologicalType==="reaction")
@@ -536,7 +537,9 @@ metExploreD3.GraphStyleEdition = {
             if(biologicalType==="link")
                 selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
-            selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")")[attrType](attrName, value);
+            console.log(selection);
+            console.log(target+":not(.bypassed"+attrType+attrName+biologicalType+")");
+            selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")"+":not(.mapped"+attrType+attrName+biologicalType+")")[attrType](attrName, value);
         });
     },
 
@@ -614,7 +617,42 @@ metExploreD3.GraphStyleEdition = {
                 var targetSelection = selection.selectAll(target);
 
                 targetSelection[attrType](attrName, valueStyle);
-                targetSelection.classed("mapped", true);
+                targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
+            });
+        }
+    },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
+    setCollectionStyleAsSelectionMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName, valueMapping, valueStyle) {
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+        if(activeSession) {
+            targetSet.forEach(function setStyles(target) {
+
+                var selection;
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                    .filter(function (d) {
+                        return d.getBiologicalType() === biologicalType;
+                    })
+                    .filter(function (d) {
+
+                        var map = d.getMappingDataByName(mappingName);
+
+                        if(map!==null){
+                            return true;
+                        }
+                        return false;
+                    });
+
+                if (biologicalType === "link")
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+                var targetSelection = selection.selectAll(target);
+
+                targetSelection[attrType](attrName, valueStyle);
+                targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
             });
         }
     },
@@ -655,7 +693,7 @@ metExploreD3.GraphStyleEdition = {
                     return linearScale(map.getMapValue());
                 });
 
-                targetSelection.classed("mapped", true);
+                targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
             });
         }
     },

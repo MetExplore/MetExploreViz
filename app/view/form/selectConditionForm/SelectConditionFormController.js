@@ -71,30 +71,29 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 
 		view.lookupReference('selectCondition').on({
-			// change : function(that, newVal, old){
-			// 	var type = view.lookupReference('selectConditionType').lastValue;
-			// 	if(type!=="Flux"){
-			// 		if(old)
-			// 		{
-			// 			var i = newVal.indexOf(old[0]);
-			// 			if(i!==-1)
-			// 			{
-			// 				newVal.splice(i, 1);
-			// 			}
-			// 			view.lookupReference('selectCondition').setValue(newVal[0]);
-			// 		}
-			// 		view.lookupReference('selectCondition').collapse();
-			// 	}
-			// 	else
-			// 	{
-			// 		if(newVal>2){
-			// 			newVal.splice(0,1);
-			// 			view.lookupReference('selectCondition').setValue(newVal);
-			// 		}
-			// 	}
-			// },
 			change : function(that, newVal, old){
 				this.map(newVal, old, me.getAStyleFormParent());
+			},
+			scope:me
+		});
+
+		view.lookupReference('saveScale').on({
+			click : function(){
+				var viewAStyleForm = me.getAStyleFormParent();
+				metExploreD3.GraphUtils.saveScaleRange(viewAStyleForm.scaleRange);
+			},
+			scope:me
+		});
+
+		view.lookupReference('importScale').on({
+			change:function(){
+				metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importScale').fileInputEl.dom, function(json){
+					// Allows to reload the same file
+					var viewAStyleForm = me.getAStyleFormParent();
+					viewAStyleForm.scaleRange = metExploreD3.GraphUtils.decodeJSON(json);
+					viewAStyleForm.getController().updateContinuousCaption();
+					viewAStyleForm.getController().updateContinuousMapping();
+				});
 			},
 			scope:me
 		});
@@ -104,6 +103,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				me.closeMapping();
 				view.lookupReference('selectConditionType').setValue(null);
 				view.lookupReference('selectCondition').setValue(null);
+				var viewAStyleForm = me.getAStyleFormParent();
+				viewAStyleForm.collapse();
 			},
 			scope:me
 		});
@@ -394,7 +395,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				captionScales.show();
 			}
 
-			if(dataType==="Discrete"){
+			if(dataType==="Discrete" || dataType==="As selection"){
 				header.lookupReference('mappingButton').fireEvent("setIcon", "discrete");
 				var captions = view.lookupReference('discreteCaptions');
 				captions.show();
@@ -441,6 +442,11 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
         if(dataType==="Discrete"){
             session.setMappingDataType(dataType);
             metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, parentAStyleForm);
+        }
+
+        if(dataType==="As selection"){
+            session.setMappingDataType(dataType);
+            metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, parentAStyleForm);
         }
 
         // if(dataType==="Suggestion")
@@ -810,7 +816,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		var view = me.getView();
 		var viewAStyleForm = me.getAStyleFormParent();
 		var header = viewAStyleForm.down('header');
-		console.log(viewAStyleForm.styleType);
+
 		if(viewAStyleForm.styleType==="float"  || viewAStyleForm.styleType==="int" ){
 
 			var margin = 0;
@@ -819,8 +825,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
 
-			console.log(viewAStyleForm.scaleRange);
-			metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin, viewAStyleForm.scaleRange);
+			viewAStyleForm.graphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin, viewAStyleForm.scaleRange);
 
 			svg.on("click", function(){
 				var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
@@ -839,9 +844,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			var height = 50;
 			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
 
-			var colorButton = header.lookupReference('colorButton');
-
-			console.log(viewAStyleForm.scaleRange);
 			viewAStyleForm.graphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, viewAStyleForm.scaleRange);
 
 			svg.on("click", function(){

@@ -26,6 +26,11 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
                 var vizLoadMenu = view.lookupReference('vizLoadMenuID');
                 var searchNode = view.lookupReference('searchNode');
 
+				Ext.getCmp("allStylesForm").query("allStylesByTypeForm").forEach(function (allStylesByTypeForm) {
+						allStylesByTypeForm.lookupReference('captiontoolbar').enable();
+				});
+
+
 				if(searchNode!=undefined)
 				{
 					searchNode.setDisabled(false);

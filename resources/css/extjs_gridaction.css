@@ -208,6 +208,20 @@ p {
     background-repeat: no-repeat;
 }
 
+.saveStyle {
+    background-image:url(../icons/saveStyle.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
+.importStyle {
+    background-image:url(../icons/importStyle.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
 .cart {
     background-image:url(../icons/cart.png);
 }
@@ -890,4 +904,12 @@ p {
 
 .aStyleFormButton.x-unselectable.x-item-disabled.x-btn-disabled{
  pointer-events: all;
+}
+
+.captiontoolbar {
+    padding: 0px 0px 0px 0px;
+    background: #eee;
+}
+.captiontoolbar .x-box-inner{
+    top: -1px;
 }

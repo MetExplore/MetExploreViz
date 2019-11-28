@@ -1723,6 +1723,98 @@ clone.setAttribute("version", "1.1");
 		}
 	},
 
+	/*****************************************************
+	* Save nodes coordinates
+    */
+	saveScaleRange : function(scaleRange, all) {
+		console.log("saveScaleRange");
+		var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+
+	        metExploreD3.deferFunction(function() {
+
+				console.log(scaleRange);
+				//
+				// var networkJSON ="{";
+			   //  var session = _metExploreViz.getSessionById('viz');
+               //  session.getD3Data().initNodeIndex();
+			   //
+			   //
+				// networkJSON+="\"nodes\":[" ;
+			   //
+			   // /**************
+			   // * Saving nodes
+			   // */
+			   // session.getD3Data().getNodes()
+				//    .filter(function (node) {
+               //         return !node.getIsSideCompound();
+               //     })
+				//    .forEach(function(node, index){
+               //         	networkJSON+="{";
+				// 	    if(node.dbIdentifier!==undefined) networkJSON+="\"dbIdentifier\":"+JSON.stringify(node.getDbIdentifier())+",";
+				// 	    if(node.x!==undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
+				// 		if(node.y!==undefined) networkJSON+="\"y\":"+JSON.stringify(node.y)+",";
+				// 		if(node.px!==undefined) networkJSON+="\"px\":"+JSON.stringify(node.px)+",";
+				// 		if(node.py!==undefined) networkJSON+="\"py\":"+JSON.stringify(node.py);
+				// 		networkJSON+="}";
+			   //
+				// 		if(index !== session.getD3Data().getNodes().length-1)
+				// 			networkJSON+=",";
+				//    }
+               // );
+			   //
+				// networkJSON+="]}";
+				var scaleRangeString = JSON.stringify(scaleRange);
+			    // console.log(networkJSON);
+			    // console.log(JSON.parse(networkJSON));
+				var blob = new Blob([scaleRangeString], {type: "text/json"}); // pass a useful mime type here
+				var url = URL.createObjectURL(blob);
+				// var url = 'data:text/json;charset=utf8,' + encodeURIComponent(networkJSON);
+				var link = document.createElement('a');
+				if (typeof link.download === 'string') {
+				    link.href = url;
+
+
+				    var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1; //January is 0!
+					var yyyy = today.getFullYear();
+
+					if(dd<10) {
+					    dd='0'+dd
+					}
+
+					if(mm<10) {
+					    mm='0'+mm
+					}
+
+					today = mm+'-'+dd+'-'+yyyy;
+
+					if(all)
+						link.download = "MetExploreVizAllScales_"+today+".json";
+					else link.download = "MetExploreVizStyleScale_"+today+".json";
+
+
+				    //Firefox requires the link to be in the body
+				    document.body.appendChild(link);
+
+				    //simulate click
+				    link.click();
+
+				    //remove the link when done
+				    document.body.removeChild(link);
+				}
+				else {
+				    window.open(uri);
+				}
+				metExploreD3.hideMask(myMask);
+
+	        }, 100);
+		}
+	},
+
 	saveNetworkGml : function() {
 		var myMask = metExploreD3.createLoadMask("Export GML file...", 'viz');
 		if(myMask!==undefined){

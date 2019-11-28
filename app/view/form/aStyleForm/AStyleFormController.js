@@ -58,9 +58,13 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
 		if(activeSession) {
 
-			var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
-				return activeSession.getD3Data().getNodeById(nodeId);
-			});
+			var mapNodes = activeSession.getSelectedNodes()
+				.map(function (nodeId) {
+					return activeSession.getD3Data().getNodeById(nodeId);
+				})
+				.filter(function (n) {
+					return n!==undefined
+				});
 
 			var selectedNodes = mapNodes.filter(function (node) {
 				return node.getBiologicalType()===view.biologicalType;
@@ -158,13 +162,17 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			var width = 190;
 			var height = 50;
 
-			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+			var svg = d3.select(view.lookupReference('selectConditionForm').lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+			svg.selectAll("*").remove();
 
-			metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin);
+			svg = d3.select(view.lookupReference('selectConditionForm').lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+
+			view.graphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin, view.scaleRange);
 
 			svg.on("click", function(){
 				var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
-					height : 300
+					height : 300,
+					aStyleFormParent : view
 				});
 
 				win.show();
@@ -202,9 +210,8 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		var view = me.getView();
 
 		if(view.styleType==="float"  || view.styleType==="int" ){
-
-			var margin = 0;
-
+			var conditionName = view.lookupReference('selectConditionForm').lookupReference('selectCondition').getValue();
+			metExploreD3.GraphMapping.graphMappingContinuousData(conditionName, view);
 		}
 
 		if(view.styleType==="color"){
@@ -252,11 +259,12 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
 
-			metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin);
+			view.graphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin, view.scaleRange);
 
 			svg.on("click", function(){
 				var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
-					height : 300
+					height : 300,
+					aStyleFormParent : view
 				});
 
 				win.show();
@@ -578,6 +586,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 	},
 	addValueMapping : function(n, c){
 		var view = this.getView();
+		if(!view.valueMappings) view.valueMappings = [];
 		view.valueMappings.push(new ValueMapping(n,c));
 	}
 });

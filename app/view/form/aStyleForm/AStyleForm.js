@@ -13,7 +13,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
     margin :'0 0 5 0',
     flex:0,
     border:false,
-    autoScroll:true,
+    scrollable:true,
     cls: "aStyleForm",
     layout: {
         type: 'vbox'

@@ -263,6 +263,14 @@ NodeData.prototype = {
         });
         return themappingData;
     },
+    getMappingDataByName : function(name){
+        var themappingData = null;
+        this.mappingDatas.forEach(function(aMappingData){
+            if(aMappingData.getMappingName()==name)
+                themappingData = aMappingData;
+        });
+        return themappingData;
+    },
     setMappingDataByNameAndCond : function(name, cond, val){
         var themappingData = null;
         this.mappingDatas.forEach(function(aMappingData){            

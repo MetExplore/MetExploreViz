@@ -22,7 +22,8 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
 
 		view.on({
 			afterrender : function(that){
-
+console.log(view);
+console.log(view.aStyleFormParent);
 				var width = 450;
 				var height = 85;
 
@@ -32,21 +33,15 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
 				var numberButton = view.lookupReference('numberButton');
 				var delButton = view.lookupReference('delButton');
 				var textfieldValue = view.lookupReference('textfieldValue');
-				var numberButtonEl = numberButton.getEl().dom.querySelector("#html5numberpicker");
 
 				view.aStyleFormParent.graphNumberScaleEditor.createNumberScaleEditor(
 					svg,
 					width,
 					height,
-					numberButtonEl,
+					numberButton,
 					textfieldValue,
 					delButton,
 					view.aStyleFormParent.scaleRange);
-
-				numberButtonEl
-					.addEventListener("change", function (evt) {
-						view.aStyleFormParent.graphNumberScaleEditor.updateNumber(evt.target.value, svg);
-					});
 			}
 		});
 
@@ -75,7 +70,32 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
 					}
 					else
 					{
-						view.aStyleFormParent.graphNumberScaleEditor.updateValues(value);
+						view.aStyleFormParent.graphNumberScaleEditor.updateValue(value);
+					}
+				}
+			}
+		});
+
+		view.lookupReference('numberButton').on({
+			focusleave : function(that){
+
+				var value =parseFloat(that.getRawValue());
+
+				if(value==="< min" || value==="> max")
+					that.disable();
+				else
+				{
+					that.enable();
+					if(isNaN(parseFloat(value))){
+						Ext.Msg.show({
+							title:'Warning',
+							msg: "Please enter a number.",
+							icon: Ext.Msg.WARNING
+						});
+					}
+					else
+					{
+						view.aStyleFormParent.graphNumberScaleEditor.updateSize(value);
 					}
 				}
 			}

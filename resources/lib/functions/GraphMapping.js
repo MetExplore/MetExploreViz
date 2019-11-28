@@ -1057,6 +1057,99 @@ metExploreD3.GraphMapping = {
 	* maped and will color them in a calculated color
 	* @param {} conditionName : Condition choosed by the user
 	*/
+	graphMappingAsSelectionData : function(condition, aStyleFormParent, func) {
+		var  mappingName = condition.split("_")[0];
+		var  conditionName = condition.split("_")[1];
+		metExploreD3.onloadMapping(mappingName, function(){
+
+			var mapping = _metExploreViz.getMappingByName(mappingName);
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			if(myMask!= undefined){
+
+				metExploreD3.showMask(myMask);
+		        setTimeout(
+					function() {
+						try {
+							var session = _metExploreViz.getSessionById('viz');
+							var force = session.getForce();
+							force.stop();
+
+							var nodes = session.getD3Data().getNodes();
+
+							var nodeMapped = nodes.filter(function (node) {
+								var mapNode = node.getMappingDataByName(mappingName);
+								if (mapNode != null) {
+									return true;
+								}
+								return false;
+							});
+
+							if(aStyleFormParent.styleType==="float"  || aStyleFormParent.styleType==="int" ) {
+
+								var medium = (aStyleFormParent.min + aStyleFormParent.max)/2;
+								aStyleFormParent.getController().addValueMapping("Identified", medium);
+								metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", medium)
+							}
+							if(aStyleFormParent.styleType==="color" ) {
+								aStyleFormParent.getController().resetValueMapping();
+
+								var color = aStyleFormParent.max;
+
+								aStyleFormParent.getController().addValueMapping("Identified", color);
+								metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color)
+							}
+
+
+							metExploreD3.hideMask(myMask);
+
+							if (nodeMapped.length !== 0){
+
+								if (func !== undefined) {
+									func()
+								}
+
+								aStyleFormParent.lookupReference("selectConditionForm").fireEvent("afterDiscreteMapping", 'discrete');
+							}
+							else
+								metExploreD3.displayMessage("Warning", 'No mapped node on network.');
+
+							var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+							if (anim == 'true') {
+								var session = _metExploreViz.getSessionById('viz');
+								var force = session.getForce();
+
+								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+									force.alpha(1).restart();
+								}
+							}
+						}
+						catch (e) {
+							e.functionUsed="graphMappingDiscreteData";
+							metExploreD3.hideMask(myMask);
+
+							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							if (anim=='true') {
+								var session = _metExploreViz.getSessionById('viz');
+								var force = session.getForce();
+
+								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+									force.alpha(1).restart();
+								}
+							}
+							throw e;
+						}
+			   		}, 1
+			   	);
+			}
+		});
+	},
+
+	/***********************************************
+	* Mapping to discrete data
+	* This function will look at metabolites that have data
+	* maped and will color them in a calculated color
+	* @param {} conditionName : Condition choosed by the user
+	*/
 	graphMappingDiscreteDataOld : function(mappingName, conditionName, func) {
 
 		metExploreD3.onloadMapping(mappingName, function(){
@@ -1498,7 +1591,7 @@ metExploreD3.GraphMapping = {
 											return sr.value;
 										});
 								}
-console.log(aStyleFormParent.scaleRange );
+
                                 var linearScale = d3.scaleLinear().range(rangeCaption).domain(domainCaption);
 
                                 metExploreD3.GraphStyleEdition.setCollectionStyleContinuousMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, linearScale);

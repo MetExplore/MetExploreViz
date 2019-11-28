@@ -51,8 +51,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 		title:'Styles',
 		id:'allStylesForm',
 		xtype:'allStylesForm'
-	}
-	,
+	},
 	{
 		title:'Pathways',
 		id:'captionFormPathways',

@@ -32,7 +32,7 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 				attrType: styleBar.attrType,
 				target: styleBar.target
 			});
-			view.add(myPanel);
+			view.lookupReference("listPanel").add(myPanel);
 		});
 
 		view.on(
@@ -48,7 +48,8 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 		var view = me.getView();
 		if(view)
 		{
-			var parentElement = view.el.dom;;
+			console.log(view.lookupReference("caption"));
+			var parentElement = view.lookupReference("caption").el.dom;
 			// Obtenir une référence au premier enfant
 			var theFirstChild = parentElement.firstChild;
 
@@ -89,7 +90,8 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 				.attr("transform","translate(106, 22) rotate(-35)")
 				.style("text-anchor","middle")
 				.style("fill", "#ffffff");
-
+		console.log(me);
+		console.log(view);
 		}
 	},
     updateForm : function(){
