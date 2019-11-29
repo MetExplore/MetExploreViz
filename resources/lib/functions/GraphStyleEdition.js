@@ -564,16 +564,28 @@ metExploreD3.GraphStyleEdition = {
 
                 if(selectedNodesId.length>0){
                     var selection;
-                    selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
-                        .filter(function (d) {
-                            return d.getBiologicalType() === biologicalType;
-                        })
-                        .filter(function (d) {
-                            return selectedNodesId.includes(d.getId());
-                        });
+                    if (biologicalType === "link"){
+                        selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                            .filter(function (d) {
+                                    var reaction = d.getReaction();
+                                    if(reaction)
+                                        return selectedNodesId.includes(reaction.getId());
+                                    return false;
+                            });
+                    }
+                    else
+                    {
+                        selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                            .filter(function (d) {
+                                return d.getBiologicalType() === biologicalType;
+                            })
+                            .filter(function (d) {
+                                return selectedNodesId.includes(d.getId());
+                            });
+                    }
 
-                    if (biologicalType === "link")
-                        selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+
 
                     var targetSelection = selection.selectAll(target);
                     targetSelection[attrType](attrName, value);
@@ -593,17 +605,26 @@ metExploreD3.GraphStyleEdition = {
             targetSet.forEach(function setStyles(target) {
 
                 var selection;
-                selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
-                    .filter(function (d) {
-                        return d.getBiologicalType() === biologicalType;
-                    })
+                if(aStyleFormParent.biologicalType==="link"){
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                        .filter(function (d) {
+                            return d.getBiologicalType() === biologicalType;
+                        });
+                }
+                else {
+                    selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                        .filter(function (d) {
+                            return d.getBiologicalType() === biologicalType;
+                        });
+                }
+                selection = selection
                     .filter(function (d) {
 
                         var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
 
-                        if(map!==null){
+                        if (map !== null) {
 
-                            if(map.getMapValue()===valueMapping)
+                            if (map.getMapValue() === valueMapping)
                                 return true;
                             else
                                 return false;
@@ -611,8 +632,6 @@ metExploreD3.GraphStyleEdition = {
                         return false;
                     });
 
-                if (biologicalType === "link")
-                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
                 var targetSelection = selection.selectAll(target);
 
@@ -632,22 +651,28 @@ metExploreD3.GraphStyleEdition = {
             targetSet.forEach(function setStyles(target) {
 
                 var selection;
-                selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
-                    .filter(function (d) {
-                        return d.getBiologicalType() === biologicalType;
-                    })
+                if(aStyleFormParent.biologicalType==="link"){
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                        .filter(function (d) {
+                            return d.getBiologicalType() === biologicalType;
+                        });
+                }
+                else {
+                    selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                        .filter(function (d) {
+                            return d.getBiologicalType() === biologicalType;
+                        });
+                }
+                selection = selection
                     .filter(function (d) {
 
                         var map = d.getMappingDataByName(mappingName);
 
-                        if(map!==null){
+                        if(map !== null) {
                             return true;
                         }
                         return false;
                     });
-
-                if (biologicalType === "link")
-                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
                 var targetSelection = selection.selectAll(target);
 
@@ -667,23 +692,29 @@ metExploreD3.GraphStyleEdition = {
             targetSet.forEach(function setStyles(target) {
 
                 var selection;
-                selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
-                    .filter(function (d) {
-                        return d.getBiologicalType() === biologicalType;
-                    })
+                if(aStyleFormParent.biologicalType==="link"){
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                        .filter(function (d) {
+                            return d.getBiologicalType() === biologicalType;
+                        });
+                }
+                else {
+                    selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                        .filter(function (d) {
+                            return d.getBiologicalType() === biologicalType;
+                        });
+                }
+
+                selection = selection
                     .filter(function (d) {
 
                         var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
 
-                        if(map!==null)
+                        if(map !== null) {
                             return true;
-
+                        }
                         return false;
                     });
-
-                console.log(selection);
-                if (biologicalType === "link")
-                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
                 var targetSelection = selection.selectAll(target);
 
@@ -718,17 +749,27 @@ metExploreD3.GraphStyleEdition = {
             }).map(function (node) {
                 return node.getId();
             });
-            var selection;
-            selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
-                .filter(function (d) {
-                    return d.getBiologicalType() === biologicalType;
-                })
-                .filter(function (d) {
-                    return selectedNodesId.includes(d.getId());
-                });
 
-            if (biologicalType === "link")
-                selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+            var selection;
+            if (biologicalType === "link"){
+                selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                    .filter(function (d) {
+                        var reaction = d.getReaction();
+                        if(reaction)
+                            return selectedNodesId.includes(reaction.getId());
+                        return false;
+                    });
+            }
+            else
+            {
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                    .filter(function (d) {
+                        return d.getBiologicalType() === biologicalType;
+                    })
+                    .filter(function (d) {
+                        return selectedNodesId.includes(d.getId());
+                    });
+            }
 
             if(selectedNodesId.length>0){
                 targetSet.forEach(function setStyles(target) {
@@ -741,6 +782,12 @@ metExploreD3.GraphStyleEdition = {
                             arrBypass.push(d3.select(this)[attrType](attrName));
                         });
 
+                    function(value, index, self) {
+                        return self
+                            .findIndex(
+                                function(link){return link.getId()===value.getId();}
+                            ) === index;
+                    }
                     valuesBypassed = [...new Set(arrBypass)];
 
                     selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")")

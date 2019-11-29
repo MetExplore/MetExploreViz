@@ -82,8 +82,8 @@ metExploreD3.GraphMapping = {
 					var conditions = mapping.getConditions().filter(function (c) {
 						return c !== "PathwayCoverage" && c !== "PathwayEnrichment"
 					});
-					var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 					var node = undefined;
+					var links = undefined;
 					switch (mapping.getTargetLabel()) {
 						case "reactionDBIdentifier":
 							for (var i = conditions.length - 1; i >= 0; i--) {
@@ -94,10 +94,15 @@ metExploreD3.GraphMapping = {
 									if (node != undefined) {
 										var mapNode = new MappingData(node, mapping.getName(), conditions[i], obj[conditions[i]]);
 										node.addMappingData(mapNode);
+
+										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+										links.forEach(function (link) {
+											link.addMappingData(mapNode);
+										})
 									}
 								});
 							}
-							;
+
 							break;
 						case "reactionId":
 							for (var i = conditions.length - 1; i >= 0; i--) {
@@ -108,10 +113,15 @@ metExploreD3.GraphMapping = {
 									if (node != undefined) {
 										var mapNode = new MappingData(node, mapping.getName(), conditions[i], obj[conditions[i]]);
 										node.addMappingData(mapNode);
+
+										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+										links.forEach(function (link) {
+											link.addMappingData(mapNode);
+										})
 									}
 								});
 							}
-							;
+
 							break;
 						case "metaboliteId":
 							for (var i = conditions.length - 1; i >= 0; i--) {
@@ -125,7 +135,7 @@ metExploreD3.GraphMapping = {
 									}
 								});
 							}
-							;
+
 							break;
 						case "metaboliteDBIdentifier":
 							for (var i = conditions.length - 1; i >= 0; i--) {
@@ -223,6 +233,11 @@ metExploreD3.GraphMapping = {
 									if (node != undefined) {
 										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
 										node.addMappingData(mapNode);
+
+										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+										links.forEach(function (link) {
+											link.addMappingData(mapNode);
+										})
 									}
 								});
 							}
@@ -237,6 +252,12 @@ metExploreD3.GraphMapping = {
 									if (node != undefined) {
 										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
 										node.addMappingData(mapNode);
+
+
+										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+										links.forEach(function (link) {
+											link.addMappingData(mapNode);
+										})
 									}
 								});
 							}
@@ -903,9 +924,9 @@ metExploreD3.GraphMapping = {
 							var session = _metExploreViz.getSessionById('viz');
 							var force = session.getForce();
 							force.stop();
-							var nodes = session.getD3Data().getNodes();
-
 							var values = [];
+
+							var nodes = session.getD3Data().getNodes();
 
 							nodes.forEach(function (node) {
 								var mapNode = node.getMappingDataByNameAndCond(mappingName, conditionName);
