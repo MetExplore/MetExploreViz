@@ -932,13 +932,14 @@ metExploreD3.GraphPanel = {
 
 			var networkData = new NetworkData('viz');
 			networkData.cloneObject(jsonParsed);
-
+			var metaboliteStyle = networkVizSession.getMetaboliteStyle();
+			var reactionStyle = networkVizSession.getReactionStyle();
 			var nodes = networkData.getNodes();
 			nodes.forEach(function(node){
 				if(node.getBiologicalType()=="metabolite")
 				{
 					if(node.svgWidth==="0" || node.svgWidth===undefined)
-						node.svgWidth= metaboliteStyle.getWitdh();
+						node.svgWidth= metaboliteStyle.getWidth();
 
 					if(node.svgHeight==="0" || node.svgHeight===undefined)
 						node.svgHeight= metaboliteStyle.getHeight();
