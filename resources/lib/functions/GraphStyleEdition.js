@@ -782,12 +782,6 @@ metExploreD3.GraphStyleEdition = {
                             arrBypass.push(d3.select(this)[attrType](attrName));
                         });
 
-                    function(value, index, self) {
-                        return self
-                            .findIndex(
-                                function(link){return link.getId()===value.getId();}
-                            ) === index;
-                    }
                     valuesBypassed = [...new Set(arrBypass)];
 
                     selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")")
