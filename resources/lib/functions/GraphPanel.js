@@ -932,8 +932,10 @@ metExploreD3.GraphPanel = {
 
 			var networkData = new NetworkData('viz');
 			networkData.cloneObject(jsonParsed);
-			var metaboliteStyle = networkVizSession.getMetaboliteStyle();
-			var reactionStyle = networkVizSession.getReactionStyle();
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			console.log(metaboliteStyle);
+			console.log(reactionStyle);
 			var nodes = networkData.getNodes();
 			nodes.forEach(function(node){
 				if(node.getBiologicalType()=="metabolite")
