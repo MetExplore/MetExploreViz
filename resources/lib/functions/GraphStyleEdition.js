@@ -605,7 +605,7 @@ metExploreD3.GraphStyleEdition = {
             targetSet.forEach(function setStyles(target) {
 
                 var selection;
-                if(aStyleFormParent.biologicalType==="link"){
+                if(biologicalType==="link"){
                     selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
                         .filter(function (d) {
                             return d.getBiologicalType() === biologicalType;
@@ -651,7 +651,7 @@ metExploreD3.GraphStyleEdition = {
             targetSet.forEach(function setStyles(target) {
 
                 var selection;
-                if(aStyleFormParent.biologicalType==="link"){
+                if(biologicalType==="link"){
                     selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
                         .filter(function (d) {
                             return d.getBiologicalType() === biologicalType;
@@ -692,7 +692,7 @@ metExploreD3.GraphStyleEdition = {
             targetSet.forEach(function setStyles(target) {
 
                 var selection;
-                if(aStyleFormParent.biologicalType==="link"){
+                if(biologicalType==="link"){
                     selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
                         .filter(function (d) {
                             return d.getBiologicalType() === biologicalType;

@@ -952,7 +952,7 @@ metExploreD3.GraphPanel = {
 				{
 					if(node.getBiologicalType()==="reaction"){
 						if(node.svgWidth==="0" || node.svgWidth===undefined)
-							node.svgWidth= reactionStyle.getWitdh();
+							node.svgWidth= reactionStyle.getWidth();
 
 						if(node.svgHeight==="0" || node.svgHeight===undefined)
 							node.svgHeight= reactionStyle.getHeight();
