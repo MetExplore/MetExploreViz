@@ -809,8 +809,9 @@ metExploreD3.GraphPanel = {
 
 					if(sessions[key].duplicatedNodes)
 					{
+						console.log(sessions[key]);
 						sessions[key].duplicatedNodes.filter(metExploreD3.GraphUtils.onlyUnique).forEach(function(nodeId){
-							var nodeSC = sessions[key].getD3Data().getNodeById();
+							var nodeSC = networkVizSession.getD3Data().getNodeById(nodeId);
 							metExploreD3.fireEventParentWebSite("sideCompound", nodeSC);
 						});
 					}
@@ -833,10 +834,6 @@ metExploreD3.GraphPanel = {
 				                metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", false);
 			                	metExploreD3.fireEventArg('selectConditionForm', "closeMapping", _metExploreViz.getActiveMapping);
 				                _metExploreViz.resetMappings();
-			                	// metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", false);
-			                	// metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", false);
-			                	// metExploreD3.fireEvent('selectMappingVisu', "resetMapping");
-			                	// _metExploreViz.resetMappings();
 			                }
 			           });
 
