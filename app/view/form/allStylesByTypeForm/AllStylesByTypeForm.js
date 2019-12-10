@@ -42,12 +42,18 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm', {
                     buttonOnly: true,
                     buttonText: '',
                     scale   : 'small',
+                    margin:'5 0 5 0',
+                    style:{
+                        width: "40px !important"
+                    },
                     buttonConfig: {
                         cls:["x-toolbar-item","x-btn-default-toolbar-small"],
                         iconCls:'importStyle',
                         align:"right",
                         scale   : 'small',
-                        margin:'0 5 0 0'
+                        style:{
+                            margin:'0 5px 0 0'
+                        }
                     }
                 }
             ]

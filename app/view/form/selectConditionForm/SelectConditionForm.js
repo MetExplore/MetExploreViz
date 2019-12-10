@@ -58,7 +58,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
         region:'north',
         hidden:true,
         margins:'0 0 0 0',
-        border:false,
         bbar: [
             '->',//spliter to shift next component up to end of right
             {
@@ -76,15 +75,20 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
                 buttonText: '',
                 iconCls:'save',
                 scale   : 'small',
-                margin:'5 5 5 0',
+                margin:'5 0 5 0',
                 maxHeight:"50px",
                 maxWidth:"50px",
+                style:{
+                    width: "40px !important"
+                },
                 buttonConfig: {
                     cls:["x-toolbar-item","x-btn-default-toolbar-small"],
                     iconCls:'save',
                     align:"right",
                     scale   : 'small',
-                    margin:'5 5 5 0'
+                    style:{
+                        margin:'0 5px 0 0'
+                    }
                 },
                 reference: 'importScale'
             },
