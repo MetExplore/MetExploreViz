@@ -36,7 +36,7 @@ metExploreD3.GraphUtils = {
 	onlyUnique : function(value, index, self) {
 		return self
 			.findIndex(
-				function(link){return link.getId()===value.getId();}
+				function(x){return x===value;}
 			) === index;
 	},
 
