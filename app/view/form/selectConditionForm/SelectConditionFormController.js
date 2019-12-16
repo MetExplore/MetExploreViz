@@ -80,7 +80,17 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		view.lookupReference('saveScale').on({
 			click : function(){
 				var viewAStyleForm = me.getAStyleFormParent();
-				metExploreD3.GraphUtils.saveScaleRange(viewAStyleForm.scaleRange);
+
+				var dataType = view.lookupReference('selectConditionType').getValue();
+
+				if(dataType==="Continuous"){
+					metExploreD3.GraphUtils.saveStyles(viewAStyleForm.scaleRange);
+				}
+
+				if(dataType==="Discrete" || dataType==="As selection" || dataType==="Alias"){
+					metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueMappings);
+				}
+
 			},
 			scope:me
 		});
@@ -88,11 +98,26 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		view.lookupReference('importScale').on({
 			change:function(){
 				metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importScale').fileInputEl.dom, function(json){
-					// Allows to reload the same file
 					var viewAStyleForm = me.getAStyleFormParent();
-					viewAStyleForm.scaleRange = metExploreD3.GraphUtils.decodeJSON(json);
-					viewAStyleForm.getController().updateContinuousCaption();
-					viewAStyleForm.getController().updateContinuousMapping();
+
+					var dataType = view.lookupReference('selectConditionType').getValue();
+
+					if(dataType==="Continuous"){
+						// Allows to reload the same file
+						var viewAStyleForm = me.getAStyleFormParent();
+						viewAStyleForm.scaleRange = metExploreD3.GraphUtils.decodeJSON(json);
+						viewAStyleForm.getController().updateContinuousCaption();
+						viewAStyleForm.getController().updateContinuousMapping();
+					}
+
+					if(dataType==="Discrete" || dataType==="As selection" || dataType==="Alias"){
+						// Allows to reload the same file
+						var viewAStyleForm = me.getAStyleFormParent();
+						viewAStyleForm.scaleRange = metExploreD3.GraphUtils.decodeJSON(json);
+						viewAStyleForm.getController().updateContinuousCaption();
+						viewAStyleForm.getController().updateContinuousMapping();
+					}
+
 				});
 			},
 			scope:me

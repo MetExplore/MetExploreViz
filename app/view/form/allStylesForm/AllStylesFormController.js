@@ -57,7 +57,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
             scales = scales.concat(partOfAllScales);
         });
 
-        metExploreD3.GraphUtils.saveScaleRange(scales, true);
+        metExploreD3.GraphUtils.saveStyles(scales, true);
     },
     importAllScales:function () {
         var me 		= this,
