@@ -1104,15 +1104,16 @@ metExploreD3.GraphMapping = {
 								}
 								return false;
 							});
+							aStyleFormParent.getController().resetValueMapping();
 
 							if(aStyleFormParent.styleType==="float"  || aStyleFormParent.styleType==="int" ) {
 
 								var medium = (aStyleFormParent.min + aStyleFormParent.max)/2;
 								aStyleFormParent.getController().addValueMapping("Identified", medium);
 								metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", medium)
+
 							}
 							if(aStyleFormParent.styleType==="color" ) {
-								aStyleFormParent.getController().resetValueMapping();
 
 								var color = aStyleFormParent.max;
 

@@ -160,7 +160,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 					if(session.getMappingDataType()==="Continuous"){
 						var colorStore = aStyleFormParent.getController().getValueMappingsSet();
 				        var newColor = aStyleFormParent.getController().getValueMappingsSetLength()===0;
-				        
+
 				        if(!newColor){
 				        	colorStore = [];
 				        }
@@ -262,7 +262,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				container = Ext.getCmp('panel'+session.isMapped()[0].replace(me.regexpPanel, ""));
 			else
 				container = Ext.getCmp('panel'+session.isMapped().replace(me.regexpPanel, ""));
-			
+
 			if(container){
 				container.close();
 				var colorStore = aStyleFormParent.getController().getValueMappingsSet();
@@ -275,7 +275,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				if(Ext.getCmp("selectConditionForm").down("#undefined"))
 					Ext.getCmp("selectConditionForm").down("#undefined").close();
 			}
-			
+
 			session.setMapped('false');
 
 			var comboCond = Ext.getCmp('selectCondition');
@@ -287,12 +287,12 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	        storeCond.loadData(record, false);
 
 			var selectConditionType = Ext.getCmp('selectConditionType');
-			
+
 			comboCond.clearValue();
 			comboCond.setDisabled(true);
 
 			selectConditionType.setDisabled(true);
-	 			
+
         	var comboMapping = Ext.getCmp('selectMappingVisu');
 			var store = comboMapping.getStore();
             var records = [];
@@ -472,6 +472,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
         if(type!=="suggestion"){
             networkVizSession.setMapped(selectedCondition);
             colorStore = aStyleFormParent.getController().getValueMappingsSet();
+
         }
         else {
             colorStore = networkVizSession.getColorSuggestionsSet();
