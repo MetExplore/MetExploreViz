@@ -105,8 +105,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			this.getView().lookupReference('makeClusters').setText("Make clusters");
 		}
 		var session = _metExploreViz.getSessionById('viz');
-		if((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true') 
-							|| (metExploreD3.GraphNetwork.isAnimated(session.getId())  == null))
+		if(metExploreD3.GraphNetwork.isAnimated(session.getId()))
 			session.getForce().restart();
 		
 	},

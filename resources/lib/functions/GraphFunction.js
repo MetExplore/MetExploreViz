@@ -1053,7 +1053,7 @@ metExploreD3.GraphFunction = {
 			var force = session.getForce();
 			if(force!=undefined)
 			{
-				if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
+				if(session.isAnimated('viz'))
 					force.stop();
 
 			}
@@ -1140,7 +1140,7 @@ metExploreD3.GraphFunction = {
 						{
 							if(force!=undefined)
 							{
-								if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+								if(session.isAnimated("viz"))
 									force.alpha(1).restart();
 							}
 						}
@@ -1152,7 +1152,7 @@ metExploreD3.GraphFunction = {
 						{
 							if(force!=undefined)
 							{
-								if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+								if(session.isAnimated("viz"))
 									force.alpha(1).restart();
 							}
 						}
@@ -1185,7 +1185,7 @@ metExploreD3.GraphFunction = {
 						var force = session.getForce();
 						if(force!=undefined)
 						{
-							if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
+							if(metExploreD3.GraphNetwork.isAnimated('viz'))
 								force.stop();
 
 						}
@@ -1378,7 +1378,7 @@ metExploreD3.GraphFunction = {
 					{
 						if(force!=undefined)
 						{
-							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+							if(session.isAnimated("viz"))
 								force.alpha(1).restart();
 						}
 					}
@@ -1390,7 +1390,7 @@ metExploreD3.GraphFunction = {
 					{
 						if(force!=undefined)
 						{
-							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+							if(session.isAnimated("viz")== true)
 								force.alpha(1).restart();
 						}
 					}

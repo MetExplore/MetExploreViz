@@ -329,10 +329,30 @@ p {
 }
 
 .link {
-       background-image: url(../icons/link.svg);
+    background-image: url(../icons/link.svg);
     background-size: 100% 100%;
-  background-position: 0% 0%;
-  background-repeat: no-repeat;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.edgesSelection {
+    background-image: url(../icons/edges.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
+.metaboliteSelection {
+    background-image: url(../icons/metaboliteSelection.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
+.reactionSelection {
+    background-image: url(../icons/reactionSelection.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
 }
 
 .importToRsx {
@@ -555,19 +575,19 @@ p {
     background-image: url(../icons/delete.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
 }
 .duplicate-sideCompounds{
     background-image: url(../icons/duplicateSideCompounds.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
 }
 .neighbours{
     background-image: url(../icons/neighbours.png);
     background-size: 100% 100%;
   background-position: 0% 0%;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
 }
 .removeMetabolites {
     background-image: url(../icons/removeMetabolites.svg);
@@ -577,6 +597,18 @@ p {
 }
 .subnetwork {
     background-image: url(../icons/subnetwork.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.play {
+    background-image: url(../icons/play.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.pause {
+    background-image: url(../icons/pause.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
@@ -689,17 +721,17 @@ p {
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
-} 
+}
 .color {
 	background-image: url(../icons/color.png);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
-}	
+}
 .colorMapped {
 	background-color:#FFFFF0;
 	color:#CC3300;
-}	
+}
 .colorTransparent {
 	background-color:#FFFFF0;
 }
@@ -838,7 +870,7 @@ p {
 
   width: auto !important;
 
-} 
+}
 
 .font12 {
 	font-size: 12pt;
@@ -912,4 +944,40 @@ p {
 }
 .captiontoolbar .x-box-inner{
     top: -1px;
+}
+
+#viz .x-toolbar{
+    background-color: #14477887;;
+}
+#viz .x-btn{
+    background-color: white;
+}
+
+#viz .x-toolbar-default{
+    padding: 0px 0 0px 8px;
+}
+
+
+#viz .x-focus {
+    margin: 0px 5px 0px 0px;
+    border-color: rgb(170, 170, 170);
+    background-color: white;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+#viz .focus{
+    background-color: rgb(170, 170, 170) !important;
+    border-color: rgb(170, 170, 170);
+    -webkit-box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
+    box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
+}
+
+#viz .x-btn-over{
+    background-color: rgb(170, 170, 170) !important;
+    border-color: rgb(170, 170, 170);
+}
+
+#viz .x-unselectable.x-item-disabled.x-btn-disabled{
+    pointer-events: all;
 }

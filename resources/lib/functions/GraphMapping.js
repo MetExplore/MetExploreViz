@@ -173,11 +173,11 @@ metExploreD3.GraphMapping = {
 
 					metExploreD3.hideMask(myMask);
 
-					var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+					var anim = session.isAnimated("viz");
 					if (anim == 'true') {
 						var force = session.getForce();
 
-						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+						if (metExploreD3.GraphNetwork.animation) {
 							force.alpha(1).restart();
 						}
 					}
@@ -186,12 +186,12 @@ metExploreD3.GraphMapping = {
 
 					e.functionUsed="mapNodeDataFile";
 					metExploreD3.hideMask(myMask);
-					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+					var anim=session.isAnimated("viz");
 					if (anim=='true') {
 						var session = _metExploreViz.getSessionById('viz');
 						var force = session.getForce();
 
-						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+						if (metExploreD3.GraphNetwork.animation) {
 							force.alpha(1).restart();
 						}
 					}
@@ -301,11 +301,11 @@ metExploreD3.GraphMapping = {
 
 					metExploreD3.hideMask(myMask);
 
-					var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+					var anim = session.isAnimated("viz");
 					if (anim == 'true') {
 						var force = session.getForce();
 
-						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+						if (metExploreD3.GraphNetwork.animation) {
 							force.alpha(1).restart();
 						}
 					}
@@ -315,12 +315,12 @@ metExploreD3.GraphMapping = {
 					e.functionUsed="mapNodeData";
 					metExploreD3.hideMask(myMask);
 
-					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+					var anim=session.isAnimated("viz");
 					if (anim=='true') {
 						var session = _metExploreViz.getSessionById('viz');
 						var force = session.getForce();
 
-						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+						if (metExploreD3.GraphNetwork.animation) {
 							force.alpha(1).restart();
 						}
 					}
@@ -671,12 +671,12 @@ metExploreD3.GraphMapping = {
 							}
 
 
-							var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim = session.isAnimated("viz");
 							if (anim == 'true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -686,12 +686,12 @@ metExploreD3.GraphMapping = {
 							e.functionUsed="mapNodes";
 							metExploreD3.hideMask(myMask);
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -875,11 +875,11 @@ metExploreD3.GraphMapping = {
 
 					metExploreD3.hideMask(myMask);
 
-					var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+					var anim = session.isAnimated("viz");
 					if (anim == 'true') {
 						var force = session.getForce();
 
-						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+						if (metExploreD3.GraphNetwork.animation) {
 							force.alpha(1).restart();
 						}
 					}
@@ -888,12 +888,12 @@ metExploreD3.GraphMapping = {
 					e.functionUsed="reloadMapping";
 					metExploreD3.hideMask(myMask);
 
-					var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+					var anim=session.isAnimated("viz");
 					if (anim=='true') {
 						var session = _metExploreViz.getSessionById('viz');
 						var force = session.getForce();
 
-						if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+						if (metExploreD3.GraphNetwork.animation) {
 							force.alpha(1).restart();
 						}
 					}
@@ -1041,12 +1041,12 @@ metExploreD3.GraphMapping = {
 							else
 								metExploreD3.displayMessage("Warning", 'No mapped node on network.');
 
-							var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim = session.isAnimated("viz");
 							if (anim == 'true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1055,12 +1055,12 @@ metExploreD3.GraphMapping = {
 							e.functionUsed="graphMappingDiscreteData";
 							metExploreD3.hideMask(myMask);
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1135,12 +1135,12 @@ metExploreD3.GraphMapping = {
 							else
 								metExploreD3.displayMessage("Warning", 'No mapped node on network.');
 
-							var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim = session.isAnimated("viz");
 							if (anim == 'true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1149,12 +1149,12 @@ metExploreD3.GraphMapping = {
 							e.functionUsed="graphMappingDiscreteData";
 							metExploreD3.hideMask(myMask);
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1305,12 +1305,12 @@ metExploreD3.GraphMapping = {
 							else
 								metExploreD3.displayMessage("Warning", 'No mapped node on network.');
 
-							var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim = session.isAnimated("viz");
 							if (anim == 'true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1319,12 +1319,12 @@ metExploreD3.GraphMapping = {
 							e.functionUsed="graphMappingDiscreteData";
 							metExploreD3.hideMask(myMask);
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1631,12 +1631,12 @@ metExploreD3.GraphMapping = {
 
 							}
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1645,12 +1645,12 @@ metExploreD3.GraphMapping = {
 							e.functionUsed="graphMappingContinuousData";
 							metExploreD3.hideMask(myMask);
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1834,12 +1834,12 @@ metExploreD3.GraphMapping = {
 
 							}
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1917,12 +1917,12 @@ metExploreD3.GraphMapping = {
 							e.functionUsed="graphMappingContinuousData";
 							metExploreD3.hideMask(myMask);
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var session = _metExploreViz.getSessionById('viz');
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -1965,13 +1965,13 @@ metExploreD3.GraphMapping = {
 						metExploreD3.GraphMapping.fixMappingColorOnNode("#056da1", 1, conditionName);
 
 						metExploreD3.hideMask(myMask);
-						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+						var anim=session.isAnimated("viz");
 						if (anim=='true') {
 							var networkVizSessionStore = metExploreD3.getSessionsSet();
 							var session = metExploreD3.getSessionById(networkVizSessionStore, 'viz');
 							var force = session.getForce();
 
-							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+							if (metExploreD3.GraphNetwork.animation) {
 								force.alpha(1).restart();
 							}
 						}
@@ -1980,12 +1980,12 @@ metExploreD3.GraphMapping = {
 						e.functionUsed="graphMappingBinary";
 						metExploreD3.hideMask(myMask);
 
-						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+						var anim=session.isAnimated("viz");
 						if (anim=='true') {
 							var session = _metExploreViz.getSessionById('viz');
 							var force = session.getForce();
 
-							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+							if (metExploreD3.GraphNetwork.animation) {
 								force.alpha(1).restart();
 							}
 						}
@@ -2090,12 +2090,12 @@ metExploreD3.GraphMapping = {
 						}
 
 						metExploreD3.hideMask(myMask);
-						var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+						var anim = session.isAnimated("viz");
 						if (anim == 'true') {
 							var session = _metExploreViz.getSessionById('viz');
 							var force = session.getForce();
 
-							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+							if (metExploreD3.GraphNetwork.animation) {
 								force.alpha(1).restart();
 							}
 						}
@@ -2104,12 +2104,12 @@ metExploreD3.GraphMapping = {
 						e.functionUsed="removeMappingSuggestion";
 						metExploreD3.hideMask(myMask);
 
-						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+						var anim=session.isAnimated("viz");
 						if (anim=='true') {
 							var session = _metExploreViz.getSessionById('viz');
 							var force = session.getForce();
 
-							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+							if (metExploreD3.GraphNetwork.animation) {
 								force.alpha(1).restart();
 							}
 						}
@@ -2351,12 +2351,12 @@ metExploreD3.GraphMapping = {
                                 metExploreD3.displayMessage("Warning", 'No mapped node on network.');
 						}
 
-						var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+						var anim=session.isAnimated("viz");
 						if (anim==='true') {
 							session = _metExploreViz.getSessionById('viz');
 							force = session.getForce();
 							
-							if ((d3.select("#viz").select("#D3viz").attr("animation") === 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+							if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 							}
 						}
@@ -2649,11 +2649,11 @@ metExploreD3.GraphMapping = {
 
 
 						metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
-						var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+						var anim = session.isAnimated("viz");
 						if (anim == 'true') {
 							var force = session.getForce();
 
-							if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz").attr("animation") == null)) {
+							if (metExploreD3.GraphNetwork.animation) {
 								force.alpha(1).restart();
 							}
 						}
@@ -2662,11 +2662,11 @@ metExploreD3.GraphMapping = {
 						    e.functionUsed="loadDataFromJSON";
 							metExploreD3.hideMask(myMask);
 
-							var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+							var anim=session.isAnimated("viz");
 							if (anim=='true') {
 								var force = session.getForce();
 
-								if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+								if (metExploreD3.GraphNetwork.animation) {
 									force.alpha(1).restart();
 								}
 							}
@@ -2709,11 +2709,11 @@ metExploreD3.GraphMapping = {
 	            metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
 	            metExploreD3.hideMask(myMask);
 	            if (func!=undefined) {func()};
-	            var anim=metExploreD3.GraphNetwork.isAnimated("viz");
+	            var anim=session.isAnimated("viz");
 				if (anim=='true') {
 					var force = session.getForce();
 					
-					if ((d3.select("#viz").select("#D3viz").attr("animation") == 'true') || (d3.select("#viz").select("#D3viz") .attr("animation") == null)) {
+					if (metExploreD3.GraphNetwork.animation) {
 						force.alpha(1).restart();
 					}
 				}   

@@ -21,6 +21,98 @@
 	width:'100%', 
 	flex:1,
     split:true,
+    tbar: [
+         {
+             xtype: 'button',
+             iconCls:'play',
+             align:"right",
+             scale   : 'large',
+             margin:'5 10 5 0',
+             padding:'2 2 2 2',
+             reference: 'animation',
+             tooltip: "Play /stop animation"
+         },
+        '-',
+        {
+            xtype: 'button',
+            iconCls:'edgesSelection',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            reference: 'edgesSelection',
+            tooltip: "Allows to select edges"
+        },
+        {
+            xtype: 'button',
+            iconCls:'metaboliteSelection',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            reference: 'metaboliteSelection',
+            tooltip: "Allows to select metabolites"
+        },
+        {
+            xtype: 'button',
+            iconCls:'reactionSelection',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            reference: 'reactionSelection',
+            tooltip: "Allows to select reactions"
+        },
+        {
+            xtype: 'button',
+            iconCls:'fontStyle',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            id:'enterEditMode',
+            reference: 'textSelection',
+            tooltip: "Allows to select labels"
+        },
+        '->',//spliter to shift next component up to end of right
+        {
+            xtype: 'button',
+            iconCls:'rescale',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            reference: 'rescale',
+            tooltip: "Fit visualisation with windows"
+        },
+        '-',
+        {
+            xtype: 'button',
+            iconCls:'handcursor',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            reference: 'handcursor',
+            tooltip: "Pan visualisation"
+        },{
+            xtype: 'button',
+            iconCls:'zoomin',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            reference: 'zoomin'
+        },{
+            xtype: 'button',
+            iconCls:'zoomout',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            reference: 'zoomout'
+        }
+    ],
     layout:{
        type:'vbox',
        align:'stretch',

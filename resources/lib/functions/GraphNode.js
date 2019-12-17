@@ -460,11 +460,10 @@ metExploreD3.GraphNode = {
                 for (var key in sessionsStore) {
                     if (sessionsStore[key].isLinked() && _MyThisGraphNode.activePanel != sessionsStore[key].getId()) {
                         var animLinked = metExploreD3.GraphNetwork.isAnimated(mainSession.getId());
-                        if (animLinked == 'true') {
+                        if (animLinked) {
                             var mainforce = mainSession.getForce();// of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 
-                            if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == 'true')
-                                || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == null)) {
+                            if (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent)) {
                                 mainforce.alpha(1).restart();
                             }
                         }
@@ -477,11 +476,10 @@ metExploreD3.GraphNode = {
             }
             else {
                 var anim = metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel);
-                if (anim == 'true') {
+                if (anim) {
                     var force = session.getForce();// of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 
-                    if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == 'true')
-                        || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == null)) {
+                    if (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel)) {
                         force.alpha(1).restart();
                     }
                 }
@@ -1565,11 +1563,10 @@ metExploreD3.GraphNode = {
                 var sessionMain = _metExploreViz.getSessionById('viz');
                 if (sessionMain != undefined) {
                     var animLinked = metExploreD3.GraphNetwork.isAnimated(sessionMain.getId());
-                    if (animLinked == 'true') {
+                    if (animLinked) {
                         var force = sessionMain.getForce();
                         if (force != undefined) {
-                            if (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == 'true'
-                                || metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == null) {
+                            if (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId())) {
                                 force.alpha(force.alpha()).restart();
                             }
                         }
@@ -1580,11 +1577,10 @@ metExploreD3.GraphNode = {
 
                 var force = session.getForce();
                 var animLinked = metExploreD3.GraphNetwork.isAnimated(session.getId());
-                if (animLinked == 'true') {
+                if (animLinked) {
                     var force = session.getForce();
                     if (force != undefined) {
-                        if ((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
-                            || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
+                        if (metExploreD3.GraphNetwork.isAnimated(session.getId())) {
                             force.alpha(force.alpha()).restart();
                         }
                     }

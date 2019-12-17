@@ -271,24 +271,10 @@ metExploreD3.GraphUtils = {
     * Escape nodes which don't appear in export. 
     */
 	escapeUnExportNode: function(){
-		d3.selectAll("#buttonAnim")
-        	.style("display", "none");
 
         var brush = d3.selectAll("#brush");
 		if(brush!=null)  
 		  brush.style("display", "none");
-
-		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
-		if(buttonZoomIn!=null)  
-		  buttonZoomIn.style("display", "none");
-		
-		var buttonHand = d3.selectAll("#buttonHand");
-		if(buttonHand!=null)  
-		  buttonHand.style("display", "none");
-
-		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
-		if(buttonZoomOut!=null)  
-		  buttonZoomOut.style("display", "none");
 
 		d3.selectAll("#D3viz")
 			.style("box-shadow", "");
@@ -333,7 +319,7 @@ metExploreD3.GraphUtils = {
 			var force = session.getForce();
 			if(force!=undefined)  
 			{
-				if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
+				if(metExploreD3.GraphNetwork.isAnimated('viz'))
 					force.stop();
 										
 			}
@@ -486,8 +472,6 @@ metExploreD3.GraphUtils = {
 		[].forEach.call(crowbarElements, function(el) {
 		  el.parentNode.removeChild(el);
 		});
-		d3.selectAll("#buttonAnim")
-		      .style("display", "inline");
 		
 		var brush = d3.selectAll("#brush");
 		if(brush!=null)  
@@ -505,25 +489,9 @@ metExploreD3.GraphUtils = {
 		if(buttonAlignMapping!=null)
             buttonAlignMapping.style("display ", "inline");
 
-		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
-		if(buttonZoomIn!=null)  
-		  buttonZoomIn.style("display", "inline");
-		
-		var buttonHand = d3.selectAll("#buttonHand");
-		if(buttonHand!=null)  
-		  buttonHand.style("display", "inline");
-
         var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
         if(buttonExportCoordinates!=null)
             buttonExportCoordinates.style("display ", "inline");
-
-		var buttonRescale = d3.selectAll("#buttonRescale");
-		if(buttonRescale!=null)
-            buttonRescale.style("display", "inline");
-
-		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
-		if(buttonZoomOut!=null)  
-		  buttonZoomOut.style("display", "inline");
 
 		d3.select("#"+_MyThisGraphNode.activePanel).select("#D3viz")
 			.style("box-shadow", " 0px 0px 10px 3px #144778 inset");
@@ -567,22 +535,6 @@ clone.setAttribute("version", "1.1");
 					clone.setAttributeNS(prefix.xmlns, "xmlns:xlink", prefix.xlink);
 				}
 
-				var buttonZoomIn = clone.getElementById("buttonZoomIn");
-				if(buttonZoomIn!=null) 
-					buttonZoomIn.parentNode.removeChild(buttonZoomIn);
-
-				var buttonZoomOut = clone.getElementById("buttonZoomOut");
-				if(buttonZoomOut!=null) 
-					buttonZoomOut.parentNode.removeChild(buttonZoomOut);
-
-				var buttonHand = clone.getElementById("buttonHand");
-				if(buttonHand!=null) 
-					buttonHand.parentNode.removeChild(buttonHand);
-
-				var buttonAnim = clone.getElementById("buttonAnim");
-				if(buttonAnim!=null) 
-					buttonAnim.parentNode.removeChild(buttonAnim);
-
                 var buttonImportCoordinates = clone.getElementById("buttonImportCoordinates");
                 if(buttonImportCoordinates!=null)
                     buttonImportCoordinates.parentNode.removeChild(buttonImportCoordinates);
@@ -598,10 +550,6 @@ clone.setAttribute("version", "1.1");
 				var buttonExportCoordinates = clone.getElementById("buttonExportCoordinates");
 				if(buttonExportCoordinates!=null)
                     buttonExportCoordinates.parentNode.removeChild(buttonExportCoordinates);
-
-                var buttonRescale = clone.getElementById("buttonRescale");
-                if(buttonRescale!=null)
-                    buttonRescale.parentNode.removeChild(buttonRescale);
 
 				// var tooltip = clone.getElementById("tooltip");
 				// tooltip.parentNode.removeChild(tooltip);
@@ -820,7 +768,7 @@ clone.setAttribute("version", "1.1");
 		{
 			if(force!=undefined)  
 			{		
-				if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+				if(session.isAnimated("viz"))
 					force.alpha(1).restart();
 			}	
 		}
@@ -941,7 +889,7 @@ clone.setAttribute("version", "1.1");
 					{
 						if(force!=undefined)  
 						{		
-							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+							if(session.isAnimated("viz"))
 								force.alpha(1).restart();
 						}	
 					}
@@ -1185,25 +1133,10 @@ clone.setAttribute("version", "1.1");
     * Export the main metabolic network for XGMML conversion. 
 	*/
 	exportSVGMain : function(){
-		d3.selectAll("#buttonAnim")
-        	.style("display", "none");
 
 		var brush = d3.selectAll("#brush");
 		if(brush!=null)  
 		  brush.style("display", "none");
-
-		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
-		if(buttonZoomIn!=null)  
-		  buttonZoomIn.style("display", "none");
-		
-		var buttonHand = d3.selectAll("#buttonHand");
-		if(buttonHand!=null)  
-		  buttonHand.style("display", "none");
-
-		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
-		if(buttonZoomOut!=null)  
-		  buttonZoomOut.style("display", "none");
-
 
 		window.URL = (window.URL || window.webkitURL);
 

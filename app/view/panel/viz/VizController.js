@@ -15,7 +15,103 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 			scope:me
 		});
 
-		view.on({
+        view.lookupReference('zoomin').on({
+            click : function() {
+                metExploreD3.GraphNetwork.zoomIn();
+            },
+            scope:me
+        });
+
+        view.lookupReference('zoomout').on({
+            click : function() {
+                metExploreD3.GraphNetwork.zoomOut();
+            },
+            scope:me
+        });
+
+        view.lookupReference('handcursor').on({
+            click : function() {
+                metExploreD3.GraphNetwork.moveGraph();
+            },
+            scope:me
+        });
+
+        view.lookupReference('rescale').on({
+            click : function() {
+                metExploreD3.GraphNetwork.rescale("viz");
+            },
+            scope:me
+        });
+
+        view.lookupReference('textSelection').on({
+            click : function() {
+                console.log(view.lookupReference('textSelection').hasCls('focus'));
+                if(view.lookupReference('textSelection').hasCls('focus')){
+                    view.lookupReference('textSelection').removeCls('focus');
+                }
+                else
+                {
+                    view.lookupReference('textSelection').addCls('focus');
+                }
+                me.enterEditMode();
+            },
+            scope:me
+        });
+
+        view.lookupReference('metaboliteSelection').on({
+            click : function() {
+                if(view.lookupReference('metaboliteSelection').hasCls('focus')){
+                    view.lookupReference('metaboliteSelection').removeCls('focus');
+                }
+                else
+                {
+                    view.lookupReference('metaboliteSelection').addCls('focus');
+                }
+            },
+            scope:me
+        });
+
+        view.lookupReference('reactionSelection').on({
+            click : function() {
+                if(view.lookupReference('reactionSelection').hasCls('focus')){
+                    view.lookupReference('reactionSelection').removeCls('focus');
+                }
+                else
+                {
+                    view.lookupReference('reactionSelection').addCls('focus');
+                }
+            },
+            scope:me
+        });
+
+        view.lookupReference('edgesSelection').on({
+            click : function() {
+                if(view.lookupReference('edgesSelection').hasCls('focus')){
+                    view.lookupReference('edgesSelection').removeCls('focus');
+                }
+                else
+                {
+                    view.lookupReference('edgesSelection').addCls('focus');
+                }
+            },
+            scope:me
+        });
+
+        view.lookupReference('animation').on({
+            click : function() {
+                if(metExploreD3.GraphNetwork.isAnimated("viz")){
+                    view.lookupReference('animation').setIconCls('play');
+                }
+                else
+                {
+                    view.lookupReference('animation').setIconCls("pause");
+                }
+                metExploreD3.GraphNetwork.play();
+            },
+            scope:me
+        });
+
+        view.on({
 			resize : function() {
 				metExploreD3.GraphPanel.resizeViz("viz");
 				var session = _metExploreViz.getSessionById("viz");
@@ -23,8 +119,17 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 	    		if(session.isActive()){
 				
 					metExploreD3.GraphPanel.resizePanels('viz');
+
 				}
 			},
+            hideContextMenu: function() {
+                var viz = Ext.getCmp('viz');
+                if(viz){
+                    if(viz.CtxMenu){
+                        viz.CtxMenu.hide();
+                    }
+                }
+            },
 			scope:me
 		});
 	},
@@ -582,6 +687,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 				if(a.length>0)
 					viz.CtxMenu.showAt(e.clientX, e.clientY);
 		});	
-	}
-
+	},
+    enterEditMode: function () {
+        metExploreD3.GraphStyleEdition.toggleEditMode();
+        //(metExploreD3.GraphStyleEdition.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
+    }
 });

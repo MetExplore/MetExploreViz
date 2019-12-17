@@ -56,7 +56,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var force = session.getForce();
                         force.force("charge").strength(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
@@ -80,7 +80,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var force = session.getForce();
                         force.force("charge").distanceMin(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
@@ -104,7 +104,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var force = session.getForce();
                         force.force("charge").distanceMax(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
@@ -139,7 +139,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var force = session.getForce();
                         force.force("collide").strength(newValue/10);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
@@ -162,7 +162,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var force = session.getForce();
                         force.force("collide").radius(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
@@ -185,7 +185,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var force = session.getForce();
                         force.force("collide").iterations(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
@@ -220,7 +220,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         force.force("x").strength(newValue/1000);
                         force.force("y").strength(newValue/1000);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alpha(1).restart();
                         }
                         this.lastValue = newValue;
@@ -254,7 +254,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var force = session.getForce();
                         force.force("link").distance(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;
@@ -277,7 +277,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
                         var force = session.getForce();
                         force.force("link").iterations(newValue);
                         var anim = metExploreD3.GraphNetwork.isAnimated('viz');
-                        if (anim === "true"){
+                        if (anim){
                             force.alphaTarget(0.3).restart();
                         }
                         this.lastValue = newValue;

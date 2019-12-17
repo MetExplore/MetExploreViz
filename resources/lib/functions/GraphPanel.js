@@ -121,49 +121,6 @@ metExploreD3.GraphPanel = {
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
 
-		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn").node()!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut").node()!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand").node()!=null)
-		{
-			var x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonZoomIn")
-				.attr('x');
-			var deltaX = w-60-x;
-
-			d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonZoomIn")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
-
-			x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonZoomOut")
-				.attr('x');
-			deltaX = w-110-x;
-
-			d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonZoomOut")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
-			x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonHand")
-				.attr('x');
-			deltaX = w-160-x;
-
-		    d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonHand")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
-
-		}
 		if(session!=undefined)
 		{
 			if(session.isLinked()){

@@ -37,12 +37,13 @@ metExploreD3.GraphStyleEdition = {
      */
     toggleEditMode : function () {
         // Enter edition mode, revealing the editModePanel, stopping force layout, and initiating label dragging, or leave the edition Mode
-        if (metExploreD3.GraphStyleEdition.editMode==false) {
+        if (metExploreD3.GraphStyleEdition.editMode===false) {
             metExploreD3.GraphStyleEdition.editMode=true;
 
             metExploreD3.GraphNetwork.animationButtonOff('viz');
             var force = _metExploreViz.getSessionById("viz").getForce();
             force.stop();
+            // disable button
             d3.select("#viz").select("#buttonAnim").select("image").remove();
             metExploreD3.GraphStyleEdition.startDragLabel("viz");
 
@@ -62,6 +63,7 @@ metExploreD3.GraphStyleEdition = {
                                     metExploreD3.GraphNetwork.animationButtonOff(key);
                                     var force = _metExploreViz.getSessionById(key).getForce();
                                     force.stop();
+                                    // disable button
                                     d3.select("#"+key).select("#buttonAnim").select("image").remove();
                                     metExploreD3.GraphStyleEdition.startDragLabel(key);
                                 }

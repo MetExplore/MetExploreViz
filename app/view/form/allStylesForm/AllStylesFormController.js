@@ -71,9 +71,6 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
 
             var allScales = metExploreD3.GraphUtils.decodeJSON(allStyles);
             allScales.forEach(function (scale) {
-                console.log('--------------------------------------------------');
-                console.log(scale);
-                console.log('--------------------------------------------------');
                 var form = Ext.getCmp(scale.biologicalType+"StyleForm");
                 if(form){
                     console.log(form);
