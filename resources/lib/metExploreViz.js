@@ -601,6 +601,7 @@ var metExploreD3 = {
     */
     hideMask : function(mask){
         mask.hide();
+        // mask.destroy();
     },
     /******************************************
     * Create a mask with the loading GIF

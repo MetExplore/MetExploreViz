@@ -744,8 +744,11 @@ metExploreD3.GraphStyleEdition = {
         if(activeSession) {
             var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
                 return activeSession.getD3Data().getNodeById(nodeId);
+            })
+            .filter(function (node) {
+                return node!==undefined;
             });
-
+console.log(mapNodes);
             var selectedNodesId = mapNodes.filter(function (node) {
                 return node.getBiologicalType() === biologicalType;
             }).map(function (node) {

@@ -958,7 +958,7 @@ p {
 }
 
 
-#viz .x-focus {
+#viz .x-toolbar .x-focus {
     margin: 0px 5px 0px 0px;
     border-color: rgb(170, 170, 170);
     background-color: white;
@@ -966,18 +966,18 @@ p {
     box-shadow: none;
 }
 
-#viz .focus{
+#viz .x-toolbar .focus{
     background-color: rgb(170, 170, 170) !important;
     border-color: rgb(170, 170, 170);
     -webkit-box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
     box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
 }
 
-#viz .x-btn-over{
+#viz .x-toolbar .x-btn-over{
     background-color: rgb(170, 170, 170) !important;
     border-color: rgb(170, 170, 170);
 }
 
-#viz .x-unselectable.x-item-disabled.x-btn-disabled{
+#viz .x-toolbar .x-unselectable.x-item-disabled.x-btn-disabled{
     pointer-events: all;
 }
