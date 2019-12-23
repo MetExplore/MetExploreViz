@@ -1308,19 +1308,19 @@ metExploreD3.GraphNode = {
             })
             .filter(function (node) {
                 var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
-                return (mappingData !== null && aStyleFormParent.getController().getValueMappingById(mappingData.getMapValue()) !== null);
+                return (mappingData !== null && aStyleFormParent.getController().getValueMappingById(session.getMappingDataType(), mappingData.getMapValue()) !== null);
             })
             .attr("mapped", function (node) {
                 var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
 
                 if (session.getMappingDataType() === "Continuous") {
-                    if (aStyleFormParent.getController().getValueMappingsSet()[0] < aStyleFormParent.getController().getValueMappingsSet()[1]) {
-                        maxValue = aStyleFormParent.getController().getValueMappingsSet()[1];
-                        minValue = aStyleFormParent.getController().getValueMappingsSet()[0];
+                    if (aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0] < aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1]) {
+                        maxValue = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1];
+                        minValue = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0];
                     }
                     else {
-                        maxValue = aStyleFormParent.getController().getValueMappingsSet()[0];
-                        minValue = aStyleFormParent.getController().getValueMappingsSet()[1];
+                        maxValue = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0];
+                        minValue = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1];
                     }
 
                     var generalStyle = _metExploreViz.getGeneralStyle();
@@ -1334,7 +1334,7 @@ metExploreD3.GraphNode = {
                     return colorScale(parseFloat(mappingData.getMapValue()));
                 }
 
-                var color = aStyleFormParent.getController().getValueMappingById(mappingData.getMapValue()).getValue();
+                var color = aStyleFormParent.getController().getValueMappingById(session.getMappingDataType(), mappingData.getMapValue()).getValue();
                 return color;
             })
             .style("fill", function (node) {
@@ -1352,13 +1352,13 @@ metExploreD3.GraphNode = {
                     .style("opacity", '0.5')
                     .style("fill", 'red');
                 if (session.getMappingDataType() === "Continuous") {
-                    if (parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName()) < parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName())) {
-                        maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName());
-                        minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName());
+                    if (parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0].getName()) < parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1].getName())) {
+                        maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1].getName());
+                        minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0].getName());
                     }
                     else {
-                        maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName());
-                        minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName());
+                        maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0].getName());
+                        minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1].getName());
                     }
 
                     var generalStyle = _metExploreViz.getGeneralStyle();
@@ -1372,7 +1372,7 @@ metExploreD3.GraphNode = {
                     return colorScale(parseFloat(mappingData.getMapValue()));
 
                 }
-                var color = aStyleFormParent.getController().getValueMappingById(mappingData.getMapValue()).getValue();
+                var color = aStyleFormParent.getController().getValueMappingById(session.getMappingDataType(), mappingData.getMapValue()).getValue();
                 return color;
             });
 

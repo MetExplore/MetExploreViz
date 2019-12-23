@@ -563,31 +563,61 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 	},
 
 	// ValueMapping
-	getValueMappingsSet : function(){
+	getValueMappingsByType : function(type){
 		var view = this.getView();
-		return view.valueMappings;
+		console.log(view);
+		console.log(type);
+
+		type = type.toLowerCase();
+		type = type.replace(" ", "");
+		console.log(type);
+		switch (type) {
+			case 'asselection':
+				if(!view.valueAsSelectionMappings) view.valueAsSelectionMappings = [];
+				return view.valueAsSelectionMappings;
+				break;
+			case 'discrete':
+				if(!view.valueDiscreteMappings) view.valueDiscreteMappings = [];
+				return view.valueDiscreteMappings;
+				break;
+			case 'alias':
+				if(!view.valueAliasMappings) view.valueAliasMappings = [];
+				return view.valueAliasMappings;
+				break;
+			// case 'continuous':
+			//
+			// 	break;
+			default:
+				if(!view.valueDiscreteMappings) view.valueDiscreteMappings = [];
+				return view.valueDiscreteMappings;
+		}
+
+
 	},
-	getValueMappingById : function(id){
-		var view = this.getView();
+	getValueMappingsSet : function(type){
+		var valueMappings = this.getValueMappingsByType(type);
+		console.log(valueMappings);
+		return valueMappings;
+	},
+	getValueMappingById : function(type, id){
+		var valueMappings = this.getValueMappingsByType(type);
 		var theValueMapping = null;
-		view.valueMappings.forEach(function(aValueMapping){
+		valueMappings.forEach(function(aValueMapping){
 			if(aValueMapping.getName()===id)
 				theValueMapping = aValueMapping;
 		});
 		return theValueMapping;
 	},
-	getValueMappingsSetLength : function(){
-		var view = this.getView();
-		return view.valueMappings.length;
+	getValueMappingsSetLength : function(type){
+		var valueMappings = this.getValueMappingsByType(type);
+		return valueMappings.length;
 	},
-	resetValueMapping : function(){
-		var view = this.getView();
-		view.valueMappings = [];
-	},
-	addValueMapping : function(n, c){
-		var view = this.getView();
-		if(!view.valueMappings) view.valueMappings = [];
-		view.valueMappings.push(new ValueMapping(n,c));
+	addValueMapping : function(type, n, c){
+		var valueMappings = this.getValueMappingsByType(type);
+		console.log(valueMappings);
+		var newVal = new ValueMapping(n,c);
+		if(valueMappings.findIndex(function (valueMap) { return valueMap.getName()===n; })===-1)
+			valueMappings.push(newVal);
 	}
 });
 

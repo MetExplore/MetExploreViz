@@ -761,7 +761,7 @@ metExploreD3.GraphMapping = {
 
 						if (arrayInfinity.length > 0) {
 							maxValue = maxValue + maxValue / 2;
-							var colors = aStyleFormParent.getController().getValueMappingsSet();
+							var colors = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
 							arrayInfinity.forEach(function (node) {
 								conditions.forEach(
 									function (condition) {
@@ -997,11 +997,10 @@ metExploreD3.GraphMapping = {
 									.domain([minValue, maxValue])
 									.range([aStyleFormParent.min, aStyleFormParent.max]);
 
-								aStyleFormParent.getController().resetValueMapping();
 								for (var i = 0; i < valuesParsed.length; i++) {
 
 
-									aStyleFormParent.getController().addValueMapping(values[i], linearScale(valuesParsed[i]));
+									aStyleFormParent.getController().addValueMapping("Discrete", values[i], linearScale(valuesParsed[i]));
 									metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, values[i], linearScale(valuesParsed[i]))
 									// metExploreD3.GraphMapping.fixMappingColorOnNodeData(color, values[i], conditionName, mappingName);
 								}
@@ -1011,9 +1010,8 @@ metExploreD3.GraphMapping = {
 								width = 127;
 								frequency = Math.PI * 2 * 0.95 / values.length;
 								var position = top;
-								var colorStore = aStyleFormParent.getController().getValueMappingsSet();
+								var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
 
-								aStyleFormParent.getController().resetValueMapping();
 								for (var i = 0; i < values.length; i++) {
 									var red = Math.sin(frequency * i + 2 + values.length) * width + center;
 									var green = Math.sin(frequency * i + 0 + values.length) * width + center;
@@ -1021,7 +1019,7 @@ metExploreD3.GraphMapping = {
 
 									color = metExploreD3.GraphUtils.RGB2Color(red, green, blue);
 
-									aStyleFormParent.getController().addValueMapping(values[i], color);
+									aStyleFormParent.getController().addValueMapping("Discrete", values[i], color);
 									metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, values[i], color)
 									// metExploreD3.GraphMapping.fixMappingColorOnNodeData(color, values[i], conditionName, mappingName);
 								}
@@ -1104,12 +1102,11 @@ metExploreD3.GraphMapping = {
 								}
 								return false;
 							});
-							aStyleFormParent.getController().resetValueMapping();
 
 							if(aStyleFormParent.styleType==="float"  || aStyleFormParent.styleType==="int" ) {
 
 								var medium = (aStyleFormParent.min + aStyleFormParent.max)/2;
-								aStyleFormParent.getController().addValueMapping("Identified", medium);
+								aStyleFormParent.getController().addValueMapping("As selection", "Identified", medium);
 								metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", medium)
 
 							}
@@ -1117,7 +1114,7 @@ metExploreD3.GraphMapping = {
 
 								var color = aStyleFormParent.max;
 
-								aStyleFormParent.getController().addValueMapping("Identified", color);
+								aStyleFormParent.getController().addValueMapping("As selection", "Identified", color);
 								metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color)
 							}
 
@@ -1166,175 +1163,7 @@ metExploreD3.GraphMapping = {
 		});
 	},
 
-	/***********************************************
-	* Mapping to discrete data
-	* This function will look at metabolites that have data
-	* maped and will color them in a calculated color
-	* @param {} conditionName : Condition choosed by the user
-	*/
-	graphMappingDiscreteDataOld : function(mappingName, conditionName, func) {
 
-		metExploreD3.onloadMapping(mappingName, function(){
-
-			var mapping = _metExploreViz.getMappingByName(mappingName);
-			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
-			if(myMask!= undefined){
-
-				metExploreD3.showMask(myMask);
-		        setTimeout(
-					function() {
-						try {
-							var session = _metExploreViz.getSessionById('viz');
-							var force = session.getForce();
-							force.stop();
-							var conditions = mapping.getConditions().filter(function (c) {
-								return c !== "PathwayCoverage" && c !== "PathwayEnrichment"
-							});
-							var nodes = session.getD3Data().getNodes();
-
-							var values = [];
-
-							var vis = d3.select("#viz").select("#D3viz");
-							vis.selectAll("g.node")
-								.filter(function (d) {
-									if (this.getAttribute("mapped") == undefined || this.getAttribute("mapped") == false || this.getAttribute("mapped") == "false") return false;
-									else return true;
-								})
-								.selectAll("rect.stroke")
-								.remove();
-
-							// var idMapping = metExploreD3.getMappingSelection();
-							// var mappingInfoStore = metExploreD3.getMappingInfosSet();
-
-							// var theMapping = metExploreD3.findMappingInfo(mappingInfoStore, 'id', idMapping);
-
-							// var ids = theMapping.get('idMapped');
-							// var idsTab = ids.split(",");
-							// var i;
-
-							conditions.forEach(
-								function (condition) {
-									nodes.forEach(function (node) {
-										var mapNode = node.getMappingDataByNameAndCond(mapping.getName(), condition);
-										if (mapNode != null) {
-											var exist = false;
-											var mapVal = mapNode.getMapValue();
-											if (mapVal !== undefined) {
-												values.forEach(function (val) {
-													if (val === mapVal)
-														exist = true;
-												});
-
-												if (!exist)
-													values.push(mapVal);
-											}
-										}
-									});
-									// 	var metabolite = metExploreD3.getMetaboliteById(metabolite_Store, idsTab[i]);
-									// 	if(metabolite!=undefined)
-									// 		if (metabolite.get('mapped') != undefined)
-									// 			if (metabolite.get('mapped') != 0)
-									// 				if(metabolite.get(condition.getCondInMetabolite())!=undefined){
-
-									// 				}
-									// }
-								}
-							);
-
-							function compareInteger(a, b) {
-								if (parseFloat(a) < parseFloat(b))
-									return -1;
-								if (parseFloat(a) > parseFloat(b))
-									return 1;
-								return 0;
-							}
-
-							function compareString(a, b) {
-								if (a < b)
-									return -1;
-								if (a > b)
-									return 1;
-								return 0;
-							}
-
-							var floats = [];
-							var strings = [];
-
-							values.forEach(function (value) {
-								if (isNaN(value))
-									strings.push(value);
-								else
-									floats.push(value);
-							});
-
-							floats.sort(compareInteger);
-							strings.sort(compareString);
-
-							values = floats.concat(strings);
-
-							if (values.length == undefined) values.length = 0;
-							center = 128;
-							width = 127;
-							frequency = Math.PI * 2 * 0.95 / values.length;
-							var position = top;
-							var colorStore = aStyleFormParent.getController().getValueMappingsSet();
-
-							aStyleFormParent.getController().resetValueMapping();
-							for (var i = 0; i < values.length; i++) {
-								var red = Math.sin(frequency * i + 2 + values.length) * width + center;
-								var green = Math.sin(frequency * i + 0 + values.length) * width + center;
-								var blue = Math.sin(frequency * i + 4 + values.length) * width + center;
-
-								color = metExploreD3.GraphUtils.RGB2Color(red, green, blue);
-
-								aStyleFormParent.getController().addValueMapping(values[i], color);
-								metExploreD3.GraphMapping.fixMappingColorOnNodeData(color, values[i], conditionName, mapping.getName());
-							}
-
-							metExploreD3.hideMask(myMask);
-
-							if (values.length != 0){
-
-								if (func != undefined) {
-									func()
-								}
-								metExploreD3.fireEventArg('selectCondition', 'setConditionProgramaticaly', conditionName);
-
-								metExploreD3.fireEventArg('selectConditionForm', 'afterDiscreteMapping', 'discrete');
-							}
-							else
-								metExploreD3.displayMessage("Warning", 'No mapped node on network.');
-
-							var anim = session.isAnimated("viz");
-							if (anim == 'true') {
-								var session = _metExploreViz.getSessionById('viz');
-								var force = session.getForce();
-
-								if (metExploreD3.GraphNetwork.animation) {
-									force.alpha(1).restart();
-								}
-							}
-						}
-						catch (e) {
-							e.functionUsed="graphMappingDiscreteData";
-							metExploreD3.hideMask(myMask);
-
-							var anim=session.isAnimated("viz");
-							if (anim=='true') {
-								var session = _metExploreViz.getSessionById('viz');
-								var force = session.getForce();
-
-								if (metExploreD3.GraphNetwork.animation) {
-									force.alpha(1).restart();
-								}
-							}
-							throw e;
-						}
-			   		}, 1
-			   	);
-			}
-		});
-	},
 
 	/***********************************************
 	* Fill node with corresponding color
@@ -1661,280 +1490,6 @@ metExploreD3.GraphMapping = {
 			}
 		});
 	},
-
-    /***********************************************
-	* Mapping to continuous data
-	* This function will look at metabolites that have data
-	* maped and will color them in gradient of bleu to yellow
-	* @param {} conditionName : Condition choosed by the user
-	*/
-	graphMappingContinuousDataOld : function(mappingName, conditionName, valueMin, valueMax, func) {
-		metExploreD3.onloadMapping(mappingName, function(){
-
-			var mapping = _metExploreViz.getMappingByName(mappingName);
-			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
-			if(myMask!= undefined){
-
-				metExploreD3.showMask(myMask);
-				setTimeout(
-					function() {
-
-						try {
-
-							var generalStyle = _metExploreViz.getGeneralStyle();
-							var vis = d3.select("#viz").select("#D3viz");
-							var session = _metExploreViz.getSessionById('viz');
-							var nodes = _metExploreViz.getSessionById('viz').getD3Data().getNodes();
-							var conditions = mapping.getConditions().filter(function (c) { return c!=="PathwayCoverage" && c!=="PathwayEnrichment" });
-							var maxValue = undefined;
-							var minValue = undefined;
-							var mappingName = mapping.getName();
-							var stringJSON="{\"mapping\":[";
-							var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-							var reactionStyle = metExploreD3.getReactionStyle();
-
-							vis.selectAll("g.node")
-								.filter(function(d){
-									if(this.getAttribute("mapped")==undefined || this.getAttribute("mapped")==false || this.getAttribute("mapped")=="false") return false;
-									else return true;
-								})
-								.selectAll("rect.stroke")
-								.remove();
-
-							conditions.forEach(
-								function(condition)
-								{
-									stringJSON+="\n{\""+condition+"\":[";
-									nodes.forEach(function(node){
-										var mapNode = node.getMappingDataByNameAndCond(mappingName, condition);
-										if(mapNode != null){
-											stringJSON+="\n{";
-
-											var mapVal = mapNode.getMapValue();
-											stringJSON+="\"node\" : \"" +node.getName();
-											stringJSON+="\", \"value\" : \""+mapVal;
-											if(!isNaN(mapVal))
-											{
-												if(maxValue==undefined){
-													minValue = parseFloat(mapVal);
-													maxValue = parseFloat(mapVal);
-												}
-												else
-												{
-													if(minValue > parseFloat(mapVal))
-														minValue = parseFloat(mapVal);
-
-													if(maxValue < parseFloat(mapVal))
-														maxValue = parseFloat(mapVal);
-												}
-											}
-											stringJSON+='\"},\n';
-										}
-									});
-									stringJSON+=']}\n';
-								}
-							);
-							stringJSON+=']}\n';
-							if(minValue!=undefined){
-
-
-								var vis = d3.select("#viz").select("#D3viz");
-
-								var colorStore = aStyleFormParent.getController().getValueMappingsSet();
-								aStyleFormParent.getController().resetValueMapping();
-								var colorScale = d3.scaleLinear()
-									.domain([parseFloat(minValue), parseFloat(maxValue)])
-									.range([valueMin, valueMax]);
-
-								// var color = metExploreD3.GraphUtils.RGB2Color(0,0,255);
-
-								// aStyleFormParent.getController().addValueMapping("max", color);
-
-								// color = metExploreD3.GraphUtils.RGB2Color(255,255,0);
-
-								// aStyleFormParent.getController().addValueMapping("min", color);
-
-
-								if(minValue==maxValue){
-									aStyleFormParent.getController().addValueMapping(maxValue, d3.color(colorScale(parseFloat(maxValue))).hex());
-								}
-								else
-								{
-									aStyleFormParent.getController().addValueMapping(maxValue, d3.color(colorScale(parseFloat(maxValue))).hex());
-									aStyleFormParent.getController().addValueMapping(minValue, d3.color(colorScale(parseFloat(minValue))).hex());
-								}
-
-								vis.selectAll("g.node")
-									.each(
-										function(d) {
-											if (d.getMappingDatasLength()!=0)
-											{
-												if(d.getBiologicalType() == 'reaction')
-												{
-													var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
-													if(map!=null){
-														if(!isNaN(map.getMapValue()))
-														{
-															_MyThisGraphNode.addText(d, 'viz', reactionStyle);
-
-															d3.select(this)
-																.transition().duration(2000)
-																.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
-																.style("fill", colorScale(parseFloat(map.getMapValue())));
-
-
-															// var colorNorm = (parseFloat(map.getMapValue()-minValue)*255.0)/(maxValue-minValue);
-
-										  //                   d3.select(this)
-										  //                     .transition().duration(2000)
-										  //                     .attr("mapped", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")")
-										  //                     .style("fill", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")");
-
-															session.addMappedNode(d.getId());
-														}
-													}
-												}
-												else
-												{
-													var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
-													if(map!=null){
-														if(!isNaN(map.getMapValue()))
-														{
-																var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-																_MyThisGraphNode.addText(d, 'viz', metaboliteStyle);
-
-																d3.select(this)
-																	.transition().duration(2000)
-																	.attr("mapped", colorScale(parseFloat(parseFloat(map.getMapValue()))))
-																	.style("fill", colorScale(parseFloat(map.getMapValue())));
-																session.addMappedNode(d.getId());
-												//                 var colorNorm = (parseFloat(map.getMapValue()-minValue)*255.0)/(maxValue-minValue);
-
-												//                 d3.select(this)
-												//                   .transition().duration(2000)
-																  // .attr("mapped","rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")")
-												//                   .style("fill", "rgb("+ parseFloat(255.0-colorNorm) +","+ parseFloat(255.0-colorNorm) +","+colorNorm+")");
-
-														}
-													}
-												}
-											}
-										});
-
-								metExploreD3.hideMask(myMask);
-								metExploreD3.fireEventArg('selectCondition', 'setConditionProgramaticaly', conditionName);
-								metExploreD3.fireEventArg('selectConditionForm', 'afterContinuousMapping', 'continuous');
-
-								if (func!=undefined) {func()};
-							}
-							else{
-
-								metExploreD3.hideMask(myMask);
-								metExploreD3.displayMessage("Warning", 'No mapped node on network.');
-
-							}
-
-							var anim=session.isAnimated("viz");
-							if (anim=='true') {
-								var session = _metExploreViz.getSessionById('viz');
-								var force = session.getForce();
-
-								if (metExploreD3.GraphNetwork.animation) {
-									force.alpha(1).restart();
-								}
-							}
-
-
-
-
-
-
-							// donnees.forEach(function(aData){
-							//     aData.color=scale(aData.z);
-							// });
-
-							// 				        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-							// 							.each(function(node){
-							// 								if (node.getMappingDatasLength()!=0)
-							// 								{
-							// 									var maps = node.getMappingDatas();
-							// 									var dataCond1 = -Math.abs(parseInt(maps[0].getMapValue()));
-							// 									var dataCond2 = Math.abs(parseInt(maps[1].getMapValue()));
-
-							// 							        var conditions2=
-							// 							        [
-							// 							            {
-							// 							                name: maps[0].getConditionName(),
-							// 							                data: 500
-							// 							            }, {
-							// 							                name: maps[1].getConditionName(),
-							// 							                data: 500
-							// 							            }
-							// 							        ];
-							// var categories2 = [
-							//             'Alanine and aspartate metabolism',
-							//             'Alkaloid synthesis'
-							// ];
-							//         var conditions2=
-							//         [
-							//             {
-							//                 name: '3j',
-							//                 data: [-5, -54]
-							//             }, {
-							//                 name: '30j',
-							//                 data: [75, 20]
-							//             }
-							//         ];
-							//         var dataChart2 = {categories:categories2, conditions:conditions2};
-							//          // var element3 = new MetXCompareBar(dataChart2, 1300, 1000, "xaxis", "yaxis", "title");
-							// 					        		var minDim=1000;
-							// 	        						// var dataChart2 = {categories:[node.getName()], conditions:conditions2};
-							// 	        						var chartSvg = d3.select(this).append("svg")
-							// 										.attr("viewBox",function(d) {return "0 0 "+minDim+" "+minDim;})
-							// 										.attr("width", minDim *8/10 + "px")
-							// 										.attr("height", minDim *8/10+ "px")
-							// 										// .attr("x", (-minDim/2)+(minDim*1/10))
-							// 										// .attr("y", (-minDim/2)+(minDim*1/10))
-							// 					        		var compareChart = new MetXCompareBar(dataChart2, 1000, 200, "xaxis", "yaxis", maps[0].getMappingName() +" analysis");
-
-							// 										chartSvg.html(d3.select(compareChart).select('svg').node().outerHTML)
-
-							// 										// .attr("width", "100%").attr("height", "100%");
-							// 								}
-							// 							});
-							// var array = [];
-							// d3.select(compareChart).select('svg').selectAll('.highcharts-series').selectAll('rect').each(function(){array.push(this.height.animVal.value)});
-
-							// console.log(array);
-							// var scale = d3.scaleLinear()
-					  //           .domain([Math.min.apply(null, array),Math.max.apply(null, array)])
-					  //           .range([sessions["viz"].getValueMappingsSet()[1].getValue(),sessions["viz"].getValueMappingsSet()[0].getValue()]);
-
-							// d3.select(compareChart).selectAll('svg').selectAll('.highcharts-series').selectAll('rect').attr('fill', function(){return scale(this.height.animVal.value)})
-
-						}
-						catch (e) {
-							e.functionUsed="graphMappingContinuousData";
-							metExploreD3.hideMask(myMask);
-
-							var anim=session.isAnimated("viz");
-							if (anim=='true') {
-								var session = _metExploreViz.getSessionById('viz');
-								var force = session.getForce();
-
-								if (metExploreD3.GraphNetwork.animation) {
-									force.alpha(1).restart();
-								}
-							}
-							throw e;
-						}
-					}, 1
-				);
-			}
-		});
-	},
-
-
 
 	/*******************************************************************************************************
 	*
@@ -2452,11 +2007,7 @@ metExploreD3.GraphMapping = {
 	        setTimeout(
 				function() {
 					try{
-						var vis = d3.select("#viz").select("#D3viz");
-
-						var colorStore = aStyleFormParent.getController().getValueMappingsSet();
-
-						var theColor = aStyleFormParent.getController().getValueMappingById(value);
+						var theColor = aStyleFormParent.getController().getValueMappingById(session.getMappingDataType(), session.getMappingDataType(), value);
 						theColor.setValue(color);
 
 						metExploreD3.GraphMapping.fixMappingColorOnNodeData(color, value, conditionName, selectedMapping);
@@ -2471,32 +2022,6 @@ metExploreD3.GraphMapping = {
 					}
 		   		}, 1
 		   	);
-		}
-	},
-	/***********************************************
-	* Change color for a value
-	* @param {} color : New color
-	* @param {} value : Value corresponding to the color
-	* @param {} conditionName : Condition choosed by the user
-	*/
-	setContinuousMappingColor : function(color, value, conditionName, selectedMapping){
-		
-		var session = _metExploreViz.getSessionById('viz');
-		var force = session.getForce();
-		force.stop(); 
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
-		if(myMask!= undefined){
-
-			metExploreD3.showMask(myMask);
-					
-			var vis = d3.select("#viz").select("#D3viz");
-			
-			var colorStore = aStyleFormParent.getController().getValueMappingsSet();
-			
-			var theColor = aStyleFormParent.getController().getValueMappingById(value);
-			theColor.setValue(color);
-			
-			metExploreD3.hideMask(myMask);
 		}
 	},
 

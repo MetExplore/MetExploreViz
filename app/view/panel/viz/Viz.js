@@ -73,6 +73,16 @@
             id:'enterEditMode',
             reference: 'textSelection',
             tooltip: "Allows to select labels"
+        },'-',
+        {
+            xtype: 'button',
+            iconCls:'curve',
+            align:"right",
+            scale   : 'large',
+            margin:'5 10 5 0',
+            padding:'2 2 2 2',
+            reference: 'curve',
+            tooltip: "Drawing curvy edges"
         },
         '->',//spliter to shift next component up to end of right
         {

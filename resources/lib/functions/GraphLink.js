@@ -615,6 +615,7 @@ metExploreD3.GraphLink = {
         convexHullPath
             .attr("d", _metExploreViz.getSessionById(panel).groupPath)
             .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
+        console.log(metExploreD3.GraphStyleEdition.curvedPath);
 
         if (metExploreD3.GraphStyleEdition.curvedPath === true){
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()==="Flux";
@@ -632,7 +633,7 @@ metExploreD3.GraphLink = {
         else {
             var scale = metExploreD3.getScaleById("viz");
 
-
+            console.log("no");
 
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()=="Flux";
 

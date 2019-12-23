@@ -306,6 +306,7 @@ metExploreD3.GraphNetwork = {
                 }
 
                 // if visualisation is actived we add item to menu
+                console.log(session.isActive());
                 if(session.isActive()){
                     if(sessionLinked.getD3Data().getNodes().length>1000){
                         d3.select("#"+panelLinked).selectAll("path.link").remove();

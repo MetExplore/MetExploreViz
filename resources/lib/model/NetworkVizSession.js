@@ -5,7 +5,6 @@ var NetworkVizSession = function(){
     this.active = false;
     this.activeMapping = "";
     this.animated = false;
-    this.valueMappings = [];
     this.colorSuggestions = [];
     this.colorComponents = [];
     this.displayNodeName = "";
@@ -65,28 +64,6 @@ NetworkVizSession.prototype = {
     {
         this.nodesMap = [];
         this.activeMapping = activeMapping;
-    },
-
-    // ValueMapping
-    getValueMappingsSet : function(){
-        return this.valueMappings;
-    },
-    getValueMappingById : function(id){
-        var theValueMapping = null;
-        this.valueMappings.forEach(function(aValueMapping){
-            if(aValueMapping.getName()==id)
-                theValueMapping = aValueMapping;
-        });
-        return theValueMapping;
-    }, 
-    getValueMappingsSetLength : function(){
-        return this.valueMappings.length;
-    },
-    resetValueMapping : function(){
-        this.valueMappings = [];
-    },
-    addValueMapping : function(n, c){
-        this.valueMappings.push(new ValueMapping(n,c));
     },
 
     // ColorSuggestion

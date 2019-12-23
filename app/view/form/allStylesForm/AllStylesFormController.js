@@ -43,6 +43,8 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
 
         view.query("allStylesByTypeForm").forEach(function (allStylesByTypeForm) {
 
+            console.log(aStyleForm);
+
             var partOfAllScales = allStylesByTypeForm.query("aStyleForm")
                 .map(function (aStyleForm) {
                     return {
@@ -50,7 +52,9 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                         title:aStyleForm.title,
                         default : aStyleForm.default,
                         scaleRange : aStyleForm.scaleRange,
-                        valueMappings : aStyleForm.valueMappings
+                        valueDiscreteMappings : aStyleForm.valueDiscreteMappings,
+                        valueAsSelectionMappings : aStyleForm.valueAsSelectionMappings,
+                        valueAliasMappings : aStyleForm.valueAliasMappings
                     };
                 });
 
@@ -102,22 +106,69 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                             }
                         }
 
-                        // if (scale.valueMappings){
-                        //     if(scale.valueMappings!==theStyleForm.valueMappings){
-                        //         theStyleForm.valueMappings=scale.valueMappings;
-                        //
-                        //         var selectConditionForm = theStyleForm.lookupReference('selectConditionForm');
-                        //         var selectCondition = selectConditionForm.lookupReference('selectCondition');
-                        //         var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
-                        //
-                        //         var dataType = selectConditionType.getValue();
-                        //         var selectedCondition = selectCondition.getValue();
-                        //         if((dataType==="Discrete" || dataType==="As Selection") && selectedCondition!==null){
-                        //             theStyleForm.getController().updateContinuousCaption();
-                        //             theStyleForm.getController().updateContinuousMapping();
-                        //         }
-                        //     }
-                        // }
+                        if (scale.valueDiscreteMappings){
+                            var newArray = scale.valueDiscreteMappings.map(function (val) {
+                                return new ValueMapping(val.name, val.value);
+                            });
+
+                            if(newArray!==theStyleForm.valueDiscreteMappings){
+                                theStyleForm.valueDiscreteMappings=newArray;
+
+                                var selectConditionForm = theStyleForm.lookupReference('selectConditionForm');
+                                var selectCondition = selectConditionForm.lookupReference('selectCondition');
+                                var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+                                var dataType = selectConditionType.getValue();
+                                var selectedCondition = selectCondition.getValue();
+                                if(dataType==="Continuous" && selectedCondition!==null){
+                                    theStyleForm.getController().updateContinuousCaption();
+                                    theStyleForm.getController().updateContinuousMapping();
+                                }
+                            }
+                        }
+
+                        if (scale.valueAsSelectionMappings){
+                            var newArray = scale.valueAsSelectionMappings.map(function (val) {
+                                return new ValueMapping(val.name, val.value);
+                            });
+
+                            if(scale.valueAsSelectionMappings!==theStyleForm.valueAsSelectionMappings){
+                                theStyleForm.valueAsSelectionMappings=newArray;
+
+                                var selectConditionForm = theStyleForm.lookupReference('selectConditionForm');
+                                var selectCondition = selectConditionForm.lookupReference('selectCondition');
+                                var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+                                var dataType = selectConditionType.getValue();
+                                var selectedCondition = selectCondition.getValue();
+                                if(dataType==="Continuous" && selectedCondition!==null){
+                                    theStyleForm.getController().updateContinuousCaption();
+                                    theStyleForm.getController().updateContinuousMapping();
+                                }
+                            }
+                        }
+
+                        if (scale.valueAliasMappings){
+                            var newArray = scale.valueAliasMappings.map(function (val) {
+                                return new ValueMapping(val.name, val.value);
+                            });
+
+                            if(scale.valueAliasMappings!==theStyleForm.valueAliasMappings){
+                                theStyleForm.valueAliasMappings=newArray;
+
+                                var selectConditionForm = theStyleForm.lookupReference('selectConditionForm');
+                                var selectCondition = selectConditionForm.lookupReference('selectCondition');
+                                var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+                                var dataType = selectConditionType.getValue();
+                                var selectedCondition = selectCondition.getValue();
+                                if(dataType==="Continuous" && selectedCondition!==null){
+                                    theStyleForm.getController().updateContinuousCaption();
+                                    theStyleForm.getController().updateContinuousMapping();
+                                }
+                            }
+                        }
+
                     }
                 }
 
@@ -128,9 +179,6 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                 .forEach(function (allStylesByTypeForm) {
                     allStylesByTypeForm.query("aStyleForm")
                         .forEach(function (aStyleForm) {
-                            if (aStyleForm.scaleRange)
-                                viewAStyleForm.getController().updateContinuousCaption();
-
                             if (aStyleForm.scaleRange)
                                 viewAStyleForm.getController().updateContinuousCaption();
 

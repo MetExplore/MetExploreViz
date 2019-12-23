@@ -84,11 +84,25 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				var dataType = view.lookupReference('selectConditionType').getValue();
 
 				if(dataType==="Continuous"){
-					metExploreD3.GraphUtils.saveStyles(viewAStyleForm.scaleRange);
 				}
 
 				if(dataType==="Discrete" || dataType==="As selection" || dataType==="Alias"){
 					metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueMappings);
+				}
+				switch (dataType) {
+					case 'Continuous':
+						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.scaleRange);
+						break;
+					case 'Discrete':
+						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueDiscreteMappings);
+						break;
+					case 'As selection':
+						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueAsSelectionMappings);
+						break;
+					case 'Alias':
+						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueAliasMappings);
+						break;
+					default:
 				}
 
 			},
@@ -183,8 +197,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 
 					if(session.getMappingDataType()==="Continuous"){
-						var colorStore = aStyleFormParent.getController().getValueMappingsSet();
-				        var newColor = aStyleFormParent.getController().getValueMappingsSetLength()===0;
+						var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
+				        var newColor = aStyleFormParent.getController().getValueMappingsSetLength(session.getMappingDataType())===0;
 
 				        if(!newColor){
 				        	colorStore = [];
@@ -198,7 +212,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 					if(container){
 						container.close();
-						var colorStore = aStyleFormParent.getController().getValueMappingsSet();
+						var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
 						colorStore.forEach(function(color){
 							var newId = color.getName().toString().replace(me.regexpPanel, "_");
 							if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
@@ -275,8 +289,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			this.removeGraphMapping(oldMapping);
 
 			if(session.getMappingDataType()==="Continuous"){
-				var colorStore = aStyleFormParent.getController().getValueMappingsSet();
-		        var newColor = aStyleFormParent.getController().getValueMappingsSetLength()===0;
+				var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
+		        var newColor = aStyleFormParent.getController().getValueMappingsSetLength(session.getMappingDataType())===0;
 
 		        if(!newColor){
 		        	colorStore = [];
@@ -290,7 +304,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 			if(container){
 				container.close();
-				var colorStore = aStyleFormParent.getController().getValueMappingsSet();
+				var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
 				colorStore.forEach(function(color){
 					var newId = color.getName().toString().replace(me.regexpPanel, "_");
 					if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
@@ -496,7 +510,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
         var aStyleFormParent = me.getAStyleFormParent();
         if(type!=="suggestion"){
             networkVizSession.setMapped(selectedCondition);
-            colorStore = aStyleFormParent.getController().getValueMappingsSet();
+            colorStore = aStyleFormParent.getController().getValueMappingsSet(networkVizSession.getMappingDataType());
 
         }
         else {

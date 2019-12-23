@@ -43,9 +43,32 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
             scope:me
         });
 
+        view.lookupReference('curve').on({
+            click : function() {
+                if (metExploreD3.GraphStyleEdition.curvedPath === false) {
+                    metExploreD3.GraphStyleEdition.curvedPath = true;
+                    metExploreD3.GraphLink.bundleLinks("viz");
+                }
+                else {
+                    metExploreD3.GraphStyleEdition.curvedPath = false;
+                    metExploreD3.GraphNetwork.removeMarkerEnd();
+                    metExploreD3.GraphCaption.drawCaption();
+                    metExploreD3.GraphLink.tick("viz");
+                }
+
+                if(view.lookupReference('curve').hasCls('focus')){
+                    view.lookupReference('curve').removeCls('focus');
+                }
+                else
+                {
+                    view.lookupReference('curve').addCls('focus');
+                }
+            },
+            scope:me
+        });
+
         view.lookupReference('textSelection').on({
             click : function() {
-                console.log(view.lookupReference('textSelection').hasCls('focus'));
                 if(view.lookupReference('textSelection').hasCls('focus')){
                     view.lookupReference('textSelection').removeCls('focus');
                 }

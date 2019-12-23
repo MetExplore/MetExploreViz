@@ -466,6 +466,12 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.curve {
+       background-image: url(../icons/curve.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .unlink {
        background-image: url(../icons/unlink.svg);
     background-size: 100% 100%;
