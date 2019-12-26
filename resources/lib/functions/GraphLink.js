@@ -616,6 +616,7 @@ metExploreD3.GraphLink = {
             .attr("d", _metExploreViz.getSessionById(panel).groupPath)
             .attr("transform", d3.select("#"+panel).select("#D3viz").select("#graphComponent").attr("transform"));
 
+
         if (metExploreD3.GraphStyleEdition.curvedPath === true){
             var flux = _metExploreViz.getSessionById(panel).getMappingDataType()==="Flux";
             if(flux) {
@@ -665,6 +666,13 @@ metExploreD3.GraphLink = {
                 })
                 .style("stroke-linejoin", "bevel");
         }
+
+        d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+            .selectAll("path.highlightlink")
+            .attr("d", function(){
+                var parent = this.parentNode;
+                return d3.select(parent).select("path.link.reaction").attr("d");
+            });
     },
 
     /**

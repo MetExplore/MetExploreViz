@@ -2012,66 +2012,76 @@ metExploreD3.GraphNode = {
                         imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + imageScale + ")");
                     }
                 }
-
                 var links = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
 
-                if (d.getBiologicalType() == "reaction") {
+                if (d.getBiologicalType() === "reaction") {
 
-                    links.filter(function (link) {
-                        return d.getId() == link.getSource().getId();
-                    })
+                    links
                         .filter(function (link) {
-
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
-
-                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                            return d.getId() === link.getSource().getId();
                         })
-                        .style("stroke", "green");
+                        .each(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
 
-                    links.filter(function (link) {
-                        return d.getId() == link.getTarget().getId();
-                    })
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "green");
+                        });
+
+                    links
                         .filter(function (link) {
-
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
-
-                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                            return d.getId() === link.getTarget().getId();
                         })
-                        .style("stroke", "red");
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "red");
+                        });
                 }
                 else {
-                    links.filter(function (link) {
-                        return d.getId() == link.getSource().getId();
-                    })
+                    links
                         .filter(function (link) {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
-
-                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                            return d.getId() === link.getSource().getId();
                         })
-                        .style("stroke", "red");
-
-                    links.filter(function (link) {
-                        return d.getId() == link.getTarget().getId();
-                    })
                         .filter(function (link) {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
 
-                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "red");
+                        });
+
+                    links
+                        .filter(function (link) {
+                            return d.getId() == link.getTarget().getId();
                         })
-                        .style("stroke", "green");
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "green");
+                        });
                 }
             })
             .on("mouseover", function (d) {
                 var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node").nodes();
                 var nodeElemt=this;
+
 
                 d3.select(this)
                     .each(function (node) {
@@ -2155,7 +2165,7 @@ metExploreD3.GraphNode = {
 
                 metExploreD3.GraphNode.node
                     .filter(function (node) {
-                        return node == d
+                        return node === d;
                     })
                     .select('.locker')
                     .classed('hide', true);
@@ -2206,22 +2216,10 @@ metExploreD3.GraphNode = {
                     d.fixed = false;
                     metExploreD3.GraphNode.unfixNode(d);
                 }
-                var linkStyle = metExploreD3.getLinkStyle();
 
                 d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link.reaction")
-                    .filter(function (link) {
-                        return d.getId() == link.getSource().getId() || d.getId() == link.getTarget().getId();
-                    })
-                    .filter(function (link) {
-                        return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
-                    })
-                    .style("stroke", linkStyle.getStrokeColor())
-                    .each(function () {
-                        var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                        var first = linksover[0];
-                        this.parentNode.insertBefore(this, first);
-                    });
+                    .selectAll("path.highlightlink")
+                    .remove();
 
 
                 if (d.getBiologicalType() == "reaction") {
@@ -2285,54 +2283,69 @@ metExploreD3.GraphNode = {
                         imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + imageScale + ")");
                     }
                 }
-
                 var links = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
 
-                if (d.getBiologicalType() == "reaction") {
+                if (d.getBiologicalType() === "reaction") {
 
                     links
                         .filter(function (link) {
-                            return d.getId() == link.getSource().getId();
+                            return d.getId() === link.getSource().getId();
                         })
-                        .style("stroke", "green")
-                        .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                        .each(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "green");
                         });
 
                     links
                         .filter(function (link) {
-                            return d.getId() == link.getTarget().getId();
+                            return d.getId() === link.getTarget().getId();
                         })
-                        .style("stroke", "red")
-                        .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "red");
                         });
                 }
                 else {
                     links
                         .filter(function (link) {
-                            return d.getId() == link.getSource().getId();
+                            return d.getId() === link.getSource().getId();
                         })
-                        .style("stroke", "red")
-                        .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "red");
                         });
 
                     links
                         .filter(function (link) {
                             return d.getId() == link.getTarget().getId();
                         })
-                        .style("stroke", "green")
-                        .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "green");
                         });
                 }
             })
@@ -2451,20 +2464,10 @@ metExploreD3.GraphNode = {
                     d.fixed = false;
                     metExploreD3.GraphNode.unfixNode(d);
                 }
-                var linkStyle = metExploreD3.getLinkStyle();
-
 
                 d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link.reaction")
-                    .filter(function (link) {
-                        return d.getId() == link.getSource().getId() || d.getId() == link.getTarget().getId();
-                    })
-                    .style("stroke", linkStyle.getStrokeColor())
-                    // .each(function () {
-                    //     var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                    //     var first = linksover[0];
-                    //     this.parentNode.insertBefore(this, first);
-                    // });
+                    .selectAll("path.highlightlink")
+                    .remove();
 
                 if (d.getBiologicalType() == "reaction") {
                     d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()
