@@ -2028,8 +2028,7 @@ metExploreD3.GraphNode = {
 
                             return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
                         })
-                        .style("stroke", "green")
-                        .style("stroke-width", "1.5");
+                        .style("stroke", "green");
 
                     links.filter(function (link) {
                         return d.getId() == link.getTarget().getId();
@@ -2042,8 +2041,7 @@ metExploreD3.GraphNode = {
 
                             return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
                         })
-                        .style("stroke", "red")
-                        .style("stroke-width", "1.5");
+                        .style("stroke", "red");
                 }
                 else {
                     links.filter(function (link) {
@@ -2056,8 +2054,7 @@ metExploreD3.GraphNode = {
 
                             return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
                         })
-                        .style("stroke", "red")
-                        .style("stroke-width", "1.5");
+                        .style("stroke", "red");
 
                     links.filter(function (link) {
                         return d.getId() == link.getTarget().getId();
@@ -2069,8 +2066,7 @@ metExploreD3.GraphNode = {
 
                             return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
                         })
-                        .style("stroke", "green")
-                        .style("stroke-width", "1.5");
+                        .style("stroke", "green");
                 }
             })
             .on("mouseover", function (d) {
@@ -2221,7 +2217,6 @@ metExploreD3.GraphNode = {
                         return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
                     })
                     .style("stroke", linkStyle.getStrokeColor())
-                    .style("stroke-width", "0.5")
                     .each(function () {
                         var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
                         var first = linksover[0];
@@ -2300,7 +2295,6 @@ metExploreD3.GraphNode = {
                             return d.getId() == link.getSource().getId();
                         })
                         .style("stroke", "green")
-                        .style("stroke-width", "1.5")
                         .each(function () {
                             var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
                             var last = linksover[linksover.length - 1];
@@ -2312,7 +2306,6 @@ metExploreD3.GraphNode = {
                             return d.getId() == link.getTarget().getId();
                         })
                         .style("stroke", "red")
-                        .style("stroke-width", "1.5")
                         .each(function () {
                             var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
                             var last = linksover[linksover.length - 1];
@@ -2325,7 +2318,6 @@ metExploreD3.GraphNode = {
                             return d.getId() == link.getSource().getId();
                         })
                         .style("stroke", "red")
-                        .style("stroke-width", "1.5")
                         .each(function () {
                             var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
                             var last = linksover[linksover.length - 1];
@@ -2337,7 +2329,6 @@ metExploreD3.GraphNode = {
                             return d.getId() == link.getTarget().getId();
                         })
                         .style("stroke", "green")
-                        .style("stroke-width", "1.5")
                         .each(function () {
                             var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
                             var last = linksover[linksover.length - 1];
@@ -2469,7 +2460,6 @@ metExploreD3.GraphNode = {
                         return d.getId() == link.getSource().getId() || d.getId() == link.getTarget().getId();
                     })
                     .style("stroke", linkStyle.getStrokeColor())
-                    .style("stroke-width", "0.5")
                     // .each(function () {
                     //     var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
                     //     var first = linksover[0];

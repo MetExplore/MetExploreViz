@@ -306,7 +306,6 @@ metExploreD3.GraphNetwork = {
                 }
 
                 // if visualisation is actived we add item to menu
-                console.log(session.isActive());
                 if(session.isActive()){
                     if(sessionLinked.getD3Data().getNodes().length>1000){
                         d3.select("#"+panelLinked).selectAll("path.link").remove();
@@ -399,10 +398,7 @@ metExploreD3.GraphNetwork = {
             })
             .on("brush ", function(d) {
                 var scrollable = metExploreD3.GraphNetwork.scrollable;
-                console.log(scrollable);
-
                 metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
-
                 var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
                 if(d3.event.sourceEvent.button!==1 && scrollable!=="true"){

@@ -549,6 +549,24 @@ metExploreD3.GraphStyleEdition = {
      * Create an object containing the image position and dimension data associated to a node
      * @param {Object} node : The node whose image position and dimension data will be put in the object
      */
+    removeMappedClassStyle : function (targetSet, attrType, attrName, biologicalType, value) {
+        targetSet.forEach(function setStyles(target) {
+            var selection;
+            if(biologicalType==="metabolite" || biologicalType==="reaction")
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node").filter(function(d){return d.getBiologicalType()===biologicalType});
+
+            if(biologicalType==="link")
+                selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+            var targetSelection = selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")");
+            targetSelection.classed("mapped"+attrType+attrName+biologicalType, false);
+        });
+    },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
     setCollectionStyleBypass : function (targetSet, attrType, attrName, biologicalType, value) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
         if(activeSession) {
@@ -608,10 +626,7 @@ metExploreD3.GraphStyleEdition = {
 
                 var selection;
                 if(biologicalType==="link"){
-                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
-                        .filter(function (d) {
-                            return d.getBiologicalType() === biologicalType;
-                        });
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
                 }
                 else {
                     selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
@@ -654,10 +669,7 @@ metExploreD3.GraphStyleEdition = {
 
                 var selection;
                 if(biologicalType==="link"){
-                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
-                        .filter(function (d) {
-                            return d.getBiologicalType() === biologicalType;
-                        });
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
                 }
                 else {
                     selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
@@ -695,10 +707,7 @@ metExploreD3.GraphStyleEdition = {
 
                 var selection;
                 if(biologicalType==="link"){
-                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
-                        .filter(function (d) {
-                            return d.getBiologicalType() === biologicalType;
-                        });
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
                 }
                 else {
                     selection = d3.select("#viz").select("#D3viz").selectAll("g.node")

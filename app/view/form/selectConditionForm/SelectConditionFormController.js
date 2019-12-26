@@ -382,6 +382,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			styleToUse = metExploreD3.getLinkStyle();
 
 		aStyleFormParent.default = styleToUse[aStyleFormParent.access];
+
+		metExploreD3.GraphStyleEdition.removeMappedClassStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
 		metExploreD3.GraphStyleEdition.setCollectionStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
 
 		var captions = view.lookupReference('discreteCaptions');
