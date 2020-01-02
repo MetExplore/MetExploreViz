@@ -43,8 +43,6 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
 
         view.query("allStylesByTypeForm").forEach(function (allStylesByTypeForm) {
 
-            console.log(aStyleForm);
-
             var partOfAllScales = allStylesByTypeForm.query("aStyleForm")
                 .map(function (aStyleForm) {
                     return {
@@ -120,9 +118,8 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
 
                                 var dataType = selectConditionType.getValue();
                                 var selectedCondition = selectCondition.getValue();
-                                if(dataType==="Continuous" && selectedCondition!==null){
-                                    theStyleForm.getController().updateContinuousCaption();
-                                    theStyleForm.getController().updateContinuousMapping();
+                                if(dataType==="Discrete" && selectedCondition!==null){
+                                    theStyleForm.getController().updateDiscreteMapping();
                                 }
                             }
                         }
@@ -141,9 +138,8 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
 
                                 var dataType = selectConditionType.getValue();
                                 var selectedCondition = selectCondition.getValue();
-                                if(dataType==="Continuous" && selectedCondition!==null){
-                                    theStyleForm.getController().updateContinuousCaption();
-                                    theStyleForm.getController().updateContinuousMapping();
+                                if(dataType==="As selection" && selectedCondition!==null){
+                                    theStyleForm.getController().updateDiscreteMapping();
                                 }
                             }
                         }
@@ -162,9 +158,8 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
 
                                 var dataType = selectConditionType.getValue();
                                 var selectedCondition = selectCondition.getValue();
-                                if(dataType==="Continuous" && selectedCondition!==null){
-                                    theStyleForm.getController().updateContinuousCaption();
-                                    theStyleForm.getController().updateContinuousMapping();
+                                if(dataType==="Alias" && selectedCondition!==null){
+                                    theStyleForm.getController().updateDiscreteMapping();
                                 }
                             }
                         }

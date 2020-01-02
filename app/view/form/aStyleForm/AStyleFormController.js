@@ -220,6 +220,33 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		}
 	},
 
+	updateDiscreteMapping : function(){
+		var me = this;
+		var view = me.getView();
+
+		var conditionName = view.lookupReference('selectConditionForm').lookupReference('selectCondition').getValue();
+
+		var selectConditionType = view.lookupReference('selectConditionForm').lookupReference('selectConditionType');
+		var dataType = selectConditionType.getValue();
+		var session = _metExploreViz.getSessionById("viz");
+
+		if(dataType==="Alias"){
+			session.setMappingDataType(dataType);
+			metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
+		}
+
+		if(dataType==="Discrete"){
+			session.setMappingDataType(dataType);
+			metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
+		}
+
+		if(dataType==="As selection"){
+			session.setMappingDataType(dataType);
+			metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, view);
+		}
+
+	},
+
 	updateFormValues : function(){
 		var me = this;
 		var view = me.getView();
@@ -614,7 +641,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 	},
 	addValueMapping : function(type, n, c){
 		var valueMappings = this.getValueMappingsByType(type);
-		console.log(valueMappings);
 		var newVal = new ValueMapping(n,c);
 		if(valueMappings.findIndex(function (valueMap) { return valueMap.getName()===n; })===-1)
 			valueMappings.push(newVal);

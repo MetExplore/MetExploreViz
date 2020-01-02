@@ -998,19 +998,19 @@ metExploreD3.GraphMapping = {
 									.range([aStyleFormParent.min, aStyleFormParent.max]);
 
 								for (var i = 0; i < valuesParsed.length; i++) {
-
-
 									aStyleFormParent.getController().addValueMapping("Discrete", values[i], linearScale(valuesParsed[i]));
-									metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, values[i], linearScale(valuesParsed[i]))
-									// metExploreD3.GraphMapping.fixMappingColorOnNodeData(color, values[i], conditionName, mappingName);
 								}
+
+								var valueMapping = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
+								valueMapping.forEach(function(valMapping){
+									metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, valMapping.getName(), valMapping.getValue())
+								});
 							}
 							if(aStyleFormParent.styleType==="color" ) {
 								center = 128;
 								width = 127;
 								frequency = Math.PI * 2 * 0.95 / values.length;
 								var position = top;
-								var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
 
 								for (var i = 0; i < values.length; i++) {
 									var red = Math.sin(frequency * i + 2 + values.length) * width + center;
@@ -1020,9 +1020,15 @@ metExploreD3.GraphMapping = {
 									color = metExploreD3.GraphUtils.RGB2Color(red, green, blue);
 
 									aStyleFormParent.getController().addValueMapping("Discrete", values[i], color);
-									metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, values[i], color)
 									// metExploreD3.GraphMapping.fixMappingColorOnNodeData(color, values[i], conditionName, mappingName);
 								}
+								var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
+								colorStore.forEach(function(color){
+									console.log(color.getName());
+									console.log(color.getValue());
+
+									metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue())
+								});
 							}
 
 

@@ -118,20 +118,75 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 					if(dataType==="Continuous"){
 						// Allows to reload the same file
-						var viewAStyleForm = me.getAStyleFormParent();
 						viewAStyleForm.scaleRange = metExploreD3.GraphUtils.decodeJSON(json);
 						viewAStyleForm.getController().updateContinuousCaption();
 						viewAStyleForm.getController().updateContinuousMapping();
 					}
 
-					if(dataType==="Discrete" || dataType==="As selection" || dataType==="Alias"){
-						// Allows to reload the same file
-						var viewAStyleForm = me.getAStyleFormParent();
-						viewAStyleForm.scaleRange = metExploreD3.GraphUtils.decodeJSON(json);
-						viewAStyleForm.getController().updateContinuousCaption();
-						viewAStyleForm.getController().updateContinuousMapping();
+					if (dataType==="Discrete"){
+						me.removeCaption();
+						var newArray = metExploreD3.GraphUtils.decodeJSON(json).map(function (val) {
+							return new ValueMapping(val.name, val.value);
+						});
+
+						if(newArray!==viewAStyleForm.valueDiscreteMappings){
+							viewAStyleForm.valueDiscreteMappings=newArray;
+
+							var selectConditionForm = viewAStyleForm.lookupReference('selectConditionForm');
+							var selectCondition = selectConditionForm.lookupReference('selectCondition');
+							var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+							var dataType = selectConditionType.getValue();
+							var selectedCondition = selectCondition.getValue();
+							if(dataType==="Discrete" && selectedCondition!==null){
+								viewAStyleForm.getController().updateDiscreteMapping();
+							}
+						}
 					}
 
+					if (dataType==="As selection"){
+						me.removeCaption();
+
+						var newArray = metExploreD3.GraphUtils.decodeJSON(json).map(function (val) {
+							return new ValueMapping(val.name, val.value);
+						});
+
+						if(newArray!==viewAStyleForm.valueAsSelectionMappings){
+							viewAStyleForm.valueAsSelectionMappings=newArray;
+
+							var selectConditionForm = viewAStyleForm.lookupReference('selectConditionForm');
+							var selectCondition = selectConditionForm.lookupReference('selectCondition');
+							var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+							var dataType = selectConditionType.getValue();
+							var selectedCondition = selectCondition.getValue();
+							if(dataType==="As selection" && selectedCondition!==null){
+								viewAStyleForm.getController().updateDiscreteMapping();
+							}
+						}
+					}
+
+					if (dataType==="Alias"){
+						me.removeCaption();
+
+						var newArray = metExploreD3.GraphUtils.decodeJSON(json).map(function (val) {
+							return new ValueMapping(val.name, val.value);
+						});
+
+						if(newArray!==viewAStyleForm.valueAliasMappings){
+							viewAStyleForm.valueAliasMappings=newArray;
+
+							var selectConditionForm = viewAStyleForm.lookupReference('selectConditionForm');
+							var selectCondition = selectConditionForm.lookupReference('selectCondition');
+							var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+							var dataType = selectConditionType.getValue();
+							var selectedCondition = selectCondition.getValue();
+							if(dataType==="Alias" && selectedCondition!==null){
+								viewAStyleForm.getController().updateDiscreteMapping();
+							}
+						}
+					}
 				});
 			},
 			scope:me
@@ -147,6 +202,27 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			},
 			scope:me
 		});
+	},
+
+    /*******************************************
+     * Remove all mapping in visualisation and in side panel
+     */
+	removeCaption:function(){
+		var me = this;
+		var view = me.getView();
+		var session = _metExploreViz.getSessionById('viz');
+		var aStyleFormParent = me.getAStyleFormParent();
+		var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
+		colorStore.forEach(function(color){
+			var newId = color.getName().toString().replace(me.regexpPanel, "_");
+			if(view.down("#mappingCaptionForm"+newId))
+				view.down("#mappingCaptionForm"+newId).close();
+		});
+
+		if(view.down("#undefined"))
+			view.down("#undefined").close();
+
+
 	},
 
     /*******************************************

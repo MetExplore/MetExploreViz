@@ -35,6 +35,7 @@
         '-',
         {
             xtype: 'button',
+            hidden : true,
             iconCls:'edgesSelection',
             align:"right",
             scale   : 'large',
@@ -45,6 +46,7 @@
         },
         {
             xtype: 'button',
+            hidden : true,
             iconCls:'metaboliteSelection',
             align:"right",
             scale   : 'large',
@@ -55,6 +57,7 @@
         },
         {
             xtype: 'button',
+            hidden : true,
             iconCls:'reactionSelection',
             align:"right",
             scale   : 'large',
