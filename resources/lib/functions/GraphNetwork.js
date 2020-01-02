@@ -2009,10 +2009,11 @@ metExploreD3.GraphNetwork = {
         networkData.getPathwayByName(pathwayName).setCollapsed(true);
 
         var newNode = networkData.getNodeByName(pathwayName);
+
         var pathwayModel = networkData.getPathwayByName(pathwayName);
 
         newNode.show();
-
+        var pathwaySize = 20;
         if(newNode.x===undefined)
         {
 
@@ -2028,10 +2029,13 @@ metExploreD3.GraphNetwork = {
             var avgY = sumY / allY.length;
             newNode.y = avgY;
             newNode.py = avgY;
+
+            newNode.svgWidth= pathwaySize*3;
+            newNode.svgHeight= pathwaySize*3;
         }
 
         // var pathwaySize = pathwayModel.getNodes().filter(function (t) { return t.getBiologicalType()==="metabolite"; }).length;
-        var pathwaySize = 20;
+
 
         var thePathwayElement =
             metExploreD3.GraphNode.node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
