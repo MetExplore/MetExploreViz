@@ -775,12 +775,12 @@ metExploreD3.GraphPanel = {
 
 					networkVizSession.setD3Data(networkData);
 
-					if(sessions[key].selectedNodes)
-					{
-						sessions[key].selectedNodes.forEach(function(nodeId){
-							networkVizSession.addSelectedNode(nodeId);
-						});
-					}
+					// if(sessions[key].selectedNodes)
+					// {
+					// 	sessions[key].selectedNodes.forEach(function(nodeId){
+					// 		networkVizSession.addSelectedNode(nodeId);
+					// 	});
+					// }
 
 					if(sessions[key].duplicatedNodes)
 					{

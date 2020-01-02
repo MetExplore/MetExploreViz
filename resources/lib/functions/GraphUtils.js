@@ -1667,7 +1667,6 @@ clone.setAttribute("version", "1.1");
 
 			metExploreD3.deferFunction(function() {
 
-				console.log(scaleRange);
 				//
 				// var networkJSON ="{";
 				//  var session = _metExploreViz.getSessionById('viz');

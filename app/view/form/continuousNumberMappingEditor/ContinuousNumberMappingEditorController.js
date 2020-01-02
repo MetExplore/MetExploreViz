@@ -22,8 +22,6 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
 
 		view.on({
 			afterrender : function(that){
-console.log(view);
-console.log(view.aStyleFormParent);
 				var width = 450;
 				var height = 85;
 

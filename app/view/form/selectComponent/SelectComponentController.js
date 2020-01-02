@@ -53,8 +53,6 @@ Ext.define('metExploreViz.view.form.selectComponent.SelectComponentController', 
 
     initCaption:function(componentJSON){
 
-        console.log(componentJSON);
-
         var comboComponent = Ext.getCmp('selectComponentVisu');
 
         var store = comboComponent.getStore();

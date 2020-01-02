@@ -75,14 +75,14 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
             allScales.forEach(function (scale) {
                 var form = Ext.getCmp(scale.biologicalType+"StyleForm");
                 if(form){
-                    console.log(form);
                     var theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title===scale.title;});
                     if(theStyleForm){
-                        console.log(theStyleForm);
                         if (scale.default){
                             if(scale.default!==theStyleForm.default){
+
                                 theStyleForm.default=scale.default;
 
+                                theStyleForm.getController().updateDefaultFormValues();
                                 metExploreD3.GraphStyleEdition.setCollectionStyle(theStyleForm.target, theStyleForm.attrType, theStyleForm.attrName, theStyleForm.biologicalType, scale.default);
                             }
                         }

@@ -457,7 +457,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		if(aStyleFormParent.biologicalType==="link")
 			styleToUse = metExploreD3.getLinkStyle();
 
-		aStyleFormParent.default = styleToUse[aStyleFormParent.access];
+		if(!aStyleFormParent.default)
+			aStyleFormParent.default = styleToUse[aStyleFormParent.access];
 
 		metExploreD3.GraphStyleEdition.removeMappedClassStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
 		metExploreD3.GraphStyleEdition.setCollectionStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
@@ -603,8 +604,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 		if(captions && type==="discrete")
 		{
-
-			console.log(captions);
 			if(Ext.getCmp('panel'+ cond)===undefined || type==="suggestion")
 			{
 
@@ -742,7 +741,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 								afterrender: function () {
 									var colorButtonMappingEl = newMappingCaptionForm.el.dom.querySelector("#html5colorpicker");
 
-									console.log();
 									colorButtonMappingEl
 										.addEventListener("change", function (evt) {
 											var newColor = evt.target.value;
@@ -920,7 +918,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		}
 
 		if(scaleCaption && type==="continuous"){
-			console.log(aStyleFormParent);
 			if(aStyleFormParent.styleType==="color") {
 				me.drawContinuousScaleCaption();
 			}

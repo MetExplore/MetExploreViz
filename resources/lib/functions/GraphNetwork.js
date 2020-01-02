@@ -442,7 +442,6 @@ metExploreD3.GraphNetwork = {
             })
             .on("end", function() {
                 var scrollable = metExploreD3.GraphNetwork.scrollable;
-                console.log(scrollable);
 
                 if(scrollable===false){
 

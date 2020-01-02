@@ -48,7 +48,6 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 		var view = me.getView();
 		if(view)
 		{
-			console.log(view.lookupReference("caption"));
 			var parentElement = view.lookupReference("caption").el.dom;
 			// Obtenir une référence au premier enfant
 			var theFirstChild = parentElement.firstChild;
@@ -90,8 +89,6 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 				.attr("transform","translate(106, 22) rotate(-35)")
 				.style("text-anchor","middle")
 				.style("fill", "#ffffff");
-		console.log(me);
-		console.log(view);
 		}
 	},
     updateForm : function(){

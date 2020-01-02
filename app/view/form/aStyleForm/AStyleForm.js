@@ -53,8 +53,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
                         listeners : {
                             beforeshow: function(tooltip) {
                                 var color = tooltip.target.el.dom.querySelector("#html5colorpicker").getAttribute("value");
-                                console.log(tooltip.target.el.dom.querySelector("#html5colorpicker"));
-                                console.log(color);
                                 tooltip.update(color);
                             }
                         }
