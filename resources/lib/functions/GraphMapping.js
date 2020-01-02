@@ -1024,9 +1024,6 @@ metExploreD3.GraphMapping = {
 								}
 								var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
 								colorStore.forEach(function(color){
-									console.log(color.getName());
-									console.log(color.getValue());
-
 									metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue())
 								});
 							}

@@ -18,13 +18,13 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	           'MetExplore.view.form.V_UpdateStyleForm'
 	           ],
 */
+	collapsible: true,
+	collapsed:true,
 
 	width: '30%',
 	height: '100%',
 	margins:'0 0 2 0',
 	split:true,
-	collapsible: true,
-	collapsed: false,
 	closable: false,
 	region: 'west',
 	// hidden:true,

@@ -55,7 +55,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
                     id:"maskInit",
                     msgCls:'msgClsLaunchMask'
                 });
-            // mask.show();
+            mask.show();
             var maskMsgDiv = mask.getEl().down('.x-mask-msg');
             var buttonDiv = maskMsgDiv.getFirstChild()
 								.appendChild({
@@ -80,7 +80,6 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 			        if(component!= undefined){
 						component.fileInputEl.dom.click();
 			        }
-			        mask.hide();
 		        },
 		        renderTo:buttonDiv
 		    });
@@ -102,8 +101,9 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 	            hidden:false,
 		        style:'margin : 10px 10px 10px 10px',
 		        handler: function(){
-		        	metExploreD3.GraphPanel.refreshPanel(_metExploreViz.getDataFromWebSite());
-                    mask.hide();
+		        	metExploreD3.GraphPanel.refreshPanel(_metExploreViz.getDataFromWebSite(),function(){
+		        		mask.hide();
+		        	});
 		        },
 		        listeners: {
 			        hideInitialLoadButtons: function(){

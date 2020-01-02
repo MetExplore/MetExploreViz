@@ -250,7 +250,6 @@ metExploreD3.GraphPanel = {
 	*/
 	refreshPanel : function(json, func) {
 		var me = this;
-		metExploreD3.hideInitialMask();
 
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
