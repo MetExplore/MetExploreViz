@@ -2267,6 +2267,11 @@ metExploreD3.GraphMapping = {
 									if(node!=undefined){
 										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
 										node.addMappingData(mapNode);
+
+										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+										links.forEach(function (link) {
+											link.addMappingData(mapNode);
+										})
 									}
 									else
 									{
@@ -2274,6 +2279,11 @@ metExploreD3.GraphMapping = {
 										if(node!=undefined){
 											var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
 											node.addMappingData(mapNode);
+
+											links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+											links.forEach(function (link) {
+												link.addMappingData(mapNode);
+											})
 										}
 									}
 								});
@@ -2290,6 +2300,11 @@ metExploreD3.GraphMapping = {
 									if(node!=undefined){
 										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
 										node.addMappingData(mapNode);
+
+										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+										links.forEach(function (link) {
+											link.addMappingData(mapNode);
+										})
 									}
 									else
 									{
@@ -2297,6 +2312,11 @@ metExploreD3.GraphMapping = {
 										if(node!=undefined){
 											var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
 											node.addMappingData(mapNode);
+
+											links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+											links.forEach(function (link) {
+												link.addMappingData(mapNode);
+											})
 										}
 									}
 								});
@@ -2369,6 +2389,11 @@ metExploreD3.GraphMapping = {
 									if(node!=undefined){
 										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
 										node.addMappingData(mapNode);
+
+										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+										links.forEach(function (link) {
+											link.addMappingData(mapNode);
+										})
 									}
 								});
 						});
@@ -2384,6 +2409,10 @@ metExploreD3.GraphMapping = {
 									if(node!=undefined){
 										var mapNode = new MappingData(node, mapping.getName(), condition.name, map.value);
 										node.addMappingData(mapNode);
+										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+										links.forEach(function (link) {
+											link.addMappingData(mapNode);
+										})
 									}
 								});
 						});
