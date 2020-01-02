@@ -609,10 +609,11 @@ var metExploreD3 = {
     * @param {} component : The panel where is displayed the mask
     */
     createLoadMask : function(label, component){
-        if(component!='viz')
+        if(component!='viz' && component!='graphPanel' && component!='maskInit')
             var panelComponent = component.substring(0, component.length-5);
         else
             var panelComponent = component;
+
         if(panelComponent!= undefined){
 
             return new Ext.LoadMask({

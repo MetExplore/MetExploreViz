@@ -194,7 +194,14 @@ metExploreD3.GraphPanel = {
 
 			var vizComp = Ext.getCmp("viz");
 			if(vizComp!=undefined){
-				var myMask = metExploreD3.createLoadMask("Refresh in process...", 'viz');
+				var panel;
+				console.log(Ext.getCmp("maskInit"));
+				if(Ext.getCmp("maskInit").isHidden())
+					panel = 'graphPanel';
+				else
+					panel = "maskInit";
+console.log(panel);
+				var myMask = metExploreD3.createLoadMask("Refresh in process...", panel);
 				if(myMask!= undefined){
 
 					metExploreD3.showMask(myMask);
@@ -223,7 +230,7 @@ metExploreD3.GraphPanel = {
 								metExploreD3.fireEvent('graphPanel', 'afterrefresh');*/
 								function end(){
 									metExploreD3.hideMask(myMask);
-
+									metExploreD3.hideInitialMask();
 									metExploreD3.fireEvent('graphPanel', 'afterrefresh');
 									if(metExploreD3.isNewBioSource()){
 										metExploreD3.hideInitialMask();

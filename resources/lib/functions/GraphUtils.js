@@ -340,7 +340,7 @@ metExploreD3.GraphUtils = {
 		var emptySvg = window.document.createElementNS(prefix.svg, 'svg');
 		window.document.body.appendChild(emptySvg);
 		var emptySvgDeclarationComputed = getComputedStyle(emptySvg);
-		var myMask = metExploreD3.createLoadMask("Export initialization...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Export initialization...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1222,7 +1222,7 @@ clone.setAttribute("version", "1.1");
 	},
 
 	saveNetworkDot : function() {
-		var myMask = metExploreD3.createLoadMask("Export DOT file...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Export DOT file...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1319,7 +1319,7 @@ clone.setAttribute("version", "1.1");
 	* Retrieve all necessary data to load saved visualization
     */
 	saveNetworkJSON : function() {
-		var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1573,7 +1573,7 @@ clone.setAttribute("version", "1.1");
 	* Save nodes coordinates
     */
 	saveNetworkCoordinates : function() {
-		var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1660,7 +1660,7 @@ clone.setAttribute("version", "1.1");
 	 * Save nodes coordinates
 	 */
 	saveStyles : function(scaleRange, all) {
-		var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1747,7 +1747,7 @@ clone.setAttribute("version", "1.1");
 	},
 
 	saveNetworkGml : function() {
-		var myMask = metExploreD3.createLoadMask("Export GML file...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Export GML file...", 'graphPanel');
 		if(myMask!==undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1866,7 +1866,7 @@ clone.setAttribute("version", "1.1");
 	saveCyclesList : function () {
         var allDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
         if ( metExploreD3.GraphStyleEdition.allDrawnCycles.length) {
-            var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+            var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
             if (myMask != undefined) {
 
                 metExploreD3.showMask(myMask);

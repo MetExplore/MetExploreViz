@@ -1077,7 +1077,7 @@ metExploreD3.GraphFunction = {
 		else extract();
 
 		function extract(){
-			var myMask = metExploreD3.createLoadMask("Keep only subnetwork...", 'viz');
+			var myMask = metExploreD3.createLoadMask("Keep only subnetwork...", 'graphPanel');
 			if(myMask!= undefined){
 
 				metExploreD3.showMask(myMask);
@@ -1170,7 +1170,7 @@ metExploreD3.GraphFunction = {
 	 */
 	highlightSubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
-		var myMask = metExploreD3.createLoadMask("Highlight Subnetwork...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Highlight Subnetwork...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);

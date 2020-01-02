@@ -27,7 +27,6 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
                 	// Allows to reload the same file
                 	metExploreD3.GraphPanel.refreshPanel(json, function(){
                 		view.lookupReference('importNetwork').reset();
-						metExploreD3.hideInitialMask();
 					});
                 });
 			},

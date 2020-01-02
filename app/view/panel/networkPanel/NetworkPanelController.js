@@ -101,9 +101,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 	            hidden:false,
 		        style:'margin : 10px 10px 10px 10px',
 		        handler: function(){
-		        	metExploreD3.GraphPanel.refreshPanel(_metExploreViz.getDataFromWebSite(),function(){
-		        		mask.hide();
-		        	});
+		        	metExploreD3.GraphPanel.refreshPanel(_metExploreViz.getDataFromWebSite());
 		        },
 		        listeners: {
 			        hideInitialLoadButtons: function(){

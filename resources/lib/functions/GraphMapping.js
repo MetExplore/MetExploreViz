@@ -72,7 +72,7 @@ metExploreD3.GraphMapping = {
 		var session = _metExploreViz.getSessionById('viz');
 		var force = session.getForce();
 		force.stop(); 
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 		if(myMask!= undefined){
 			metExploreD3.showMask(myMask);
 	        setTimeout(
@@ -206,7 +206,7 @@ metExploreD3.GraphMapping = {
 	* This function will assignmapping value to each nodes in datas
 	*/
 	mapNodeData: function(mapping, lines) {
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -423,7 +423,7 @@ metExploreD3.GraphMapping = {
                 });
 
             session.nodesMap = [];
-			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 			var mapping = _metExploreViz.getMappingByName(mappingName);
 			if(myMask!= undefined){
 
@@ -711,7 +711,7 @@ metExploreD3.GraphMapping = {
 	*/
 	parseFluxValues : function(mappingName, aStyleFormParent) {
 		var mapping = _metExploreViz.getMappingByName(mappingName);
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 		
 		if(myMask!= undefined){
 
@@ -797,7 +797,7 @@ metExploreD3.GraphMapping = {
 		var session = _metExploreViz.getSessionById('viz');
 		var force = session.getForce();
 		force.stop(); 
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -914,7 +914,7 @@ metExploreD3.GraphMapping = {
 		metExploreD3.onloadMapping(mappingName, function(){
 
 			var mapping = _metExploreViz.getMappingByName(mappingName);
-			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 			if(myMask!= undefined){
 
 				metExploreD3.showMask(myMask);
@@ -1085,7 +1085,7 @@ metExploreD3.GraphMapping = {
 		metExploreD3.onloadMapping(mappingName, function(){
 
 			var mapping = _metExploreViz.getMappingByName(mappingName);
-			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 			if(myMask!= undefined){
 
 				metExploreD3.showMask(myMask);
@@ -1336,7 +1336,7 @@ metExploreD3.GraphMapping = {
         var  conditionName = condition.split("_")[1];
         metExploreD3.onloadMapping(mappingName, function(){
 			var mapping = _metExploreViz.getMappingByName(mappingName);
-			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 			if(myMask!= undefined){
 
 				metExploreD3.showMask(myMask);
@@ -1513,7 +1513,7 @@ metExploreD3.GraphMapping = {
         var session = metExploreD3.getSessionById(networkVizSessionStore, 'viz');
         var force = session.getForce();
         force.stop();
-        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
         if(myMask!= undefined){
 
             metExploreD3.showMask(myMask);
@@ -1568,7 +1568,7 @@ metExploreD3.GraphMapping = {
         var session = _metExploreViz.getSessionById('viz');
         var force = session.getForce();
         force.stop();
-        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
         if(myMask!= undefined){
 
             metExploreD3.showMask(myMask);
@@ -1781,7 +1781,7 @@ metExploreD3.GraphMapping = {
         var session = _metExploreViz.getSessionById('viz');
         var force = session.getForce();
         force.stop();
-        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+        var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
         if(myMask!= undefined){
 
             metExploreD3.showMask(myMask);
@@ -1816,7 +1816,7 @@ metExploreD3.GraphMapping = {
 		metExploreD3.onloadMapping(mappingName, function(){
 
 			var mapping = _metExploreViz.getMappingByName(mappingName);
-			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 			if(myMask!= undefined){
 
 				metExploreD3.showMask(myMask);
@@ -2003,7 +2003,7 @@ metExploreD3.GraphMapping = {
 		var session = _metExploreViz.getSessionById('viz');
 		var force = session.getForce();
 		force.stop(); 
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -2156,7 +2156,7 @@ metExploreD3.GraphMapping = {
 			var session = _metExploreViz.getSessionById('viz');
 			var force = session.getForce();
 			force.stop(); 
-			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 			if(myMask!= undefined){
 
 				metExploreD3.showMask(myMask);
@@ -2211,7 +2211,7 @@ metExploreD3.GraphMapping = {
     	var session = _metExploreViz.getSessionById('viz');
 		var force = session.getForce();
 		force.stop(); 
-		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
