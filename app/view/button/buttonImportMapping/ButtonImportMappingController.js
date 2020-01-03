@@ -63,6 +63,7 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 		    metExploreD3.GraphMapping.mapNodeData(mapping, lines);
 
 			metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
+			metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
 		}
 		else
 		{
@@ -85,12 +86,16 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 		var newConditions = [];
 		if(conditions[0]!==undefined){
 			mapping.getConditions().forEach(function (condition) {
-				newConditions.push(mapping.getName()+"_"+condition);
+				newConditions.push(mapping.getName()+" / "+condition);
 			});
 		}
 		else
 			newConditions.push(mapping.getName());
-
-		newConditions.forEach(function (value) { conditionStore.add({name: value, type: 'int'}); });
+		
+		newConditions
+			.filter(function(cond){
+				return !(cond.includes("PathwayEnrichment") || cond.includes("PathwayCoverage"))
+			})
+			.forEach(function (value) { conditionStore.add({name: value, type: 'int'}); });
 	}
 });

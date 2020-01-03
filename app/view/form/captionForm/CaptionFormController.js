@@ -220,6 +220,42 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
 
             if(view.getTitle()=="Pathways"){
 
+
+                var mappingPanel = Ext.create('Ext.panel.Panel', {
+                    border: false,
+                    width: '100%',
+                    bodyBorder: false,
+                    xtype: 'panel',
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    items: [
+                        {
+                            margin: "15 15 5 15",
+                            xtype: 'label',
+                            html: 'Select mapping to map pathway enrichment on pathway nodes :'
+                        },
+                        {
+                            margin: '5 10 10 10',
+                            xtype: "selectMapping",
+                            id: 'selectMapping',
+                            reference: 'panelMappingPathways'
+                        }
+                    ]
+                });
+                mappingPanel.lookupReference('panelMappingPathways')
+                captionForm.add(mappingPanel);
+
+                var line = Ext.create('Ext.Component', {
+                    hidden: false,
+                    autoEl: {
+                        tag: 'hr'
+                    }
+                });
+
+                captionForm.add(line);
+
                 // Create checkbox to display convex hull around each components
                 var highlightLinkCheckbox = Ext.create('Ext.form.field.Checkbox', {
                     tooltip: 'Display convex hull around each ' + view.getTitle(),
@@ -250,15 +286,6 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             // Add component caption to captionForm panel
             if (captionForm != undefined) {
                 captionForm.add(newConditionPanel);
-                // Create checkbox to display convex hull around each components
-                var line = Ext.create('Ext.Component', {
-                    hidden: false,
-                    autoEl: {
-                        tag: 'hr'
-                    }
-                });
-                captionForm.add(line);
-
                 // Create checkbox to display convex hull around each components
                 var selectAllButton = Ext.create('Ext.button.Button', {
                     tooltip: 'selectAllButton',

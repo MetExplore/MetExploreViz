@@ -909,8 +909,8 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	*/
 	graphMappingDiscreteData : function(condition, aStyleFormParent, func) {
-		var  mappingName = condition.split("_")[0];
-		var  conditionName = condition.split("_")[1];
+		var  mappingName = condition.split(" / ")[0];
+		var  conditionName = condition.split(" / ")[1];
 		metExploreD3.onloadMapping(mappingName, function(){
 
 			var mapping = _metExploreViz.getMappingByName(mappingName);
@@ -1080,8 +1080,8 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	*/
 	graphMappingAsSelectionData : function(condition, aStyleFormParent, func) {
-		var  mappingName = condition.split("_")[0];
-		var  conditionName = condition.split("_")[1];
+		var  mappingName = condition.split(" / ")[0];
+		var  conditionName = condition.split(" / ")[1];
 		metExploreD3.onloadMapping(mappingName, function(){
 
 			var mapping = _metExploreViz.getMappingByName(mappingName);
@@ -1332,8 +1332,8 @@ metExploreD3.GraphMapping = {
 	* @param {} conditionName : Condition choosed by the user
 	*/
 	graphMappingContinuousData : function(condition, aStyleFormParent, func) {
-        var  mappingName = condition.split("_")[0];
-        var  conditionName = condition.split("_")[1];
+        var  mappingName = condition.split(" / ")[0];
+        var  conditionName = condition.split(" / ")[1];
         metExploreD3.onloadMapping(mappingName, function(){
 			var mapping = _metExploreViz.getMappingByName(mappingName);
 			var myMask = metExploreD3.createLoadMask("Mapping in progress...", 'graphPanel');
@@ -2177,6 +2177,8 @@ metExploreD3.GraphMapping = {
 
 
 						metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
+						metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
+
 						var anim = session.isAnimated("viz");
 						if (anim == 'true') {
 							var force = session.getForce();
@@ -2235,7 +2237,9 @@ metExploreD3.GraphMapping = {
 	            metExploreD3.GraphMapping.mapNodeDataFile(mapping, data);
 
 	            metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
-	            metExploreD3.hideMask(myMask);
+				metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
+
+				metExploreD3.hideMask(myMask);
 	            if (func!=undefined) {func()};
 	            var anim=session.isAnimated("viz");
 				if (anim=='true') {

@@ -2101,8 +2101,8 @@ metExploreD3.GraphNode = {
                             this.parentNode.insertBefore(this, last);
                             this.parentNode.insertBefore(last, this);
 
-                            var session = _metExploreViz.getSessionById(parent);
-                            var mappingName = session.getActiveMapping();
+                            var combBoxSelectMappingVisu = Ext.getCmp('selectMapping');
+                            var mappingName =  combBoxSelectMappingVisu.getValue();
 
                             if(node.getMappingDatasLength() > 0 && mappingName !== "")
                             {
@@ -2125,7 +2125,7 @@ metExploreD3.GraphNode = {
                                     var tooltipText =  d3.select("#"+parent).select('#tooltipPathwaysText');
 
 
-                                    var covText = "Coverage : "+(mapCov.getMapValue()).toFixed(2);
+                                    var covText = "Coverage : "+(mapCov.getMapValue()).toFixed(2)*100 + "%";
                                     var pValText = "p-value BH : "+(mapPE.getMapValue()).toFixed(4);
 
                                     var nameDOMFormat = $("<div/>").html(covText).text();

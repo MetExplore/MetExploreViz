@@ -805,6 +805,7 @@ console.log(panel);
 			                    _metExploreViz.getMappingsSet().forEach(function(mapping){
 			                    	metExploreD3.GraphMapping.reloadMapping(mapping);
 				                	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
+									metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
 			                    });
 				                metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", true);
 			                }
@@ -990,6 +991,7 @@ console.log(panel);
 	            _metExploreViz.getMappingsSet().forEach(function(mapping){
 	            	metExploreD3.GraphMapping.reloadMapping(mapping);
 	            	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
+					metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
 	            }); 
 	            metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", true);
 			}
