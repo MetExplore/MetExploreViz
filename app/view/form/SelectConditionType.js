@@ -13,8 +13,8 @@ Ext.define('metExploreViz.view.form.SelectConditionType', {
         data : [
             {"name":"Continuous"},
             {"name":"Discrete"},
-            {"name":"As selection"},
-            {"name":"Alias"}
+            {"name":"As selection"}
+            //,{"name":"Alias"}
         ]
     },
     listeners: {
