@@ -73,9 +73,8 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 	},
 
 	/*****************************************************
-	 * Parse file and map data
-	 * @param tabTxt : file content
-	 * @param title : file title
+	 * Fill condition store store
+	 * @param mapping : Mapping object
 	 */
 	addConditions : function(mapping) {
 		// Launch mapping
