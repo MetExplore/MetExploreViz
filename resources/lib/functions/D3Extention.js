@@ -3,6 +3,28 @@
  * Functions to extend d3js selection function
  */
 
+d3.selection.prototype.attrEditor = function(attr, val) {
+	if(!val)
+		return this.attr(attr);
+	else
+	{
+		this.attr(attr, val);
+		if(attr === "height" || attr === "width"){
+
+			this.each(function (n) {
+				if(attr === "height")
+					n.setSvgHeight(val);
+
+				if(attr === "width")
+					n.setSvgWidth(val);
+			});
+
+			this.attr("transform", "translate(-"+(parseFloat(this.attr("width"))/2)+",-"+(parseFloat(this.attr("height"))/2)+") scale(1)");
+		}
+
+	}
+};
+
 /*******************************
  * Node shape generation
  * @param width
@@ -17,8 +39,8 @@ d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, str
 			.attr("class", function(d) { return d.getBiologicalType(); })
 			.attr("id", function(d) { return d.getId(); })
 			.attr("identifier", function(d) { return d.getId(); })
-			.attr("width", width)
-			.attr("height", height)
+			.attr("width", function(d) { return d.getSvgWidth(); })
+			.attr("height", function(d) { return d.getSvgHeight(); })
 			.attr("rx", rx)
 			.attr("ry", ry)
 			.attr("transform", "translate(-" + width/2 + ",-"
@@ -28,8 +50,8 @@ d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, str
 			.style("stroke-width", strokewidth);
 
 	this.append("rect").attr("class","fontSelected")
-		.attr("width", width)
-		.attr("height", height)
+		.attr("width", function(d) { return d.getSvgWidth(); })
+		.attr("height", function(d) { return d.getSvgHeight(); })
 		.attr("rx", rx)
 		.attr("ry", ry)
 		.attr( "transform", "translate(-" + width/2 + ",-" + height/2 + ")")
@@ -78,7 +100,7 @@ d3.selection.prototype.addNodeText = function(style) {
 
 	this
 		.append("svg:text")
-		.attr("fill", "black")
+		.attr("fill", "#000000")
 		.attr("class", function(d) { return d.getBiologicalType(); })
 		.each(function(d) {
 			var el = d3.select(this);
@@ -138,6 +160,7 @@ d3.selection.prototype.addNodeText = function(style) {
 			}
 		})
 		.attr("y",function(node) {
+			var minDim = Math.min(node.getSvgWidth(),node.getSvgHeight());
 			if (node.labelFont) {
 				if (node.labelFont.fontY){
 					return node.labelFont.fontY;
@@ -168,6 +191,7 @@ d3.selection.prototype.addNodeText = function(style) {
 			}
 		})
 		.style("y",function(node) {
+			var minDim = Math.min(node.getSvgWidth(),node.getSvgHeight());
 			if (node.labelFont) {
 				if (node.labelFont.fontY){
 					return node.labelFont.fontY;

@@ -1,11 +1,11 @@
 /**
  * @author MC
- * (a)description 
+ * (a)description
  */
- /**
+/**
  * draw a link
  */
-var LinkStyle = function(size, lineWidth, markerWidth, markerHeight, markerInColor, markerOutColor, markerStrokeColor, markerStrokeWidth, strokeColor){
+var LinkStyle = function(size, lineWidth, markerWidth, markerHeight, markerInColor, markerOutColor, markerStrokeColor, markerStrokeWidth, strokeColor, opacity, fontColor, fontSize, fontWeight, labelOpacity){
     this.size = size ;
     this.lineWidth = lineWidth;
     this.markerWidth = markerWidth;
@@ -14,98 +14,124 @@ var LinkStyle = function(size, lineWidth, markerWidth, markerHeight, markerInCol
     this.markerOutColor = markerOutColor;
     this.markerStrokeColor = markerStrokeColor;
     this.markerStrokeWidth = markerStrokeWidth;
-    this.strokeColor = strokeColor;
+
+    if(opacity)
+        this.opacity = opacity;
+    else
+        this.opacity = "1.0";
+
+    if(strokeColor)
+        this.strokeColor = strokeColor;
+    else
+        this.strokeColor = "#000000";
+
+    if(fontColor)
+        this.fontColor = fontColor;
+    else
+        this.fontColor = "#000000";
+
+    if(fontSize)
+        this.fontSize = fontSize;
+    else
+        this.fontSize = 10;
+
+    this.fontWeight = fontWeight;
+
+    if(labelOpacity)
+        this.labelOpacity = labelOpacity;
+    else
+        this.labelOpacity = 1.0;
 };
 
 LinkStyle.prototype = {
     // Getters & Setters
     getMarkerInColor:function()
     {
-      return this.markerInColor;
+        return this.markerInColor;
     },
 
     getLineWidth:function()
     {
-      return this.lineWidth;
+        return this.lineWidth;
     },
 
     getMarkerOutColor:function()
     {
-      return this.markerOutColor;
+        return this.markerOutColor;
     },
 
     getSize:function()
     {
-      return this.size;
+        return this.size;
     },
 
     getMarkerWidth:function()
     {
-      return this.markerWidth;
+        return this.markerWidth;
     },
 
     getMarkerStrokeWidth:function()
     {
-      return this.markerStrokeWidth;
+        return this.markerStrokeWidth;
     },
 
     getMarkerHeight:function()
     {
-      return this.markerHeight;
+        return this.markerHeight;
     },
 
     getMarkerStrokeColor:function()
     {
-      return this.markerStrokeColor;
+        return this.markerStrokeColor;
     },
 
     getStrokeColor:function()
     {
-      return this.strokeColor;
+        return this.strokeColor;
     },
 
     setMarkerInColor:function(newData)
     {
-      this.markerInColor = newData;
+        this.markerInColor = newData;
     },
 
     setLineWidth:function(newData)
     {
-      this.lineWidth = newData;
+        this.lineWidth = newData;
     },
 
     setMarkerOutColor:function(newData)
     {
-      this.markerOutColor = newData;
+        this.markerOutColor = newData;
     },
 
     setSize:function(newData)
     {
-      this.size =  newData;
+        this.size =  newData;
     },
 
     setMarkerWidth:function(newData)
     {
-      this.markerWidth = newData;
+        this.markerWidth = newData;
     }
 
     ,setMarkerStrokeWidth:function(newData)
     {
-      this.markerStrokeWidth = newData;;
+        this.markerStrokeWidth = newData;;
     },
 
     setMarkerHeight:function(newData)
     {
-      this.markerHeight = newData;;
+        this.markerHeight = newData;;
     },
 
     setMarkerStrokeColor:function(newData)
     {
-      this.markerStrokeColor = newData;;
+        this.markerStrokeColor = newData;;
     },
 
     setStrokeColor:function(newData)
     {
-      this.strokeColor = newData;;
+        this.strokeColor = newData;;
     }
 };

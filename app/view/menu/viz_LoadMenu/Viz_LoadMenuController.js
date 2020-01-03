@@ -39,7 +39,7 @@ Ext.define('metExploreViz.view.menu.viz_LoadMenu.Viz_LoadMenuController', {
 
 		view.lookupReference('loadNetworkFromWebsite').on({
 			click : function(){
-		        	metExploreD3.GraphPanel.refreshPanel(_metExploreViz.getDataFromWebSite());
+		        metExploreD3.GraphPanel.refreshPanel(_metExploreViz.getDataFromWebSite());
 			},
 			scope : me
 		});

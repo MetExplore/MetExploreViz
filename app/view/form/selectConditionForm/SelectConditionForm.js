@@ -20,8 +20,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
        type:'vbox',
        align:'stretch'
     },
-    // collapsible: true,
-    // collapsed:false,
     region:'north',
     width:'100%', 
     margins:'0 0 0 0',
@@ -32,108 +30,93 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
 
     items: [
     {
-        id:'selectMappingVisu',
-        xtype:'selectMapping',
-        disabled:true
+        border:false,
+        reference:'chooseCondition',
+        xtype:'panel',
+        autoScroll: true,
+        layout:{
+            type:'hbox',
+            align:'stretch'
+        },
+        items:[{
+            xtype:'selectCondition',
+            reference:'selectCondition'
+        }
+        ]
+    },
+    {
+        reference:'selectConditionType',
+        xtype:'selectConditionType'
     },
     {
         xtype: 'menuseparator'
     },
     {
-        id:'selectConditionType',
-        xtype:'selectConditionType',
-        reference:'selectConditionType',
-        disabled:true
-    }
-    ,
-    {
-
-        margin:'10 0 0 5',
-        xtype      : 'fieldcontainer',
-        defaultType: 'checkboxfield',
-        reference : 'opacity', 
-        hidden : true,
-        items: [
-            {
-                boxLabel  : 'Opacity',
-                name      : 'opacity',
-                inputValue: true,
-                id        : 'opacityCheck'
-            }
-        ]
-    },
-    {
-
-        margin:'10 0 0 5',
-        xtype      : 'fieldcontainer',
-        defaultType: 'checkboxfield',
-        reference : 'valueonarrow', 
-        hidden : true,
-        items: [
-            {
-                boxLabel  : 'Show values on arrows',
-                name      : 'valueonarrow',
-                inputValue: true,
-                id        : 'valueonarrowCheck'
-            }
-        ]
-    },
-    {
-
-        margin:'10 0 0 5',
-        xtype      : 'fieldcontainer',
-        defaultType: 'checkboxfield',
-        reference : 'regroupValuesIntoClass',
-        hidden : true,
-        items: [
-            {
-                boxLabel  : 'Discretize flux values into 10 classes',
-                name      : 'regroupValuesIntoClass',
-                inputValue: true,
-                id        : 'regroupValuesIntoClassCheck'
-            }
-        ]
-    },
-    {
-        xtype      : 'fieldcontainer',
-        defaultType: 'checkboxfield',
-        label: 'Threshold',
-        hidden : true,
-        reference : 'threshold',
-        layout:{
-            type:'hbox',
-            align:'stretch'
-        },
-        margin:'0 5 0 5',
-        items: [
-            {
-                xtype: 'numberfield',
-                fieldLabel: 'Threshold',
-                minValue: 0,
-                name: 'threshold',
-                id: 'threshold'
-            }
-        ]
-    },
-    {   
         border:false,
-        id:'chooseCondition',
+        reference:'delConditionPanel',
         xtype:'panel',
-        autoScroll: true,
-        layout:{
-           type:'hbox',
-           align:'stretch'
-        },
-        items:[{
-            id:'selectCondition',
-            xtype:'selectCondition',
-            reference:'selectCondition',
-            disabled:true           
-        }
+        region:'north',
+        hidden:true,
+        margins:'0 0 0 0',
+        bbar: [
+            '->',//spliter to shift next component up to end of right
+            {
+                xtype: 'button',
+                iconCls:'download',
+                align:"right",
+                scale   : 'small',
+                margin:'5 5 5 0',
+                reference: 'saveScale',
+                tooltip: "Save scale"
+            },
+            {
+                xtype: 'filefield',
+                buttonOnly: true,
+                buttonText: '',
+                iconCls:'save',
+                scale   : 'small',
+                margin:'5 0 5 0',
+                maxHeight:"50px",
+                maxWidth:"50px",
+                style:{
+                    width: "40px !important"
+                },
+                buttonConfig: {
+                    cls:["x-toolbar-item","x-btn-default-toolbar-small"],
+                    iconCls:'save',
+                    align:"right",
+                    scale   : 'small',
+                    style:{
+                        margin:'0 5px 0 0'
+                    }
+                },
+                reference: 'importScale'
+            },
+            {
+                xtype: 'button',
+                iconCls:'junk',
+                align:"right",
+                scale   : 'small',
+                margin:'5 5 5 0',
+                reference: 'delCondition'
+            }
         ]
-    }
-        ,{
-            xtype: 'menuseparator'
+    },
+    {
+        xtype:"panel",
+        reference:'discreteCaptions',
+        region:'north',
+        margins:'0 0 0 0',
+        hidden:true,
+        border:false
+    },
+    {
+        xtype: "panel",
+        reference: "scaleCaption",
+        height: 110,
+        hidden:true,
+        width: 550,
+        html: "<svg id='scaleCaption' height='110' width='250px'> </svg>"
     }
     ]  
 });

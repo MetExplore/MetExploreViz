@@ -26,6 +26,11 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
                 var vizLoadMenu = view.lookupReference('vizLoadMenuID');
                 var searchNode = view.lookupReference('searchNode');
 
+				Ext.getCmp("allStylesForm").query("allStylesByTypeForm").forEach(function (allStylesByTypeForm) {
+						allStylesByTypeForm.lookupReference('captiontoolbar').enable();
+				});
+
+
 				if(searchNode!=undefined)
 				{
 					searchNode.setDisabled(false);
@@ -100,10 +105,6 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			scope : me
 		});
 
-		view.lookupReference('enterEditMode').on({
-			click : me.enterEditMode,
-			scope : me
-		});
 	},
 
 	changeoption : function(){
@@ -373,17 +374,5 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				Ext.MessageBox.alert('Server-side failure with status code ' + response.status); 
 			}
 		});
-	},
-    enterEditMode: function () {
-        metExploreD3.GraphStyleEdition.toggleEditMode();
-		if (metExploreD3.GraphStyleEdition.editMode){
-            Ext.getCmp('enterEditMode').setText("Exit edit mode");
-            Ext.getCmp('enterEditMode').setTooltip("Exit edit mode");
-		}
-		else {
-            Ext.getCmp('enterEditMode').setText("Enter edit mode");
-            Ext.getCmp('enterEditMode').setTooltip("Enter edit mode");
-		}
-        (metExploreD3.GraphStyleEdition.editMode) ? Ext.getCmp('editModePanel').show() : Ext.getCmp('editModePanel').hide();
-    }
+	}
 });

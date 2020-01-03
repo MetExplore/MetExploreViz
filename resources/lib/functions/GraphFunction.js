@@ -1053,7 +1053,7 @@ metExploreD3.GraphFunction = {
 			var force = session.getForce();
 			if(force!=undefined)
 			{
-				if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
+				if(session.isAnimated('viz'))
 					force.stop();
 
 			}
@@ -1077,7 +1077,7 @@ metExploreD3.GraphFunction = {
 		else extract();
 
 		function extract(){
-			var myMask = metExploreD3.createLoadMask("Keep only subnetwork...", 'viz');
+			var myMask = metExploreD3.createLoadMask("Keep only subnetwork...", 'graphPanel');
 			if(myMask!= undefined){
 
 				metExploreD3.showMask(myMask);
@@ -1140,7 +1140,7 @@ metExploreD3.GraphFunction = {
 						{
 							if(force!=undefined)
 							{
-								if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+								if(session.isAnimated("viz"))
 									force.alpha(1).restart();
 							}
 						}
@@ -1152,7 +1152,7 @@ metExploreD3.GraphFunction = {
 						{
 							if(force!=undefined)
 							{
-								if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+								if(session.isAnimated("viz"))
 									force.alpha(1).restart();
 							}
 						}
@@ -1170,7 +1170,7 @@ metExploreD3.GraphFunction = {
 	 */
 	highlightSubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
-		var myMask = metExploreD3.createLoadMask("Highlight Subnetwork...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Highlight Subnetwork...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1185,7 +1185,7 @@ metExploreD3.GraphFunction = {
 						var force = session.getForce();
 						if(force!=undefined)
 						{
-							if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
+							if(metExploreD3.GraphNetwork.isAnimated('viz'))
 								force.stop();
 
 						}
@@ -1378,7 +1378,7 @@ metExploreD3.GraphFunction = {
 					{
 						if(force!=undefined)
 						{
-							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+							if(session.isAnimated("viz"))
 								force.alpha(1).restart();
 						}
 					}
@@ -1390,7 +1390,7 @@ metExploreD3.GraphFunction = {
 					{
 						if(force!=undefined)
 						{
-							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+							if(session.isAnimated("viz")== true)
 								force.alpha(1).restart();
 						}
 					}
@@ -1793,7 +1793,7 @@ metExploreD3.GraphFunction = {
         // Side compounds are not included in the new graph structures
         // From each edges exiting or entering from a reversible reaction, a new edge between the same vertices but going into the opposite direction is created
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", "0.5")
             .filter(function (d) {
                 return (d.getSource().isSideCompound !== true && d.getTarget().isSideCompound !== true)
@@ -2029,7 +2029,7 @@ metExploreD3.GraphFunction = {
     highlightCycle: function (cycle) {
         d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("path.link.reaction")
-            .style("stroke", "black")
+            .style("stroke", "#000000")
             .style("stroke-width", "0.5");
         var cycleLinks = metExploreD3.GraphFunction.getLinksFromCycle(cycle);
         var nodesCycle = [];
@@ -2062,7 +2062,7 @@ metExploreD3.GraphFunction = {
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .filter(function (d) {
                 return (cycleLinks.includes(d));
-            }).style("stroke", "black")
+            }).style("stroke", "#000000")
             .style("stroke-width", "0.5");
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
             .filter(function (d) {

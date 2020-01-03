@@ -5,7 +5,6 @@ var NetworkVizSession = function(){
     this.active = false;
     this.activeMapping = "";
     this.animated = false;
-    this.colorMappings = [];
     this.colorSuggestions = [];
     this.colorComponents = [];
     this.displayNodeName = "";
@@ -67,28 +66,6 @@ NetworkVizSession.prototype = {
         this.activeMapping = activeMapping;
     },
 
-    // ColorMapping
-    getColorMappingsSet : function(){
-        return this.colorMappings;
-    },
-    getColorMappingById : function(id){
-        var theColorMapping = null;
-        this.colorMappings.forEach(function(aColorMapping){            
-            if(aColorMapping.getName()==id)
-                theColorMapping = aColorMapping;
-        });
-        return theColorMapping;
-    }, 
-    getColorMappingsSetLength : function(){
-        return this.colorMappings.length;
-    },
-    resetColorMapping : function(){
-        this.colorMappings = [];
-    },
-    addColorMapping : function(n, c){
-        this.colorMappings.push(new ColorMapping(n,c)); 
-    },
-
     // ColorSuggestion
     getColorSuggestionsSet : function(){
         return this.colorSuggestions;
@@ -115,7 +92,7 @@ NetworkVizSession.prototype = {
         this.colorSuggestions = [];
     },
     addColorSuggestion : function(n, c){
-        this.colorSuggestions.push(new ColorMapping(n,c));
+        this.colorSuggestions.push(new ValueMapping(n,c));
     },
 
     // ColorComponent
@@ -144,6 +121,9 @@ NetworkVizSession.prototype = {
         if(this.selectedNodes==undefined)
             this.selectedNodes = [];
         this.selectedNodes.push(nodeId);
+
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
     addSelectedPathway : function(pathid){
         if(this.selectedPathways==undefined)
@@ -188,6 +168,8 @@ NetworkVizSession.prototype = {
         {
             this.selectedNodes.push(nodeId);                
         }
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
 
     /**
@@ -209,6 +191,8 @@ NetworkVizSession.prototype = {
         this.selectedPathways = [];
         this.groups = [];
         this.nodesMap = [];
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
 
     getId:function()
@@ -347,11 +331,14 @@ NetworkVizSession.prototype = {
             }
             i++;
         }
-        //console.log(this.selectedNodes);
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
 
     removeAllSelectedNodes:function(){
         this.selectedNodes = [];
+        metExploreD3.fireEvent("metaboliteStyleForm", "updateSelectionSet");
+        metExploreD3.fireEvent("reactionStyleForm", "updateSelectionSet");
     },
 
     getSelectedNodes:function(){
@@ -371,7 +358,6 @@ NetworkVizSession.prototype = {
             }
             i++;
         }
-        //console.log(this.PathwayNodes);
     },
 
     removeAllSelectedPathways:function(){
@@ -395,7 +381,6 @@ NetworkVizSession.prototype = {
             }
             i++;
         }
-        //console.log(this.selectedNodes);
     },
 
     removeAllDuplicatedNodes:function(){

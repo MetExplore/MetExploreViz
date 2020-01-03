@@ -107,9 +107,6 @@ metExploreD3.GraphNode = {
      * @param {} d : a node
      */
     changeName: function (node) {
-        var me = this;
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-        var reactionStyle = metExploreD3.getReactionStyle();
         var generalStyle = metExploreD3.getGeneralStyle();
 
         var networkData = _metExploreViz.getSessionById("viz").getD3Data();
@@ -330,7 +327,7 @@ metExploreD3.GraphNode = {
                 return pathBack;
             })
             .attr("opacity", "0.20")
-            .attr("fill", "black");
+            .attr("fill", "#000000");
 
         box.select(".iconlocker")
             .attr("y", function (node) {
@@ -346,144 +343,6 @@ metExploreD3.GraphNode = {
             .select("text")
             .attr("opacity", reactionStyle.getLabelOpacity());
 
-
-    },
-
-    /*******************************************
-     * Change the style of Metabolite
-     */
-    refreshStyleOfMetabolite: function () {
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-
-        var metabolites = d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("g.node")
-            .filter(function (node) {
-                return node.getBiologicalType() == "metabolite";
-            });
-
-
-        metabolites
-            .filter(function (d) {
-                return !d.getIsSideCompound();
-            })
-            .setNodeForm(
-                metaboliteStyle.getWidth(),
-                metaboliteStyle.getHeight(),
-                metaboliteStyle.getRX(),
-                metaboliteStyle.getRY(),
-                undefined,
-                metaboliteStyle.getStrokeWidth()
-            );
-
-        metabolites
-            .filter(function (d) {
-                return d.getIsSideCompound();
-            })
-            .setNodeForm(
-                metaboliteStyle.getWidth() / 2,
-                metaboliteStyle.getHeight() / 2,
-                metaboliteStyle.getRX() / 2,
-                metaboliteStyle.getRY() / 2,
-                undefined,
-                metaboliteStyle.getStrokeWidth() / 2
-            );
-        var minDim = Math.min(metaboliteStyle.getWidth(), metaboliteStyle.getHeight());
-
-        metabolites.each(function (node) {
-            metExploreD3.GraphNode.addText(node, "viz");
-        });
-
-        metabolites.selectAll('.structure_metabolite')
-            .attr(
-                "viewBox",
-                function (d) {
-                    return "0 0 " + minDim
-                        + " " + minDim;
-                }
-            )
-            .attr("width", minDim * 8 / 10 + "px")
-            .attr("height", minDim * 8 / 10 + "px")
-            .attr("x", (-minDim / 2) + (minDim * 1 / 10))
-            .attr("preserveAspectRatio", "xMinYMin")
-            .attr("y", (-minDim / 2) + (minDim * 1 / 10));
-
-        // Lock Image definition
-        var box = metabolites.selectAll(".locker")
-            .attr(
-                "viewBox",
-                function (d) {
-                    +" " + minDim;
-                }
-            )
-            .attr("width", function (node) {
-                return metaboliteStyle.getWidth();
-            })
-            .attr("height", function (node) {
-                return metaboliteStyle.getHeight();
-            })
-            .attr("preserveAspectRatio", "xMinYMin")
-            .attr("y", function (node) {
-                return -metaboliteStyle.getHeight();
-            })
-            .attr("x", function (node) {
-                return -metaboliteStyle.getWidth();
-            })
-            .attr("class", "locker")
-            .classed('hide', true);
-
-        box.select(".backgroundlocker")
-            .attr("d", function (node) {
-                var pathBack = "M" + metaboliteStyle.getWidth() + "," + metaboliteStyle.getHeight() +
-                    " L0," + metaboliteStyle.getHeight() +
-                    " L0," + metaboliteStyle.getRY() * 2 +
-                    " A" + metaboliteStyle.getRX() * 2 + "," + metaboliteStyle.getRY() * 2 + ",0 0 1 " + metaboliteStyle.getRX() * 2 + ",0" +
-                    " L" + metaboliteStyle.getWidth() + ",0";
-                return pathBack;
-
-            })
-            .attr("opacity", "0.20")
-            .attr("fill", "black");
-
-        box.select(".iconlocker")
-            .attr("y", function (node) {
-                return metaboliteStyle.getHeight() / 4 - (metaboliteStyle.getHeight() - metaboliteStyle.getRY() * 2) / 8;
-
-            })
-            .attr("x", function (node) {
-                return metaboliteStyle.getWidth() / 4 - (metaboliteStyle.getWidth() - metaboliteStyle.getRX() * 2) / 8;
-            })
-            .attr("width", "40%")
-            .attr("height", "40%");
-
-        var session = _metExploreViz.getSessionById("viz");
-
-        var force = session.getForce();
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-        var reactionStyle = metExploreD3.getReactionStyle();
-
-        var maxDimRea = Math.max(reactionStyle.getWidth(), reactionStyle.getHeight());
-        var maxDimMet = Math.max(metaboliteStyle.getWidth(), metaboliteStyle.getHeight());
-        var maxDim = Math.max(maxDimRea, maxDimMet);
-
-
-        var linkStyle = metExploreD3.getLinkStyle();
-
-        var force = session.getForce();
-
-        var forceLinks = force.force("link")
-            .distance(function(link){
-                if(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())
-                    return linkStyle.getSize() / 2 + maxDim;
-                else
-                    return linkStyle.getSize() + maxDim;
-            });
-
-        force
-            .force("link", forceLinks);
-
-        metabolites
-            .select("text")
-            .attr("opacity", metaboliteStyle.getLabelOpacity());
 
     },
 
@@ -601,11 +460,10 @@ metExploreD3.GraphNode = {
                 for (var key in sessionsStore) {
                     if (sessionsStore[key].isLinked() && _MyThisGraphNode.activePanel != sessionsStore[key].getId()) {
                         var animLinked = metExploreD3.GraphNetwork.isAnimated(mainSession.getId());
-                        if (animLinked == 'true') {
+                        if (animLinked) {
                             var mainforce = mainSession.getForce();// of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 
-                            if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == 'true')
-                                || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent) == null)) {
+                            if (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.panelParent)) {
                                 mainforce.alpha(1).restart();
                             }
                         }
@@ -618,11 +476,10 @@ metExploreD3.GraphNode = {
             }
             else {
                 var anim = metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel);
-                if (anim == 'true') {
+                if (anim) {
                     var force = session.getForce();// of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 
-                    if ((metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == 'true')
-                        || (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel) == null)) {
+                    if (metExploreD3.GraphNetwork.isAnimated(_MyThisGraphNode.activePanel)) {
                         force.alpha(1).restart();
                     }
                 }
@@ -1388,7 +1245,7 @@ metExploreD3.GraphNode = {
 
                 })
                 .attr("opacity", "0.20")
-                .attr("fill", "black");
+                .attr("fill", "#000000");
 
             box.append("image")
                 .attr("class", "iconlocker")
@@ -1451,33 +1308,33 @@ metExploreD3.GraphNode = {
             })
             .filter(function (node) {
                 var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
-                return (mappingData !== null && session.getColorMappingById(mappingData.getMapValue()) !== null);
+                return (mappingData !== null && aStyleFormParent.getController().getValueMappingById(session.getMappingDataType(), mappingData.getMapValue()) !== null);
             })
             .attr("mapped", function (node) {
                 var mappingData = node.getMappingDataByNameAndCond(session.getActiveMapping(), session.isMapped());
 
                 if (session.getMappingDataType() === "Continuous") {
-                    if (session.getColorMappingsSet()[0] < session.getColorMappingsSet()[1]) {
-                        maxValue = session.getColorMappingsSet()[1];
-                        minValue = session.getColorMappingsSet()[0];
+                    if (aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0] < aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1]) {
+                        maxValue = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1];
+                        minValue = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0];
                     }
                     else {
-                        maxValue = session.getColorMappingsSet()[0];
-                        minValue = session.getColorMappingsSet()[1];
+                        maxValue = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0];
+                        minValue = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1];
                     }
 
                     var generalStyle = _metExploreViz.getGeneralStyle();
-                    var colorMin = generalStyle.getColorMinMappingContinuous();
-                    var colorMax = generalStyle.getColorMaxMappingContinuous();
+                    var valueMin = generalStyle.getValueMinMappingContinuous();
+                    var valueMax = generalStyle.getValueMaxMappingContinuous();
 
                     var colorScale = d3.scaleLinear()
                         .domain([parseFloat(minValue), parseFloat(maxValue)])
-                        .range([colorMin, colorMax]);
+                        .range([valueMin, valueMax]);
 
                     return colorScale(parseFloat(mappingData.getMapValue()));
                 }
 
-                var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
+                var color = aStyleFormParent.getController().getValueMappingById(session.getMappingDataType(), mappingData.getMapValue()).getValue();
                 return color;
             })
             .style("fill", function (node) {
@@ -1495,27 +1352,27 @@ metExploreD3.GraphNode = {
                     .style("opacity", '0.5')
                     .style("fill", 'red');
                 if (session.getMappingDataType() === "Continuous") {
-                    if (parseFloat(session.getColorMappingsSet()[0].getName()) < parseFloat(session.getColorMappingsSet()[1].getName())) {
-                        maxValue = parseFloat(session.getColorMappingsSet()[1].getName());
-                        minValue = parseFloat(session.getColorMappingsSet()[0].getName());
+                    if (parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0].getName()) < parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1].getName())) {
+                        maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1].getName());
+                        minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0].getName());
                     }
                     else {
-                        maxValue = parseFloat(session.getColorMappingsSet()[0].getName());
-                        minValue = parseFloat(session.getColorMappingsSet()[1].getName());
+                        maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[0].getName());
+                        minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType())[1].getName());
                     }
 
                     var generalStyle = _metExploreViz.getGeneralStyle();
-                    var colorMin = generalStyle.getColorMinMappingContinuous();
-                    var colorMax = generalStyle.getColorMaxMappingContinuous();
+                    var valueMin = generalStyle.getValueMinMappingContinuous();
+                    var valueMax = generalStyle.getValueMaxMappingContinuous();
 
                     var colorScale = d3.scaleLinear()
                         .domain([parseFloat(minValue), parseFloat(maxValue)])
-                        .range([colorMin, colorMax]);
+                        .range([valueMin, valueMax]);
 
                     return colorScale(parseFloat(mappingData.getMapValue()));
 
                 }
-                var color = session.getColorMappingById(mappingData.getMapValue()).getValue();
+                var color = aStyleFormParent.getController().getValueMappingById(session.getMappingDataType(), mappingData.getMapValue()).getValue();
                 return color;
             });
 
@@ -1706,11 +1563,10 @@ metExploreD3.GraphNode = {
                 var sessionMain = _metExploreViz.getSessionById('viz');
                 if (sessionMain != undefined) {
                     var animLinked = metExploreD3.GraphNetwork.isAnimated(sessionMain.getId());
-                    if (animLinked == 'true') {
+                    if (animLinked) {
                         var force = sessionMain.getForce();
                         if (force != undefined) {
-                            if (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == 'true'
-                                || metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) == null) {
+                            if (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId())) {
                                 force.alpha(force.alpha()).restart();
                             }
                         }
@@ -1721,11 +1577,10 @@ metExploreD3.GraphNode = {
 
                 var force = session.getForce();
                 var animLinked = metExploreD3.GraphNetwork.isAnimated(session.getId());
-                if (animLinked == 'true') {
+                if (animLinked) {
                     var force = session.getForce();
                     if (force != undefined) {
-                        if ((metExploreD3.GraphNetwork.isAnimated(session.getId()) == 'true')
-                            || (metExploreD3.GraphNetwork.isAnimated(session.getId()) == null)) {
+                        if (metExploreD3.GraphNetwork.isAnimated(session.getId())) {
                             force.alpha(force.alpha()).restart();
                         }
                     }
@@ -2034,7 +1889,7 @@ metExploreD3.GraphNode = {
                             d.isSelected = true;
                             session.addSelectedPathway(d.key);
                             d3.select(this)
-                                .style("stroke", "black")
+                                .style("stroke", "#000000")
                                 .style("stroke-width", 20)
                                 .style("stroke-linejoin", "round")
                         }
@@ -2044,7 +1899,7 @@ metExploreD3.GraphNode = {
                             d.isSelected = true;
                             session.addSelectedPathway(d.key);
                             d3.select(this)
-                                .style("stroke", "black")
+                                .style("stroke", "#000000")
                                 .style("stroke-width", 20)
                                 .style("stroke-linejoin", "round")
                         }
@@ -2157,70 +2012,76 @@ metExploreD3.GraphNode = {
                         imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + imageScale + ")");
                     }
                 }
-
                 var links = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
 
-                if (d.getBiologicalType() == "reaction") {
+                if (d.getBiologicalType() === "reaction") {
 
-                    links.filter(function (link) {
-                        return d.getId() == link.getSource().getId();
-                    })
+                    links
                         .filter(function (link) {
-
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
-
-                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                            return d.getId() === link.getSource().getId();
                         })
-                        .style("stroke", "green")
-                        .style("stroke-width", "1.5");
+                        .each(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
 
-                    links.filter(function (link) {
-                        return d.getId() == link.getTarget().getId();
-                    })
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "green");
+                        });
+
+                    links
                         .filter(function (link) {
-
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
-
-                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                            return d.getId() === link.getTarget().getId();
                         })
-                        .style("stroke", "red")
-                        .style("stroke-width", "1.5");
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "red");
+                        });
                 }
                 else {
-                    links.filter(function (link) {
-                        return d.getId() == link.getSource().getId();
-                    })
+                    links
                         .filter(function (link) {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
-
-                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                            return d.getId() === link.getSource().getId();
                         })
-                        .style("stroke", "red")
-                        .style("stroke-width", "1.5");
-
-                    links.filter(function (link) {
-                        return d.getId() == link.getTarget().getId();
-                    })
                         .filter(function (link) {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
 
-                            return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "red");
+                        });
+
+                    links
+                        .filter(function (link) {
+                            return d.getId() == link.getTarget().getId();
                         })
-                        .style("stroke", "green")
-                        .style("stroke-width", "1.5");
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "green");
+                        });
                 }
             })
             .on("mouseover", function (d) {
                 var nodes = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("g.node").nodes();
                 var nodeElemt=this;
+
 
                 d3.select(this)
                     .each(function (node) {
@@ -2240,8 +2101,8 @@ metExploreD3.GraphNode = {
                             this.parentNode.insertBefore(this, last);
                             this.parentNode.insertBefore(last, this);
 
-                            var session = _metExploreViz.getSessionById(parent);
-                            var mappingName = session.getActiveMapping();
+                            var combBoxSelectMappingVisu = Ext.getCmp('selectMapping');
+                            var mappingName =  combBoxSelectMappingVisu.getValue();
 
                             if(node.getMappingDatasLength() > 0 && mappingName !== "")
                             {
@@ -2264,7 +2125,7 @@ metExploreD3.GraphNode = {
                                     var tooltipText =  d3.select("#"+parent).select('#tooltipPathwaysText');
 
 
-                                    var covText = "Coverage : "+(mapCov.getMapValue()).toFixed(2);
+                                    var covText = "Coverage : "+(mapCov.getMapValue()).toFixed(2)*100 + "%";
                                     var pValText = "p-value BH : "+(mapPE.getMapValue()).toFixed(4);
 
                                     var nameDOMFormat = $("<div/>").html(covText).text();
@@ -2304,7 +2165,7 @@ metExploreD3.GraphNode = {
 
                 metExploreD3.GraphNode.node
                     .filter(function (node) {
-                        return node == d
+                        return node === d;
                     })
                     .select('.locker')
                     .classed('hide', true);
@@ -2355,23 +2216,10 @@ metExploreD3.GraphNode = {
                     d.fixed = false;
                     metExploreD3.GraphNode.unfixNode(d);
                 }
-                var linkStyle = metExploreD3.getLinkStyle();
 
                 d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link.reaction")
-                    .filter(function (link) {
-                        return d.getId() == link.getSource().getId() || d.getId() == link.getTarget().getId();
-                    })
-                    .filter(function (link) {
-                        return d3.select(this).style("stroke") !== "rgb(0, 0, 255)";
-                    })
-                    .style("stroke", linkStyle.getStrokeColor())
-                    .style("stroke-width", "0.5")
-                    .each(function () {
-                        var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                        var first = linksover[0];
-                        this.parentNode.insertBefore(this, first);
-                    });
+                    .selectAll("path.highlightlink")
+                    .remove();
 
 
                 if (d.getBiologicalType() == "reaction") {
@@ -2435,58 +2283,69 @@ metExploreD3.GraphNode = {
                         imageElement.attr("transform", "translate(" + (imageTranslate[0] / 2) + ", " + imageTranslate[1] / 2 + ") scale(" + imageScale + ")");
                     }
                 }
-
                 var links = d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
 
-                if (d.getBiologicalType() == "reaction") {
+                if (d.getBiologicalType() === "reaction") {
 
                     links
                         .filter(function (link) {
-                            return d.getId() == link.getSource().getId();
+                            return d.getId() === link.getSource().getId();
                         })
-                        .style("stroke", "green")
-                        .style("stroke-width", "1.5")
-                        .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                        .each(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "green");
                         });
 
                     links
                         .filter(function (link) {
-                            return d.getId() == link.getTarget().getId();
+                            return d.getId() === link.getTarget().getId();
                         })
-                        .style("stroke", "red")
-                        .style("stroke-width", "1.5")
-                        .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "red");
                         });
                 }
                 else {
                     links
                         .filter(function (link) {
-                            return d.getId() == link.getSource().getId();
+                            return d.getId() === link.getSource().getId();
                         })
-                        .style("stroke", "red")
-                        .style("stroke-width", "1.5")
-                        .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "red");
                         });
 
                     links
                         .filter(function (link) {
                             return d.getId() == link.getTarget().getId();
                         })
-                        .style("stroke", "green")
-                        .style("stroke-width", "1.5")
-                        .each(function () {
-                            var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                            var last = linksover[linksover.length - 1];
-                            this.parentNode.appendChild(this, last);
+                        .filter(function (link) {
+                            var clone = this.cloneNode(true);
+                            this.parentNode.appendChild(clone);
+
+                            d3.select(clone)
+                                .classed("reaction", false)
+                                .classed("link", false)
+                                .classed("highlightlink", true)
+                                .style("stroke", "green");
                         });
                 }
             })
@@ -2605,21 +2464,10 @@ metExploreD3.GraphNode = {
                     d.fixed = false;
                     metExploreD3.GraphNode.unfixNode(d);
                 }
-                var linkStyle = metExploreD3.getLinkStyle();
-
 
                 d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-                    .selectAll("path.link.reaction")
-                    .filter(function (link) {
-                        return d.getId() == link.getSource().getId() || d.getId() == link.getTarget().getId();
-                    })
-                    .style("stroke", linkStyle.getStrokeColor())
-                    .style("stroke-width", "0.5")
-                    // .each(function () {
-                    //     var linksover = d3.select(this.parentNode).selectAll("path.link").nodes();
-                    //     var first = linksover[0];
-                    //     this.parentNode.insertBefore(this, first);
-                    // });
+                    .selectAll("path.highlightlink")
+                    .remove();
 
                 if (d.getBiologicalType() == "reaction") {
                     d3.select(this).selectAll("rect").selectAll(".reaction, .fontSelected").transition()

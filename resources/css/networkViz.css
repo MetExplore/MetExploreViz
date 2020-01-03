@@ -2,16 +2,12 @@ circle.metabolite{
 		stroke:#cccccc;
 }   
 rect.reaction{
-		stroke:black;
+		stroke:#000000;
 }    
 text.metabolite{
-	fill:black;
-	font:10px sans-serif;
 	text-anchor:middle;
 }
 text.reaction{
-	fill:black;
-	font:10px sans-serif;
 	text-anchor:middle;
 }
 

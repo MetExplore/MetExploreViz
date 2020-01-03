@@ -50,9 +50,7 @@ Ext.define('metExploreViz.view.form.generalStyleForm.GeneralStyleFormController'
 							metExploreD3.GraphLink.reloadLinks(
 								"viz", 
 								_metExploreViz.getSessionById("viz").getD3Data(), 
-								metExploreD3.getLinkStyle(), 
-								metExploreD3.getMetaboliteStyle());					
-
+								metExploreD3.getLinkStyle());
 						}	
 						else
 						{

@@ -58,16 +58,8 @@ metExploreD3.GraphPanel = {
             // Get height and witdh of panel
             var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
             var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
-            var linkStyle = metExploreD3.getLinkStyle();
-            var generalStyle = metExploreD3.getGeneralStyle();
-            var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-            var reactionStyle = metExploreD3.getReactionStyle();
 
-            var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
-            var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
-            var maxDim = Math.max(maxDimRea, maxDimMet);
             // Initiate the D3 force drawing algorithm
-
             var session = _metExploreViz.getSessionById(panel);
 
 			var forceX = d3.forceX()
@@ -129,49 +121,6 @@ metExploreD3.GraphPanel = {
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
 
-		if(d3.select("#"+panel).select("#D3viz").select("#buttonZoomIn").node()!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonZoomOut").node()!=null
-			&& d3.select("#"+panel).select("#D3viz").select("#buttonHand").node()!=null)
-		{
-			var x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonZoomIn")
-				.attr('x');
-			var deltaX = w-60-x;
-
-			d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonZoomIn")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
-
-			x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonZoomOut")
-				.attr('x');
-			deltaX = w-110-x;
-
-			d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonZoomOut")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
-			x = d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonHand")
-				.attr('x');
-			deltaX = w-160-x;
-
-		    d3
-				.select("#"+panel)
-				.select("#D3viz")
-				.select("#buttonHand")
-				.attr("transform", "translate("+deltaX+",0) scale(1)");
-
-		}
 		if(session!=undefined)
 		{
 			if(session.isLinked()){
@@ -245,7 +194,14 @@ metExploreD3.GraphPanel = {
 
 			var vizComp = Ext.getCmp("viz");
 			if(vizComp!=undefined){
-				var myMask = metExploreD3.createLoadMask("Refresh in process...", 'viz');
+				var panel;
+				console.log(Ext.getCmp("maskInit"));
+				if(Ext.getCmp("maskInit").isHidden())
+					panel = 'graphPanel';
+				else
+					panel = "maskInit";
+console.log(panel);
+				var myMask = metExploreD3.createLoadMask("Refresh in process...", panel);
 				if(myMask!= undefined){
 
 					metExploreD3.showMask(myMask);
@@ -274,7 +230,7 @@ metExploreD3.GraphPanel = {
 								metExploreD3.fireEvent('graphPanel', 'afterrefresh');*/
 								function end(){
 									metExploreD3.hideMask(myMask);
-
+									metExploreD3.hideInitialMask();
 									metExploreD3.fireEvent('graphPanel', 'afterrefresh');
 									if(metExploreD3.isNewBioSource()){
 										metExploreD3.hideInitialMask();
@@ -301,7 +257,6 @@ metExploreD3.GraphPanel = {
 	*/
 	refreshPanel : function(json, func) {
 		var me = this;
-		metExploreD3.hideInitialMask();
 
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
@@ -693,6 +648,7 @@ metExploreD3.GraphPanel = {
 
 				if(jsonParsed.generalStyle)
 				{
+					console.log(jsonParsed.generalStyle);
 					var oldGeneralStyle = metExploreD3.getGeneralStyle();
 					var style = new GeneralStyle(
 						oldGeneralStyle.getWebsiteName(),
@@ -710,6 +666,26 @@ metExploreD3.GraphPanel = {
 						oldGeneralStyle.windowsAlertIsDisable()
 					);
 					metExploreD3.setGeneralStyle(style);
+				}
+
+				var linkStyle;
+				if(jsonParsed.linkStyle)
+				{
+					linkStyle = new LinkStyle(jsonParsed.linkStyle.size, jsonParsed.linkStyle.lineWidth, jsonParsed.linkStyle.markerWidth, jsonParsed.linkStyle.markerHeight, jsonParsed.linkStyle.markerInColor, jsonParsed.linkStyle.markerOutColor, jsonParsed.linkStyle.markerStrokeColor, jsonParsed.linkStyle.markerStrokeWidth, jsonParsed.linkStyle.strokeColor);
+					metExploreD3.setLinkStyle(linkStyle);
+
+				}
+				var metaboliteStyle
+				if(jsonParsed.metaboliteStyle)
+				{
+					metaboliteStyle = new MetaboliteStyle(jsonParsed.metaboliteStyle.backgroundColor,jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.opacity, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.fontColor, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.labelOpacity, jsonParsed.metaboliteStyle.label,  jsonParsed.metaboliteStyle.useAlias);
+				}
+
+				var reactionStyle;
+				if(jsonParsed.reactionStyle)
+				{
+					var reactionStyle = new ReactionStyle(jsonParsed.reactionStyle.backgroundColor,jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.opacity, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth, jsonParsed.reactionStyle.fontColor, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.labelOpacity, jsonParsed.reactionStyle.label,  jsonParsed.reactionStyle.useAlias);
+					metExploreD3.setReactionStyle(reactionStyle);
 				}
 
 				var sessions = jsonParsed.sessions;
@@ -745,14 +721,6 @@ metExploreD3.GraphPanel = {
 						//metExploreD3.GraphNetwork.refreshSvg(panelId);
 					}
 
-
-					if(sessions[key].colorMappings)
-					{
-						sessions[key].colorMappings.forEach(function(colorMapping){
-							networkVizSession.addColorMapping(colorMapping.name, colorMapping.value);
-						});
-					}
-
 					var anim = sessions[key].animated;
 
 					if(!anim)
@@ -767,13 +735,26 @@ metExploreD3.GraphPanel = {
 					nodes.forEach(function(node){
 						if(node.getBiologicalType()=="metabolite")
 						{
+							if(node.svgWidth==="0" || node.svgWidth===undefined)
+								node.svgWidth= metaboliteStyle.getWidth();
+
+							if(node.svgHeight==="0" || node.svgHeight===undefined)
+								node.svgHeight= metaboliteStyle.getHeight();
+
 							if(networkData.getCompartmentByName(node.getCompartment())==null)
 								networkData.addCompartment(node.getCompartment());
                             }
 						else
 						{
                             if(node.getBiologicalType()=="reaction") {
-                                node.getPathways().forEach(function (pathway) {
+								if(node.svgWidth==="0" || node.svgWidth===undefined)
+									node.svgWidth= reactionStyle.getWidth();
+
+								if(node.svgHeight==="0" || node.svgHeight===undefined)
+									node.svgHeight= reactionStyle.getHeight();
+
+
+								node.getPathways().forEach(function (pathway) {
                                     if (networkData.getPathwayByName(pathway) == null)
                                         networkData.addPathway(pathway);
                                 });
@@ -800,12 +781,12 @@ metExploreD3.GraphPanel = {
 
 					networkVizSession.setD3Data(networkData);
 
-					if(sessions[key].selectedNodes)
-					{
-						sessions[key].selectedNodes.forEach(function(nodeId){
-							networkVizSession.addSelectedNode(nodeId);
-						});
-					}
+					// if(sessions[key].selectedNodes)
+					// {
+					// 	sessions[key].selectedNodes.forEach(function(nodeId){
+					// 		networkVizSession.addSelectedNode(nodeId);
+					// 	});
+					// }
 
 					if(sessions[key].duplicatedNodes)
 					{
@@ -824,7 +805,8 @@ metExploreD3.GraphPanel = {
 			                {
 			                    _metExploreViz.getMappingsSet().forEach(function(mapping){
 			                    	metExploreD3.GraphMapping.reloadMapping(mapping);
-				                	metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+				                	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
+									metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
 			                    });
 				                metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", true);
 			                }
@@ -856,24 +838,7 @@ metExploreD3.GraphPanel = {
 				}
 
 
-				if(jsonParsed.linkStyle)
-				{
-					var style = new LinkStyle(jsonParsed.linkStyle.size, jsonParsed.linkStyle.lineWidth, jsonParsed.linkStyle.markerWidth, jsonParsed.linkStyle.markerHeight, jsonParsed.linkStyle.markerInColor, jsonParsed.linkStyle.markerOutColor, jsonParsed.linkStyle.markerStrokeColor, jsonParsed.linkStyle.markerStrokeWidth, jsonParsed.linkStyle.strokeColor);
-					metExploreD3.setLinkStyle(style);
 
-				}
-
-				if(jsonParsed.metaboliteStyle)
-				{
-					var style = new MetaboliteStyle(jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.label, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.useAlias);
-					metExploreD3.setMetaboliteStyle(style);
-				}
-
-				if(jsonParsed.reactionStyle)
-				{
-					var style = new ReactionStyle(jsonParsed.reactionStyle.height, jsonParsed.reactionStyle.width, jsonParsed.reactionStyle.rx, jsonParsed.reactionStyle.ry, jsonParsed.reactionStyle.label, jsonParsed.reactionStyle.fontSize, jsonParsed.reactionStyle.strokeColor, jsonParsed.reactionStyle.strokeWidth, jsonParsed.metaboliteStyle.useAlias);
-					metExploreD3.setReactionStyle(style);
-				}
 
 				for (var key in sessions) {
 					metExploreD3.GraphNetwork.first=true;
@@ -928,17 +893,34 @@ metExploreD3.GraphPanel = {
 
 			var networkData = new NetworkData('viz');
 			networkData.cloneObject(jsonParsed);
-
+			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+			var reactionStyle = metExploreD3.getReactionStyle();
+			console.log(metaboliteStyle);
+			console.log(reactionStyle);
 			var nodes = networkData.getNodes();
 			nodes.forEach(function(node){
 				if(node.getBiologicalType()=="metabolite")
 				{
+					if(node.svgWidth==="0" || node.svgWidth===undefined)
+						node.svgWidth= metaboliteStyle.getWidth();
+
+					if(node.svgHeight==="0" || node.svgHeight===undefined)
+						node.svgHeight= metaboliteStyle.getHeight();
+
 					if(networkData.getCompartmentByName(node.getCompartment())==null)
 						networkData.addCompartment(node.getCompartment());
                     if(networkData.getCompartmentsLength()>0) metExploreD3.fireEventArg('selectComponentVisu', "jsoninit", {name:"Compartments", data:networkData.getCompartments()});
 				}
 				else
 				{
+					if(node.getBiologicalType()==="reaction"){
+						if(node.svgWidth==="0" || node.svgWidth===undefined)
+							node.svgWidth= reactionStyle.getWidth();
+
+						if(node.svgHeight==="0" || node.svgHeight===undefined)
+							node.svgHeight= reactionStyle.getHeight();
+					}
+
 					node.getPathways().forEach(function(pathway){
 						if(networkData.getPathwayByName(pathway)==null)
 							networkData.addPathway(pathway);
@@ -1005,7 +987,8 @@ metExploreD3.GraphPanel = {
 			{
 	            _metExploreViz.getMappingsSet().forEach(function(mapping){
 	            	metExploreD3.GraphMapping.reloadMapping(mapping);
-	            	metExploreD3.fireEventArg('selectMappingVisu', "jsonmapping", mapping);
+	            	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
+					metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
 	            }); 
 	            metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", true);
 			}

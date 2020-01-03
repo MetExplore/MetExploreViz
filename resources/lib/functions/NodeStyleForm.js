@@ -88,10 +88,6 @@ metExploreD3.NodeStyleForm = {
                 .attr("id", "D3vizExemple")
         }
 
-        if(object==="Metabolite")
-            var style = metExploreD3.getMetaboliteStyle();
-        else
-            var style = metExploreD3.getReactionStyle();
 
         var that = this;
 
@@ -131,7 +127,7 @@ metExploreD3.NodeStyleForm = {
             .append("svg:text")
             .attr("class", "metabolite")
             .attr("id", "metabolite")
-            .attr("fill", "black")
+            .attr("fill", "#000000")
             .text(function(d) {
 
                 var text=$("<div/>").html(style.getLabel()).text();

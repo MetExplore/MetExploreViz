@@ -6,7 +6,9 @@
 Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.form-selectConditionForm-selectConditionForm',
-
+	requires: [
+		"metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor"
+	],
 	/**
 	 * Aplies event linsteners to the view
 	 */
@@ -59,106 +61,168 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		});
 
 		view.lookupReference('selectConditionType').on({
-			change : function(that, newVal){
-				if(newVal=="Flux"){
-					view.lookupReference('opacity').setHidden(false);  
-					view.lookupReference('valueonarrow').setHidden(false);
-                    view.lookupReference('regroupValuesIntoClass').setHidden(false);
-					view.lookupReference('threshold').setHidden(true);
-				}
-				else{
-					if(newVal=="Suggestion"){
-						view.lookupReference('opacity').setHidden(true);
-						view.lookupReference('valueonarrow').setHidden(true);
-                        view.lookupReference('regroupValuesIntoClass').setHidden(true);
-					view.lookupReference('threshold').setHidden(false);
-					}
-					else{
-						view.lookupReference('opacity').setHidden(true);
-						view.lookupReference('valueonarrow').setHidden(true);
-                        view.lookupReference('regroupValuesIntoClass').setHidden(true);
-					view.lookupReference('threshold').setHidden(true);
-					}
-				}
-			},
-			collapse : function(){
-				var networkVizSession = _metExploreViz.getSessionById("viz");
-				// If the main network is already mapped we inform the user: OK/CANCEL
-				if((view.lookupReference('selectConditionType').getValue()!=="Suggestion" &&
-                        networkVizSession.getColorMappingsSetLength()>0) && networkVizSession.isMapped()!=='false')
-				{
-			        Ext.Msg.show({
-			           title:'Are you sure?',
-			           msg: 'This action will remove previous mapping. <br />Would you like to do this?',
-			           buttons: Ext.Msg.OKCANCEL,
-			           fn: function(btn){
-							if(btn==="ok")
-							{	
-								//var newMapping ='true';
-								me.closeMapping();
-							}
-			           },
-			           icon: Ext.Msg.QUESTION
-			       });
-				}
+			change : function(that, newVal, old){
+				var viewAStyleForm = me.getAStyleFormParent();
+
+				this.map(newVal, old, viewAStyleForm);
 			},
 			scope:me
 		});
+
 
 		view.lookupReference('selectCondition').on({
 			change : function(that, newVal, old){
-				var type = view.lookupReference('selectConditionType').lastValue;
-				if(type!=="Flux"){
-					if(old)
-					{
-						var i = newVal.indexOf(old[0]);
-						if(i!==-1)
-						{
-							newVal.splice(i, 1);
-						}
-						view.lookupReference('selectCondition').setValue(newVal[0]);
-					}
-					view.lookupReference('selectCondition').collapse();
-				}
-				else
-				{
-					if(newVal>2){
-						newVal.splice(0,1);
-						view.lookupReference('selectCondition').setValue(newVal);
-					}
-				}
-			},
-			collapse : function(){
-				var networkVizSession = _metExploreViz.getSessionById("viz");
-				var that = this;
-
-				if(view.lookupReference('selectCondition').getValue().length>0)
-                {
-                    // If the main network is already mapped we inform the user: OK/CANCEL
-                    if(view.lookupReference('selectConditionType').getValue()!=="Suggestion" &&
-						networkVizSession.getColorMappingsSetLength()>0 &&
-                        networkVizSession.isMapped()!=='false')
-					{
-				        Ext.Msg.show({
-				           title:'Are you sure?',
-				           msg: 'This action will remove previous mapping. <br />Would you like to do this?',
-				           buttons: Ext.Msg.OKCANCEL,
-				           fn: function(btn){
-								if(btn==="ok")
-								{
-									me.closeMapping();
-									that.map();
-								}
-				           },
-				           icon: Ext.Msg.QUESTION
-				       });
-					}
-					else
-						this.map();	
-				}
+				this.map(newVal, old, me.getAStyleFormParent());
 			},
 			scope:me
 		});
+
+		view.lookupReference('saveScale').on({
+			click : function(){
+				var viewAStyleForm = me.getAStyleFormParent();
+
+				var dataType = view.lookupReference('selectConditionType').getValue();
+
+				if(dataType==="Continuous"){
+				}
+
+				if(dataType==="Discrete" || dataType==="As selection" || dataType==="Alias"){
+					metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueMappings);
+				}
+				switch (dataType) {
+					case 'Continuous':
+						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.scaleRange);
+						break;
+					case 'Discrete':
+						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueDiscreteMappings);
+						break;
+					case 'As selection':
+						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueAsSelectionMappings);
+						break;
+					case 'Alias':
+						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueAliasMappings);
+						break;
+					default:
+				}
+
+			},
+			scope:me
+		});
+
+		view.lookupReference('importScale').on({
+			change:function(){
+				metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importScale').fileInputEl.dom, function(json){
+					var viewAStyleForm = me.getAStyleFormParent();
+
+					var dataType = view.lookupReference('selectConditionType').getValue();
+
+					if(dataType==="Continuous"){
+						// Allows to reload the same file
+						viewAStyleForm.scaleRange = metExploreD3.GraphUtils.decodeJSON(json);
+						viewAStyleForm.getController().updateContinuousCaption();
+						viewAStyleForm.getController().updateContinuousMapping();
+					}
+
+					if (dataType==="Discrete"){
+						me.removeCaption();
+						var newArray = metExploreD3.GraphUtils.decodeJSON(json).map(function (val) {
+							return new ValueMapping(val.name, val.value);
+						});
+
+						if(newArray!==viewAStyleForm.valueDiscreteMappings){
+							viewAStyleForm.valueDiscreteMappings=newArray;
+
+							var selectConditionForm = viewAStyleForm.lookupReference('selectConditionForm');
+							var selectCondition = selectConditionForm.lookupReference('selectCondition');
+							var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+							var dataType = selectConditionType.getValue();
+							var selectedCondition = selectCondition.getValue();
+							if(dataType==="Discrete" && selectedCondition!==null){
+								viewAStyleForm.getController().updateDiscreteMapping();
+							}
+						}
+					}
+
+					if (dataType==="As selection"){
+						me.removeCaption();
+
+						var newArray = metExploreD3.GraphUtils.decodeJSON(json).map(function (val) {
+							return new ValueMapping(val.name, val.value);
+						});
+
+						if(newArray!==viewAStyleForm.valueAsSelectionMappings){
+							viewAStyleForm.valueAsSelectionMappings=newArray;
+
+							var selectConditionForm = viewAStyleForm.lookupReference('selectConditionForm');
+							var selectCondition = selectConditionForm.lookupReference('selectCondition');
+							var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+							var dataType = selectConditionType.getValue();
+							var selectedCondition = selectCondition.getValue();
+							if(dataType==="As selection" && selectedCondition!==null){
+								viewAStyleForm.getController().updateDiscreteMapping();
+							}
+						}
+					}
+
+					if (dataType==="Alias"){
+						me.removeCaption();
+
+						var newArray = metExploreD3.GraphUtils.decodeJSON(json).map(function (val) {
+							return new ValueMapping(val.name, val.value);
+						});
+
+						if(newArray!==viewAStyleForm.valueAliasMappings){
+							viewAStyleForm.valueAliasMappings=newArray;
+
+							var selectConditionForm = viewAStyleForm.lookupReference('selectConditionForm');
+							var selectCondition = selectConditionForm.lookupReference('selectCondition');
+							var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+							var dataType = selectConditionType.getValue();
+							var selectedCondition = selectCondition.getValue();
+							if(dataType==="Alias" && selectedCondition!==null){
+								viewAStyleForm.getController().updateDiscreteMapping();
+							}
+						}
+					}
+				});
+			},
+			scope:me
+		});
+
+		view.lookupReference('delCondition').on({
+			click : function(){
+				me.closeMapping();
+				view.lookupReference('selectConditionType').setValue(null);
+				view.lookupReference('selectCondition').setValue(null);
+				var viewAStyleForm = me.getAStyleFormParent();
+				viewAStyleForm.collapse();
+			},
+			scope:me
+		});
+	},
+
+    /*******************************************
+     * Remove all mapping in visualisation and in side panel
+     */
+	removeCaption:function(){
+		var me = this;
+		var view = me.getView();
+		var session = _metExploreViz.getSessionById('viz');
+		var aStyleFormParent = me.getAStyleFormParent();
+		var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
+		colorStore.forEach(function(color){
+			var newId = color.getName().toString().replace(me.regexpPanel, "_");
+			if(view.down("#mappingCaptionForm"+newId))
+				view.down("#mappingCaptionForm"+newId).close();
+		});
+
+		if(view.down("#undefined"))
+			view.down("#undefined").close();
+
+
 	},
 
     /*******************************************
@@ -209,9 +273,9 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 
 					if(session.getMappingDataType()==="Continuous"){
-						var colorStore = session.getColorMappingsSet();        
-				        var newColor = session.getColorMappingsSetLength()===0;
-				        
+						var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
+				        var newColor = aStyleFormParent.getController().getValueMappingsSetLength(session.getMappingDataType())===0;
+
 				        if(!newColor){
 				        	colorStore = [];
 				        }
@@ -224,7 +288,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 					if(container){
 						container.close();
-						var colorStore = session.getColorMappingsSet();
+						var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
 						colorStore.forEach(function(color){
 							var newId = color.getName().toString().replace(me.regexpPanel, "_");
 							if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
@@ -272,10 +336,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	resetMapping:function(){
 		var session = _metExploreViz.getSessionById('viz');
 		var component = Ext.getCmp("selectConditionForm");
-
 		var me = this;
         var view = me.getView();
-
         if(component){
             var colors = session.getColorSuggestionsSet();
             colors.forEach(function (color) {
@@ -303,8 +365,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			this.removeGraphMapping(oldMapping);
 
 			if(session.getMappingDataType()==="Continuous"){
-				var colorStore = session.getColorMappingsSet();
-		        var newColor = session.getColorMappingsSetLength()===0;
+				var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
+		        var newColor = aStyleFormParent.getController().getValueMappingsSetLength(session.getMappingDataType())===0;
 
 		        if(!newColor){
 		        	colorStore = [];
@@ -315,10 +377,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				container = Ext.getCmp('panel'+session.isMapped()[0].replace(me.regexpPanel, ""));
 			else
 				container = Ext.getCmp('panel'+session.isMapped().replace(me.regexpPanel, ""));
-			
+
 			if(container){
 				container.close();
-				var colorStore = session.getColorMappingsSet();
+				var colorStore = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
 				colorStore.forEach(function(color){
 					var newId = color.getName().toString().replace(me.regexpPanel, "_");
 					if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
@@ -328,7 +390,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				if(Ext.getCmp("selectConditionForm").down("#undefined"))
 					Ext.getCmp("selectConditionForm").down("#undefined").close();
 			}
-			
+
 			session.setMapped('false');
 
 			var comboCond = Ext.getCmp('selectCondition');
@@ -340,12 +402,12 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	        storeCond.loadData(record, false);
 
 			var selectConditionType = Ext.getCmp('selectConditionType');
-			
+
 			comboCond.clearValue();
 			comboCond.setDisabled(true);
 
 			selectConditionType.setDisabled(true);
-	 			
+
         	var comboMapping = Ext.getCmp('selectMappingVisu');
 			var store = comboMapping.getStore();
             var records = [];
@@ -371,63 +433,52 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	* Removing of mapping
 	* @param {} newMapping : boolean to know if a new mapping is launched
 	*/
-	closeMapping : function(mappingToRemove, type){
+	closeMapping : function(){
 
-		var me = this;
+		var me = this,
+			view    = me.getView();
 		var session = _metExploreViz.getSessionById('viz');
         var container;
         var colorStore;
 
-        if(type==="suggestion")
-		{
-           container = Ext.getCmp('suggestions');
-            colorStore = [];
-            colorsStore = session.getColorSuggestionsSet();
-            colorsStore.forEach(function(color){
-                colorStore.push(color);
-            });
-            colorStore.forEach(function(color){
-                var newId = color.getName().toString().replace(me.regexpPanel, "_");
-                me.removeMappingSuggestion(newId);
-                session.removeColorSuggestionById(newId);
-            });
-        }
-        else {
-            if(session.isMapped()!=="false")
-            {
-                // Remove mapping caption
-                var oldMapping = session.isMapped();
-                this.removeGraphMapping(oldMapping);
-                colorStore = session.getColorMappingsSet();
+		var aStyleFormParent = me.getAStyleFormParent();
 
-                if(type==="flux"|| Array.isArray(session.isMapped()))
-                    container = Ext.getCmp('panel'+session.isMapped()[0].replace(me.regexpPanel, ""));
-                else
-                    container = Ext.getCmp('panel'+session.isMapped().replace(me.regexpPanel, ""));
+        var header = aStyleFormParent.down('header');
 
+		header.lookupReference('mappingButton').fireEvent("setIcon", "");
 
-            }
-		}
+		var styleToUse;
+		if(aStyleFormParent.biologicalType==="metabolite")
+			styleToUse = metExploreD3.getMetaboliteStyle();
 
-		if(container){
-			container.close();
+		if(aStyleFormParent.biologicalType==="reaction")
+			styleToUse = metExploreD3.getReactionStyle();
 
-			colorStore.forEach(function(color){
-                var newId = color.getName().toString().replace(me.regexpPanel, "_");
+		if(aStyleFormParent.biologicalType==="link")
+			styleToUse = metExploreD3.getLinkStyle();
 
-				if(Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId))
-					Ext.getCmp("selectConditionForm").down("#mappingCaptionForm"+newId).close();
-			});
+		if(!aStyleFormParent.default)
+			aStyleFormParent.default = styleToUse[aStyleFormParent.access];
 
-			if(Ext.getCmp("selectConditionForm").down("#undefined"))
-				Ext.getCmp("selectConditionForm").down("#undefined").close();
-		}
+		metExploreD3.GraphStyleEdition.removeMappedClassStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
+		metExploreD3.GraphStyleEdition.setCollectionStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
 
-        if(type!=="suggestion")
-        {
-            session.setMappingDataType(null);
-            session.setMapped('false');
-        }
+		var captions = view.lookupReference('discreteCaptions');
+
+		// captions.items.items.forEach(item=> item.close());
+		var items = [];
+
+		captions.hide();
+		captions.items.items.forEach(function(item){ items.push(item); });
+		items.forEach(function(item){ captions.remove(item); });
+
+		var captionScales = view.lookupReference('scaleCaption');
+		captionScales.hide();
+		var svg = d3.select(captionScales.el.dom).select("#scaleCaption");
+		svg.selectAll("*").remove();
+
+		var delConditionPanel = view.lookupReference('delConditionPanel');
+		delConditionPanel.hide();
 	},
 
 	// RemoveMapping in function of data type
@@ -443,21 +494,41 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	/*******************************************
 	 * Initialisation of mapping parameters
 	 */
-	map : function(){
+	map : function(newVal, oldVal, parentAStyleForm){
 		var me 		= this,
 		view      	= me.getView();
-		var selectCondition = Ext.getCmp('selectCondition');
-		var selectMapping = Ext.getCmp('selectMappingVisu');
-		var selectedCondition = selectCondition.getValue();
-		var selectedMapping = selectMapping.getValue();
-		var dataType = Ext.getCmp("selectConditionType").getValue();
-        var fluxType;
-		if(view.lookupReference('selectCondition').value.length===1)
-			fluxType = 'Unique';
-		else
-			fluxType = 'Compare';
+		var selectCondition = view.lookupReference('selectCondition');
+		var selectConditionType = view.lookupReference('selectConditionType');
 
-		this.graphMapping(dataType, selectedCondition, selectedMapping, fluxType);
+		var dataType = selectConditionType.getValue();
+		var selectedCondition = selectCondition.getValue();
+		if(dataType!==null && selectedCondition!==null){
+			if(newVal!==null && oldVal!==null) me.closeMapping();
+
+			var header = parentAStyleForm.down('header');
+
+			if(dataType==="Continuous"){
+				header.lookupReference('mappingButton').fireEvent("setIcon", "continue");
+				var captionScales = view.lookupReference('scaleCaption');
+				captionScales.show();
+			}
+
+			if(dataType==="Discrete" || dataType==="As selection"){
+				header.lookupReference('mappingButton').fireEvent("setIcon", "discrete");
+				var captions = view.lookupReference('discreteCaptions');
+				captions.show();
+			}
+
+			if(dataType==="Alias"){
+				header.lookupReference('mappingButton').fireEvent("setIcon", "alias");
+			}
+
+
+			var delConditionPanel = view.lookupReference('delConditionPanel');
+			delConditionPanel.show();
+
+			this.graphMapping(dataType, selectedCondition, parentAStyleForm);
+		}
 	},
 
     /*******************************************
@@ -468,27 +539,36 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
      * @param mappingName : string, Mapping name
      * @param fluxType : string, one or two arrows for fluxes
      */
-    graphMapping : function(dataType, conditionName, mappingName, fluxType) {
+    graphMapping : function(dataType, conditionName, parentAStyleForm) {
         var session = _metExploreViz.getSessionById('viz');
-        session.setActiveMapping(mappingName);
+
         if(dataType==="Continuous"){
-            metExploreD3.GraphMapping.graphMappingContinuousData(mappingName, conditionName);
-            session.setMappingDataType(dataType);
+            metExploreD3.GraphMapping.graphMappingContinuousData(conditionName, parentAStyleForm);
         }
 
-        if(dataType==="Flux"){
-            metExploreD3.GraphMapping.graphMappingFlux(mappingName, conditionName, fluxType, undefined, undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
+		//
+        // if(dataType==="Flux"){
+        //     metExploreD3.GraphMapping.graphMappingFlux(mappingName, conditionName, fluxType, undefined, undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
+        //     session.setMappingDataType(dataType);
+        // }
+
+        if(dataType==="Alias"){
             session.setMappingDataType(dataType);
+            metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, parentAStyleForm);
         }
 
         if(dataType==="Discrete"){
             session.setMappingDataType(dataType);
-            metExploreD3.GraphMapping.graphMappingDiscreteData(mappingName, conditionName);
-            metExploreD3.GraphMapping.graphMappingDiscreteData(mappingName, conditionName);
+            metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, parentAStyleForm);
         }
 
-        if(dataType==="Suggestion")
-            metExploreD3.GraphMapping.graphMappingSuggestionData(mappingName, conditionName, Ext.getCmp("threshold").getValue());
+        if(dataType==="As selection"){
+            session.setMappingDataType(dataType);
+            metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, parentAStyleForm);
+        }
+
+        // if(dataType==="Suggestion")
+        //     metExploreD3.GraphMapping.graphMappingSuggestionData(mappingName, conditionName, Ext.getCmp("threshold").getValue());
     },
 
 	/*******************************************
@@ -496,21 +576,20 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	* @param type : string data type of mapping values
 	*/
 	addMappingCaptionForm : function(type) {
-		var me 		= this;
-		
+		var me 		= this,
+			view    = me.getView();
+
 		// We add form corresponding to the mapping data type
-		var selectConditionForm = Ext.getCmp('selectConditionForm');
-	    var selectCondition = Ext.getCmp('selectCondition');
+		var captions = view.lookupReference('discreteCaptions');
+		var scaleCaption = view.lookupReference('scaleCaption');
+	    var selectCondition = view.lookupReference('selectCondition');
 		var selectedCondition = selectCondition.getValue();
-
-		var selectMapping = Ext.getCmp('selectMappingVisu');
-		var selectedMapping = selectMapping.getValue();
-
 		var networkVizSession = _metExploreViz.getSessionById("viz");
         var colorStore;
+        var aStyleFormParent = me.getAStyleFormParent();
         if(type!=="suggestion"){
             networkVizSession.setMapped(selectedCondition);
-            colorStore = networkVizSession.getColorMappingsSet();
+            colorStore = aStyleFormParent.getController().getValueMappingsSet(networkVizSession.getMappingDataType());
 
         }
         else {
@@ -523,7 +602,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		else
 			cond = selectedCondition;
 
-		if(selectConditionForm)
+		if(captions && type==="discrete")
 		{
 			if(Ext.getCmp('panel'+ cond)===undefined || type==="suggestion")
 			{
@@ -543,6 +622,96 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 			    	var newId = colorName.toString().replace(me.regexpPanel, "_");
 
+
+			    	var editValueForm;
+					if(aStyleFormParent.styleType==="color"){
+						editValueForm = [{
+							xtype: 'label',
+							forId: 'color',
+							margin: '5 10 5 10',
+							text: value+' :',
+							flex:1,
+							border:false
+						},
+							{
+								border:false,
+								xtype: 'hiddenfield',
+								itemId: 'hidden' + newId,
+								value: color.getValue(),
+								listeners: {
+									change: function(newValue){
+										this.lastValue = newValue.value;
+									}
+								}
+							},{
+							border:false,
+							margin: '5 10 5 10',
+							width: "40%",
+							reference:"colorButtonMapping",
+							html: '<input ' +
+								'type="color" ' +
+								'id="html5colorpicker" ' +
+								'value="'+color.getValue()+'" ' +
+								'style="width:85%;">'
+						}];
+					}
+
+					if(aStyleFormParent.styleType==="int" || aStyleFormParent.styleType==="float")
+					{
+						editValueForm = [{
+							border:false,
+							margin: '5 10 5 10',
+							width: "100%",
+							xtype: 'textfield',
+							name: 'name',
+							value: color.getValue(),
+							fieldLabel: color.getName()+" ",
+							listeners: {
+								focusleave: function(){
+									var value =this.getRawValue();
+									if(aStyleFormParent.styleType==="int") {
+										value=parseInt(value);
+									}
+									if(aStyleFormParent.styleType==="float") {
+										value=parseFloat(value);
+									}
+									if(color.getValue()!==value){
+                                            newValue=value;
+										if(isNaN(newValue)){
+											Ext.Msg.show({
+												title:'Warning',
+												msg: "Please enter a number.",
+												icon: Ext.Msg.WARNING
+											});
+										}
+										else
+										{
+											if(aStyleFormParent.min <= newValue && aStyleFormParent.max >= newValue )
+											{
+												color.setValue(newValue);
+
+												var  mappingName = selectedCondition.split("_")[0];
+												var  conditionName = selectedCondition.split("_")[1];
+
+												metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
+
+											}
+											else
+											{
+												Ext.Msg.show({
+													title:'Warning',
+													msg: "Please enter a number between "+view.min+" and "+view.max,
+													icon: Ext.Msg.WARNING
+												});
+											}
+										}
+									}
+								}
+							}
+
+						}];
+					}
+
 			    	var newMappingCaptionForm = Ext.create('metExploreViz.view.form.MappingCaptionForm', {
 
 				    	itemId: 'mappingCaptionForm'+newId,
@@ -553,7 +722,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 					    items:
 					    [
 						    {
-
+								reference:"chooseColorReaction",
 						        itemId:'chooseColorReaction'+newId,
 						        xtype:'panel',
 						        border:false,
@@ -561,51 +730,41 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 						           type:'hbox',
 						           align:'stretch'
 						        },
-						        items:[
-						        	{
-							            xtype: 'label',
-							            forId: 'color',
-							            text: value+' :',
-							            margin: '0 0 0 10',
-							            flex:1,
-							            border:false
-						        	},{
-						        		border:false,
-							            xtype: 'hiddenfield',
-							            itemId: 'hidden' + newId,
-							           	value: color.getValue(),
-										listeners: {
-											change: function(newValue){
-												this.lastValue = newValue.value;
-										    }
-										}
-						        	},
-						        	{
-							            border:false,
-							            margin: '0 10 0 0',
-							            width: "40%",
-                                        html: '<input ' +
-                                        'type="color" ' +
-                                        'id="html5colorpicker" ' +
-										'onchange="Ext.getCmp(\'selectConditionForm\').down(\'#hidden'+newId+'\').fireEvent(\'change\',this, \''+color.getValue()+'\');" ' +
-                                        'value="'+color.getValue()+'" ' +
-                                        'style="width:85%;">'
-							        }
-						        ]
+						        items:editValueForm
+
 						    }
 					    ]
 					});
+					if(aStyleFormParent.styleType==="color") {
+						newMappingCaptionForm.on(
+							{
+								afterrender: function () {
+									var colorButtonMappingEl = newMappingCaptionForm.el.dom.querySelector("#html5colorpicker");
+
+									colorButtonMappingEl
+										.addEventListener("change", function (evt) {
+											var newColor = evt.target.value;
+											color.setValue(newColor);
+
+											var mappingName = selectedCondition.split("_")[0];
+											var conditionName = selectedCondition.split("_")[1];
+
+											metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
+										});
+								},
+								scope: me
+							}
+						);
+					}
 
 					listMappingCaptionForm.push(newMappingCaptionForm);
 					idColors.push(newId);
-			    }
-				);
+			    });
                 var newConditionPanel;
                 var panelID;
                 if(type!=="suggestion"){
                     panelID = 'panel'+ cond.replace(me.regexpPanel, "");
                     newConditionPanel = Ext.create('Ext.panel.Panel', {
-                        id: panelID,
                         border:false,
                         width: '100%',
                         bodyBorder: false,
@@ -660,119 +819,163 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
                 }
 
 
-				// Create button to remove mapping
-				var delButton = Ext.create('Ext.Button', {
-				    iconCls:'del',
-		            tooltip:'You must choose a condition to add it',
-		            //formBind: true,
-		            margin:'5 5 5 0',
-		            id: 'delCondition'+panelID,
-		            action: 'delCondition'+panelID,
-				    handler: function() {
-						that.closeMapping(panelID, type);
-				    }
-				});
-			    newConditionPanel.add(delButton);
-
-				var mapp = selectedMapping;
 
 				// Add button to change colors
-				var refreshColorButton = Ext.create('Ext.Button', {
-				    iconCls:'refresh',
-		            margin:'5 5 5 0',
-		            id: 'refreshColor'+panelID,
-		            action: 'refreshColor'+panelID,
-				    handler: function() {
-                        var colorStore;
-                        if (type === "discrete") {
-                            colorStore = networkVizSession.getColorMappingsSet();
-                            colorStore.forEach(function (color) {
-                                var newId = color.getName().toString().replace(me.regexpPanel, "_");
-                                if (Ext.getCmp("selectConditionForm").down("#hidden" + newId)) {
-                                    if (color.getValue() !== Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue) {
-                                        // PERF: Must be changed to set only the color
-                                        metExploreD3.GraphMapping.setDiscreteMappingColor(Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue, color.getName(), selectedCondition, mapp);
-                                    }
-                                }
-                            });
-                        }
-						else {
-                            if (type === "suggestion") {
-                                colorStore = networkVizSession.getColorSuggestionsSet();
-                                colorStore.forEach(function (color) {
-                                    var newId = color.getName().toString().replace(me.regexpPanel, "_");
-                                    if (Ext.getCmp("selectConditionForm").down("#hidden" + newId)) {
-                                        if (color.getValue() !== Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue) {
-                                            // PERF: Must be changed to set only the color$
-                                             metExploreD3.GraphMapping.setSuggestionColor(Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue, color.getName());
-                                        }
-                                    }
-                                });
-                            }
-                            else {
-                                colorStore = networkVizSession.getColorMappingsSet();
-								colorStore.forEach(function (color) {
-									var newId = color.getName().toString().replace(me.regexpPanel, "_");
+				// var refreshColorButton = Ext.create('Ext.Button', {
+				//     iconCls:'refresh',
+		        //     margin:'5 5 5 0',
+				//     handler: function() {
+                //         var colorStore;
+                //         if (type === "discrete") {
+                //             colorStore = aStyleFormParent.getController().getValueMappingsSet();
+                //             colorStore.forEach(function (color) {
+                //                 var newId = color.getName().toString().replace(me.regexpPanel, "_");
+                //                 if (Ext.getCmp("selectConditionForm").down("#hidden" + newId)) {
+                //                     if (color.getValue() !== Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue) {
+                //                         // PERF: Must be changed to set only the color
+                //                         metExploreD3.GraphMapping.setDiscreteMappingColor(Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue, color.getName(), selectedCondition, mapp);
+                //                     }
+                //                 }
+                //             });
+                //         }
+				// 		else {
+                //             if (type === "suggestion") {
+                //                 colorStore = networkVizSession.getColorSuggestionsSet();
+                //                 colorStore.forEach(function (color) {
+                //                     var newId = color.getName().toString().replace(me.regexpPanel, "_");
+                //                     if (Ext.getCmp("selectConditionForm").down("#hidden" + newId)) {
+                //                         if (color.getValue() !== Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue) {
+                //                             // PERF: Must be changed to set only the color$
+                //                              metExploreD3.GraphMapping.setSuggestionColor(Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue, color.getName());
+                //                         }
+                //                     }
+                //                 });
+                //             }
+                //             else {
+                //                 colorStore = aStyleFormParent.getController().getValueMappingsSet();
+				// 				colorStore.forEach(function (color) {
+				// 					var newId = color.getName().toString().replace(me.regexpPanel, "_");
+				//
+				// 					if (Ext.getCmp("selectConditionForm").down("#hidden" + newId)) {
+				// 						if (color.getValue() !== Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue) {
+				// 							// PERF: Must be changed to set only the color
+				// 							metExploreD3.GraphMapping.setContinuousMappingColor(Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue, color.getName(), selectedCondition, mapp);
+				// 						}
+				//
+				// 					}
+				// 				});
+				//
+				// 				if (aStyleFormParent.getController().getValueMappingsSet()[1]) {
+				// 					if (parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName()) < parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName())) {
+				// 						maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName());
+				// 						minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName());
+				// 					}
+				// 					else {
+				// 						maxValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName());
+				// 						minValue = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[1].getName());
+				// 					}
+				// 				}
+				// 				else {
+				// 					color = parseFloat(aStyleFormParent.getController().getValueMappingsSet()[0].getName());
+				// 				}
+				//
+				// 				if (type === "continuous") {
+				// 					if (aStyleFormParent.getController().getValueMappingsSet()[1]) {
+				// 						metExploreD3.GraphMapping.graphMappingContinuousData(mapp, cond, aStyleFormParent.getController().getValueMappingById(minValue).getValue(), aStyleFormParent.getController().getValueMappingById(maxValue).getValue());
+				// 					}
+				// 					else {
+				// 						metExploreD3.GraphMapping.graphMappingContinuousData(mapp, cond, aStyleFormParent.getController().getValueMappingById(color).getValue(), aStyleFormParent.getController().getValueMappingById(color).getValue());
+				// 					}
+				// 				}
+				// 				else {
+				// 					var fluxType;
+				// 					if (selectedCondition.length === 1) {
+				// 						fluxType = 'Unique';
+				// 						metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, aStyleFormParent.getController().getValueMappingById(color).getValue(), undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
+				// 					}
+				// 					else {
+				// 						fluxType = 'Compare';
+				// 						metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, aStyleFormParent.getController().getValueMappingById(maxValue).getValue(), aStyleFormParent.getController().getValueMappingById(minValue).getValue(), Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
+				// 					}
+				// 				}
+				// 			}
+				// 		}
+				//     }
+				// });
+			    // newConditionPanel.add(refreshColorButton);
 
-									if (Ext.getCmp("selectConditionForm").down("#hidden" + newId)) {
-										if (color.getValue() !== Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue) {
-											// PERF: Must be changed to set only the color
-											metExploreD3.GraphMapping.setContinuousMappingColor(Ext.getCmp("selectConditionForm").down("#hidden" + newId).lastValue, color.getName(), selectedCondition, mapp);
-										}
-
-									}
-								});
-
-								if (networkVizSession.getColorMappingsSet()[1]) {
-									if (parseFloat(networkVizSession.getColorMappingsSet()[0].getName()) < parseFloat(networkVizSession.getColorMappingsSet()[1].getName())) {
-										maxValue = parseFloat(networkVizSession.getColorMappingsSet()[1].getName());
-										minValue = parseFloat(networkVizSession.getColorMappingsSet()[0].getName());
-									}
-									else {
-										maxValue = parseFloat(networkVizSession.getColorMappingsSet()[0].getName());
-										minValue = parseFloat(networkVizSession.getColorMappingsSet()[1].getName());
-									}
-								}
-								else {
-									color = parseFloat(networkVizSession.getColorMappingsSet()[0].getName());
-								}
-
-								if (type === "continuous") {
-									if (networkVizSession.getColorMappingsSet()[1]) {
-										metExploreD3.GraphMapping.graphMappingContinuousData(mapp, cond, networkVizSession.getColorMappingById(minValue).getValue(), networkVizSession.getColorMappingById(maxValue).getValue());
-									}
-									else {
-										metExploreD3.GraphMapping.graphMappingContinuousData(mapp, cond, networkVizSession.getColorMappingById(color).getValue(), networkVizSession.getColorMappingById(color).getValue());
-									}
-								}
-								else {
-									var fluxType;
-									if (selectedCondition.length === 1) {
-										fluxType = 'Unique';
-										metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(color).getValue(), undefined, Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
-									}
-									else {
-										fluxType = 'Compare';
-										metExploreD3.GraphMapping.graphMappingFlux(mapp, selectedCondition, fluxType, networkVizSession.getColorMappingById(maxValue).getValue(), networkVizSession.getColorMappingById(minValue).getValue(), Ext.getCmp("opacityCheck").checked, Ext.getCmp("valueonarrowCheck").checked, Ext.getCmp('regroupValuesIntoClassCheck').checked);
-									}
-								}
-							}
-						}
-				    }
-				});
-			    newConditionPanel.add(refreshColorButton);
-
-				// Add mapping caption to selectConditionForm panel
-			    if(selectConditionForm)
+				// Add mapping caption to captions panel
+			    if(captions)
 				{
-					selectConditionForm.add(newConditionPanel);
+					captions.add(newConditionPanel);
 					listMappingCaptionForm.forEach(function(aMappingCaptionForm){
 
-						selectConditionForm.add(aMappingCaptionForm);
+						captions.add(aMappingCaptionForm);
 					});
 				}
 			}
 
 		}
+
+		if(scaleCaption && type==="continuous"){
+			if(aStyleFormParent.styleType==="color") {
+				me.drawContinuousScaleCaption();
+			}
+			if(aStyleFormParent.styleType==="float" || aStyleFormParent.styleType==="int") {
+				me.drawContinuousScaleCaption();
+			}
+		}
+	},
+	drawContinuousScaleCaption : function() {
+		var me = this;
+		var view = me.getView();
+		var viewAStyleForm = me.getAStyleFormParent();
+		var header = viewAStyleForm.down('header');
+
+		if(viewAStyleForm.styleType==="float"  || viewAStyleForm.styleType==="int" ){
+
+			var margin = 0;
+			var width = 190;
+			var height = 50;
+
+			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+
+			viewAStyleForm.graphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin, viewAStyleForm.scaleRange);
+
+			svg.on("click", function(){
+				var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
+					height : 300,
+					aStyleFormParent : viewAStyleForm
+				});
+
+				win.show();
+			});
+		}
+
+		if(viewAStyleForm.styleType==="color"){
+
+			var margin = 0;
+			var width = 150;
+			var height = 50;
+			var svg = d3.select(view.lookupReference('scaleCaption').el.dom).select("#scaleCaption");
+
+			viewAStyleForm.graphColorScaleEditor.createColorScaleCaption(svg, width, height, margin, viewAStyleForm.scaleRange);
+
+			svg.on("click", function(){
+				var win = Ext.create("metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor", {
+					height : 300,
+					aStyleFormParent : viewAStyleForm
+				});
+
+				win.show();
+			});
+
+		}
+	},
+
+	getAStyleFormParent : function() {
+		var me = this;
+		var view = me.getView();
+		return view.query("^ aStyleForm")[0];
 	}
 });

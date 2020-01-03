@@ -11,6 +11,10 @@ x-form-checkbox-default {
   background-position: 50% 45%;;
 }
 
+.x-mask {
+  background-color: rgba(208,208,208,0.8);
+}
+
 .msgClsCustomLoadMask .x-mask-msg-inner{
   position:relative;
   height: 100%;
@@ -200,6 +204,28 @@ p {
     background-position: 0% 0%;
     background-repeat: no-repeat;
 }
+
+.junk {
+    background-image:url(../icons/junk.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
+.saveStyle {
+    background-image:url(../icons/saveStyle.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
+.importStyle {
+    background-image:url(../icons/importStyle.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
 .cart {
     background-image:url(../icons/cart.png);
 }
@@ -307,10 +333,30 @@ p {
 }
 
 .link {
-       background-image: url(../icons/link.svg);
+    background-image: url(../icons/link.svg);
     background-size: 100% 100%;
-  background-position: 0% 0%;
-  background-repeat: no-repeat;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+.edgesSelection {
+    background-image: url(../icons/edges.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
+.metaboliteSelection {
+    background-image: url(../icons/metaboliteSelection.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+}
+
+.reactionSelection {
+    background-image: url(../icons/reactionSelection.svg);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
 }
 
 .importToRsx {
@@ -424,6 +470,12 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.curve {
+       background-image: url(../icons/curve.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .unlink {
        background-image: url(../icons/unlink.svg);
     background-size: 100% 100%;
@@ -533,19 +585,19 @@ p {
     background-image: url(../icons/delete.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
 }
 .duplicate-sideCompounds{
     background-image: url(../icons/duplicateSideCompounds.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
 }
 .neighbours{
     background-image: url(../icons/neighbours.png);
     background-size: 100% 100%;
   background-position: 0% 0%;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
 }
 .removeMetabolites {
     background-image: url(../icons/removeMetabolites.svg);
@@ -555,6 +607,18 @@ p {
 }
 .subnetwork {
     background-image: url(../icons/subnetwork.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.play {
+    background-image: url(../icons/play.svg);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.pause {
+    background-image: url(../icons/pause.svg);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
@@ -667,17 +731,17 @@ p {
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
-} 
+}
 .color {
 	background-image: url(../icons/color.png);
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
-}	
+}
 .colorMapped {
 	background-color:#FFFFF0;
 	color:#CC3300;
-}	
+}
 .colorTransparent {
 	background-color:#FFFFF0;
 }
@@ -768,6 +832,37 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.continue {
+  background-image: url(../icons/continue.png) !important;
+  background-size: 80% 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.discrete {
+  background-image: url(../icons/discrete.png) !important;
+    background-size: 80% 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.alias {
+  background-image: url(../icons/alias.png) !important;
+    background-size: 80% 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mapMultipleColors {
+  background-image: url(../icons/mapMultipleColors.svg) !important;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.mapMultipleNumbers {
+  background-image: url(../icons/mapMultipleNumbers.svg) !important;
+  background-size: 90% 90%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
 .x-tip {
 
@@ -785,8 +880,114 @@ p {
 
   width: auto !important;
 
-} 
+}
 
 .font12 {
 	font-size: 12pt;
+}
+
+.vizTBar .x-tab-bar-body{
+    background-color: rgb(95, 130, 163);
+    padding-top: 0px;
+}
+.vizTBar .x-box-scroller{
+    background-color: rgb(95, 130, 163);
+    margin-top: -16px;
+}
+
+.vizTBarStyle .x-tab-bar-body{
+    background-color: rgb(170, 170, 170);
+    padding-top: 2px;
+}
+.vizTBarStyle .x-box-scroller{
+    background-color: rgb(170, 170, 170);
+    margin-top: -14px;
+}
+
+.aStyleForm .x-title {
+    padding-left: 10px;
+}
+
+.aStyleFormButton {
+    margin: 0px 6px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    border-color: rgb(170, 170, 170);
+    background-color: white;
+}
+.aStyleFormButton span{
+    padding: 0px 0px 0px 0px;
+    color: #0f0f0f;
+    font-size: 0.9vw;
+}
+
+.aStyleFormColor {
+    margin: 0px 5px 0px 0px;
+}
+
+.aStyleFormButton.x-focus {
+    margin: 0px 5px 0px 0px;
+    border-color: rgb(170, 170, 170);
+    background-color: white;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.aStyleFormButton.focus{
+    background-color: rgb(170, 170, 170) !important;
+    border-color: rgb(170, 170, 170);
+    -webkit-box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
+    box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
+}
+
+.aStyleFormButton.x-btn-over{
+    background-color: rgb(170, 170, 170) !important;
+    border-color: rgb(170, 170, 170);
+}
+
+.aStyleFormButton.x-unselectable.x-item-disabled.x-btn-disabled{
+ pointer-events: all;
+}
+
+.captiontoolbar {
+    padding: 0px 0px 0px 0px;
+    background: #eee;
+}
+.captiontoolbar .x-box-inner{
+    top: -1px;
+}
+
+#viz .x-toolbar{
+    background-color: #14477887;;
+}
+#viz .x-btn{
+    background-color: white;
+}
+
+#viz .x-toolbar-default{
+    padding: 0px 0 0px 8px;
+}
+
+
+#viz .x-toolbar .x-focus {
+    margin: 0px 5px 0px 0px;
+    border-color: rgb(170, 170, 170);
+    background-color: white;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+#viz .x-toolbar .focus{
+    background-color: rgb(170, 170, 170) !important;
+    border-color: rgb(170, 170, 170);
+    -webkit-box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
+    box-shadow: #c4ced8 0 1px 0px 0 inset, #c4ced8 0 -1px 0px 0 inset, #c4ced8 -1px 0 0px 0 inset, #c4ced8 1px 0 0px 0 inset;
+}
+
+#viz .x-toolbar .x-btn-over{
+    background-color: rgb(170, 170, 170) !important;
+    border-color: rgb(170, 170, 170);
+}
+
+#viz .x-toolbar .x-unselectable.x-item-disabled.x-btn-disabled{
+    pointer-events: all;
 }

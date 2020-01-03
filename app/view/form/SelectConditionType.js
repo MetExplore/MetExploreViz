@@ -13,8 +13,8 @@ Ext.define('metExploreViz.view.form.SelectConditionType', {
         data : [
             {"name":"Continuous"},
             {"name":"Discrete"},
-            {"name":"Flux"},
-            {"name":"Suggestion"}
+            {"name":"As selection"}
+            //,{"name":"Alias"}
         ]
     },
     listeners: {
@@ -23,11 +23,12 @@ Ext.define('metExploreViz.view.form.SelectConditionType', {
                 target: c.getEl(),
                 html: 'Select a type of data'
             });
-        },
-        change: function(){
-            var comboCond = Ext.getCmp('selectCondition');
-            comboCond.clearValue();
         }
+        // ,
+        // change: function(){
+        //     var comboCond = Ext.getCmp('selectCondition');
+        //     comboCond.clearValue();
+        // }
     }, 
     displayField: 'name',
     valueField: 'name',

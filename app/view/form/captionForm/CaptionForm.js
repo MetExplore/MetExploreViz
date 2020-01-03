@@ -9,6 +9,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionForm', {
         "metExploreViz.view.form.selectComponent.SelectComponent",
         "metExploreViz.view.form.ComponentCaptionForm",
         "metExploreViz.view.form.captionForm.CaptionFormController",
+        "metExploreViz.view.form.selectMapping.SelectMapping",
         "metExploreViz.view.form.captionForm.CaptionFormModel"
     ],
     controller: "form-captionForm-captionForm",
