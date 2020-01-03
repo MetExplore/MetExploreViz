@@ -8,8 +8,8 @@
  */
 var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink, dispConvexhull, dispPathwaysOnLinks, clust, dispCaption, eventForNodeInfo, loadButtonHidden, windowsAlertDisable){
     this.websiteName = siteName;
-    this.colorMinMappingContinuous = minContinuous;
-    this.colorMaxMappingContinuous = maxContinuous;
+    this.valueMinMappingContinuous = minContinuous;
+    this.valueMaxMappingContinuous = maxContinuous;
     this.maxReactionThreshold = max;
     this.displayLabelsForOpt = dispLabel;
     this.displayLinksForOpt = dispLink;
@@ -37,23 +37,23 @@ GeneralStyle.prototype = {
         this.windowsAlertDisable = bool;
     },
     // Getters & Setters
-    getColorMinMappingContinuous:function()
+    getValueMinMappingContinuous:function()
     {
-      return this.colorMinMappingContinuous;
+      return this.valueMinMappingContinuous;
     },
-    getColorMaxMappingContinuous:function()
+    getValueMaxMappingContinuous:function()
     {
-      return this.colorMaxMappingContinuous;
-    },
-
-    setMaxColorMappingContinuous:function(newColor)
-    {
-      this.colorMaxMappingContinuous = newColor;
+      return this.valueMaxMappingContinuous;
     },
 
-    setMinColorMappingContinuous:function(newColor)
+    setMaxValueMappingContinuous:function(newValue)
     {
-      this.colorMinMappingContinuous = newColor;
+      this.valueMaxMappingContinuous = newValue;
+    },
+
+    setMinValueMappingContinuous:function(newValue)
+    {
+      this.valueMinMappingContinuous = newValue;
     },
 
     getWebsiteName:function(){return this.websiteName;},

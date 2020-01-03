@@ -308,6 +308,24 @@ NetworkData.prototype = {
         }
         return link;
     },
+    getLinkByDBIdReaction: function(id){
+        var linksFromReaction=[];
+        linksFromReaction=this.links.filter(function (link) {
+            var reaction;
+            if(link.getSource().getBiologicalType()==="reaction")
+                reaction = link.getSource();
+            else
+                reaction = link.getTarget();
+
+            if(reaction){
+                if(reaction.getDbIdentifier()===id){
+                    return true;
+                }
+            }
+            return false;
+        });
+        return linksFromReaction;
+    },
 
     getNode: function(indice){
         return this.nodes[indice];
@@ -474,8 +492,8 @@ NetworkData.prototype = {
                     false,
                     true,
                     undefined,
-                    undefined,
-                    undefined,
+                    node.svgWidth,
+                    node.svgHeight,
                     undefined,
                     node.ec,
                     false,
@@ -502,8 +520,8 @@ NetworkData.prototype = {
                         false,
                         true,
                         undefined,
-                        undefined,
-                        undefined,
+                        node.svgWidth,
+                        node.svgHeight,
                         undefined,
                         node.ec,
                         false,

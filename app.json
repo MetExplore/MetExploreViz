@@ -298,7 +298,7 @@
             "bundle": true
         },
         {
-            "path": "resources/lib/model/ColorMapping.js",
+            "path": "resources/lib/model/ValueMapping.js",
             "bundle": true
         },
         {
@@ -331,6 +331,14 @@
         },
         {
             "path": "resources/lib/functions/NodeStyleForm.js",
+            "bundle": true
+        },
+        {
+            "path": "resources/lib/functions/GraphColorScaleEditor.js",
+            "bundle": true
+        },
+        {
+            "path": "resources/lib/functions/GraphNumberScaleEditor.js",
             "bundle": true
         },
         {

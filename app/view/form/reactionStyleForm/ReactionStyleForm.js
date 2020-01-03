@@ -1,172 +1,148 @@
 /**
  * @author MC
- * (a)description GeneralStyleForm : Reaction style configs
+ * (a)description  ReactionStyleForm : Display reactions config
  */
 Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
-    extend: 'Ext.panel.Panel',  
+    extend: 'metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm',
     alias: 'widget.reactionStyleForm',
     requires: [
-        "metExploreViz.view.form.reactionStyleForm.ReactionStyleFormController"
+        "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm"
     ],
-    controller: "form-reactionStyleForm-reactionStyleForm",
-    
-    region:'north',
-    height: '100%',
-    width:'100%', 
-    margin:'0 0 0 0',
-    flex:1,
-    border:false,
-    autoScroll:true,
-    layout: {
-        type: 'vbox',
-        align: 'stretch'
-    },
-    items: 
-    [
-    {   
-        border:false,
-        id:'chooseStrokeColorReaction',
-        reference:'chooseStrokeColorReaction',
-        xtype:'panel',
-        margin:'5 5 5 5',
-        hidden:true,
-        layout:{
-           type:'hbox',
-           align:'stretch'
-        },
-        items:[{
-            xtype: 'label',
-            forId: 'color',
-            margin:'0 68 0 0',
-            text: 'Color :'      
-        },{
-            border:false,
-            xtype: 'hiddenfield',
-            itemId: 'hiddenColor',
-            value: 'init'    
+    store: {
+        data: [{
+            "type": "color",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction"],
+            "attrType": "style",
+            "attr": "fill",
+            "title": "Node background",
+            "default": "#FFFFFF",
+            "min": "#ffff00",
+            "max": "#0000ff",
+            "access":"backgroundColor"
+        }, {
+            "type": "int",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "attrEditor",
+            "attr": "width",
+            "title": "Width",
+            "min": 1,
+            "max": 100,
+            "default": 5,
+            "access":"width"
+        }, {
+            "type": "int",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "attrEditor",
+            "attr": "height",
+            "title": "Height",
+            "access": "height",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "int",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "attr",
+            "attr": "rx",
+            "access": "rx",
+            "title": "Rx",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "int",
+            "biologicalType":"reaction",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "attr",
+            "attr": "ry",
+            "access": "ry",
+            "title": "Ry",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "float",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "style",
+            "biologicalType":"reaction",
+            "attr": "opacity",
+            "access": "opacity",
+            "title": "Transparency",
+            "min": 0.0,
+            "max": 1.0,
+            "default": 1.0
         }
-        ]
-    }
-    ,
-    {   
-        reference:'selectDisplayReactionLabel',
-        id:'selectDisplayReactionLabel',
-        xtype:'selectDisplayReactionLabel'  
-    }
-    , 
-    {
-        xtype: 'checkboxfield',
-        boxLabel  : 'Uses aliases',
-        inputValue: '0',
-        margin:'5 5 5 5',
-        checked   : true,
-        reference:'checkboxAlias'
-    },
-    {   
-        xtype: 'textfield',
-        reference:'chooseStrokeReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Stroke width:",
-        displayField: 'stroke',
-        editable:true,
-        width:'100%',
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        scale: 'small',
-        reference:'chooseHeightReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Height :",
-        displayField: 'height',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseWidthReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Width :",
-        displayField: 'width',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseRxReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Rx :",
-        displayField: 'rx',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseRyReaction',
-        margin:'5 5 5 5',
-        fieldLabel: "Ry :",
-        displayField: 'ry',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {
-        xtype: 'menuseparator'
-    }
-    ,
-    {
-        layout: {
-            type: 'hbox',
-            align: 'center',
-            pack: 'center'
-        },
-        items:[{
-            id :'vizExempleReaction',
-            xtype : 'panel',
-            margins:'0 0 0 0',
-            closable: false,
-            region:'center',
-            height:100,
-            width:100, 
-            flex:1,
-            split:true
+        ,{
+            "type": "color",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "style",
+            "biologicalType":"reaction",
+            "attr": "stroke",
+            "access": "strokeColor",
+            "title": "Border color",
+            "min": "#ff0000",
+            "max": "#00ffff",
+            "default": "#000000"
+        }, {
+            "type": "int",
+            "target": ["rect.reaction", "rect.fontSelected"],
+            "attrType": "style",
+            "attr": "stroke-width",
+            "access": "strokeWidth",
+            "biologicalType":"reaction",
+            "title": "Border width",
+            "min": 0,
+            "max": 50,
+            "default": 1
+        }
+        ,{
+            "type": "color",
+            "target": ["text.reaction"],
+            "attrType": "attr",
+            "attr": "fill",
+            "access": "fontColor",
+            "biologicalType":"reaction",
+            "title": "Label color",
+            "min": "#ff00ff",
+            "max": "#00ff00",
+            "default": "#000000"
+        },{
+            "type": "int",
+            "target": ["text.reaction"],
+            "attrType": "style",
+            "attr": "font-size",
+            "access": "fontSize",
+            "biologicalType":"reaction",
+            "title": "Label font size",
+            "min": 1,
+            "max": 200,
+            "default": 20
+        },{
+            "type": "int",
+            "target": ["text.reaction"],
+            "attrType": "style",
+            "attr": "font-weight",
+            "access": "fontWeight",
+            "biologicalType":"reaction",
+            "title": "Label font weight",
+            "min": 100,
+            "max": 1000,
+            "default": 500
+        },{
+            "type": "float",
+            "target": ["text.reaction"],
+            "attrType": "style",
+            "attr": "opacity",
+            "access": "labelOpacity",
+            "title": "Label transparency",
+            "min": 0.0,
+            "biologicalType":"reaction",
+            "max": 1.0,
+            "default": 1.0
         }]
-    },
-    {
-        xtype:'button',
-        iconCls:'refresh',
-        margin:'5 5 5 0',
-        reference: 'refreshReactionStyle',
-        action: 'refreshReactionStyle'  
-        
     }
-    ]   
 });

@@ -3,14 +3,15 @@
  * (a)description 
  */
 Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
-	extend: 'Ext.panel.Panel',	
+	extend: 'Ext.tab.Panel',
 	alias: 'widget.comparisonSidePanel',
 	requires: [
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.form.selectConditionForm.SelectConditionForm",
         "metExploreViz.view.form.drawingStyleForm.DrawingStyleForm",
-        "metExploreViz.view.form.captionForm.CaptionForm"
+        "metExploreViz.view.form.captionForm.CaptionForm",
+        "metExploreViz.view.form.allStylesForm.AllStylesForm"
     ],
  	controller: "panel-comparisonSidePanel-comparisonSidePanel",
 	/*requires: ['MetExplore.view.form.V_SelectConditionForm',
@@ -19,20 +20,23 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 */
 	collapsible: true,
 	collapsed:true,
-	width: '20%',
+
+	width: '30%',
 	height: '100%',
 	margins:'0 0 2 0',
 	split:true,
-	layout:'accordion', 
 	closable: false,
 	region: 'west',
 	// hidden:true,
+	tabBar:{
+		cls:"vizTBar"
+	},
 	items: [
-	{
-	   title:'Omics',
-	   id:'selectConditionForm',
-	   xtype:'selectConditionForm'   
-	}
+	// {
+	//    title:'Omics',
+	//    id:'selectConditionForm',
+	//    xtype:'selectConditionForm'
+	// }
 	//{
 	//  title:'Compare',
 	//  id:'updateSelectionForm',
@@ -42,7 +46,12 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	//   align:'stretch'
 	//  }
 	// }
-	,
+	// ,
+	{
+		title:'Styles',
+		id:'allStylesForm',
+		xtype:'allStylesForm'
+	},
 	{
 		title:'Pathways',
 		id:'captionFormPathways',
@@ -55,7 +64,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 		xtype:'captionForm'
 	},
 	{
-        title:'Drawing parameters',
+        title:'Drawing param.',
         id:'drawingStyleForm',
 		xtype:'drawingStyleForm'
 	},

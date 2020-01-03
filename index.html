@@ -20,6 +20,12 @@
                     this.reloadMetexploreViz(func);
                 };
 
+                var style = parent.document.createElement('style');
+                document.head.appendChild(style);
+                style.sheet.insertRule('.stop-scrolling {overflow: hidden;}');
+                style.sheet.insertRule('body {overflow: overlay;}');
+
+
                 if(parent.document.getElementById('iFrameMetExploreViz')!=null){
                     var dimensionIFrameMetExploreViz = parent.document.getElementById('iFrameMetExploreViz').getBoundingClientRect();
                     

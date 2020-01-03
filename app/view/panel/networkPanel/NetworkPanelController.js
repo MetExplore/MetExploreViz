@@ -6,6 +6,11 @@
 Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.panel-networkPanel-networkPanel',
+	stores: [
+		'metExploreViz.view.form.selectCondition.ConditionStore'
+
+		// TODO: add global / shared stores here
+	],
 
 	/**
  * Aplies event linsteners to the view
@@ -14,7 +19,9 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 		var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
-		
+
+		Ext.create('metExploreViz.view.form.selectCondition.ConditionStore');
+
 		view.on({
 			afterrender : me.initParams,
 			scope:me
@@ -43,8 +50,8 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
         if(Ext.getCmp("networkPanel")!= undefined){
 
         	var mask = new Ext.LoadMask({
-                    target: Ext.getCmp("networkPanel"), 
-                    msg: 'This panel allows to visualize metabolic network.', 
+                    target: Ext.getCmp("networkPanel"),
+                    msg: 'This panel allows to visualize metabolic network.',
                     id:"maskInit",
                     msgCls:'msgClsLaunchMask'
                 });
@@ -73,7 +80,6 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 			        if(component!= undefined){
 						component.fileInputEl.dom.click();
 			        }
-			        mask.hide();
 		        },
 		        renderTo:buttonDiv
 		    });
@@ -96,7 +102,6 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 		        style:'margin : 10px 10px 10px 10px',
 		        handler: function(){
 		        	metExploreD3.GraphPanel.refreshPanel(_metExploreViz.getDataFromWebSite());
-                    mask.hide();
 		        },
 		        listeners: {
 			        hideInitialLoadButtons: function(){

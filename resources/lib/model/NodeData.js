@@ -210,6 +210,16 @@ NodeData.prototype = {
       return this.svgWidth;
     },
 
+    setSvgHeight:function(h)
+    {
+      this.svgHeight = h;
+    },
+
+    setSvgWidth:function(w)
+    {
+      this.svgWidth = w;
+    },
+
     getCompartment:function()
     {
       return this.compartment;
@@ -249,6 +259,14 @@ NodeData.prototype = {
         var themappingData = null;
         this.mappingDatas.forEach(function(aMappingData){            
             if(aMappingData.getMappingName()==name && aMappingData.getConditionName()==cond)
+                themappingData = aMappingData;
+        });
+        return themappingData;
+    },
+    getMappingDataByName : function(name){
+        var themappingData = null;
+        this.mappingDatas.forEach(function(aMappingData){
+            if(aMappingData.getMappingName()==name)
                 themappingData = aMappingData;
         });
         return themappingData;

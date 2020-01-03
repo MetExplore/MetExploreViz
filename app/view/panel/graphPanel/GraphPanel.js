@@ -122,18 +122,6 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 hidden:false,
                                 padding:'0 0 0 0'
                           },
-                           {
-                               xtype:'button',
-                               text:'Enter edit mode',
-                               tooltip:'Enter edit mode',
-                               scale:'large',
-                               id:'enterEditMode',
-                               reference:'enterEditMode',
-                               enableToggle: true,
-                               //disabled:true,
-                               hidden:false,
-                               padding:'0 0 0 0'
-                           },
                           {
                                 xtype:'button'/*,text: 'Copy network'*/,
                                 overflowText: 'MetExploreViz documentation',

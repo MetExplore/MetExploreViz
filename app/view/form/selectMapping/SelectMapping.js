@@ -15,7 +15,8 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMapping', {
             type: "form-selectMapping-selectMapping"
         },
         store: {
-            fields: ['name']
+            fields: ['name'],
+            data: [{name:'None'}]
         },
         listeners: {
             render: function(c) {

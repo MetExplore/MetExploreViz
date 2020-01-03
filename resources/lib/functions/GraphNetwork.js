@@ -12,6 +12,8 @@ metExploreD3.GraphNetwork = {
     brushEvnt:undefined,
     taskZoom: "",
     first: true,
+    focus: false,
+    scrollable: false,
     /*******************************************
      * Initialization of variables
      * @param {string} panel : The panel where are the node
@@ -157,100 +159,99 @@ metExploreD3.GraphNetwork = {
 
     rescale : function(panel, func){
         var mask = metExploreD3.createLoadMask("Rescaling graph", panel);
-        metExploreD3.showMask(mask);
 
-        var scaleViz = metExploreD3.getScaleById(panel);
-        var zoom = scaleViz.getZoom();
-        var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+        if(mask!= undefined) {
+            metExploreD3.showMask(mask);
 
-        var wSvg = rectSvg.width;
-        var hSvg = rectSvg.height;
+            var scaleViz = metExploreD3.getScaleById(panel);
+            var zoom = scaleViz.getZoom();
+            var rectSvg = d3.select("#" + panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
 
-        var width = parseInt(metExploreD3.GraphPanel.getWidth(panel).replace("px",""));
-        var height = parseInt(metExploreD3.GraphPanel.getHeight(panel).replace("px",""));
+            var wSvg = rectSvg.width;
+            var hSvg = rectSvg.height;
 
-        var scale =(Math.min(height/hSvg, width/wSvg))*0.9;
-        metExploreD3.applyTolinkedNetwork(
-            panel,
-            function(panelLinked, sessionLinked) {
-                zoom.scaleBy(d3.select("#viz").select("#D3viz").transition().duration(750).on("end",function(){
-                    var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
-                    var centerD3vizX = rectD3viz.left + rectD3viz.width/2;
-                    var centerD3vizY = rectD3viz.top + rectD3viz.height/2;
+            var width = parseInt(metExploreD3.GraphPanel.getWidth(panel).replace("px", ""));
+            var height = parseInt(metExploreD3.GraphPanel.getHeight(panel).replace("px", ""));
 
-                    var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
-                    var centerGCX = rectSvg.left + rectSvg.width/2;
-                    var centerGCY = rectSvg.top + rectSvg.height/2;
+            var scale = (Math.min(height / hSvg, width / wSvg)) * 0.9;
+            metExploreD3.applyTolinkedNetwork(
+                panel,
+                function (panelLinked, sessionLinked) {
+                    zoom.scaleBy(d3.select("#viz").select("#D3viz").transition().duration(750).on("end", function () {
+                        var rectD3viz = d3.select("#" + panel).select("#D3viz").node().getBoundingClientRect();
+                        var centerD3vizX = rectD3viz.left + rectD3viz.width / 2;
+                        var centerD3vizY = rectD3viz.top + rectD3viz.height / 2;
 
-                    var xOK = false;
-                    var yOK = false;
+                        var rectSvg = d3.select("#" + panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                        var centerGCX = rectSvg.left + rectSvg.width / 2;
+                        var centerGCY = rectSvg.top + rectSvg.height / 2;
 
-                    if(centerD3vizX>centerGCX){
-                        while(!xOK){
-                            var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
-                            var centerD3vizX = rectD3viz.left + rectD3viz.width/2;
+                        var xOK = false;
+                        var yOK = false;
 
-                            var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
-                            var centerGCX = rectSvg.left + rectSvg.width/2;
+                        if (centerD3vizX > centerGCX) {
+                            while (!xOK) {
+                                var rectD3viz = d3.select("#" + panel).select("#D3viz").node().getBoundingClientRect();
+                                var centerD3vizX = rectD3viz.left + rectD3viz.width / 2;
 
-                            zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 20, 0);
-                            if(centerD3vizX<centerGCX){
-                                var xOK = true;
+                                var rectSvg = d3.select("#" + panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                                var centerGCX = rectSvg.left + rectSvg.width / 2;
+
+                                zoom.translateBy(d3.select("#" + panel).select("#D3viz"), 20, 0);
+                                if (centerD3vizX < centerGCX) {
+                                    var xOK = true;
+                                }
+                            }
+                        } else {
+                            while (!xOK) {
+                                var rectD3viz = d3.select("#" + panel).select("#D3viz").node().getBoundingClientRect();
+                                var centerD3vizX = rectD3viz.left + rectD3viz.width / 2;
+
+                                var rectSvg = d3.select("#" + panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                                var centerGCX = rectSvg.left + rectSvg.width / 2;
+
+                                zoom.translateBy(d3.select("#" + panel).select("#D3viz"), -20, 0);
+                                if (centerD3vizX > centerGCX) {
+                                    var xOK = true;
+                                    zoom.translateBy(d3.select("#" + panel).select("#D3viz"), 30, 0);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        while(!xOK){
-                            var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
-                            var centerD3vizX = rectD3viz.left + rectD3viz.width/2;
 
-                            var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
-                            var centerGCX = rectSvg.left + rectSvg.width/2;
+                        if (centerD3vizY > centerGCY) {
+                            while (!yOK) {
+                                var rectD3viz = d3.select("#" + panel).select("#D3viz").node().getBoundingClientRect();
+                                var centerD3vizY = rectD3viz.top + rectD3viz.height / 2;
 
-                            zoom.translateBy(d3.select("#"+panel).select("#D3viz"), -20, 0);
-                            if(centerD3vizX>centerGCX){
-                                var xOK = true;
-                                zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 30, 0);
+                                var rectSvg = d3.select("#" + panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                                var centerGCY = rectSvg.top + rectSvg.height / 2;
+                                zoom.translateBy(d3.select("#" + panel).select("#D3viz"), 0, 20);
+                                if (centerD3vizY < centerGCY) {
+                                    var yOK = true;
+                                }
+                            }
+                        } else {
+                            while (!yOK) {
+                                var rectD3viz = d3.select("#" + panel).select("#D3viz").node().getBoundingClientRect();
+                                var centerD3vizY = rectD3viz.top + rectD3viz.height / 2;
+
+                                var rectSvg = d3.select("#" + panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
+                                var centerGCY = rectSvg.top + rectSvg.height / 2;
+
+                                zoom.translateBy(d3.select("#" + panel).select("#D3viz"), 0, -20);
+                                if (centerD3vizY > centerGCY) {
+                                    var yOK = true;
+                                    zoom.translateBy(d3.select("#" + panel).select("#D3viz"), 0, 30);
+                                }
                             }
                         }
-                    }
 
-                    if(centerD3vizY>centerGCY){
-                        while(!yOK){
-                            var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
-                            var centerD3vizY = rectD3viz.top + rectD3viz.height/2;
-
-                            var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
-                            var centerGCY = rectSvg.top + rectSvg.height/2;
-                            zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 0, 20);
-                            if(centerD3vizY<centerGCY){
-                                var yOK = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        while(!yOK){
-                            var rectD3viz = d3.select("#"+panel).select("#D3viz").node().getBoundingClientRect();
-                            var centerD3vizY = rectD3viz.top + rectD3viz.height/2;
-
-                            var rectSvg = d3.select("#"+panel).select("#D3viz").select("#graphComponent").node().getBoundingClientRect();
-                            var centerGCY = rectSvg.top + rectSvg.height/2;
-
-                            zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 0, -20);
-                            if(centerD3vizY>centerGCY){
-                                var yOK = true;
-                                zoom.translateBy(d3.select("#"+panel).select("#D3viz"), 0, 30);
-                            }
-                        }
-                    }
-
-                    scaleViz.setZoomScale(scale);
-                    metExploreD3.hideMask(mask);
-                    if (func) func();
-                }), scale);
-            });
+                        scaleViz.setZoomScale(scale);
+                        metExploreD3.hideMask(mask);
+                        if (func) func();
+                    }), scale);
+                });
+        }
     },
 
 
@@ -259,22 +260,22 @@ metExploreD3.GraphNetwork = {
      */
     moveGraph : function(){
         _MyThisGraphNode.dblClickable=false;
-        var panel = this.parentNode.parentNode.id;
-        var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
-        if(scrollable === "false"){
+
+        var panel = "viz";
+        var scrollable = metExploreD3.GraphNetwork.scrollable;
+
+        if(scrollable === false){
             d3.select("#"+panel).selectAll("#D3viz").style("cursor", "all-scroll");
             d3.selectAll("#brush").classed("hide", true);
 
-            d3.select("#"+panel).select("#D3viz").select("#buttonHand").transition().duration(500).style("opacity", 1);
-            d3.select("#"+panel).select("#buttonHand").attr("scrollable", true);
+            metExploreD3.GraphNetwork.scrollable = true;
         }
         else
         {
             d3.select("#"+panel).selectAll("#D3viz").style("cursor", "default");
             d3.selectAll("#brush").classed("hide", false);
 
-            d3.select("#"+panel).select("#D3viz").select("#buttonHand").transition().duration(500).style("opacity", 0.2);
-            d3.select("#"+panel).select("#buttonHand").attr("scrollable", false);
+            metExploreD3.GraphNetwork.scrollable = false;
         }
     },
 
@@ -345,7 +346,7 @@ metExploreD3.GraphNetwork = {
      */
     zoomIn:function() {
         _MyThisGraphNode.dblClickable=false;
-        var panel = this.parentNode.parentNode.id;
+        var panel = "viz";
         var scale = metExploreD3.getScaleById(panel);
 
         var zoomListener = scale.getZoom();
@@ -361,7 +362,7 @@ metExploreD3.GraphNetwork = {
      */
     zoomOut:function() {
         _MyThisGraphNode.dblClickable=false;
-        var panel = this.parentNode.parentNode.id;
+        var panel = "viz";
         var scale = metExploreD3.getScaleById(panel);
 
         var zoomListener = scale.getZoom();
@@ -384,6 +385,7 @@ metExploreD3.GraphNetwork = {
 
         metExploreD3.GraphNetwork.brushEvnt = d3.brush()
             .on("start", function(d) {
+                metExploreD3.fireEvent("viz", "hideContextMenu");
                 document.addEventListener("mousedown", function(e) {
                     if (e.button === 1 || e.button === 2 ) {
                         e.stopPropagation();
@@ -395,10 +397,8 @@ metExploreD3.GraphNetwork = {
 
             })
             .on("brush ", function(d) {
-                var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
-
+                var scrollable = metExploreD3.GraphNetwork.scrollable;
                 metExploreD3.GraphPanel.setActivePanel(this.parentNode.parentNode.id);
-
                 var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
                 if(d3.event.sourceEvent.button!==1 && scrollable!=="true"){
@@ -441,9 +441,9 @@ metExploreD3.GraphNetwork = {
                 }
             })
             .on("end", function() {
-                var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
+                var scrollable = metExploreD3.GraphNetwork.scrollable;
 
-                if(scrollable==="false"){
+                if(scrollable===false){
 
                     function simulateClick(elementToClick){
                         var evt = document.createEvent("MouseEvents");
@@ -521,12 +521,11 @@ metExploreD3.GraphNetwork = {
                                             if(sessionMain!==undefined)
                                             {
                                                 var animLinked=metExploreD3.GraphNetwork.isAnimated(sessionMain.getId());
-                                                if (animLinked==='true') {
+                                                if (animLinked) {
                                                     var force = sessionMain.getForce();
                                                     if(force!==undefined)
                                                     {
-                                                        if((metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === 'true')
-                                                            || (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === null)) {
+                                                        if(metExploreD3.GraphNetwork.isAnimated(sessionMain.getId())) {
                                                             force.alpha(1).restart();
                                                         }
                                                     }
@@ -537,12 +536,12 @@ metExploreD3.GraphNetwork = {
                                         {
 
                                             var force = session.getForce();
-                                            var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId())
-                                            if (animLinked==='true') {
+                                            var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId());
+                                            if (animLinked) {
                                                 var force = session.getForce();
                                                 if(force!==undefined)
                                                 {
-                                                    if((metExploreD3.GraphNetwork.isAnimated(session.getId()) === 'true') || (metExploreD3.GraphNetwork.isAnimated(session.getId()) === null)) {
+                                                    if(metExploreD3.GraphNetwork.isAnimated(session.getId())) {
                                                         force.alpha(1).restart();
                                                     }
                                                 }
@@ -565,12 +564,11 @@ metExploreD3.GraphNetwork = {
                                 if(sessionMain!==undefined)
                                 {
                                     var animLinked=metExploreD3.GraphNetwork.isAnimated(sessionMain.getId())
-                                    if (animLinked==='true') {
+                                    if (animLinked) {
                                         var force = sessionMain.getForce();
                                         if(force!==undefined)
                                         {
-                                            if((metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === 'true')
-                                                || (metExploreD3.GraphNetwork.isAnimated(sessionMain.getId()) === null)) {
+                                            if(metExploreD3.GraphNetwork.isAnimated(sessionMain.getId())) {
                                                 force.alpha(1).restart();
                                             }
                                         }
@@ -582,12 +580,11 @@ metExploreD3.GraphNetwork = {
 
                                 var animLinked=metExploreD3.GraphNetwork.isAnimated(session.getId());
 
-                                if (animLinked==='true') {
+                                if (animLinked) {
                                     var force = session.getForce();
                                     if(force!==undefined)
                                     {
-                                        if(d3.select(metExploreD3.GraphNetwork.isAnimated(session.getId()) === 'true')
-                                            || (metExploreD3.GraphNetwork.isAnimated(session.getId()) === null)) {
+                                        if(d3.select(metExploreD3.GraphNetwork.isAnimated(session.getId()))) {
                                             force.alpha(1).restart();
                                         }
                                     }
@@ -640,14 +637,9 @@ metExploreD3.GraphNetwork = {
      * @param {} panel : The panel where the button must be on
      */
     animationButtonOn:function(panel) {
-        d3.select("#"+panel).select("#buttonAnim").select("image").remove();
 
-        d3.select("#"+panel).select("#buttonAnim").append("image").attr(
-            "xlink:href",
-            document.location.href.split("index.html")[0] + "resources/icons/pause.svg").attr(
-            "width", "50").attr("height", "50")
-            .attr("transform",
-                "translate(10,10) scale(.5)");
+        // disable button
+        d3.select("#"+panel).select("#buttonAnim").select("image").remove();
 
         metExploreD3.GraphNetwork.setAnimated(panel, true);
     },
@@ -657,14 +649,8 @@ metExploreD3.GraphNetwork = {
      * @param {} panel : The panel where the button must be off
      */
     animationButtonOff:function(panel) {
+        // disable button
         d3.select("#"+panel).select("#buttonAnim").select("image").remove();
-
-        d3.select("#"+panel).select("#buttonAnim").append("image").attr(
-            "xlink:href",
-            document.location.href.split("index.html")[0] + "resources/icons/play.svg").attr(
-            "width", "50").attr("height", "50")
-            .attr("transform",
-                "translate(10,10) scale(.5)");
 
         metExploreD3.GraphNetwork.setAnimated(panel, false);
     },
@@ -672,14 +658,16 @@ metExploreD3.GraphNetwork = {
     /*******************************************
      * Start or stop the animation
      */
-    play:function(d) {
+    play:function() {
         var sessions = _metExploreViz.getSessionsSet();
-        var panel = this.parentNode.parentNode.id;
+        var panel = "viz";
         var session = _metExploreViz.getSessionById(panel);
         if(session!=undefined)
         {
+
             var anim = metExploreD3.GraphNetwork.isAnimated(panel);
-            if (anim == "false") {
+            metExploreD3.GraphNetwork.setAnimated(panel, !anim);
+            if (!anim) {
                 if(session.isLinked())
                 {
                     for (var key in sessions) {
@@ -724,6 +712,7 @@ metExploreD3.GraphNetwork = {
                         metExploreD3.GraphLink.refreshLinkActivity(panel, _metExploreViz.getSessionById(panel), linkStyle);
                 }
             }
+
         }
     },
 
@@ -756,7 +745,7 @@ metExploreD3.GraphNetwork = {
     link :function(panel){
         var session = _metExploreViz.getSessionById(panel);
         var mainSession = _metExploreViz.getSessionById('viz');
-        var anim = metExploreD3.GraphNetwork.isAnimated("viz");
+        var anim = session.isAnimated("viz");
         metExploreD3.GraphStyleEdition.applyLabelStyle(panel);
 
         d3.select("#"+panel).select("#D3viz").select("#buttonLink").attr("isLink", "true");
@@ -824,7 +813,7 @@ metExploreD3.GraphNetwork = {
         metExploreD3.GraphNetwork.looksLinked();
 
         var anim = metExploreD3.GraphNetwork.isAnimated(panel);
-        if (anim == "true"){
+        if (anim){
             var force = session.getForce();
             force.alpha(1).restart();
         }
@@ -996,12 +985,6 @@ metExploreD3.GraphNetwork = {
                             }
                         });
                 });
-
-            session.setActiveMapping(mainSession.getActiveMapping().valueOf());
-            session.resetColorMapping();
-            mainSession.getColorMappingsSet().forEach(function(colorMap){
-                session.addColorMapping(colorMap.getName().valueOf(), colorMap.getValue().valueOf());
-            });
         }
         else
         {
@@ -1021,26 +1004,26 @@ metExploreD3.GraphNetwork = {
                 var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
                 //H	72
-                if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
                 }
 
-                if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.GraphFunction.horizontalReverse(_MyThisGraphNode.activePanel);
                 }
 
                 //V 86
-                if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
                 }
 
-                if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.GraphFunction.verticalReverse(_MyThisGraphNode.activePanel);
                 }
 
 
                 // 65=A
-                if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey) {
+                if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey && metExploreD3.GraphNetwork.focus) {
                     d3.select("#" + _MyThisGraphNode.activePanel).select("#D3viz").select("#graphComponent").selectAll("g.node")
                         .each(function (node) {
                             if (!node.isSelected()) {
@@ -1052,7 +1035,7 @@ metExploreD3.GraphNetwork = {
             .on("keyup", function (e) {
                 // 46=Suppr
                 var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-                if (_MyThisGraphNode.charKey == 46 && activesession.getSelectedNodes().length > 0) {
+                if (_MyThisGraphNode.charKey == 46 && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
                     metExploreD3.displayMessageYesNo("Selected nodes", 'Do you want remove selected nodes?', function (btn) {
                         if (btn == "yes") {
                             metExploreD3.GraphNetwork.removeSelectedNode(_MyThisGraphNode.activePanel)
@@ -1127,18 +1110,31 @@ metExploreD3.GraphNetwork = {
         metExploreD3.GraphNetwork.zoomListener = d3.zoom()
             .filter(function(){
 
-                var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
+                var scrollable = metExploreD3.GraphNetwork.scrollable;
 
-                return event.button === 1 || event.type==="wheel" || (event.button === 0 && scrollable === "true");
+                return event.button === 1 || event.type==="wheel" || (event.button === 0 && scrollable === true);
             })
             .scaleExtent([ 0.01, 30 ])
             .extent([[w*.45, h*.45], [w*.55, h*.55]])
             .translateExtent([[-w*10, -h*10], [w*10, h*10]])
-            .on("zoom", function(e){
-
+            .on("start", function(){
+                metExploreD3.fireEvent("viz", "hideContextMenu");
+                disableScroll();
+            })
+            .on("zoom", function(){
                 that.zoom(panel);
+            })
+            .on("end", function(){
+                enableScroll();
             });
 
+        function disableScroll() {
+            d3.select(_metExploreViz.getParentWebSite().document).select("body").classed('stop-scrolling', true)
+        }
+
+        function enableScroll() {
+            d3.select(_metExploreViz.getParentWebSite().document).select("body").classed('stop-scrolling', false);
+        }
 
         var scale = new Scale(panel);
         scale.setScale(1, 1, metExploreD3.GraphNetwork.zoomListener);
@@ -1208,7 +1204,6 @@ metExploreD3.GraphNetwork = {
 
         // Refresh coresponding nodes and links
         var linkStyle = metExploreD3.getLinkStyle();
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 
         metExploreD3.GraphNetwork.initPathwaysData();
 
@@ -1303,7 +1298,7 @@ metExploreD3.GraphNetwork = {
             .on("end", function(){
                 var scale = metExploreD3.getScaleById(panel);
                 if ((networkData.getNodes().length > generalStyle.getReactionThreshold() && generalStyle.isDisplayedLinksForOpt())) {
-                    metExploreD3.GraphLink.reloadLinks(panel, networkData, linkStyle, metaboliteStyle);
+                    metExploreD3.GraphLink.reloadLinks(panel, networkData, linkStyle);
                 }
                 metExploreD3.GraphLink.tick(panel, scale);
             })
@@ -1691,7 +1686,7 @@ metExploreD3.GraphNetwork = {
                 metExploreD3.GraphNetwork.addLinkInDrawing(link.getSource().getDbIdentifier()+"-"+link.getTarget().getId(), link.getSource(), link.getTarget(), "out", false, "viz", false)
             });
 
-        if (metExploreD3.GraphNetwork.isAnimated("viz")==true || metExploreD3.GraphNetwork.isAnimated("viz")=="true") {
+        if (session.isAnimated("viz")==true || session.isAnimated("viz")=="true") {
             force.alpha(1).restart();
         }
         else
@@ -1886,8 +1881,8 @@ metExploreD3.GraphNetwork = {
             false,
             theNode.getLabelVisible(),
             theNode.getSvg(),
-            theNode.getSvgWidth(),
-            theNode.getSvgHeight(),
+            metaboliteStyle.getWidth()/2,
+            metaboliteStyle.getHeight()/2,
             theNode.getIsSideCompound(),
             undefined,
             true,
@@ -2010,15 +2005,15 @@ metExploreD3.GraphNetwork = {
         var panel = "viz";
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 
         networkData.getPathwayByName(pathwayName).setCollapsed(true);
 
         var newNode = networkData.getNodeByName(pathwayName);
+
         var pathwayModel = networkData.getPathwayByName(pathwayName);
 
         newNode.show();
-
+        var pathwaySize = 20;
         if(newNode.x===undefined)
         {
 
@@ -2034,10 +2029,13 @@ metExploreD3.GraphNetwork = {
             var avgY = sumY / allY.length;
             newNode.y = avgY;
             newNode.py = avgY;
+
+            newNode.svgWidth= pathwaySize*3;
+            newNode.svgHeight= pathwaySize*3;
         }
 
         // var pathwaySize = pathwayModel.getNodes().filter(function (t) { return t.getBiologicalType()==="metabolite"; }).length;
-        var pathwaySize = 20;
+
 
         var thePathwayElement =
             metExploreD3.GraphNode.node.filter(function(d) { return d.getBiologicalType() === 'pathway'; })
@@ -2093,7 +2091,7 @@ metExploreD3.GraphNetwork = {
                 return pathBack;
             })
             .attr("opacity", "0.20")
-            .attr("fill", "black");
+            .attr("fill", "#000000");
 
         box.append("image")
             .attr("class", "iconlocker")
@@ -2807,7 +2805,7 @@ metExploreD3.GraphNetwork = {
                     var force = session.getForce();
                     if(force!=undefined)
                     {
-                        if(metExploreD3.GraphNetwork.isAnimated("viz")== "true" || metExploreD3.GraphNetwork.isAnimated("viz")==true)
+                        if(session.isAnimated("viz") || session.isAnimated("viz")==true)
                             force.alpha(1).restart();
                     }
                 }
@@ -2818,7 +2816,7 @@ metExploreD3.GraphNetwork = {
                 var force = session.getForce();
                 if(force!=undefined)
                 {
-                    if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" || metExploreD3.GraphNetwork.isAnimated(panel)==true)
+                    if(metExploreD3.GraphNetwork.isAnimated(panel))
                         force.alpha(1).restart();
 
                 }
@@ -2831,7 +2829,7 @@ metExploreD3.GraphNetwork = {
         {
             if(force!=undefined)
             {
-                if(metExploreD3.GraphNetwork.isAnimated(panel)== "true" || metExploreD3.GraphNetwork.isAnimated(panel)==true)
+                if(metExploreD3.GraphNetwork.isAnimated(panel))
                     force.alpha(1).restart();
             }
         }
@@ -2864,7 +2862,7 @@ metExploreD3.GraphNetwork = {
                             var force = session.getForce();
                             if(force!=undefined)
                             {
-                                if(metExploreD3.GraphNetwork.isAnimated("viz")=="true")
+                                if(session.isAnimated("viz")=="true")
                                     force.alpha(1).restart();
                             }
                         }
@@ -2875,7 +2873,7 @@ metExploreD3.GraphNetwork = {
                         var force = session.getForce();
                         if(force!=undefined)
                         {
-                            if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
+                            if(metExploreD3.GraphNetwork.isAnimated(panel))
                                 force.alpha(1).restart();
 
                         }
@@ -2914,7 +2912,7 @@ metExploreD3.GraphNetwork = {
                 {
                     if(force!=undefined)
                     {
-                        if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
+                        if(metExploreD3.GraphNetwork.isAnimated(panel))
                             force.alpha(1).restart();
                     }
                 }
@@ -2951,7 +2949,7 @@ metExploreD3.GraphNetwork = {
                             var force = session.getForce();
                             if(force!=undefined)
                             {
-                                if(metExploreD3.GraphNetwork.isAnimated("viz")=="true")
+                                if(session.isAnimated("viz")=="true")
                                     force.alpha(1).restart();
                             }
                         }
@@ -2962,7 +2960,7 @@ metExploreD3.GraphNetwork = {
                         var force = session.getForce();
                         if(force!=undefined)
                         {
-                            if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
+                            if(metExploreD3.GraphNetwork.isAnimated(panel))
                                 force.alpha(1).restart();
 
                         }
@@ -2987,7 +2985,7 @@ metExploreD3.GraphNetwork = {
                 {
                     if(force!=undefined)
                     {
-                        if(metExploreD3.GraphNetwork.isAnimated(panel)=="true")
+                        if(metExploreD3.GraphNetwork.isAnimated(panel))
                             force.alpha(1).restart();
                     }
                 }
@@ -3221,7 +3219,7 @@ metExploreD3.GraphNetwork = {
         {
             if(force!=undefined)
             {
-                if(metExploreD3.GraphNetwork.isAnimated(panelLinked)=="true")
+                if(metExploreD3.GraphNetwork.isAnimated(panelLinked))
                     force.alpha(1).restart();
             }
         }
@@ -3236,12 +3234,10 @@ metExploreD3.GraphNetwork = {
      */
     setAnimated: function(panel, bool){
         if(bool){
-            d3.select("#"+panel).select("#D3viz").attr("animation", "true");
             _metExploreViz.getSessionById(panel).setAnimated(true);
         }
         else
         {
-            d3.select("#"+panel).select("#D3viz").attr("animation", "false");
             _metExploreViz.getSessionById(panel).setAnimated(false);
         }
     },
@@ -3277,7 +3273,7 @@ metExploreD3.GraphNetwork = {
      * @param {} panel : The panel animated or not
      */
     isAnimated : function(panel){
-        return d3.select("#"+panel).select("#D3viz").attr("animation");
+        return _metExploreViz.getSessionById(panel).isAnimated();
     },
 
     /*******************************************
@@ -3447,176 +3443,6 @@ metExploreD3.GraphNetwork = {
             .attr("id", "tooltipButtons")
             .style("z-index", "10")
             .style("visibility", "hidden");
-
-        var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
-        var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .attr("animation", function(){
-                if(animated)
-                    return "true";
-                else
-                    return "false";
-            })
-            .append("svg:g")
-            .attr("class","buttonAnim").attr("id","buttonAnim")
-            .on("click", metExploreD3.GraphNetwork.play)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", function(){
-                if(animated)
-                    return document.location.href.split("index.html")[0] + "resources/icons/pause.svg";
-                else
-                    return document.location.href.split("index.html")[0] + "resources/icons/play.svg";
-            })
-            .attr("width", "50")
-            .attr("height", "50")
-            .attr("transform", "translate(10,10) scale(.5)");
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .append("svg:g")
-            .attr("class","buttonRescale").attr("id","buttonRescale")
-            .on("click", function(){
-                metExploreD3.GraphNetwork.rescale(panel);
-            })
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", function(){
-                return document.location.href.split("index.html")[0] + "resources/icons/rescale.png";
-            })
-            .attr("width", "50")
-            .attr("height", "50")
-            .attr("transform", "translate(80,10) scale(.5)")
-            .on("mouseup", function(){
-                d3.select(this).attr("transform", "translate(80,10) scale(.5)");
-            })
-            .on("mousedown", function(){
-                d3.select(this).attr("transform", "translate(80,10) scale(.46)");
-            })
-            .on("mouseover", function(){
-                tooltip.text("Center network on window");
-                return tooltip.style("top", "15px").style("left","120px").style("visibility", "visible");
-            })
-            .on("mouseout", function(){
-                return tooltip.style("visibility", "hidden");
-            });
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .append("svg:g")
-            .attr("class","buttonZoomIn").attr("id","buttonZoomIn")
-            .attr('x', (w-60))
-            .attr('y', 10)
-            .on("click", metExploreD3.GraphNetwork.zoomIn)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/zoomin.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .style("opacity", 0.2)
-            .attr("transform", "translate("+(w-60)+",10) scale(1)")
-            .on("mouseover", function(d) {
-                d3.select(this).transition().duration(500).style("opacity", 1);
-            })
-            .on("mouseout", function(d) {
-                d3.select(this).transition().duration(500).style("opacity", 0.2);
-            });
-
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .append("svg:g")
-            .attr("class","buttonZoomOut").attr("id","buttonZoomOut")
-            .attr('x', (w-110))
-            .attr('y', 10)
-            .on("click", metExploreD3.GraphNetwork.zoomOut)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/zoomout.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .style("opacity", 0.2)
-            .attr("transform", "translate("+(w-110)+",10) scale(1)")
-            .on("mouseover", function(d) {
-                d3.select(this).transition().duration(500).style("opacity", 1);
-            })
-            .on("mouseout", function(d) {
-                d3.select(this).transition().duration(500).style("opacity", 0.2);
-            });
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .append("svg:g")
-            .attr("class","buttonHand").attr("id","buttonHand")
-            .attr('x', (w-160))
-            .attr('y', 10)
-            .attr("scrollable", "false")
-            .on("click", metExploreD3.GraphNetwork.moveGraph)
-            .style("opacity", 1)
-            .style("cursor", "hand")
-            .append("image")
-            .attr("xlink:href", document.location.href.split("index.html")[0] + "resources/icons/handcursor.svg")
-            .attr("width", "50")
-            .attr("height", "50")
-            .attr("transform", "translate("+(w-160)+",10) scale(1)");
-
-        d3
-            .select("#"+panel)
-            .select("#D3viz")
-            .select("buttonHand")
-            .style("opacity", 0);
-
-        d3.select('#'+panel)
-            .on("mouseover", function(){
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonZoomOut")
-                    .transition().duration(500).style("opacity", 1);
-
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonZoomIn")
-                    .transition().duration(500).style("opacity", 1);
-
-                var session = _metExploreViz.getSessionById(panel);
-                // if visualisation is actived we add item to menu
-                if(session.isActive()){
-                    var scrollable = d3.select("#"+panel).select("#buttonHand").attr("scrollable");
-                    if(scrollable == "false")
-                        d3.select("#"+panel)
-                            .select("#D3viz")
-                            .select("#buttonHand")
-                            .transition().duration(500).style("opacity", 0.2);
-                    else
-                        d3.select("#"+panel)
-                            .select("#D3viz")
-                            .select("#buttonHand")
-                            .transition().duration(500).style("opacity", 1);
-                }
-
-            })
-            .on("mouseout", function(){
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonZoomOut")
-                    .transition().duration(500).style("opacity", 0);
-
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonZoomIn")
-                    .transition().duration(500).style("opacity", 0);
-
-                d3.select("#"+panel)
-                    .select("#D3viz")
-                    .select("#buttonHand")
-                    .transition().duration(500).style("opacity", 0);
-            });
     },
 
     easterEggNoel: function(){

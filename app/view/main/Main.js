@@ -15,7 +15,8 @@ Ext.define('metExploreViz.view.main.Main', {
 
         'metExploreViz.view.main.MainController',
         'metExploreViz.view.main.MainModel',
-        'metExploreViz.view.panel.networkPanel.NetworkPanel'
+        'metExploreViz.view.panel.networkPanel.NetworkPanel',
+        "metExploreViz.view.form.selectCondition.ConditionStore"
     ],
 
     controller: 'main',

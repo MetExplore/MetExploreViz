@@ -3,145 +3,149 @@
  * (a)description  MetaboliteStyleForm : Display metabolites config
  */
 Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
-    extend: 'Ext.panel.Panel',  
+    extend: 'metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm',
     alias: 'widget.metaboliteStyleForm',
     requires: [
-        "metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleFormController",
-        "metExploreViz.view.form.SelectDisplayMetaboliteLabel"
+        "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm"
     ],
-    controller: "form-metaboliteStyleForm-metaboliteStyleForm",
-    
-    region:'north',
-    height: '100%',
-    width:'100%', 
-    margin:'0 0 0 0',
-    flex:1,
-    border:false,
-    autoScroll:true,
-    layout: {
-        type: 'vbox',
-        align: 'stretch'
+    style : {
+        padding:'0px 0px 0px 0px'
     },
-    items: 
-    [
-    {   
-        id:'selectDisplayMetaboliteLabel',
-        reference:'selectDisplayMetaboliteLabel',
-        xtype:'selectDisplayMetaboliteLabel'  
-    }
-    ,
-    {
-        xtype: 'checkboxfield',
-        boxLabel  : 'Uses aliases',
-        margin:'5 5 5 5',
-        checked   : false,
-        reference:'checkboxAlias'
-    },
-    {   
-        xtype: 'textfield',
-        reference:'chooseStrokeMetabolite',
-        margin:'5 5 5 5',
-        fieldLabel: "Stroke width:",
-        displayField: 'stroke',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue, oldValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        scale: 'small',
-        reference:'chooseHeightMetabolite',
-        margin:'5 5 5 5',
-        fieldLabel: "Height :",
-        displayField: 'height',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue, oldValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseWidthMetabolite',
-        margin:'5 5 5 5',
-        fieldLabel: "Width :",
-        displayField: 'width',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue, oldValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseRxMetabolite',
-        margin:'5 5 5 5',
-        fieldLabel: "Rx :",
-        displayField: 'rx',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue, oldValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {   
-        xtype: 'textfield',
-        reference:'chooseRyMetabolite',
-        margin:'5 5 5 5',
-        fieldLabel: "Ry :",
-        displayField: 'ry',
-        editable:true,
-        width:'100%', 
-        listeners: {
-            change: function(newValue, oldValue){
-                this.lastValue = newValue;
-            }   
-        }        
-    }
-    ,
-    {
-        xtype: 'menuseparator'
-    }
-    ,
-    {
-        layout: {
-            type: 'hbox',
-            align: 'center',
-            pack: 'center'
-        },
-        items:[{
-            id :'vizExempleMetabolite',
-            xtype : 'panel',
-            margins:'0 0 0 0',
-            closable: false,
-            region:'center',
-            height:100,
-            width:100, 
-            flex:1,
-            split:true
+    store: {
+        data: [{
+            "type": "color",
+            "biologicalType":"metabolite",
+            "target": ["rect.metabolite"],
+            "attrType": "style",
+            "attr": "fill",
+            "title": "Node background",
+            "default": "#FFFFFF",
+            "min": "#ffff00",
+            "max": "#0000ff",
+            "access":"backgroundColor"
+        }, {
+            "type": "int",
+            "biologicalType":"metabolite",
+            "target": ["rect.metabolite", "rect.fontSelected"],
+            "attrType": "attrEditor",
+            "attr": "width",
+            "title": "Width",
+            "min": 1,
+            "max": 100,
+            "default": 5,
+            "access":"width"
+        }, {
+            "type": "int",
+            "biologicalType":"metabolite",
+            "target": ["rect.metabolite", "rect.fontSelected"],
+            "attrType": "attrEditor",
+            "attr": "height",
+            "title": "Height",
+            "access": "height",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "int",
+            "biologicalType":"metabolite",
+            "target": ["rect.metabolite", "rect.fontSelected"],
+            "attrType": "attr",
+            "attr": "rx",
+            "access": "rx",
+            "title": "Rx",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "int",
+            "biologicalType":"metabolite",
+            "target": ["rect.metabolite", "rect.fontSelected"],
+            "attrType": "attr",
+            "attr": "ry",
+            "access": "ry",
+            "title": "Ry",
+            "min": 1,
+            "max": 100,
+            "default": 5
+        }, {
+            "type": "float",
+            "target": ["rect.metabolite", "rect.fontSelected"],
+            "attrType": "style",
+            "biologicalType":"metabolite",
+            "attr": "opacity",
+            "access": "opacity",
+            "title": "Transparency",
+            "min": 0.0,
+            "max": 1.0,
+            "default": 1.0
+        }
+        ,{
+            "type": "color",
+            "target": ["rect.metabolite", "rect.fontSelected"],
+            "attrType": "style",
+            "biologicalType":"metabolite",
+            "attr": "stroke",
+            "access": "strokeColor",
+            "title": "Border color",
+            "min": "#ff0000",
+            "max": "#00ffff",
+            "default": "#000000"
+        }, {
+            "type": "int",
+            "target": ["rect.metabolite", "rect.fontSelected"],
+            "attrType": "style",
+            "attr": "stroke-width",
+            "access": "strokeWidth",
+            "biologicalType":"metabolite",
+            "title": "Border width",
+            "min": 0,
+            "max": 50,
+            "default": 1
+        }
+        ,{
+            "type": "color",
+            "target": ["text.metabolite"],
+            "attrType": "attr",
+            "attr": "fill",
+            "access": "fontColor",
+            "biologicalType":"metabolite",
+            "title": "Label color",
+            "min": "#ff00ff",
+            "max": "#00ff00",
+            "default": "#000000"
+        },{
+            "type": "int",
+            "target": ["text.metabolite"],
+            "attrType": "style",
+            "attr": "font-size",
+            "access": "fontSize",
+            "biologicalType":"metabolite",
+            "title": "Label font size",
+            "min": 1,
+            "max": 200,
+            "default": 20
+        },{
+            "type": "int",
+            "target": ["text.metabolite"],
+            "attrType": "style",
+            "attr": "font-weight",
+            "access": "fontWeight",
+            "biologicalType":"metabolite",
+            "title": "Label font weight",
+            "min": 100,
+            "max": 1000,
+            "default": 500
+        },{
+            "type": "float",
+            "target": ["text.metabolite"],
+            "attrType": "style",
+            "attr": "opacity",
+            "access": "labelOpacity",
+            "title": "Label transparency",
+            "min": 0.0,
+            "biologicalType":"metabolite",
+            "max": 1.0,
+            "default": 1.0
         }]
     },
-    {
-        xtype:'button',
-        iconCls:'refresh',
-        margin:'5 5 5 0',
-        reference: 'refreshMetaboliteStyle',
-        action: 'refreshMetaboliteStyle'  
-        
-    }
-    ]   
 });

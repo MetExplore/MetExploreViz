@@ -1,5 +1,6 @@
 var MetExploreViz = {
     initFrame:function(panel){
+
 		var iframe = document.createElement('iframe');
 		iframe.id = "iFrameMetExploreViz",
 		iframe.height = '100%',

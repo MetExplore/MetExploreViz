@@ -146,6 +146,28 @@ metExploreD3.GraphUtils = {
     * Choose text color in function of contrast with background  
     * @param {} backgroundColor : Color of background 
     */
+    RGBString2Color : function(backgroundColor){ 
+	    if(backgroundColor!=undefined){	
+			var color;
+    		if(backgroundColor.slice(0,3) == "rgb"){
+    			backgroundColor = backgroundColor.replace("rgb","");
+    			backgroundColor = backgroundColor.replace("(","");
+    			backgroundColor = backgroundColor.replace(")","");
+    			rgb = backgroundColor.split(",");
+	    		var red = rgb[0];
+				var green = rgb[1];
+				var blue = rgb[2];
+				return metExploreD3.GraphUtils.RGB2Color(red, green, blue)
+    		}
+    		if(backgroundColor.slice(0,1) == "#")
+    			return backgroundColor;
+    	}
+    },
+
+    /*******************************************
+    * Choose text color in function of contrast with background  
+    * @param {} backgroundColor : Color of background 
+    */
     chooseTextColor : function(backgroundColor){ 
 	    if(backgroundColor!=undefined){	
 			var color;
@@ -155,7 +177,7 @@ metExploreD3.GraphUtils = {
 				var green = rgb.g;
 				var blue = rgb.b;
 				if ((red*0.299 + green*0.687 + blue*0.114) > 186) 
-					color = "black";
+					color = "#000000";
 				else 
 					color = "white";
 	    	}
@@ -170,17 +192,17 @@ metExploreD3.GraphUtils = {
 					var green = rgb[1];
 					var blue = rgb[2];
 					if ((red*0.299 + green*0.687 + blue*0.114) > 186) 
-						color = "black";
+						color = "#000000";
 					else 
 						color = "white";
 	    		}
 	    		else
-	    			color = "black";
+	    			color = "#000000";
 	    	}
 			return color;
 		}
 		else
-			return "black";
+			return "#000000";
     },
 
     /*******************************************
@@ -249,24 +271,10 @@ metExploreD3.GraphUtils = {
     * Escape nodes which don't appear in export. 
     */
 	escapeUnExportNode: function(){
-		d3.selectAll("#buttonAnim")
-        	.style("display", "none");
 
         var brush = d3.selectAll("#brush");
 		if(brush!=null)  
 		  brush.style("display", "none");
-
-		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
-		if(buttonZoomIn!=null)  
-		  buttonZoomIn.style("display", "none");
-		
-		var buttonHand = d3.selectAll("#buttonHand");
-		if(buttonHand!=null)  
-		  buttonHand.style("display", "none");
-
-		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
-		if(buttonZoomOut!=null)  
-		  buttonZoomOut.style("display", "none");
 
 		d3.selectAll("#D3viz")
 			.style("box-shadow", "");
@@ -311,7 +319,7 @@ metExploreD3.GraphUtils = {
 			var force = session.getForce();
 			if(force!=undefined)  
 			{
-				if(metExploreD3.GraphNetwork.isAnimated('viz')== "true")
+				if(metExploreD3.GraphNetwork.isAnimated('viz'))
 					force.stop();
 										
 			}
@@ -332,7 +340,7 @@ metExploreD3.GraphUtils = {
 		var emptySvg = window.document.createElementNS(prefix.svg, 'svg');
 		window.document.body.appendChild(emptySvg);
 		var emptySvgDeclarationComputed = getComputedStyle(emptySvg);
-		var myMask = metExploreD3.createLoadMask("Export initialization...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Export initialization...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -464,8 +472,6 @@ metExploreD3.GraphUtils = {
 		[].forEach.call(crowbarElements, function(el) {
 		  el.parentNode.removeChild(el);
 		});
-		d3.selectAll("#buttonAnim")
-		      .style("display", "inline");
 		
 		var brush = d3.selectAll("#brush");
 		if(brush!=null)  
@@ -483,25 +489,9 @@ metExploreD3.GraphUtils = {
 		if(buttonAlignMapping!=null)
             buttonAlignMapping.style("display ", "inline");
 
-		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
-		if(buttonZoomIn!=null)  
-		  buttonZoomIn.style("display", "inline");
-		
-		var buttonHand = d3.selectAll("#buttonHand");
-		if(buttonHand!=null)  
-		  buttonHand.style("display", "inline");
-
         var buttonExportCoordinates = d3.selectAll("#buttonExportCoordinates");
         if(buttonExportCoordinates!=null)
             buttonExportCoordinates.style("display ", "inline");
-
-		var buttonRescale = d3.selectAll("#buttonRescale");
-		if(buttonRescale!=null)
-            buttonRescale.style("display", "inline");
-
-		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
-		if(buttonZoomOut!=null)  
-		  buttonZoomOut.style("display", "inline");
 
 		d3.select("#"+_MyThisGraphNode.activePanel).select("#D3viz")
 			.style("box-shadow", " 0px 0px 10px 3px #144778 inset");
@@ -545,22 +535,6 @@ clone.setAttribute("version", "1.1");
 					clone.setAttributeNS(prefix.xmlns, "xmlns:xlink", prefix.xlink);
 				}
 
-				var buttonZoomIn = clone.getElementById("buttonZoomIn");
-				if(buttonZoomIn!=null) 
-					buttonZoomIn.parentNode.removeChild(buttonZoomIn);
-
-				var buttonZoomOut = clone.getElementById("buttonZoomOut");
-				if(buttonZoomOut!=null) 
-					buttonZoomOut.parentNode.removeChild(buttonZoomOut);
-
-				var buttonHand = clone.getElementById("buttonHand");
-				if(buttonHand!=null) 
-					buttonHand.parentNode.removeChild(buttonHand);
-
-				var buttonAnim = clone.getElementById("buttonAnim");
-				if(buttonAnim!=null) 
-					buttonAnim.parentNode.removeChild(buttonAnim);
-
                 var buttonImportCoordinates = clone.getElementById("buttonImportCoordinates");
                 if(buttonImportCoordinates!=null)
                     buttonImportCoordinates.parentNode.removeChild(buttonImportCoordinates);
@@ -576,10 +550,6 @@ clone.setAttribute("version", "1.1");
 				var buttonExportCoordinates = clone.getElementById("buttonExportCoordinates");
 				if(buttonExportCoordinates!=null)
                     buttonExportCoordinates.parentNode.removeChild(buttonExportCoordinates);
-
-                var buttonRescale = clone.getElementById("buttonRescale");
-                if(buttonRescale!=null)
-                    buttonRescale.parentNode.removeChild(buttonRescale);
 
 				// var tooltip = clone.getElementById("tooltip");
 				// tooltip.parentNode.removeChild(tooltip);
@@ -798,7 +768,7 @@ clone.setAttribute("version", "1.1");
 		{
 			if(force!=undefined)  
 			{		
-				if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+				if(session.isAnimated("viz"))
 					force.alpha(1).restart();
 			}	
 		}
@@ -919,7 +889,7 @@ clone.setAttribute("version", "1.1");
 					{
 						if(force!=undefined)  
 						{		
-							if(metExploreD3.GraphNetwork.isAnimated("viz")== "true")
+							if(session.isAnimated("viz"))
 								force.alpha(1).restart();
 						}	
 					}
@@ -1163,25 +1133,10 @@ clone.setAttribute("version", "1.1");
     * Export the main metabolic network for XGMML conversion. 
 	*/
 	exportSVGMain : function(){
-		d3.selectAll("#buttonAnim")
-        	.style("display", "none");
 
 		var brush = d3.selectAll("#brush");
 		if(brush!=null)  
 		  brush.style("display", "none");
-
-		var buttonZoomIn = d3.selectAll("#buttonZoomIn");
-		if(buttonZoomIn!=null)  
-		  buttonZoomIn.style("display", "none");
-		
-		var buttonHand = d3.selectAll("#buttonHand");
-		if(buttonHand!=null)  
-		  buttonHand.style("display", "none");
-
-		var buttonZoomOut = d3.selectAll("#buttonZoomOut");
-		if(buttonZoomOut!=null)  
-		  buttonZoomOut.style("display", "none");
-
 
 		window.URL = (window.URL || window.webkitURL);
 
@@ -1267,7 +1222,7 @@ clone.setAttribute("version", "1.1");
 	},
 
 	saveNetworkDot : function() {
-		var myMask = metExploreD3.createLoadMask("Export DOT file...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Export DOT file...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1364,7 +1319,7 @@ clone.setAttribute("version", "1.1");
 	* Retrieve all necessary data to load saved visualization
     */
 	saveNetworkJSON : function() {
-		var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1551,8 +1506,7 @@ clone.setAttribute("version", "1.1");
 				    });
 				    networkJSON+="]},";
 
-			    	networkJSON+="\n\"colorMappings\":" + JSON.stringify(_metExploreViz.getSessionById(key).getColorMappingsSet()) + ",";
-				    networkJSON+="\n\"linked\":" + JSON.stringify(_metExploreViz.getSessionById(key).isLinked()) + ",";
+			    	 networkJSON+="\n\"linked\":" + JSON.stringify(_metExploreViz.getSessionById(key).isLinked()) + ",";
 				    networkJSON+="\n\"active\":" + JSON.stringify(_metExploreViz.getSessionById(key).isActive()) + ",";
 
 				    networkJSON+="\n\"duplicatedNodes\":" + JSON.stringify(_metExploreViz.getSessionById(key).getDuplicatedNodes()) + ",";
@@ -1619,7 +1573,7 @@ clone.setAttribute("version", "1.1");
 	* Save nodes coordinates
     */
 	saveNetworkCoordinates : function() {
-		var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1702,8 +1656,98 @@ clone.setAttribute("version", "1.1");
 		}
 	},
 
+	/*****************************************************
+	 * Save nodes coordinates
+	 */
+	saveStyles : function(scaleRange, all) {
+		var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
+		if(myMask!= undefined){
+
+			metExploreD3.showMask(myMask);
+
+			metExploreD3.deferFunction(function() {
+
+				//
+				// var networkJSON ="{";
+				//  var session = _metExploreViz.getSessionById('viz');
+				//  session.getD3Data().initNodeIndex();
+				//
+				//
+				// networkJSON+="\"nodes\":[" ;
+				//
+				// /**************
+				// * Saving nodes
+				// */
+				// session.getD3Data().getNodes()
+				//    .filter(function (node) {
+				//         return !node.getIsSideCompound();
+				//     })
+				//    .forEach(function(node, index){
+				//         	networkJSON+="{";
+				// 	    if(node.dbIdentifier!==undefined) networkJSON+="\"dbIdentifier\":"+JSON.stringify(node.getDbIdentifier())+",";
+				// 	    if(node.x!==undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
+				// 		if(node.y!==undefined) networkJSON+="\"y\":"+JSON.stringify(node.y)+",";
+				// 		if(node.px!==undefined) networkJSON+="\"px\":"+JSON.stringify(node.px)+",";
+				// 		if(node.py!==undefined) networkJSON+="\"py\":"+JSON.stringify(node.py);
+				// 		networkJSON+="}";
+				//
+				// 		if(index !== session.getD3Data().getNodes().length-1)
+				// 			networkJSON+=",";
+				//    }
+				// );
+				//
+				// networkJSON+="]}";
+				var scaleRangeString = JSON.stringify(scaleRange);
+				// console.log(networkJSON);
+				// console.log(JSON.parse(networkJSON));
+				var blob = new Blob([scaleRangeString], {type: "text/json"}); // pass a useful mime type here
+				var url = URL.createObjectURL(blob);
+				// var url = 'data:text/json;charset=utf8,' + encodeURIComponent(networkJSON);
+				var link = document.createElement('a');
+				if (typeof link.download === 'string') {
+					link.href = url;
+
+
+					var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1; //January is 0!
+					var yyyy = today.getFullYear();
+
+					if(dd<10) {
+						dd='0'+dd
+					}
+
+					if(mm<10) {
+						mm='0'+mm
+					}
+
+					today = mm+'-'+dd+'-'+yyyy;
+
+					if(all)
+						link.download = "MetExploreVizAllScales_"+today+".json";
+					else link.download = "MetExploreVizStyleScale_"+today+".json";
+
+
+					//Firefox requires the link to be in the body
+					document.body.appendChild(link);
+
+					//simulate click
+					link.click();
+
+					//remove the link when done
+					document.body.removeChild(link);
+				}
+				else {
+					window.open(uri);
+				}
+				metExploreD3.hideMask(myMask);
+
+			}, 100);
+		}
+	},
+
 	saveNetworkGml : function() {
-		var myMask = metExploreD3.createLoadMask("Export GML file...", 'viz');
+		var myMask = metExploreD3.createLoadMask("Export GML file...", 'graphPanel');
 		if(myMask!==undefined){
 
 			metExploreD3.showMask(myMask);
@@ -1822,7 +1866,7 @@ clone.setAttribute("version", "1.1");
 	saveCyclesList : function () {
         var allDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
         if ( metExploreD3.GraphStyleEdition.allDrawnCycles.length) {
-            var myMask = metExploreD3.createLoadMask("Saving...", 'viz');
+            var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
             if (myMask != undefined) {
 
                 metExploreD3.showMask(myMask);

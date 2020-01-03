@@ -8,6 +8,12 @@ Ext.define('metExploreViz.view.main.MainController', {
     extend: 'Ext.app.ViewController',
 
     alias: 'controller.main',
+    stores: [
+        'metExploreViz.view.form.selectCondition.ConditionStore',
+        'conditionStore'
+
+        // TODO: add global / shared stores here
+    ],
 
     onItemSelected: function (sender, record) {
         Ext.Msg.confirm('Confirm', 'Are you sure?', 'onConfirm', this);

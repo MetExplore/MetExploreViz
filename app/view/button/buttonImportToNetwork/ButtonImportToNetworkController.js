@@ -25,7 +25,9 @@ Ext.define('metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwor
                 }
                 metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importNetwork').fileInputEl.dom, function(json){
                 	// Allows to reload the same file
-                	metExploreD3.GraphPanel.refreshPanel(json, view.lookupReference('importNetwork').reset());
+                	metExploreD3.GraphPanel.refreshPanel(json, function(){
+                		view.lookupReference('importNetwork').reset();
+					});
                 });
 			},
             scope : me

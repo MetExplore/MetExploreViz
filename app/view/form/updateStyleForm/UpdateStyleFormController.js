@@ -12,14 +12,14 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleFormController', 
 	init : function() {
 
 		this.control({
-			'updateStyleForm combobox[action=changeObject]': 
+			'updateStyleForm combobox[action=changeObject]':
 			{
 				change : function(that, newValue, oldValue){
 	                // Control if the user wants save
 	                var newCombo = Ext.getCmp(newValue);
 	                if(newCombo)
 	                	newCombo.setVisible(true);
-	                
+
 	                if(oldValue)
 	                {
 	                	var oldCombo = Ext.getCmp(oldValue);
@@ -29,6 +29,6 @@ Ext.define('metExploreViz.view.form.updateStyleForm.UpdateStyleFormController', 
 	            }
 			}
 		});
-	}	
+	}
 });
 

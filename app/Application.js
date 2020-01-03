@@ -9,10 +9,16 @@ Ext.define('metExploreViz.Application', {
     name: 'metExploreViz',
 
     stores: [
+        'metExploreViz.view.form.selectCondition.ConditionStore',
+        'conditionStore'
+
         // TODO: add global / shared stores here
     ],
     
     launch: function () {
+        Ext.create('metExploreViz.view.form.selectCondition.ConditionStore');
+
+
         // TODO - Launch the application
     },
 

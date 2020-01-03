@@ -12,6 +12,8 @@ var metExploreD3 = {
     GraphPath:"",
     GraphNode:"",
     GraphStyleEdition:"",
+    GraphColorScaleEditor:"",
+    GraphNumberScaleEditor:"",
     Features:"",
     user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
@@ -460,7 +462,8 @@ var metExploreD3 = {
 
     // Metabolite
     setMetabolitesSet : function(store){
-        Ext.getStore("S_Metabolite") = store;
+        var metaboliteStore = Ext.getStore("S_Metabolite");
+        metaboliteStore = store;
     },
     getMetabolitesSet : function(){
         return Ext.getStore("S_Metabolite");
@@ -472,7 +475,8 @@ var metExploreD3 = {
 
     // Reaction
     setReactionsSet : function(store){
-        Ext.getStore("S_Reaction") = store;
+        var reactionStore = Ext.getStore("S_Reaction");
+        reactionStore = store;
     },
     getReactionsSet : function(){
         return Ext.getStore("S_Reaction");
@@ -522,7 +526,8 @@ var metExploreD3 = {
 
     // Condition
     setConditionsSet : function(store){
-        Ext.getStore("S_Condition") = store;
+        var conditionStore = Ext.getStore("S_Condition");
+        conditionStore= store;
     },
     getConditionsSet : function(){
         return Ext.getStore("S_Condition");
@@ -542,7 +547,8 @@ var metExploreD3 = {
 
     // MappingInfo
     setMappingInfosSet : function(store){
-        Ext.getStore("S_MappingInfo") = store;
+        var mapStore = Ext.getStore("S_MappingInfo");
+        mapStore = store;
     },
     getMappingInfosSet : function(){
         return Ext.getStore("S_MappingInfo");
@@ -595,6 +601,7 @@ var metExploreD3 = {
     */
     hideMask : function(mask){
         mask.hide();
+        mask.destroy();
     },
     /******************************************
     * Create a mask with the loading GIF
@@ -602,10 +609,11 @@ var metExploreD3 = {
     * @param {} component : The panel where is displayed the mask
     */
     createLoadMask : function(label, component){
-        if(component!='viz')
+        if(component!='viz' && component!='graphPanel' && component!='maskInit')
             var panelComponent = component.substring(0, component.length-5);
         else
             var panelComponent = component;
+
         if(panelComponent!= undefined){
 
             return new Ext.LoadMask({
@@ -962,9 +970,9 @@ var metExploreViz = function(panel, webSite){
     this.launched = false;
     this.dataFromWebSite = null;
     this.panel = panel;
-    this.linkStyle = new LinkStyle(25, 2, 5, 5, 'red', 'green', 'black', '0.7', 'black');
-    this.reactionStyle = new ReactionStyle(7, 7, 0, 0, 'dbIdentifier', 9, 'black', 1, false);
-    this.metaboliteStyle = new MetaboliteStyle(14, 14, 7, 7, 7, 1,'name', '#b2ae92', false, false);
+    this.linkStyle = new LinkStyle(25, 2, 5, 5, 'red', 'green', '#000000', '0.7', '#000000', 1, '#000000', 10, 500, 1);
+    this.reactionStyle = new ReactionStyle('#FFFFFF',7, 7, 0, 0, 1, '#000000', 1, '#000000', 10, 500, 1, 'dbIdentifier',  false);
+    this.metaboliteStyle = new MetaboliteStyle('#FFFFFF',14, 14, 7, 7, 1, '#000000', 1, '#000000', 10, 500, 1, 'name',  false);
     this.generalStyle = new GeneralStyle("Website", "#FFFF00", "#0000ff", 500, false, false, false, false, false, false, false);
     this.initialData = undefined;
     this.biosource = undefined; 

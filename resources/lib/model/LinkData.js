@@ -12,6 +12,8 @@ var LinkData = function(id, source, target, interaction, reversible){
     this.target = target; 
     this.interaction = interaction;
     this.reversible = reversible;
+
+    this.mappingDatas = [];
 };
 
 LinkData.prototype = {
@@ -43,6 +45,18 @@ LinkData.prototype = {
     getSource:function(){
         return this.source;
     },
+    getReaction:function(){
+        var reaction;
+        if(this.getSource().getBiologicalType()==="reaction")
+            reaction = this.getSource();
+        else
+            reaction = this.getTarget();
+
+        if(reaction){
+            return reaction;
+        }
+        return undefined;
+    },
 
     getTarget:function(){
         return this.target;
@@ -54,5 +68,57 @@ LinkData.prototype = {
 
     setTarget:function(target){
         this.target = target;
+    },
+
+
+    resetMapping : function(){
+        this.mappingDatas=[];
+    },
+    addMappingData : function(aMappingData){
+        this.mappingDatas.push(aMappingData);
+    },
+    removeMappingData : function(mappingTitle){
+        var mapDatasToRemove = [];
+        this.mappingDatas.forEach(function(mapData){
+            if(mapData.getMappingName()==mappingTitle)
+            {
+                mapDatasToRemove.push(mapData);
+            }
+        });
+        mapDatasToRemove.forEach(function(mapDataToRemove){
+            var i = mapDatasToRemove.indexOf(mapDataToRemove);
+            if(i!=-1)
+                mapDatasToRemove.splice(i, 1);
+        })
+    },
+    getMappingDatasLength : function(){
+        return this.mappingDatas.length;
+    },
+    getMappingDatas : function(){
+        return this.mappingDatas;
+    },
+    getMappingDataByNameAndCond : function(name, cond){
+        var themappingData = null;
+        this.mappingDatas.forEach(function(aMappingData){
+            if(aMappingData.getMappingName()==name && aMappingData.getConditionName()==cond)
+                themappingData = aMappingData;
+        });
+        return themappingData;
+    },
+    getMappingDataByName : function(name){
+        var themappingData = null;
+        this.mappingDatas.forEach(function(aMappingData){
+            if(aMappingData.getMappingName()==name)
+                themappingData = aMappingData;
+        });
+        return themappingData;
+    },
+    setMappingDataByNameAndCond : function(name, cond, val){
+        var themappingData = null;
+        this.mappingDatas.forEach(function(aMappingData){
+            if(aMappingData.getMappingName()==name && aMappingData.getConditionName()==cond)
+                themappingData = aMappingData;
+        });
+        themappingData.setMapValue(val);
     }
 };
