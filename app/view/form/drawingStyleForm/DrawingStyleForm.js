@@ -13,7 +13,7 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
     controller: "form-drawingStyleForm-drawingStyleForm",
     
     region:'north',
-    margin :'0 0 0 0',
+    margins:'0 0 0 0',
     flex:1,
     width:'100%',
     border:false,
@@ -24,6 +24,8 @@ Ext.define('metExploreViz.view.form.drawingStyleForm.DrawingStyleForm', {
     }, 
     items: [
     {
+
+        margin: '10 10 10 10',
         xtype: 'form',
         itemId: 'slider',
         bodyStyle: 'background-color:inherit',
