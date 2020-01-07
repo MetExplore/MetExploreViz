@@ -3443,6 +3443,13 @@ metExploreD3.GraphNetwork = {
             .attr("id", "tooltipButtons")
             .style("z-index", "10")
             .style("visibility", "hidden");
+        d3.select('#'+panel)
+            .on("mouseover", function(){
+                metExploreD3.GraphNetwork.focus=true;
+            })
+            .on("mouseout", function(){
+                metExploreD3.GraphNetwork.focus=false;
+            });
     },
 
     easterEggNoel: function(){
