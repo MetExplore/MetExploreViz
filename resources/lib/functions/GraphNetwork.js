@@ -1004,26 +1004,26 @@ metExploreD3.GraphNetwork = {
                 var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
                 //H	72
-                if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+                if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
                     metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
                 }
 
-                if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+                if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
                     metExploreD3.GraphFunction.horizontalReverse(_MyThisGraphNode.activePanel);
                 }
 
                 //V 86
-                if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+                if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
                     metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
                 }
 
-                if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+                if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0) {
                     metExploreD3.GraphFunction.verticalReverse(_MyThisGraphNode.activePanel);
                 }
 
 
                 // 65=A
-                if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey && metExploreD3.GraphNetwork.focus) {
+                if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey) {
                     d3.select("#" + _MyThisGraphNode.activePanel).select("#D3viz").select("#graphComponent").selectAll("g.node")
                         .each(function (node) {
                             if (!node.isSelected()) {
