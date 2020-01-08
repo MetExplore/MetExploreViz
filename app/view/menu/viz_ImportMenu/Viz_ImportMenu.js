@@ -70,12 +70,11 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
                 items: [
                     {
                         text: 'By Name',
-                        reference: 'importImageMappingName',
+                        reference: 'importImageMappingName'
                     },
                     {
                         text: 'By Id',
-                        reference: 'importImageMappingID',
-
+                        reference: 'importImageMappingID'
                     }]
             },
             iconCls:'importImage'
