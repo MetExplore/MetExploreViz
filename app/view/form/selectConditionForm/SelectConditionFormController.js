@@ -690,8 +690,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 											{
 												color.setValue(newValue);
 
-												var  mappingName = selectedCondition.split("_")[0];
-												var  conditionName = selectedCondition.split("_")[1];
+												var  mappingName = selectedCondition.split(" / ")[0];
+												var  conditionName = selectedCondition.split(" / ")[1];
 
 												metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
 
@@ -746,8 +746,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 											var newColor = evt.target.value;
 											color.setValue(newColor);
 
-											var mappingName = selectedCondition.split("_")[0];
-											var conditionName = selectedCondition.split("_")[1];
+											var mappingName = selectedCondition.split(" / ")[0];
+											var conditionName = selectedCondition.split(" / ")[1];
 
 											metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
 										});
