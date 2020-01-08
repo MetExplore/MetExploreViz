@@ -21,12 +21,10 @@ Ext.define('metExploreViz.view.menu.viz_ExtractSubNetworkMenu.Viz_ExtractSubNetw
         items: [
             {
                 text: 'From Mapping',
-                reference:'keepOnlySubnetworkFromMapping',
-                tooltip:'Extract sub-network based on node mapping'
+                reference:'keepOnlySubnetworkFromMapping'
             }, {
                 text: 'From Selection',
-                reference:'keepOnlySubnetworkFromSelection',
-                tooltip:'Extract sub-network based on node selection'
+                reference:'keepOnlySubnetworkFromSelection'
             }
         ]
 });

@@ -22,7 +22,6 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenu', {
              {
                  text: 'Export Viz as svg',
                  reference:'exportSVG',
-                 tooltip:'Export network viz as a svg file',
                  iconCls:'exportSvg'
                 },
             {
@@ -32,8 +31,7 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenu', {
                 id:'vizExportPNGID',
                 reference:'vizExportPNGID',
                 padding:'0 0 0 0',
-                iconCls:'exportPng',
-                tooltip:'Export network viz as a png file'
+                iconCls:'exportPng'
             },
             {
                 text: 'Export Viz as jpeg',
@@ -42,8 +40,7 @@ Ext.define('metExploreViz.view.menu.viz_ExportMenu.Viz_ExportMenu', {
                 id:'vizExportJPGID',
                 reference:'vizExportJPGID',
                 padding:'0 0 0 0',
-                iconCls:'exportJpg',
-                tooltip:'Export network viz as a jpeg file'
+                iconCls:'exportJpg'
             }
             // ,
             //     {
