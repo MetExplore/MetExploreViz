@@ -21,7 +21,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         {
             text: 'Import mapping from tab file',
             reference:'importMapping',
-            tooltip:'Import mapping from tab file',
             iconCls:'importData'
         },
         {
@@ -33,7 +32,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         {
             text: 'Import side compounds from tab file',
             reference:'importSideCompounds',
-            tooltip:'Import side compounds from tab file',
             iconCls:'importData'
         },
         {
@@ -59,7 +57,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         {
             text: 'Import Cycle',
             reference: 'importCycle',
-            tooltip: 'Import cycle for drawing',
             iconCls:'importCycle'
         },
         {
@@ -74,12 +71,10 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
                     {
                         text: 'By Name',
                         reference: 'importImageMappingName',
-                        tooltip: 'Import image for mapping by name'
                     },
                     {
                         text: 'By Id',
                         reference: 'importImageMappingID',
-                        tooltip: 'Import image for mapping by id'
 
                     }]
             },

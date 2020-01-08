@@ -10,6 +10,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
         "metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelController",
         "metExploreViz.view.form.selectConditionForm.SelectConditionForm",
         "metExploreViz.view.form.drawingStyleForm.DrawingStyleForm",
+        "metExploreViz.view.form.cycleDetectionForm.CycleDetectionForm",
         "metExploreViz.view.form.captionForm.CaptionForm",
         "metExploreViz.view.form.allStylesForm.AllStylesForm"
     ],
@@ -27,7 +28,6 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	split:true,
 	closable: false,
 	region: 'west',
-	// hidden:true,
 	tabBar:{
 		cls:"vizTBar"
 	},
@@ -70,36 +70,8 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	},
 	{
 		title:'Cycle',
-		reference: 'cycleDetection',
 		id:'cycleDetection',
-		xtype:'panel',
-		autoScroll: true,
-		autoHeight: true,
-		collapsed: true,
-		hidden: true,
-		items:[{
-			xtype:'button',
-			text:'Draw Cycle',
-			margin: '10 10 10 10',
-			align:'stretch',
-			width:'95%',
-			reference:'buttonDrawCycle',
-			hidden: true
-		},{
-			xtype:'menuseparator'
-		},{
-			xtype:'fieldcontainer',
-			id:'cycleDetectionPanel',
-			reference:'cycleDetectionPanel'
-		},{
-			xtype:'button',
-			text:'Hide cycle',
-			margin: '10 10 10 10',
-			align:'stretch',
-			width:'50%',
-			reference:'buttonHideCycle',
-			hidden: true
-		}]
+		xtype:'cycleDetectionForm'
 	}
 	]
 });

@@ -22,15 +22,12 @@ Ext.define('metExploreViz.view.menu.viz_ExportPNGMenu.Viz_ExportPNGMenu', {
             {
                 text: 'original resolution',
                 reference:'exportPNGX1',
-                tooltip:'Export network viz as a png file'
             }, {
                 text: 'original resolution * 2',
                 reference:'exportPNGX2',
-                tooltip:'Export network viz as a png file (resolution * 2)'
             }, {
                 text: 'original resolution * 4',
                 reference:'exportPNGX4',
-                tooltip:'Export network viz as a png file (resolution * 4)'
             }
         ]
 });

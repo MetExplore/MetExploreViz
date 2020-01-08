@@ -444,7 +444,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     if (longestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
                                     }
-                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", longestCycles);
+                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", longestCycles);
                                 }
                             },{
                                 text: 'Going through all selected nodes',
@@ -465,7 +465,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     if (longestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
                                     }
-                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", longestCycles);
+                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", longestCycles);
                                 }
                             }]
                         },{
@@ -481,7 +481,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     if (shortestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
                                     }
-                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", shortestCycles);
+                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", shortestCycles);
                                 }
                             },{
                                 text: 'Going through all selected nodes',
@@ -502,7 +502,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                     if (shortestCycles.length === 0){
                                         metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
                                     }
-                                    metExploreD3.fireEventArg('cycleDetectionPanel', "listCycles", shortestCycles);
+                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", shortestCycles);
                                 }
                             }]
                         },{
