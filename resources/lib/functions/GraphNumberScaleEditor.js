@@ -134,7 +134,7 @@ metExploreD3.GraphNumberScaleEditor = {
         me.textfieldValue=textfieldValue;
         me.height=height;
         me.width=width;
-        console.log(me.textfieldValue);
+
         me.data = data;
 
         me.begin = me.data.find(function (sr) { return sr.id==="begin"; });
@@ -295,7 +295,6 @@ metExploreD3.GraphNumberScaleEditor = {
                 });
                 me.selectedValue=indexYVal;
 
-                console.log(me.selectedValue);
                 if(1 < me.selectedValue && me.selectedValue < me.data.length-2)
                     me.delButton.enable();
                 else
@@ -497,7 +496,6 @@ metExploreD3.GraphNumberScaleEditor = {
                 });
                 me.selectedValue=indexVal;
 
-                console.log(me.selectedValue);
                 if(1 < me.selectedValue && me.selectedValue < me.data.length)
                     me.delButton.enable();
                 else
@@ -817,7 +815,7 @@ metExploreD3.GraphNumberScaleEditor = {
         for (var j = i+1; j < me.data.length-1; j++) {
             me.data[j].id=j;
         }
-        console.log(me.data);
+
         me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
 
     },
@@ -964,7 +962,7 @@ metExploreD3.GraphNumberScaleEditor = {
     },
     updateValNumberField: function(indexVal){
         var me = this;
-        console.log(indexVal);
+
         if(indexVal===0 || indexVal===me.data.length-1){
             if(indexVal===0){
                 me.textfieldValue.setRawValue("< min");
@@ -988,6 +986,15 @@ metExploreD3.GraphNumberScaleEditor = {
     },
     updateValue : function(value){
         var me = this;
+        var index = me.data.indexOf(me.data[me.selectedValue]);
+
+        if(index === 1){
+            me.data[0].value = value;
+        }
+        if(index === me.data.length-2){
+            me.data[me.data.length-1].value = value;
+        }
+
         me.data[me.selectedValue].value = value;
         me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
     },
