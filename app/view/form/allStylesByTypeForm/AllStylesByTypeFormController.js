@@ -37,6 +37,18 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 
 		view.on(
 		{
+			show : function biologicalTypeChange ( sender, value, oldValue, eOpts ) {
+				var conditionStore = Ext.getStore("conditionStore");
+				conditionStore.clearFilter();
+				if(conditionStore)
+					conditionStore.filter(function(map){
+						if(view.title==="Metabolite")
+							return map.get("biologicalType")==="metabolite";
+						if(view.title==="Reaction" || view.title==="Link")
+							return map.get("biologicalType")==="reaction";
+						return false;
+					})
+			},
 			afterStyleLoading : me.updateForm,
 			updateSelectionSet : me.updateSelection,
 			afterrender : me.createCaption,

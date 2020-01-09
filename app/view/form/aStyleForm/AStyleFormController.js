@@ -398,8 +398,9 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 		if(view.biologicalType==="link")
 			styleToUse = metExploreD3.getLinkStyle();
-		if(!view.default)
-			view.default = styleToUse[view.access];
+		// if(!view.default)
+
+		view.default = styleToUse[view.access];
 
 		// WARNING Header render is executed afterrender view
 		// As a result, render and afterrender can't be used on header

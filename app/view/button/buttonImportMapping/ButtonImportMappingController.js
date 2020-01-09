@@ -77,7 +77,27 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 	 * @param mapping : Mapping object
 	 */
 	addConditions : function(mapping) {
+		var biologicalType;
 		// Launch mapping
+		switch (mapping.getTargetLabel()) {
+			case "reactionDBIdentifier":
+				biologicalType="reaction";
+				break;
+			case "reactionId":
+				biologicalType="reaction";
+				break;
+			case "metaboliteId":
+				biologicalType="metabolite";
+				break;
+			case "metaboliteDBIdentifier":
+				biologicalType="metabolite";
+				break;
+			case "inchi":
+				biologicalType="metabolite";
+				break;
+			default:
+				metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
+		}
 
 		var conditions = mapping.getConditions();
 		var conditionStore = Ext.getStore("conditionStore");
@@ -95,6 +115,6 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 			.filter(function(cond){
 				return !(cond.includes("PathwayEnrichment") || cond.includes("PathwayCoverage"))
 			})
-			.forEach(function (value) { conditionStore.add({name: value, type: 'int'}); });
+			.forEach(function (value) { conditionStore.add({name: value, type: 'int', biologicalType: biologicalType}); });
 	}
 });

@@ -101,8 +101,19 @@ Ext.define('metExploreViz.view.form.metaboliteStyleForm.MetaboliteStyleForm', {
             "min": 0,
             "max": 50,
             "default": 1
-        }
-        ,{
+        },
+        //     {
+        //     "type": "string",
+        //     "target": ["text.metabolite"],
+        //     "attrType": "style",
+        //     "attr": "font-size",
+        //     "access": "fontSize",
+        //     "biologicalType":"metabolite",
+        //     "title": "Label",
+        //     "choices":"",
+        //     "default":"name"
+        // },
+            {
             "type": "color",
             "target": ["text.metabolite"],
             "attrType": "attr",
