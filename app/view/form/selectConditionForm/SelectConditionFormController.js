@@ -74,6 +74,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			change : function(that, newVal, old){
 				this.map(newVal, old, me.getAStyleFormParent());
 			},
+			beforerender: function(c) {
+				var viewAStyleForm = me.getAStyleFormParent();
+				view.lookupReference('selectCondition').setStore(Ext.getStore("conditionStore"));
+			},
 			scope:me
 		});
 

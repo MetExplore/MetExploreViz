@@ -6,6 +6,9 @@
 Ext.define('metExploreViz.view.form.selectCondition.ConditionModel', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{name: 'name', type: 'string'}
+		{
+			name: 'name', type: 'string',
+			name: 'biologicalType', type: 'string',
+		}
 	]
 });
