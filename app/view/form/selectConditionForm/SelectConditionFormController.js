@@ -587,6 +587,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		var captions = view.lookupReference('discreteCaptions');
 		var scaleCaption = view.lookupReference('scaleCaption');
 	    var selectCondition = view.lookupReference('selectCondition');
+
+		var selectConditionType = view.lookupReference('selectConditionType');
+		var dataType = selectConditionType.getValue();
+
 		var selectedCondition = selectCondition.getValue();
 		var networkVizSession = _metExploreViz.getSessionById("viz");
         var colorStore;
@@ -696,8 +700,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 												var  mappingName = selectedCondition.split(" / ")[0];
 												var  conditionName = selectedCondition.split(" / ")[1];
-
-												metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
+												if(dataType==="As selection")
+													metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color.getValue())
+												else
+													metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
 
 											}
 											else
@@ -752,8 +758,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 											var mappingName = selectedCondition.split(" / ")[0];
 											var conditionName = selectedCondition.split(" / ")[1];
-
-											metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
+											if(dataType==="As selection")
+												metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color.getValue())
+											else
+												metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
 										});
 								},
 								scope: me
