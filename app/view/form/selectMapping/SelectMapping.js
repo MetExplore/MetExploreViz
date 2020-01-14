@@ -8,17 +8,17 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMapping', {
         alias: 'widget.selectMapping',
         requires: [
                 "metExploreViz.view.form.selectMapping.SelectMappingController",
+                "metExploreViz.view.form.selectMapping.MappingStore",
                 "metExploreViz.view.form.selectMapping.SelectMappingModel"
         ],
         controller: "form-selectMapping-selectMapping",
         viewModel: {
             type: "form-selectMapping-selectMapping"
         },
-        store: {
-            fields: ['name'],
-            data: [{name:'None'}]
-        },
         listeners: {
+            beforerender: function(c) {
+                this.setStore(Ext.getStore("mappingStore"));
+            },
             render: function(c) {
                 new Ext.ToolTip({
                     target: c.getEl(),
