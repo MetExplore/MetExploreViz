@@ -9,6 +9,8 @@ Ext.define('metExploreViz.Application', {
     name: 'metExploreViz',
 
     stores: [
+        'metExploreViz.view.form.selectMapping.MappingStore',
+        'mappingStore',
         'metExploreViz.view.form.selectCondition.ConditionStore',
         'conditionStore'
 
@@ -17,7 +19,7 @@ Ext.define('metExploreViz.Application', {
     
     launch: function () {
         Ext.create('metExploreViz.view.form.selectCondition.ConditionStore');
-
+        Ext.create('metExploreViz.view.form.selectMapping.MappingStore');
 
         // TODO - Launch the application
     },

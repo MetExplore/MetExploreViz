@@ -7,6 +7,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.panel-networkPanel-networkPanel',
 	stores: [
+		'metExploreViz.view.form.selectMapping.MappingStore',
 		'metExploreViz.view.form.selectCondition.ConditionStore'
 
 		// TODO: add global / shared stores here
@@ -21,6 +22,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanelController', {
 		view      	= me.getView();
 
 		Ext.create('metExploreViz.view.form.selectCondition.ConditionStore');
+		Ext.create('metExploreViz.view.form.selectMapping.MappingStore');
 
 		view.on({
 			afterrender : me.initParams,

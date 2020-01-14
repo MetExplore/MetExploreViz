@@ -32,7 +32,6 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
                 text: 'Highlight Subnetwork',
                 reference :'highlightSubnetwork',
                 id :'highlightSubnetwork',
-                tooltip:'Highlight sub-network based on node selection or mapped nodes',
                 iconCls:'highlightSubnetwork',
                 hidden:true
             },
@@ -40,14 +39,12 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
                 text: 'Highlight sink',
                 reference :'highlightSink',
                 id :'highlightSink',
-                tooltip:'Highlight Sink',
                 iconCls:'highlightSink'
             },
             {
                 text: 'Highlight source',
                 reference :'highlightSource',
                 id :'highlightSource',
-                tooltip:'Highlight Source',
                 iconCls:'highlightSource'
             },{
                 text: 'Extract Subnetwork',
@@ -56,8 +53,7 @@ Ext.define('metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu', {
                 id:'vizExtractSubNetworkID',
                 reference:'vizExtractSubNetworkID',
                 padding:'0 0 0 0',
-                iconCls:'subnetwork',
-                tooltip:'Extract sub-network based on node selection or node mapping'
+                iconCls:'subnetwork'
             }
             //  {
             //     text: 'Extract Subnetwork',action:'subnetwork',tooltip:'Extract sub-network based on node selection',iconCls:'subnetwork',

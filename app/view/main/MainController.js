@@ -9,6 +9,8 @@ Ext.define('metExploreViz.view.main.MainController', {
 
     alias: 'controller.main',
     stores: [
+        'metExploreViz.view.form.selectMapping.MappingStore',
+        'mappingStore',
         'metExploreViz.view.form.selectCondition.ConditionStore',
         'conditionStore'
 
