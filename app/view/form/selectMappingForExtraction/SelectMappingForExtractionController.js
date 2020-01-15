@@ -34,13 +34,16 @@ Ext.define('metExploreViz.view.form.selectMappingForExtraction.SelectMappingForE
 				if(view.lookupReference('selectMappingForExtraction').getValue() && view.lookupReference('selectMappingForExtraction').getValue()!=="None"){
 					var selectedMappings = view.lookupReference('selectMappingForExtraction').getValue();
 					var nodesToLinks = _metExploreViz.getSessionById("viz").getD3Data().getNodes()
+						.filter(function(node){
+							return node.getBiologicalType()==="metabolite"
+							|| node.getBiologicalType()==="reaction";
+						})
 						.filter(function(node){ return node.mappingDatas.length!==0;})
 						.filter(function (node) {
 							return node.getMappingDatas()
 								.filter(map => selectedMappings.includes(map.getMappingName())).length !==0;
 						})
 						.map(node => node.getId());
-					console.log(nodesToLinks);
 
 					metExploreD3.GraphFunction.keepOnlySubnetwork(nodesToLinks);
 				}
