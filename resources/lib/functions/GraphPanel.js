@@ -102,8 +102,8 @@ metExploreD3.GraphPanel = {
             d3.select("#viz").select("#D3viz")
 				.select("#logoViz")
 				.select("image")
-				.attr('x', $("#viz").width() - 88)
-				.attr('y', $("#viz").height() - 70);
+				.attr('x', $("#viz").width() - 100)
+				.attr('y', $("#viz").height() - 124);
 
 			d3.select("#metexplore").text('MetExploreViz v'+Ext.manifest.version).attr('x', $("#viz").width() - 132).attr(
 					'y',  $("#viz").height() - 10);
