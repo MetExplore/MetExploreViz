@@ -6,8 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
         <link href="resources/icons/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
 
-        #disableAppJsonCacheScript
-
         <!-- <script id="microloader" type="text/javascript" data-app="c2a09d62-4072-4cd8-93fd-00718ff8a8f2" src="bootstrap.js"></script>  -->
 
         <script id="microloader" type="text/javascript" src="bootstrap.js"></script>
@@ -34,9 +32,7 @@
                     document.getElementById("visualisation").style.height = dimensionIFrameMetExploreViz.height+"px";
                 }
                 // Launch metExploreViz after microloader loading 
-                Ext.Microloader.onCachedAssetsReady = function(){
-                    window.location.reload();
-                };  
+               
                 //
                 // Ext.Microloader.onAllUpdatedAssetsReady = function(){
                 //     Ext.onReady(function() {
