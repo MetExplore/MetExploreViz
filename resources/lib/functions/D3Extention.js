@@ -98,11 +98,36 @@ d3.selection.prototype.addNodeText = function(style) {
 
 	var minDim = Math.min(style.getWidth(),style.getHeight());
 
+	// Listening font-size attribute tu update tspan dy attr similarly
+	var observer = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+			if (mutation.type == "attributes" && mutation.oldValue) {
+				if(mutation.target.style["font-size"]!==mutation.oldValue.split("font-size: ")[1].split(";")[0]){
+					d3.select(mutation.target).selectAll("tspan")
+						.each(function (ts, i) {
+							if (i > 0){
+								d3.select(this).attr('dy', mutation.target.style["font-size"]);
+							}
+						});
+				}
+			}
+		});
+	});
+
 	this
 		.append("svg:text")
 		.attr("fill", "#000000")
 		.attr("class", function(d) { return d.getBiologicalType(); })
 		.each(function(d) {
+
+			observer.observe(this, {
+				attributes: true, //configure it to listen to attribute changes
+				characterData: true,
+				attributeOldValue: true,
+				characterDataOldValue: true,
+				attributeFilter:["style"]
+			});
+
 			var el = d3.select(this);
 
 			var name = style.getDisplayLabel(d, style.getLabel(), style.isUseAlias());
@@ -144,37 +169,6 @@ d3.selection.prototype.addNodeText = function(style) {
 		.style("font-style",function(node) { if (node.labelFont) if (node.labelFont.fontItalic) return node.labelFont.fontItalic; })
 		.style("text-decoration-line",function(node) { if (node.labelFont) if (node.labelFont.fontUnderline) return node.labelFont.fontUnderline; })
 		.style("opacity",function(node) { if (node.labelFont) if (node.labelFont.fontOpacity) return node.labelFont.fontOpacity; })
-		.attr("x",function(node) {
-			if (node.labelFont) {
-				if (node.labelFont.fontX){
-					return node.labelFont.fontX;
-				}
-				else
-				{
-					return 0;
-				}
-			}
-			else
-			{
-				return 0;
-			}
-		})
-		.attr("y",function(node) {
-			var minDim = Math.min(node.getSvgWidth(),node.getSvgHeight());
-			if (node.labelFont) {
-				if (node.labelFont.fontY){
-					return node.labelFont.fontY;
-				}
-				else
-				{
-					return minDim/2+5;
-				}
-			}
-			else
-			{
-				return minDim/2+5;
-			}
-		})
 		.style("x",function(node) {
 			if (node.labelFont) {
 				if (node.labelFont.fontX){
