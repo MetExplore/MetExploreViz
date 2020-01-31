@@ -716,6 +716,50 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 											}
 										}
 									}
+								},
+								specialkey: function(field, e){
+									if (e.getKey() == e.ENTER) {
+										var value =this.getRawValue();
+										if(aStyleFormParent.styleType==="int") {
+											value=parseInt(value);
+										}
+										if(aStyleFormParent.styleType==="float") {
+											value=parseFloat(value);
+										}
+										if(color.getValue()!==value){
+											newValue=value;
+											if(isNaN(newValue)){
+												Ext.Msg.show({
+													title:'Warning',
+													msg: "Please enter a number.",
+													icon: Ext.Msg.WARNING
+												});
+											}
+											else
+											{
+												if(aStyleFormParent.min <= newValue && aStyleFormParent.max >= newValue )
+												{
+													color.setValue(newValue);
+
+													var  mappingName = selectedCondition.split(" / ")[0];
+													var  conditionName = selectedCondition.split(" / ")[1];
+													if(dataType==="As selection")
+														metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color.getValue())
+													else
+														metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
+
+												}
+												else
+												{
+													Ext.Msg.show({
+														title:'Warning',
+														msg: "Please enter a number between "+view.min+" and "+view.max,
+														icon: Ext.Msg.WARNING
+													});
+												}
+											}
+										}
+									}
 								}
 							}
 
