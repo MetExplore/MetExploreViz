@@ -66,7 +66,7 @@ metExploreD3.GraphLink = {
                                     .classed("pathway", true)
                                     .attr('id', pathw.getName().replace(/[.*+?^${} ()|[\]\-\\]/g, ""))
                                     .classed("hide", true)
-                                    .style("stroke-width","3px")
+                                    .style("stroke-width",linkStyle.getLineWidth()+2)
                                     .style("stroke-dasharray", size+","+size*(cols.length-1))
                                     .style("stroke-dashoffset", size*i)
                                     .style("stroke", pathw.getColor());
@@ -330,7 +330,7 @@ metExploreD3.GraphLink = {
                     return linkStyle.getMarkerInColor();
             })
             .style("stroke", linkStyle.getStrokeColor())
-            .style("stroke-width", 0.5)
+            .style("stroke-width", linkStyle.getLineWidth())
             .style("opacity", 1)
             .style("stroke-dasharray", null);
 
@@ -375,7 +375,7 @@ metExploreD3.GraphLink = {
                     return linkStyle.getMarkerInColor();
             })
             .style("stroke", linkStyle.getStrokeColor())
-            .style("stroke-width", 0.5)
+            .style("stroke-width", linkStyle.getLineWidth())
             .style("opacity", 1)
             .style("stroke-dasharray", null);
 
@@ -415,7 +415,7 @@ metExploreD3.GraphLink = {
                 .attr("fill-rule", "evenodd")
                 .attr("id", "link")
                 .style("stroke", linkStyle.getStrokeColor())
-                .style("stroke-width", 0.5)
+                .style("stroke-width", linkStyle.getLineWidth())
 
             d3.select(this)
                 .append("svg:path")
@@ -427,7 +427,7 @@ metExploreD3.GraphLink = {
                 .attr("class", "link").classed("reaction", true)
                 .attr("fill-rule", "evenodd")
                 .style("stroke", linkStyle.getStrokeColor())
-                .style("stroke-width", 0.5);
+                .style("stroke-width", linkStyle.getLineWidth());
 
         });
 
@@ -489,7 +489,7 @@ metExploreD3.GraphLink = {
             .attr("transform", "translate(-10, -15)")
             .classed('hide', false)
             .style("paint-order", "stroke")
-            .style("stroke-width", 1)
+            .style("stroke-width", linkStyle.getLineWidth())
             .style("stroke", function () {
                 return d3.select(this.parentNode).select("path#link").style('fill');
             })
@@ -560,7 +560,7 @@ metExploreD3.GraphLink = {
                 .attr("transform", "translate(-10, 0)")
                 .classed('hide', false)
                 .style("paint-order", "stroke")
-                .style("stroke-width", 1)
+                .style("stroke-width", linkStyle.getLineWidth())
                 .style("stroke", function () {
                     return d3.select(this.parentNode).select("path#linkRev").style('fill');
                 })
@@ -599,7 +599,7 @@ metExploreD3.GraphLink = {
                     return linkStyle.getMarkerInColor();
             })
             .style("stroke",linkStyle.getStrokeColor())
-            .style("stroke-width",0.5)
+            .style("stroke-width",linkStyle.getLineWidth())
             .style("stroke-linejoin", "bevel");
     },
 
@@ -657,8 +657,11 @@ metExploreD3.GraphLink = {
                 .selectAll("path.link")
                 .attr("d", function(link){
                     return funcPath(link, panel, this.id);
-                })
-                .select('reaction').attr("fill", function (d) {
+                });
+
+            d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                .selectAll("path.link.reaction")
+                .attr("fill", function (d) {
                     if (d.interaction == "out")
                         return metExploreD3.getLinkStyle().getMarkerOutColor();
                     else
