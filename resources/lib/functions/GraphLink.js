@@ -657,8 +657,11 @@ metExploreD3.GraphLink = {
                 .selectAll("path.link")
                 .attr("d", function(link){
                     return funcPath(link, panel, this.id);
-                })
-                .select('reaction').attr("fill", function (d) {
+                });
+
+            d3.select("#"+panel).select("#D3viz").select("#graphComponent")
+                .selectAll("path.link.reaction")
+                .attr("fill", function (d) {
                     if (d.interaction == "out")
                         return metExploreD3.getLinkStyle().getMarkerOutColor();
                     else
