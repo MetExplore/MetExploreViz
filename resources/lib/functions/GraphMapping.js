@@ -990,15 +990,9 @@ metExploreD3.GraphMapping = {
 									valuesParsed = values.map(function (value) { return parseInt(value); });
 								}
 
-								var maxValue = Math.max.apply(null, valuesParsed);
-								var minValue = Math.min.apply(null, valuesParsed);
-
-								var linearScale = d3.scaleLinear()
-									.domain([minValue, maxValue])
-									.range([aStyleFormParent.min, aStyleFormParent.max]);
 
 								for (var i = 0; i < valuesParsed.length; i++) {
-									aStyleFormParent.getController().addValueMapping("Discrete", values[i], linearScale(valuesParsed[i]));
+									aStyleFormParent.getController().addValueMapping("Discrete", values[i], aStyleFormParent.default);
 								}
 
 								var valueMapping = aStyleFormParent.getController().getValueMappingsSet(session.getMappingDataType());
