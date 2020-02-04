@@ -43,56 +43,58 @@ Ext.define('metExploreViz.view.form.linkStyleForm.LinkStyleForm', {
             "default": 1,
             "min": 0,
             "max": 1
-        },
+        }
+        // ,
             //     {
             //     "type": "text",
             //     "attr": "text",
             //     "title": "Label"
             // },
-            {
-                "type": "color",
-                "biologicalType":"link",
-                "target": ["text.link"],
-                "attrType": "style",
-                "access":"fontColor",
-                "attr": "fill",
-                "title": "Label color",
-                "min": "#ff0000",
-                "max": "#00ffff",
-                "default": "#000000"
-            }, {
-                "type": "int",
-                "target": ["text.link"],
-                "attrType": "style",
-                "attr": "font-size",
-                "access":"fontSize",
-                "biologicalType":"link",
-                "title": "Label font size",
-                "min": 1,
-                "max": 200,
-                "default": 20
-            }, {
-                "type": "int",
-                "target": ["text.link"],
-                "attrType": "style",
-                "attr": "font-weight",
-                "access": "fontWeight",
-                "biologicalType":"link",
-                "title": "Label font weight",
-                "min": 100,
-                "max": 1000,
-                "default": 500
-            }, {
-                "type": "float",
-                "target": ["text.link"],
-                "attrType": "style",
-                "access":"labelOpacity",
-                "attr": "opacity",
-                "title": "Label transparency",
-                "min": 0.0,
-                "biologicalType":"link",
-                "max": 1.0,
-                "default": 1.0
-            }]
+            // {
+            //     "type": "color",
+            //     "biologicalType":"link",
+            //     "target": ["text.link"],
+            //     "attrType": "style",
+            //     "access":"fontColor",
+            //     "attr": "fill",
+            //     "title": "Label color",
+            //     "min": "#ff0000",
+            //     "max": "#00ffff",
+            //     "default": "#000000"
+            // }, {
+            //     "type": "int",
+            //     "target": ["text.link"],
+            //     "attrType": "style",
+            //     "attr": "font-size",
+            //     "access":"fontSize",
+            //     "biologicalType":"link",
+            //     "title": "Label font size",
+            //     "min": 1,
+            //     "max": 200,
+            //     "default": 20
+            // }, {
+            //     "type": "int",
+            //     "target": ["text.link"],
+            //     "attrType": "style",
+            //     "attr": "font-weight",
+            //     "access": "fontWeight",
+            //     "biologicalType":"link",
+            //     "title": "Label font weight",
+            //     "min": 100,
+            //     "max": 1000,
+            //     "default": 500
+            // }, {
+            //     "type": "float",
+            //     "target": ["text.link"],
+            //     "attrType": "style",
+            //     "access":"labelOpacity",
+            //     "attr": "opacity",
+            //     "title": "Label transparency",
+            //     "min": 0.0,
+            //     "biologicalType":"link",
+            //     "max": 1.0,
+            //     "default": 1.0
+            // }
+            ]
     }
 });

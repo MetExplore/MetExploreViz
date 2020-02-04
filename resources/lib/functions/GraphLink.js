@@ -331,7 +331,7 @@ metExploreD3.GraphLink = {
             })
             .style("stroke", linkStyle.getStrokeColor())
             .style("stroke-width", linkStyle.getLineWidth())
-            .style("opacity", 1)
+            .style("opacity", linkStyle.getOpacity())
             .style("stroke-dasharray", null);
 
 

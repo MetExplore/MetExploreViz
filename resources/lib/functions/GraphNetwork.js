@@ -2048,7 +2048,9 @@ metExploreD3.GraphNetwork = {
                 pathwaySize*3,
                 pathwaySize*3,
                 networkData.getPathwayByName(pathwayName).getColor(),
-                pathwaySize*3/5
+                pathwaySize*3/5,
+                "#FFFFFF",
+                0
             );
 
         thePathwayElement
