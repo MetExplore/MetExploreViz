@@ -478,13 +478,11 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                         }
 
                                                         var anim = session.isAnimated("viz");
-                                                        if (anim == 'true') {
+                                                        if (anim) {
                                                             var session = _metExploreViz.getSessionById('viz');
                                                             var force = session.getForce();
 
-                                                            if (metExploreD3.GraphNetwork.animation) {
-                                                                force.alpha(1).restart();
-                                                            }
+                                                            force.alpha(force.alpha()).restart();
                                                         }
                                                     }
                                                     catch (e) {
@@ -493,13 +491,11 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                         metExploreD3.hideMask(myMask);
 
                                                         var anim=session.isAnimated("viz");
-                                                        if (anim=='true') {
+                                                        if (anim=== true) {
                                                             var session = _metExploreViz.getSessionById('viz');
                                                             var force = session.getForce();
 
-                                                            if (metExploreD3.GraphNetwork.animation) {
-                                                                force.alpha(1).restart();
-                                                            }
+                                                            force.alpha(force.alpha()).restart();
                                                         }
                                                         throw e;
                                                     }

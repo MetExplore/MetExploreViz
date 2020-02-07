@@ -544,7 +544,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
      * @param fluxType : string, one or two arrows for fluxes
      */
     graphMapping : function(dataType, conditionName, parentAStyleForm) {
-        var session = _metExploreViz.getSessionById('viz');
+
+		var session = _metExploreViz.getSessionById('viz');
 
         if(dataType==="Continuous"){
             metExploreD3.GraphMapping.graphMappingContinuousData(conditionName, parentAStyleForm);
@@ -565,6 +566,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
             session.setMappingDataType(dataType);
             metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, parentAStyleForm);
         }
+
+
 
         if(dataType==="As selection"){
             session.setMappingDataType(dataType);
@@ -597,7 +600,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
         var aStyleFormParent = me.getAStyleFormParent();
         if(type!=="suggestion"){
             networkVizSession.setMapped(selectedCondition);
-            colorStore = aStyleFormParent.getController().getValueMappingsSet(networkVizSession.getMappingDataType());
+
+            colorStore = aStyleFormParent.getController().getValueMappingsSet(dataType);
 
         }
         else {

@@ -51,10 +51,6 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
 
 		view.lookupReference('textfieldValue').on({
 			focusleave : function(that){
-				console.log(me);
-				console.log(view);
-
-
 				var value =parseFloat(that.getRawValue());
 
 				if(value==="< min" || value==="> max")

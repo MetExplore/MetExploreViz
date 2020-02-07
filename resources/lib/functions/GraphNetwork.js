@@ -752,7 +752,7 @@ metExploreD3.GraphNetwork = {
         session.setLinked(true);
         mainSession.setLinked(true);
 
-        if (anim == "true")
+        if (anim)
             metExploreD3.GraphNetwork.animationButtonOn(panel);
         else
             metExploreD3.GraphNetwork.animationButtonOff(panel);
@@ -1417,6 +1417,7 @@ metExploreD3.GraphNetwork = {
         var session = _metExploreViz.getSessionById(panel);
         var force = session.getForce();
 
+        console.log("refreshSvg");
         if(session.isAnimated())
             force.alpha(1).restart();
         else
@@ -1465,6 +1466,8 @@ metExploreD3.GraphNetwork = {
                         metExploreD3.GraphNetwork.tick(panel);
 
                     metExploreD3.hideMask(mask);
+
+                    metExploreD3.fireEvent('allStylesForm', "refreshAllStyles");
                 }
                 catch (e) {
                     e.functionUsed="refreshViz";
@@ -1686,7 +1689,7 @@ metExploreD3.GraphNetwork = {
                 metExploreD3.GraphNetwork.addLinkInDrawing(link.getSource().getDbIdentifier()+"-"+link.getTarget().getId(), link.getSource(), link.getTarget(), "out", false, "viz", false)
             });
 
-        if (session.isAnimated("viz")==true || session.isAnimated("viz")=="true") {
+        if (session.isAnimated("viz")) {
             force.alpha(1).restart();
         }
         else
@@ -2807,7 +2810,7 @@ metExploreD3.GraphNetwork = {
                     var force = session.getForce();
                     if(force!=undefined)
                     {
-                        if(session.isAnimated("viz") || session.isAnimated("viz")==true)
+                        if(session.isAnimated("viz"))
                             force.alpha(1).restart();
                     }
                 }
@@ -2864,7 +2867,7 @@ metExploreD3.GraphNetwork = {
                             var force = session.getForce();
                             if(force!=undefined)
                             {
-                                if(session.isAnimated("viz")=="true")
+                                if(session.isAnimated("viz")===true)
                                     force.alpha(1).restart();
                             }
                         }
@@ -2951,7 +2954,7 @@ metExploreD3.GraphNetwork = {
                             var force = session.getForce();
                             if(force!=undefined)
                             {
-                                if(session.isAnimated("viz")=="true")
+                                if(session.isAnimated("viz"))
                                     force.alpha(1).restart();
                             }
                         }

@@ -463,7 +463,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 						metExploreD3.GraphStyleEdition.setCollectionStyle(view.target, view.attrType, view.attrName, view.biologicalType, val);
 						styleToUse[view.access] = val;
 						view.default = val;
-						console.log(styleToUse);
 					});
 				},
 				scope : me
@@ -523,8 +522,6 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 					metExploreD3.GraphStyleEdition.setCollectionStyle(view.target, view.attrType, view.attrName, view.biologicalType, color);
 
 					styleToUse[view.access]=color;
-
-					console.log(styleToUse);
 				});
 
 			colorButtonBypass.on({
