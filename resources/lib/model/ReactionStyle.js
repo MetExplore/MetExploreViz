@@ -195,6 +195,15 @@ ReactionStyle.prototype = {
 
         return displayedLabel;
     },
+    getOpacity:function()
+    {
+        return this.opacity;
+    },
+
+    setOpacity:function(newData)
+    {
+        this.opacity = newData;
+    },
     getLabelOpacity:function()
     {
         return this.labelOpacity;

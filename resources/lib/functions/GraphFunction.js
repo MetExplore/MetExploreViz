@@ -1390,7 +1390,7 @@ metExploreD3.GraphFunction = {
 					{
 						if(force!=undefined)
 						{
-							if(session.isAnimated("viz")== true)
+							if(session.isAnimated("viz"))
 								force.alpha(1).restart();
 						}
 					}

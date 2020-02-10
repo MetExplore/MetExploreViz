@@ -127,12 +127,12 @@ MetaboliteStyle.prototype = {
 
     getFontWeight:function()
     {
-        return this.fontSize;
+        return this.fontWeight;
     },
 
     setFontWeight:function(newData)
     {
-        this.fontSize = newData;
+        this.fontWeight = newData;
     },
 
 
@@ -195,6 +195,15 @@ MetaboliteStyle.prototype = {
             displayedLabel = node.getName();
 
         return displayedLabel;
+    },
+    getOpacity:function()
+    {
+        return this.opacity;
+    },
+
+    setOpacity:function(newData)
+    {
+        this.opacity = newData;
     },
     getLabelOpacity:function()
     {

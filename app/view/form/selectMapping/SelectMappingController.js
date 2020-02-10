@@ -16,11 +16,23 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 		view      	= me.getView();
 
 		view.on({
+			reloadMapping:function(){
+				me.resetMapping();
+			},
 			jsonmapping : function(mappingJSON){
 				me.initMapping(mappingJSON);
 			},
 			scope:me
 		});
+	},
+
+	/*****************************************************
+	 * Fill condition store store
+	 * @param mapping : Mapping object
+	 */
+	resetMapping : function() {
+		var store = Ext.getStore("mappingStore");
+		store.loadData([], false);
 	},
 
 	initMapping:function(mappingJSON){
@@ -36,7 +48,8 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 
 				var store = Ext.getStore("mappingStore");
 
-				store.add({name: mappingJSON.getName()});
+				if(store.find("name", mappingJSON.getName())===-1)
+					store.add({name: mappingJSON.getName()});
 				//
 	            // //take an array to store the object that we will get from the ajax response
 				// var records = [];

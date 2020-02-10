@@ -90,6 +90,11 @@ LinkStyle.prototype = {
         return this.strokeColor;
     },
 
+    getOpacity:function()
+    {
+        return this.opacity;
+    },
+
     setMarkerInColor:function(newData)
     {
         this.markerInColor = newData;

@@ -1060,7 +1060,9 @@ metExploreD3.GraphNode = {
                 metaboliteStyle.getRX(),
                 metaboliteStyle.getRY(),
                 metaboliteStyle.getStrokeColor(),
-                metaboliteStyle.getStrokeWidth()
+                metaboliteStyle.getStrokeWidth(),
+                metaboliteStyle.getBackgroundColor(),
+                metaboliteStyle.getOpacity()
             );
 
         // Duplicated metabolites
@@ -1101,7 +1103,9 @@ metExploreD3.GraphNode = {
                 metaboliteStyle.getRX() / 2,
                 metaboliteStyle.getRY() / 2,
                 metaboliteStyle.getStrokeColor(),
-                metaboliteStyle.getStrokeWidth() / 2
+                metaboliteStyle.getStrokeWidth() / 2,
+                metaboliteStyle.getBackgroundColor(),
+                metaboliteStyle.getOpacity()
             );
 
 
@@ -1117,7 +1121,9 @@ metExploreD3.GraphNode = {
                 reactionStyle.getRX(),
                 reactionStyle.getRY(),
                 reactionStyle.getStrokeColor(),
-                reactionStyle.getStrokeWidth()
+                reactionStyle.getStrokeWidth(),
+                reactionStyle.getBackgroundColor(),
+                reactionStyle.getOpacity()
             );
 
 

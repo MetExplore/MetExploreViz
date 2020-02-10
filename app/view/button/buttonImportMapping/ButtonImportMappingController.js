@@ -22,7 +22,7 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 
 		view.on({
 			reloadMapping:function(){
-				view.reset();
+				me.resetCondition();
 			},
 			jsonmapping : function(mappingJSON){
 				me.addConditions(mappingJSON);
@@ -110,11 +110,23 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMappingCon
 		}
 		else
 			newConditions.push(mapping.getName());
-		
+
 		newConditions
 			.filter(function(cond){
 				return !(cond.includes("PathwayEnrichment") || cond.includes("PathwayCoverage"))
 			})
-			.forEach(function (value) { conditionStore.add({name: value, type: 'int', biologicalType: biologicalType}); });
+			.forEach(function (value) {
+				if(conditionStore.find("name", value)===-1)
+					conditionStore.add({name: value, type: 'int', biologicalType: biologicalType});
+			});
+	},
+
+	/*****************************************************
+	 * Fill condition store store
+	 * @param mapping : Mapping object
+	 */
+	resetCondition : function() {
+		var conditionStore = Ext.getStore("conditionStore");
+		conditionStore.loadData([], false);
 	}
 });
