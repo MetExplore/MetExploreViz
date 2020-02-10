@@ -19,7 +19,6 @@ Ext.define('metExploreViz.view.form.selectMappingForExtraction.SelectMappingForE
 			show : function(that){
 				var store = Ext.getStore("mappingStore");
 				store.filter(function (mapping) {
-					console.log(mapping.get("name"));
 					return mapping.get("name")!=="None";
 				})
 			},

@@ -195,12 +195,11 @@ metExploreD3.GraphPanel = {
 			var vizComp = Ext.getCmp("viz");
 			if(vizComp!=undefined){
 				var panel;
-				console.log(Ext.getCmp("maskInit"));
 				if(Ext.getCmp("maskInit").isHidden())
 					panel = 'graphPanel';
 				else
 					panel = "maskInit";
-console.log(panel);
+
 				var myMask = metExploreD3.createLoadMask("Refresh in process...", panel);
 				if(myMask!= undefined){
 
@@ -648,7 +647,6 @@ console.log(panel);
 
 				if(jsonParsed.generalStyle)
 				{
-					console.log(jsonParsed.generalStyle);
 					var oldGeneralStyle = metExploreD3.getGeneralStyle();
 					var style = new GeneralStyle(
 						oldGeneralStyle.getWebsiteName(),
@@ -790,7 +788,6 @@ console.log(panel);
 
 					if(sessions[key].duplicatedNodes)
 					{
-						console.log(sessions[key]);
 						sessions[key].duplicatedNodes.filter(metExploreD3.GraphUtils.onlyUnique).forEach(function(nodeId){
 							var nodeSC = networkVizSession.getD3Data().getNodeById(nodeId);
 							metExploreD3.fireEventParentWebSite("sideCompound", nodeSC);
@@ -804,6 +801,7 @@ console.log(panel);
 			                if(btn=="yes")
 			                {
 			                    _metExploreViz.getMappingsSet().forEach(function(mapping){
+
 			                    	metExploreD3.GraphMapping.reloadMapping(mapping);
 				                	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
 									metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
@@ -895,8 +893,7 @@ console.log(panel);
 			networkData.cloneObject(jsonParsed);
 			var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 			var reactionStyle = metExploreD3.getReactionStyle();
-			console.log(metaboliteStyle);
-			console.log(reactionStyle);
+
 			var nodes = networkData.getNodes();
 			nodes.forEach(function(node){
 				if(node.getBiologicalType()=="metabolite")
@@ -978,6 +975,7 @@ console.log(panel);
 							metExploreD3.GraphNetwork.tick("viz");
 		                }
 		          	});
+
 				}
 			}
 
@@ -985,12 +983,15 @@ console.log(panel);
 
 			if(_metExploreViz.getMappingsLength()>0)
 			{
+
+				// metExploreD3.fireEventArg('buttonMap', "reloadMapping", false);
+				// metExploreD3.fireEventArg('selectMapping', "reloadMapping", false);
 	            _metExploreViz.getMappingsSet().forEach(function(mapping){
 	            	metExploreD3.GraphMapping.reloadMapping(mapping);
 	            	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
 					metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
-	            }); 
-	            metExploreD3.fireEventArg('buttonRefresh', "reloadMapping", true);
+	            });
+				metExploreD3.GraphNetwork.tick("viz");
 			}
 		}
 		func();			

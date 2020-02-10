@@ -34,7 +34,8 @@ d3.selection.prototype.attrEditor = function(attr, val) {
  * @param stroke
  * @param strokewidth
  */
-d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, strokewidth) {
+d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, strokewidth, backgroundColor, transparency) {
+
 	this.append("rect")
 			.attr("class", function(d) { return d.getBiologicalType(); })
 			.attr("id", function(d) { return d.getId(); })
@@ -47,7 +48,9 @@ d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, str
 									+ height/2
 									+ ")")
 			.style("stroke", stroke)
-			.style("stroke-width", strokewidth);
+			.style("stroke-width", strokewidth)
+			.style("fill", backgroundColor)
+			.style("opacity", transparency);
 
 	this.append("rect").attr("class","fontSelected")
 		.attr("width", function(d) { return d.getSvgWidth(); })
@@ -56,7 +59,8 @@ d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, str
 		.attr("ry", ry)
 		.attr( "transform", "translate(-" + width/2 + ",-" + height/2 + ")")
 		.style("fill-opacity", '0')
-		.style("fill", '#000');
+		.style("fill", "#000")
+		.style("opacity", transparency);
 };
 
 /****************************************
@@ -101,14 +105,21 @@ d3.selection.prototype.addNodeText = function(style) {
 	// Listening font-size attribute tu update tspan dy attr similarly
 	var observer = new MutationObserver(function(mutations) {
 		mutations.forEach(function(mutation) {
-			if (mutation.type == "attributes" && mutation.oldValue) {
-				if(mutation.target.style["font-size"]!==mutation.oldValue.split("font-size: ")[1].split(";")[0]){
-					d3.select(mutation.target).selectAll("tspan")
-						.each(function (ts, i) {
-							if (i > 0){
-								d3.select(this).attr('dy', mutation.target.style["font-size"]);
-							}
-						});
+			if (mutation.type == "attributes") {
+				if(mutation.oldValue){
+					if(mutation.oldValue.split("font-size: ")[1]){
+						if(mutation.target.style["font-size"]!==mutation.oldValue.split("font-size: ")[1].split(";")[0]){
+							d3.select(mutation.target).selectAll("tspan")
+								.each(function (ts, i) {
+									if (i > 0){
+										if(mutation.target.style["font-size"])
+											d3.select(this).attr('dy', mutation.target.style["font-size"]);
+										else d3.select(this).attr('dy', style.getFontSize());
+									}
+								});
+
+						}
+					}
 				}
 			}
 		});
@@ -116,7 +127,7 @@ d3.selection.prototype.addNodeText = function(style) {
 
 	this
 		.append("svg:text")
-		.attr("fill", "#000000")
+		.attr("fill", style.getFontColor())
 		.attr("class", function(d) { return d.getBiologicalType(); })
 		.each(function(d) {
 
@@ -150,11 +161,10 @@ d3.selection.prototype.addNodeText = function(style) {
 
 
 				if (i > 0){
-					tspan.attr('dy', '10');
+					tspan.attr('dy', style.getFontSize());
 				}
 			}
 		})
-		.style("font-size",style.getFontSize())
 		.style("paint-order","stroke")
 		.style("stroke-width", 1)
 		.style("stroke", "white")
@@ -164,11 +174,11 @@ d3.selection.prototype.addNodeText = function(style) {
 		.style("pointer-events", 'none')
 		.style("text-anchor", 'middle')
 		.style("font-family",function(node) { if (node.labelFont) if (node.labelFont.font) return node.labelFont.font; })
-		.style("font-size",function(node) { if (node.labelFont) if (node.labelFont.fontSize) return node.labelFont.fontSize; })
-		.style("font-weight",function(node) { if (node.labelFont) if (node.labelFont.fontBold) return node.labelFont.fontBold; })
+		.style("font-size", style.getFontSize())
+		.style("font-weight", style.getFontWeight())
 		.style("font-style",function(node) { if (node.labelFont) if (node.labelFont.fontItalic) return node.labelFont.fontItalic; })
 		.style("text-decoration-line",function(node) { if (node.labelFont) if (node.labelFont.fontUnderline) return node.labelFont.fontUnderline; })
-		.style("opacity",function(node) { if (node.labelFont) if (node.labelFont.fontOpacity) return node.labelFont.fontOpacity; })
+		.style("opacity", style.getLabelOpacity())
 		.style("x",function(node) {
 			if (node.labelFont) {
 				if (node.labelFont.fontX){

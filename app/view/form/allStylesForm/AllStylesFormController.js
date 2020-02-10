@@ -15,6 +15,11 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
             viewModel   = me.getViewModel(),
             view      	= me.getView();
 
+        view.on({
+            refreshAllStyles : this.reloadAllScales,
+            scope:me
+        });
+
          view.query("allStylesByTypeForm").forEach(function (allStylesByTypeForm) {
             allStylesByTypeForm.lookupReference('saveAllScales')
                 .on({
@@ -167,7 +172,6 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                     }
                 }
 
-                console.log('--------------------------------------------------');
             });
 
             view.query("allStylesByTypeForm")
@@ -182,5 +186,65 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
         });
 
 
+    },
+    reloadAllScales:function () {
+        var me 		= this,
+            viewModel   = me.getViewModel(),
+            view      	= me.getView();
+        var allScales = [];
+        view.query("allStylesByTypeForm").forEach(function (allStylesByTypeForm) {
+            var partOfAllScales = allStylesByTypeForm.query("aStyleForm")
+                .forEach(function (scale) {
+                    var form = Ext.getCmp(scale.biologicalType+"StyleForm");
+                    if(form){
+                        var theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title===scale.title;});
+                        if(theStyleForm){
+
+                            var selectConditionForm = theStyleForm.lookupReference('selectConditionForm');
+                            var selectCondition = selectConditionForm.lookupReference('selectCondition');
+                            var selectConditionType = selectConditionForm.lookupReference('selectConditionType');
+
+                            var dataType = selectConditionType.getValue();
+                            var selectedCondition = selectCondition.getValue();
+
+                            if (scale.scaleRange){
+                                if(dataType==="Continuous" && selectedCondition!==null){
+                                    selectConditionForm.getController().map(true, true, theStyleForm);
+                                }
+                            }
+
+                            if (scale.valueDiscreteMappings){
+                                if(dataType==="Discrete" && selectedCondition!==null){
+                                    selectConditionForm.getController().map(true, true, theStyleForm);
+                                }
+                            }
+
+                            if (scale.valueAsSelectionMappings){
+                               if(dataType==="As selection" && selectedCondition!==null){
+                                    selectConditionForm.getController().map(true, true, theStyleForm);
+                                }
+                            }
+
+                            if (scale.valueAliasMappings){
+                                if(dataType==="Alias" && selectedCondition!==null){
+                                    selectConditionForm.getController().map(true, true, theStyleForm);
+                                }
+                            }
+                        }
+                    }
+                });
+        });
+
+        /*
+        view.query("allStylesByTypeForm")
+            .forEach(function (allStylesByTypeForm) {
+                allStylesByTypeForm.query("aStyleForm")
+                    .forEach(function (aStyleForm) {
+                        if (aStyleForm.scaleRange)
+                            aStyleForm.getController().updateContinuousCaption();
+
+                    })
+            });
+        */
     }
 });
