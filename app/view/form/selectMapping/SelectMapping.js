@@ -15,23 +15,23 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMapping', {
         viewModel: {
             type: "form-selectMapping-selectMapping"
         },
-        listeners: {
-            beforerender: function(c) {
-                this.setStore(Ext.getStore("mappingStore"));
-            },
-            render: function(c) {
-                new Ext.ToolTip({
-                    target: c.getEl(),
-                    html: 'Select a mapping'
-                });
-            }
-        }, 
-        displayField: 'name',
-        valueField: 'name',
-        width: 150,
-        queryMode: 'local',
-        multiSelect:false,
-        editable:false,
-        emptyText:'-- Select Mapping --',
-        margin:'5 0 5 0'
+    listeners: {
+        beforerender: function(c) {
+            this.setStore(Ext.getStore("mappingStore"));
+        },
+        render: function(c) {
+            new Ext.ToolTip({
+                target: c.getEl(),
+                html: 'Select a mapping'
+            });
+        }
+    },
+    displayField: 'name',
+    valueField: 'name',
+    width: 150,
+    queryMode: 'local',
+    multiSelect:false,
+    editable:false,
+    emptyText:'-- Select Mapping --',
+    margin:'5 0 5 0'
 });

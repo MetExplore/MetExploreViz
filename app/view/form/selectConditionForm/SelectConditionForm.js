@@ -62,6 +62,15 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionForm', {
             '->',//spliter to shift next component up to end of right
             {
                 xtype: 'button',
+                iconCls:'unlink',
+                align:"right",
+                scale   : 'small',
+                margin:'5 5 5 0',
+                reference: 'linkStyles',
+                tooltip: "Link styles"
+            },
+            {
+                xtype: 'button',
                 iconCls:'download',
                 align:"right",
                 scale   : 'small',

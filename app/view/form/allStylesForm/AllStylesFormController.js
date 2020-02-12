@@ -52,6 +52,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                 .map(function (aStyleForm) {
                     return {
                         biologicalType:aStyleForm.biologicalType,
+                        linkedStyles:aStyleForm.linkedStyles,
                         title:aStyleForm.title,
                         default : aStyleForm.default,
                         scaleRange : aStyleForm.scaleRange,
@@ -90,6 +91,9 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                                 theStyleForm.getController().updateDefaultFormValues();
                                 metExploreD3.GraphStyleEdition.setCollectionStyle(theStyleForm.target, theStyleForm.attrType, theStyleForm.attrName, theStyleForm.biologicalType, scale.default);
                             }
+                        }
+                        if (scale.linkedStyles){
+                                theStyleForm.linkedStyles=scale.linkedStyles;
                         }
 
                         if (scale.scaleRange){
