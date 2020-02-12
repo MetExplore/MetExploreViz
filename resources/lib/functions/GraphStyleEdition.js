@@ -575,11 +575,12 @@ metExploreD3.GraphStyleEdition = {
                 });
 
                 var selectedNodesId = mapNodes.filter(function (node) {
-                    return node.getBiologicalType() === biologicalType;
+
+                    if (biologicalType === "link") return node.getBiologicalType() === "reaction";
+                    else return node.getBiologicalType() === biologicalType;
                 }).map(function (node) {
                     return node.getId();
                 });
-
                 if(selectedNodesId.length>0){
                     var selection;
                     if (biologicalType === "link"){
