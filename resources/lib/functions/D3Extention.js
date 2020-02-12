@@ -4,24 +4,33 @@
  */
 
 d3.selection.prototype.attrEditor = function(attr, val) {
+	var selection = this;
+
 	if(!val)
-		return this.attr(attr);
+		return selection.attr(attr);
 	else
 	{
-		this.attr(attr, val);
-		if(attr === "height" || attr === "width"){
-
-			this.each(function (n) {
-				if(attr === "height")
-					n.setSvgHeight(val);
-
-				if(attr === "width")
-					n.setSvgWidth(val);
+		if(typeof val === 'function')
+		{
+			selection.each(function (n) {
+				d3.select(this).attrEditor(attr, val(n));
 			});
-
-			this.attr("transform", "translate(-"+(parseFloat(this.attr("width"))/2)+",-"+(parseFloat(this.attr("height"))/2)+") scale(1)");
 		}
+		else
+		{
+			selection.attr(attr, val);
+			if(attr === "height" || attr === "width"){
 
+				selection.each(function (n) {
+					if(attr === "height")
+						n.setSvgHeight(val);
+
+					if(attr === "width")
+						n.setSvgWidth(val);
+				});
+				selection.attr("transform", "translate(-"+(parseFloat(this.attr("width"))/2)+",-"+(parseFloat(this.attr("height"))/2)+") scale(1)");
+			}
+		}
 	}
 };
 

@@ -727,11 +727,11 @@ metExploreD3.GraphStyleEdition = {
 
                 var targetSelection = selection.selectAll(target);
 
-                targetSelection[attrType](attrName, function(d){
+                function test(d){
                     var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
-
                     return linearScale(map.getMapValue());
-                });
+                }
+                targetSelection[attrType](attrName, test);
 
                 targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
             });
