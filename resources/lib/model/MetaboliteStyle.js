@@ -180,21 +180,17 @@ MetaboliteStyle.prototype = {
 
     labelToDisplay:function(node, label){
         var displayedLabel = undefined;
-        switch(label) {
-            case "name":
-                displayedLabel = node.getName();
-                break;
-            case "dbIdentifier":
-                displayedLabel = node.getDbIdentifier();
-                break;
-            default:
-                displayedLabel = node.getName();
-        }
+
+        if(label)
+            displayedLabel = node[label];
+        else
+            displayedLabel = node.getName();
+
 
         if(displayedLabel === undefined)
             displayedLabel = node.getName();
 
-        return displayedLabel;
+        return displayedLabel.toString();
     },
     getOpacity:function()
     {

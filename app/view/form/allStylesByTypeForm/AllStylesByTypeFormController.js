@@ -16,12 +16,14 @@ Ext.define('metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeFormContr
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 
+		view.linkStylesWin = false;
 
 		view.store.data.forEach(function (styleBar) {
 
 			var myPanel = Ext.create('metExploreViz.view.form.aStyleForm.AStyleForm', {
 				title: styleBar.title,
 				access: styleBar.access,
+				linkedStyles: [],
 				biologicalType: styleBar.biologicalType,
 				styleType: styleBar.type,
 				default: styleBar.default,

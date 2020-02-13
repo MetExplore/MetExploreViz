@@ -4,24 +4,33 @@
  */
 
 d3.selection.prototype.attrEditor = function(attr, val) {
+	var selection = this;
+
 	if(!val)
-		return this.attr(attr);
+		return selection.attr(attr);
 	else
 	{
-		this.attr(attr, val);
-		if(attr === "height" || attr === "width"){
-
-			this.each(function (n) {
-				if(attr === "height")
-					n.setSvgHeight(val);
-
-				if(attr === "width")
-					n.setSvgWidth(val);
+		if(typeof val === 'function')
+		{
+			selection.each(function (n) {
+				d3.select(this).attrEditor(attr, val(n));
 			});
-
-			this.attr("transform", "translate(-"+(parseFloat(this.attr("width"))/2)+",-"+(parseFloat(this.attr("height"))/2)+") scale(1)");
 		}
+		else
+		{
+			selection.attr(attr, val);
+			if(attr === "height" || attr === "width"){
 
+				selection.each(function (n) {
+					if(attr === "height")
+						n.setSvgHeight(val);
+
+					if(attr === "width")
+						n.setSvgWidth(val);
+				});
+				selection.attr("transform", "translate(-"+(parseFloat(this.attr("width"))/2)+",-"+(parseFloat(this.attr("height"))/2)+") scale(1)");
+			}
+		}
 	}
 };
 
@@ -212,5 +221,103 @@ d3.selection.prototype.addNodeText = function(style) {
 		})
 		.style("transform",function(node) { if (node.labelFont) if (node.labelFont.fontTransform) return node.labelFont.fontTransform; });
 
+};
+
+/*******************************
+ * Add text to node
+ * @param style in function of node biological type
+ */
+d3.selection.prototype.setLabelNodeText = function(style, label) {
+	this
+		.each(function(d) {
+			//
+			// observer.observe(this, {
+			// 	attributes: true, //configure it to listen to attribute changes
+			// 	characterData: true,
+			// 	attributeOldValue: true,
+			// 	characterDataOldValue: true,
+			// 	attributeFilter:["style"]
+			// });
+
+			var el = d3.select(this);
+			var name = style.getDisplayLabel(d, label, false);
+
+			name = name.split(' ');
+			el.text('');
+			for (var i = 0; i < name.length; i++) {
+				var nameDOMFormat = $("<div/>").html(name[i]).text();
+				var tspan = el.append('tspan').text(nameDOMFormat);
+
+				if (d.labelFont){
+					if (d.labelFont.fontX) {
+						tspan
+							.attr('x', function () {
+								return d.labelFont.fontX;
+							});
+					}
+					else tspan.attr('x', 0);
+				}
+				else tspan.attr('x', 0);
+
+
+				if (i > 0){
+					tspan.attr('dy', style.getFontSize());
+				}
+			}
+		})
+
+};
+
+/*******************************
+ * Add text to node
+ * @param style in function of node biological type
+ */
+d3.selection.prototype.setLabelNodeTextByValue = function(style, val) {
+	var selection = this;
+	if(typeof val === 'function')
+	{
+		selection.each(function (n) {
+			d3.select(this).setLabelNodeTextByValue(style, val(n).toString());
+		});
+	}
+	else
+	{
+		selection
+			.each(function(d) {
+				//
+				// observer.observe(this, {
+				// 	attributes: true, //configure it to listen to attribute changes
+				// 	characterData: true,
+				// 	attributeOldValue: true,
+				// 	characterDataOldValue: true,
+				// 	attributeFilter:["style"]
+				// });
+
+				var el = d3.select(this);
+				var name = val;
+				name = name.split(' ');
+				el.text('');
+				for (var i = 0; i < name.length; i++) {
+					var nameDOMFormat = $("<div/>").html(name[i]).text();
+					var tspan = el.append('tspan').text(nameDOMFormat);
+
+					if (d.labelFont){
+						if (d.labelFont.fontX) {
+							tspan
+								.attr('x', function () {
+									return d.labelFont.fontX;
+								});
+						}
+						else tspan.attr('x', 0);
+					}
+					else tspan.attr('x', 0);
+
+
+					if (i > 0){
+						tspan.attr('dy', style.getFontSize());
+					}
+				}
+			})
+	}
 };
 

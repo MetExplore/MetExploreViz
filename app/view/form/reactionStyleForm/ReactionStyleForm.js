@@ -98,8 +98,17 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
             "min": 0,
             "max": 50,
             "default": 1
-        }
-        ,{
+        }, {
+            "type": "string",
+            "target": ["text.reaction"],
+            "attrType": "style",
+            "attr": "label",
+            "access": "label",
+            "biologicalType":"reaction",
+            "title": "Label",
+            "choices":"",
+            "default":"name"
+        }, {
             "type": "color",
             "target": ["text.reaction"],
             "attrType": "attr",

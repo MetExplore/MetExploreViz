@@ -110,6 +110,7 @@ metExploreD3.GraphLink = {
         var source, target, path;
 
         function pathForReversibleReactions(source, target) {
+
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
@@ -120,8 +121,8 @@ metExploreD3.GraphLink = {
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             else {
-                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * source.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * source.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             var heightArrow = 5;
@@ -154,6 +155,7 @@ metExploreD3.GraphLink = {
 
         function path(source, target) {
             var d = Math.sqrt(Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2));
+
             var dX = (target.x - source.x);
             var dY = (target.y - source.y);
 
@@ -163,8 +165,8 @@ metExploreD3.GraphLink = {
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             else {
-                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * source.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * source.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
 
