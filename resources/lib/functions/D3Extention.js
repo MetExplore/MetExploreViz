@@ -223,3 +223,101 @@ d3.selection.prototype.addNodeText = function(style) {
 
 };
 
+/*******************************
+ * Add text to node
+ * @param style in function of node biological type
+ */
+d3.selection.prototype.setLabelNodeText = function(style, label) {
+	this
+		.each(function(d) {
+			//
+			// observer.observe(this, {
+			// 	attributes: true, //configure it to listen to attribute changes
+			// 	characterData: true,
+			// 	attributeOldValue: true,
+			// 	characterDataOldValue: true,
+			// 	attributeFilter:["style"]
+			// });
+
+			var el = d3.select(this);
+			var name = style.getDisplayLabel(d, label, false);
+
+			name = name.split(' ');
+			el.text('');
+			for (var i = 0; i < name.length; i++) {
+				var nameDOMFormat = $("<div/>").html(name[i]).text();
+				var tspan = el.append('tspan').text(nameDOMFormat);
+
+				if (d.labelFont){
+					if (d.labelFont.fontX) {
+						tspan
+							.attr('x', function () {
+								return d.labelFont.fontX;
+							});
+					}
+					else tspan.attr('x', 0);
+				}
+				else tspan.attr('x', 0);
+
+
+				if (i > 0){
+					tspan.attr('dy', style.getFontSize());
+				}
+			}
+		})
+
+};
+
+/*******************************
+ * Add text to node
+ * @param style in function of node biological type
+ */
+d3.selection.prototype.setLabelNodeTextByValue = function(style, val) {
+	var selection = this;
+	if(typeof val === 'function')
+	{
+		selection.each(function (n) {
+			d3.select(this).setLabelNodeTextByValue(style, val(n).toString());
+		});
+	}
+	else
+	{
+		selection
+			.each(function(d) {
+				//
+				// observer.observe(this, {
+				// 	attributes: true, //configure it to listen to attribute changes
+				// 	characterData: true,
+				// 	attributeOldValue: true,
+				// 	characterDataOldValue: true,
+				// 	attributeFilter:["style"]
+				// });
+
+				var el = d3.select(this);
+				var name = val;
+				name = name.split(' ');
+				el.text('');
+				for (var i = 0; i < name.length; i++) {
+					var nameDOMFormat = $("<div/>").html(name[i]).text();
+					var tspan = el.append('tspan').text(nameDOMFormat);
+
+					if (d.labelFont){
+						if (d.labelFont.fontX) {
+							tspan
+								.attr('x', function () {
+									return d.labelFont.fontX;
+								});
+						}
+						else tspan.attr('x', 0);
+					}
+					else tspan.attr('x', 0);
+
+
+					if (i > 0){
+						tspan.attr('dy', style.getFontSize());
+					}
+				}
+			})
+	}
+};
+
