@@ -543,6 +543,102 @@ metExploreD3.GraphStyleEdition = {
         });
     },
 
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
+    setCollectionLabel : function (targetSet, attrType, attrName, biologicalType, value) {
+        console.log(targetSet);
+        console.log(attrType);
+        console.log(attrName);
+        console.log(biologicalType);
+        console.log(value);
+
+        var styleToUse;
+
+        if(biologicalType==="metabolite")
+            styleToUse = metExploreD3.getMetaboliteStyle();
+
+        if(biologicalType==="reaction")
+            styleToUse = metExploreD3.getReactionStyle();
+
+        if(biologicalType==="link")
+            styleToUse = metExploreD3.getLinkStyle();
+
+        targetSet.forEach(function setStyles(target) {
+            var selection;
+            if(biologicalType==="metabolite" || biologicalType==="reaction")
+                selection = d3.select("#viz").select("#D3viz").selectAll("g.node").filter(function(d){return d.getBiologicalType()===biologicalType});
+
+            if(biologicalType==="link")
+                selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+            console.log(selection);
+            selection
+                .selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")"+":not(.mapped"+attrType+attrName+biologicalType+")")
+                .setLabelNodeText(styleToUse, value);
+        });
+    },
+
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
+    setCollectionLabelMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName) {
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+        if(activeSession) {
+            console.log(targetSet);
+
+            console.log(attrType);
+            console.log(attrName);
+            console.log(biologicalType);
+
+            var styleToUse;
+
+            if(biologicalType==="metabolite")
+                styleToUse = metExploreD3.getMetaboliteStyle();
+
+            if(biologicalType==="reaction")
+                styleToUse = metExploreD3.getReactionStyle();
+
+            if(biologicalType==="link")
+                styleToUse = metExploreD3.getLinkStyle();
+
+            targetSet.forEach(function setStyles(target) {
+                var selection;
+                if(biologicalType==="metabolite" || biologicalType==="reaction")
+                    selection = d3.select("#viz").select("#D3viz").selectAll("g.node").filter(function(d){return d.getBiologicalType()===biologicalType});
+
+                if(biologicalType==="link")
+                    selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
+
+                selection = selection
+                    .filter(function (d) {
+
+                        var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+
+                        if(map !== null) {
+                            return true;
+                        }
+                        return false;
+                    });
+
+                var targetSelection = selection.selectAll(target);
+
+                function test(d){
+                    var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
+                    return map.getMapValue();
+                }
+
+                targetSelection
+                    .setLabelNodeTextByValue(styleToUse, test);
+
+                targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
+            });
+        }
+    },
+
     /*******************************************
      * Create an object containing the image position and dimension data associated to a node
      * @param {Object} node : The node whose image position and dimension data will be put in the object
@@ -575,11 +671,12 @@ metExploreD3.GraphStyleEdition = {
                 });
 
                 var selectedNodesId = mapNodes.filter(function (node) {
-                    return node.getBiologicalType() === biologicalType;
+
+                    if (biologicalType === "link") return node.getBiologicalType() === "reaction";
+                    else return node.getBiologicalType() === biologicalType;
                 }).map(function (node) {
                     return node.getId();
                 });
-
                 if(selectedNodesId.length>0){
                     var selection;
                     if (biologicalType === "link"){
@@ -607,6 +704,73 @@ metExploreD3.GraphStyleEdition = {
 
                     var targetSelection = selection.selectAll(target);
                     targetSelection[attrType](attrName, value);
+                    targetSelection.classed("bypassed"+attrType+attrName+biologicalType, true);
+                }
+            });
+        }
+    },
+
+    /*******************************************
+     * Create an object containing the image position and dimension data associated to a node
+     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     */
+    setCollectionLabelBypass : function (targetSet, attrType, attrName, biologicalType, value) {
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+
+        var styleToUse;
+
+        if(biologicalType==="metabolite")
+            styleToUse = metExploreD3.getMetaboliteStyle();
+
+        if(biologicalType==="reaction")
+            styleToUse = metExploreD3.getReactionStyle();
+
+        if(biologicalType==="link")
+            styleToUse = metExploreD3.getLinkStyle();
+
+        if(activeSession) {
+            targetSet.forEach(function setStyles(target) {
+
+                var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
+                    return activeSession.getD3Data().getNodeById(nodeId);
+                });
+
+                var selectedNodesId = mapNodes.filter(function (node) {
+
+                    if (biologicalType === "link") return node.getBiologicalType() === "reaction";
+                    else return node.getBiologicalType() === biologicalType;
+                }).map(function (node) {
+                    return node.getId();
+                });
+                if(selectedNodesId.length>0){
+                    var selection;
+                    if (biologicalType === "link"){
+                        selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                            .filter(function (d) {
+                                    var reaction = d.getReaction();
+                                    if(reaction)
+                                        return selectedNodesId.includes(reaction.getId());
+                                    return false;
+                            });
+                    }
+                    else
+                    {
+                        selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                            .filter(function (d) {
+                                return d.getBiologicalType() === biologicalType;
+                            })
+                            .filter(function (d) {
+                                return selectedNodesId.includes(d.getId());
+                            });
+                    }
+
+
+
+
+                    var targetSelection = selection.selectAll(target);
+                    targetSelection
+                        .setLabelNodeTextByValue(styleToUse, value);
+
                     targetSelection.classed("bypassed"+attrType+attrName+biologicalType, true);
                 }
             });
@@ -699,6 +863,8 @@ metExploreD3.GraphStyleEdition = {
      * @param {Object} node : The node whose image position and dimension data will be put in the object
      */
     setCollectionStyleContinuousMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName, linearScale) {
+        console.log(conditionName);
+        console.log(mappingName);
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
         if(activeSession) {
             targetSet.forEach(function setStyles(target) {
@@ -727,11 +893,11 @@ metExploreD3.GraphStyleEdition = {
 
                 var targetSelection = selection.selectAll(target);
 
-                targetSelection[attrType](attrName, function(d){
+                function test(d){
                     var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
-
                     return linearScale(map.getMapValue());
-                });
+                }
+                targetSelection[attrType](attrName, test);
 
                 targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
             });

@@ -7,7 +7,8 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.form-selectConditionForm-selectConditionForm',
 	requires: [
-		"metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor"
+		"metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor",
+		"metExploreViz.view.form.linkStyles.LinkStyles"
 	],
 	/**
 	 * Aplies event linsteners to the view
@@ -16,55 +17,38 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		var me 		= this,
 		view      	= me.getView();
 
-    	me.regexpPanel=/[.>< ,\/=()]/g;
+		me.regexpPanel=/[.>< ,\/=()]/g;
 		// Action to launch mapping on  the visualization
 		view.on({
 			afterDiscreteMapping : this.addMappingCaptionForm,
-			scope:me
-		});
-
-		view.on({
 			afterContinuousMapping : this.addMappingCaptionForm,
-			scope:me
-		});
-
-		view.on({
 			afterSuggestionMapping : this.addMappingCaptionForm,
-			scope:me
-		});
-
-		view.on({
 			closeMapping : function(newMapping){
 				me.closeMapping(newMapping);
 			},
-			scope:me
-		});
-
-		view.on({
 			resetMapping : function(){
 				me.resetMapping();
 			},
-			scope:me
-		});
-
-		view.on({
 			removeMapping : function(removedMapping){
 				me.removeMapping(removedMapping);
 			},
-			scope:me
-		});
-
-		view.on({
 			reset : function(newMapping){
 			},
 			scope:me
 		});
 
 		view.lookupReference('selectConditionType').on({
+			afterrender : function(){
+				var aStyleFormParent = me.getAStyleFormParent();
+				if(aStyleFormParent.styleType==="string"){
+					view.lookupReference('selectConditionType').hide();
+				}
+			},
 			change : function(that, newVal, old){
 				var viewAStyleForm = me.getAStyleFormParent();
 
 				this.map(newVal, old, viewAStyleForm);
+				this.applyToLinkedStyles( viewAStyleForm);
 			},
 			scope:me
 		});
@@ -87,12 +71,6 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 				var dataType = view.lookupReference('selectConditionType').getValue();
 
-				if(dataType==="Continuous"){
-				}
-
-				if(dataType==="Discrete" || dataType==="As selection" || dataType==="Alias"){
-					metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueMappings);
-				}
 				switch (dataType) {
 					case 'Continuous':
 						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.scaleRange);
@@ -107,6 +85,42 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueAliasMappings);
 						break;
 					default:
+				}
+
+			},
+			scope:me
+		});
+
+		view.lookupReference('linkStyles').on({
+			click : function(){
+				var viewAStyleForm = me.getAStyleFormParent();
+				var bioStyleForm = Ext.getCmp(viewAStyleForm.biologicalType+"StyleForm");
+				if(bioStyleForm.linkStylesWin===false)
+				{
+					var win = Ext.create("metExploreViz.view.form.linkStyles.LinkStyles", {
+						title : "Style to link with " + viewAStyleForm.title,
+						height : 300,
+						aStyleFormParent : viewAStyleForm,
+						listeners :{
+							close : function(){
+								bioStyleForm.linkStylesWin=false;
+							}
+						}
+					});
+
+					win.show();
+					bioStyleForm.linkStylesWin=win;
+				}
+				else
+				{
+					var el = bioStyleForm.linkStylesWin.getEl();
+					el
+						.fadeIn({ x: el.getBox().x-10, duration: 10})
+						.fadeIn({ x: el.getBox().x, duration: 10})
+						.fadeIn({ x: el.getBox().x-10, duration: 10})
+						.fadeIn({ x: el.getBox().x, duration: 10})
+						.fadeIn({ x: el.getBox().x-10, duration: 10})
+						.fadeIn({ x: el.getBox().x, duration: 10})
 				}
 
 			},
@@ -208,6 +222,31 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		});
 	},
 
+    /*******************************************
+     * Remove all mapping in visualisation and in side panel
+     */
+
+	applyToLinkedStyles:function(viewAStyleForm){
+		var me = this;
+		var view = me.getView();
+
+		var linkedStylesTitle = viewAStyleForm.linkedStyles;
+		if(linkedStylesTitle.length>0){
+			var bioStyleForm = Ext.getCmp(viewAStyleForm.biologicalType+"StyleForm");
+
+			var linkedStyles = bioStyleForm.query("aStyleForm")
+				.filter(function (aStyleForm) {
+					return linkedStylesTitle.includes(aStyleForm.title);
+				});
+			linkedStyles.forEach(function(styleForm){
+				var dataTypeToPropagate = view.lookupReference('selectConditionType').getValue();
+
+				styleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue(dataTypeToPropagate);
+			});
+		}
+
+
+	},
     /*******************************************
      * Remove all mapping in visualisation and in side panel
      */
@@ -465,7 +504,13 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			aStyleFormParent.default = styleToUse[aStyleFormParent.access];
 
 		metExploreD3.GraphStyleEdition.removeMappedClassStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
-		metExploreD3.GraphStyleEdition.setCollectionStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
+		if(aStyleFormParent.styleType==="string")
+		{
+			var bypass = false;
+			metExploreD3.GraphStyleEdition.setCollectionLabel(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, styleToUse[aStyleFormParent.access], bypass);
+		}
+		else
+			metExploreD3.GraphStyleEdition.setCollectionStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
 
 		var captions = view.lookupReference('discreteCaptions');
 
@@ -523,15 +568,21 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				captions.show();
 			}
 
-			if(dataType==="Alias"){
-				header.lookupReference('mappingButton').fireEvent("setIcon", "alias");
-			}
 
 
 			var delConditionPanel = view.lookupReference('delConditionPanel');
 			delConditionPanel.show();
 
 			this.graphMapping(dataType, selectedCondition, parentAStyleForm);
+		}
+		if(parentAStyleForm.styleType==="string" && selectedCondition!==null){
+			var header = parentAStyleForm.down('header');
+			header.lookupReference('mappingButton').fireEvent("setIcon", "alias");
+
+			var delConditionPanel = view.lookupReference('delConditionPanel');
+			delConditionPanel.show();
+
+			this.graphMapping("Alias", selectedCondition, parentAStyleForm);
 		}
 	},
 
@@ -559,15 +610,15 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
         if(dataType==="Alias"){
             session.setMappingDataType(dataType);
-            metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, parentAStyleForm);
+			var  mappingName = conditionName.split(" / ")[0];
+			conditionName = conditionName.split(" / ")[1];
+			metExploreD3.GraphStyleEdition.setCollectionLabelMapping(parentAStyleForm.target, parentAStyleForm.attrType, parentAStyleForm.attrName, parentAStyleForm.biologicalType, conditionName, mappingName);
         }
 
         if(dataType==="Discrete"){
             session.setMappingDataType(dataType);
             metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, parentAStyleForm);
         }
-
-
 
         if(dataType==="As selection"){
             session.setMappingDataType(dataType);

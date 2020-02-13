@@ -7,7 +7,9 @@
 Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.form-aStyleForm-aStyleForm',
-
+	requires: [
+		"metExploreViz.view.form.label.Label"
+	],
 	/**
 	 * Init function Checks the changes on drawing style
 	 */
@@ -502,6 +504,114 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			});
 		}
 
+		if(view.styleType==="string"){
+			var numberButton = header.lookupReference('numberButton');
+			var numberButtonBypass = header.lookupReference('numberButtonBypass');
+			var numberButtonBypassEl = numberButtonBypass.el.dom.querySelector("#textNumberButton");
+
+			numberButton.show();
+
+			me.replaceText(numberButton.el.dom, view.default);
+			numberButton.setTooltip(view.default);
+			numberButton.on({
+				click: function(){
+
+					var viewAStyleForm = view;
+					// var bioStyleForm = Ext.getCmp(viewAStyleForm.biologicalType+"StyleForm");
+					// if(bioStyleForm.linkStylesWin===false)
+					// {
+						var win = Ext.create("metExploreViz.view.form.label.Label", {
+							title : "Label for " + viewAStyleForm.title,
+							height : 20,
+							aStyleFormParent : viewAStyleForm,
+							listeners :{
+								afterrender : function(){
+
+									win.lookupReference('okButton').on({
+										click : function(){
+											var val = win.lookupReference('selectLabel').getValue();
+											styleToUse[view.access] = val;
+											view.default = val;
+											me.replaceText(numberButton.el.dom, val);
+
+											numberButton.setTooltip(val);
+
+											var bypass = false;
+											metExploreD3.GraphStyleEdition.setCollectionLabel(view.target, view.attrType, view.attrName, view.biologicalType, val, bypass);
+
+											win.close();
+										},
+										scope:me
+									});
+
+									win.lookupReference('cancelButton').on({
+										click : function(that){
+											win.close();
+										},
+										scope:me
+									});
+								}
+							}
+						});
+
+
+
+						win.show();
+					// 	bioStyleForm.linkStylesWin=win;
+					// }
+					// else
+					// {
+					// 	var el = bioStyleForm.linkStylesWin.getEl();
+					// 	el
+					// 		.fadeIn({ x: el.getBox().x-10, duration: 10})
+					// 		.fadeIn({ x: el.getBox().x, duration: 10})
+					// 		.fadeIn({ x: el.getBox().x-10, duration: 10})
+					// 		.fadeIn({ x: el.getBox().x, duration: 10})
+					// 		.fadeIn({ x: el.getBox().x-10, duration: 10})
+					// 		.fadeIn({ x: el.getBox().x, duration: 10})
+					// }
+
+
+					// me.numberPrompt(numberButton.el.dom, function(text){
+					// 	var val = text;
+					//
+					// 	metExploreD3.GraphStyleEdition.setCollectionLabel(view.target, view.attrType, view.attrName, view.biologicalType, val);
+					// 	styleToUse[view.access] = val;
+					// 	view.default = val;
+					// });
+				},
+				scope : me
+			});
+
+
+			function setValueWithPrompt(){
+				me.textPrompt(numberButtonBypass.el.dom, function(text){
+					var val = text;
+					var bypass = true;
+					metExploreD3.GraphStyleEdition.setCollectionLabelBypass(view.target, view.attrType, view.attrName, view.biologicalType, val, bypass);
+				});
+			}
+			numberButtonBypass.on({
+				click: function(){
+					setValueWithPrompt();
+				},
+				setIcon: function(type){
+					bypassButton.removeCls('mapMultipleNumbers');
+					if(type!=="noneIcon") bypassButton.addCls("mapMultipleNumbers");
+				},
+				scope : me
+			});
+
+			bypassButton.on({
+				click: function(target){
+					target.hide();
+					numberButtonBypass.show();
+					setValueWithPrompt();
+				},
+				scope : me
+			});
+		}
+
 		if(view.styleType==="color"){
 
 			var colorButton = header.lookupReference('colorButton');
@@ -554,6 +664,22 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		}
 	},
 
+
+
+	textPrompt : function(target, func){
+		var me = this;
+		var view = me.getView();
+
+		Ext.Msg.prompt(view.title, 'Enter text :',
+			function(btn, text){
+				if (btn == 'ok'){
+					if(text!="") {
+						me.replaceText(target, text);
+						func(text);
+					}
+				}
+			}, this, false);
+	},
 
 
 	numberPrompt : function(target, func){
