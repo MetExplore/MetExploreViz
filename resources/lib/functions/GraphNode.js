@@ -1029,6 +1029,7 @@ metExploreD3.GraphNode = {
             .attr("id", function (node) {
                 return "node" + node.getId();
             })
+            .attr("dbIdentifier", function(d) { return d.getDbIdentifier(); })
             .call(node_drag);
 
         metExploreD3.GraphNode.node = d3.select("#" + metExploreD3.GraphNode.panelParent)
