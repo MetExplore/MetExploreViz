@@ -18,8 +18,15 @@ Ext.define('metExploreViz.view.form.label.LabelController', {
 		view.lookupReference('selectLabel').on({
 			beforerender: function(c) {
 				var session = _metExploreViz.getSessionById('viz');
-				var metabKeys=Object.keys(session.getD3Data().getNodes().filter(n => n.getBiologicalType() === "metabolite")[0]);
+				var metabKeys;
 
+				metabKeys = Object.keys(session.getD3Data().getNodes().filter(n => n.getBiologicalType() === view.aStyleFormParent.biologicalType)[0]);
+
+				metabKeys = metabKeys.filter(function(key){
+					return key!=="isSideCompound" && key!=="reactionReversibility" && key!=="reactionReversibility" && key!=="selected" && key!=="duplicated" && key!=="labelVisible" &&
+						key!=="svg" && key!=="svgWidth" && key!=="svgHeight" && key!=="pathways" && key!=="compartment" && key!=="mappingDatas" &&
+						key!=="locked" && key!=="label" && key!=="labelFont" && key!=="index" && key!=="vy" && key!=="vx" && key!=="y" && key!=="x" && key!=="y";
+				});
 				view.lookupReference('selectLabel').setStore(metabKeys);
 
 				if(metabKeys.length>0) {
