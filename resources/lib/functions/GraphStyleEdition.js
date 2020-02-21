@@ -573,7 +573,7 @@ metExploreD3.GraphStyleEdition = {
 
             if(biologicalType==="link")
                 selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
-            console.log(selection);
+
             selection
                 .selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")"+":not(.mapped"+attrType+attrName+biologicalType+")")
                 .setLabelNodeText(styleToUse, value);

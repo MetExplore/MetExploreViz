@@ -244,24 +244,27 @@ d3.selection.prototype.setLabelNodeText = function(style, label) {
 
 			name = name.split(' ');
 			el.text('');
-			for (var i = 0; i < name.length; i++) {
-				var nameDOMFormat = $("<div/>").html(name[i]).text();
-				var tspan = el.append('tspan').text(nameDOMFormat);
 
-				if (d.labelFont){
-					if (d.labelFont.fontX) {
-						tspan
-							.attr('x', function () {
-								return d.labelFont.fontX;
-							});
+			if(label!=="hidden"){
+				for (var i = 0; i < name.length; i++) {
+					var nameDOMFormat = $("<div/>").html(name[i]).text();
+					var tspan = el.append('tspan').text(nameDOMFormat);
+
+					if (d.labelFont){
+						if (d.labelFont.fontX) {
+							tspan
+								.attr('x', function () {
+									return d.labelFont.fontX;
+								});
+						}
+						else tspan.attr('x', 0);
 					}
 					else tspan.attr('x', 0);
-				}
-				else tspan.attr('x', 0);
 
 
-				if (i > 0){
-					tspan.attr('dy', style.getFontSize());
+					if (i > 0){
+						tspan.attr('dy', style.getFontSize());
+					}
 				}
 			}
 		})

@@ -5,7 +5,21 @@
 /**
  * draw a Reaction
  */
-var ReactionStyle = function(backgroundColor, height, width, rx, ry, opacity, strokeColor, strokeWidth, fontColor, fontSize, fontWeight, labelOpacity, displayNodeName, useAlias){
+var ReactionStyle = function(
+    backgroundColor,
+    height,
+    width,
+    rx,
+    ry,
+    opacity,
+    strokeColor,
+    strokeWidth,
+    fontColor,
+    fontSize,
+    fontWeight,
+    labelOpacity,
+    displayNodeName,
+    useAlias){
 
     if(backgroundColor)
         this.backgroundColor = backgroundColor;
