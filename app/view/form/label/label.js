@@ -5,7 +5,7 @@
  */
 Ext.define('metExploreViz.view.form.label.Label', {
     extend: 'Ext.window.Window',
-	alias: 'widget.label',
+	alias: 'widget.labelComponent',
 	requires: [
 	    "metExploreViz.view.form.label.LabelController"
     ],
