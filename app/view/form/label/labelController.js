@@ -20,7 +20,7 @@ Ext.define('metExploreViz.view.form.label.LabelController', {
 				var session = _metExploreViz.getSessionById('viz');
 				var metabKeys;
 
-				metabKeys = Object.keys(session.getD3Data().getNodes().filter(n => n.getBiologicalType() === view.aStyleFormParent.biologicalType)[0]);
+				metabKeys = Object.keys(session.getD3Data().getNodes().filter(function(n) {return n.getBiologicalType() === view.aStyleFormParent.biologicalType[0];}));
 
 				metabKeys = metabKeys.filter(function(key){
 					return key!=="isSideCompound" && key!=="reactionReversibility" && key!=="reactionReversibility" && key!=="selected" && key!=="duplicated" && key!=="labelVisible" &&

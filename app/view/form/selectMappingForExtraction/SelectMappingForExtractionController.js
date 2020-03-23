@@ -40,9 +40,11 @@ Ext.define('metExploreViz.view.form.selectMappingForExtraction.SelectMappingForE
 						.filter(function(node){ return node.mappingDatas.length!==0;})
 						.filter(function (node) {
 							return node.getMappingDatas()
-								.filter(map => selectedMappings.includes(map.getMappingName())).length !==0;
+								.filter(function(map) { return selectedMappings.includes(map.getMappingName()); }).length !==0;
 						})
-						.map(node => node.getId());
+						.map(function (node) {
+							return node.getId();
+						});
 
 					metExploreD3.GraphFunction.keepOnlySubnetwork(nodesToLinks);
 				}
