@@ -960,16 +960,16 @@ metExploreD3.GraphStyleEdition = {
                             arrBypass.push(d3.select(this)[attrType](attrName));
                         });
 
-                    valuesBypassed = [...new Set(arrBypass)];
+                    valuesBypassed = Array.from(new Set(arrBypass));
 
                     selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")")
                         .each(function(){
                             arr.push(d3.select(this)[attrType](attrName));
                         });
 
-                    values = [...new Set(arr)];
+                    values = Array.from(new Set(arr));
 
-                    union = [...new Set(valuesBypassed.concat(values))];
+                    union = Array.from(new Set(valuesBypassed.concat(values)));
 
                 });
                 if(valuesBypassed.length>0 &&
