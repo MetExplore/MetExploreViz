@@ -2,11 +2,6 @@
  * @author MC
  * (a)description : Basic functions
  */
-
-String.prototype.isEmpty = function() {
-	return (!this.trim());
-};
-
 metExploreD3.GraphUtils = {
     decodeJSON : function(json){
     	try {
@@ -1936,3 +1931,6 @@ clone.setAttribute("version", "1.1");
     }
 };
 
+String.prototype.isEmpty = function() {
+	return (!this.trim());
+};

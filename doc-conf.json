@@ -1,0 +1,13 @@
+{
+  "--": "./",
+  "--warnings": [
+    "all:ext/src"
+  ],
+  "--ignore-html": [
+    "locale",
+    "debug"
+  ],
+  "--categories" : "categories.json",
+  "--output" : "docs",
+  "--exclude": "app.json,bootstrap.css,bootstrap.json,bootstrap.jsonp,build.xml,karma.conf.js,build/,docs/,ext/,licenses/,sass/,scripts/,src/,test/,resources/css/,resources/ext/,resources/font-awesome/,resources/font-ext/,resources/fonts/,resources/icons/,resources/images/,resources/css/,resources/lib/d3.js/,resources/lib/graphjs/,resources/lib/jquery/,resources/lib/jquery-3.0.0.min.js,resources/lib/dagre.js,app.js"
+}

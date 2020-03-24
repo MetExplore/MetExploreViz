@@ -2,7 +2,6 @@
  * @author MC
  * Functions to extend d3js selection function
  */
-
 d3.selection.prototype.attrEditor = function(attr, val) {
 	var selection = this;
 
