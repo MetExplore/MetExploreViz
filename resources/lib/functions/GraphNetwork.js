@@ -1468,6 +1468,7 @@ metExploreD3.GraphNetwork = {
                     metExploreD3.hideMask(mask);
 
                     metExploreD3.fireEvent('allStylesForm', "refreshAllStyles");
+                    metExploreD3.fireEvent('viz', "initAnimationButton");
                 }
                 catch (e) {
                     e.functionUsed="refreshViz";
