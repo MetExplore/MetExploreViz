@@ -12,6 +12,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 
 		view.on({
 			initiateViz : me.initiateViz,
+            initAnimationButton : me.initAnimationButton,
 			scope:me
 		});
 
@@ -32,6 +33,14 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
         view.lookupReference('handcursor').on({
             click : function() {
                 metExploreD3.GraphNetwork.moveGraph();
+
+                if(view.lookupReference('handcursor').hasCls('focus')){
+                    view.lookupReference('handcursor').removeCls('focus');
+                }
+                else
+                {
+                    view.lookupReference('handcursor').addCls('focus');
+                }
             },
             scope:me
         });
@@ -39,6 +48,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
         view.lookupReference('rescale').on({
             click : function() {
                 metExploreD3.GraphNetwork.rescale("viz");
+
             },
             scope:me
         });
@@ -710,6 +720,24 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 				if(a.length>0)
 					viz.CtxMenu.showAt(e.clientX, e.clientY);
 		});	
+	},
+
+    /*****************************************************
+	* Initialization of visualization
+    * @param {} vizEngine : library used to make the visualization
+	*/
+    initAnimationButton : function() {
+        var me 		= this,
+        viewModel   = me.getViewModel(),
+        view      	= me.getView();
+
+        if(!metExploreD3.GraphNetwork.isAnimated("viz")){
+            view.lookupReference('animation').setIconCls('play');
+        }
+        else
+        {
+            view.lookupReference('animation').setIconCls("pause");
+        }
 	},
     enterEditMode: function () {
         metExploreD3.GraphStyleEdition.toggleEditMode();
