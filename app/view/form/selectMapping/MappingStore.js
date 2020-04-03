@@ -11,11 +11,5 @@ Ext.define('metExploreViz.view.form.selectMapping.MappingStore', {
 	],
 	model: 'metExploreViz.view.form.selectMapping.MappingModel',
 	storeId: 'mappingStore',
-	data: [{name:'None'}],
-	listeners: {
-		add: function(store, records) {
-			// if(store.count()==1)
-
-		}
-	}
+	data: [{name:'None'}]
 });

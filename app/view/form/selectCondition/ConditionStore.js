@@ -10,11 +10,5 @@ Ext.define('metExploreViz.view.form.selectCondition.ConditionStore', {
 		"metExploreViz.view.form.selectCondition.ConditionModel"
 	],
 	model: 'metExploreViz.view.form.selectCondition.ConditionModel',
-	storeId: 'conditionStore',
-	listeners: {
-		add: function(store, records) {
-			// if(store.count()==1)
-
-		}
-	}
+	storeId: 'conditionStore'
 });
