@@ -375,7 +375,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Refresh the graph data, it generate graph visualization
-     * @param {} panel : The panel to refresh
+     * @param {String} panel The panel to refresh
      */
     defineBrush: function(panel) {
 
@@ -3549,6 +3549,93 @@ metExploreD3.GraphNetwork = {
             .attr("width", "170px")
             .attr("height", "170px")
             .attr("transform", "translate(-35,-35)");
-    }
+    },
+
+    /*****************************************************
+     * Import node coordinates
+     * @param {Object} json JSON to load
+     * @param {Function} func Callback function
+     */
+    refreshCoordinates : function(json, func) {
+        metExploreD3.hideInitialMask();
+
+        var panel = "viz";
+        var myMask = metExploreD3.createLoadMask("Move nodes in progress...", panel);
+        if(myMask!== undefined){
+
+            metExploreD3.showMask(myMask);
+
+            metExploreD3.deferFunction(function() {
+
+                metExploreD3.displayMessageYesNo("Set nodes coordinates",'Do you want highlight moved nodes.',function(btn){
+                    if(btn==="yes")
+                    {
+                        moveNodes(true);
+                    }
+                    else
+                    {
+                        moveNodes(false);
+                    }
+                });
+
+                function moveNodes(highlight){
+                    var session = _metExploreViz.getSessionById("viz");
+
+                    var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
+                    var nodesToMove = jsonParsed.nodes.filter(function(node){
+                        return session.getD3Data().getNodes().find(function(nodeInNetwork){
+                            return node.dbIdentifier === nodeInNetwork.getDbIdentifier();
+                        });
+                    });
+                    if(nodesToMove.length>0){
+                        if(session!==undefined)
+                        {
+                            if(highlight)
+                                metExploreD3.GraphNode.unselectAll("#viz");
+
+                            metExploreD3.GraphNetwork.animationButtonOff("viz");
+                            var force = session.getForce();
+                            force.stop();
+                            d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+                                .each(function(node){
+                                    var nodeToMove = nodesToMove.find(function (aNode) {
+                                        return aNode.dbIdentifier === node.getDbIdentifier();
+                                    });
+                                    if(nodeToMove){
+                                        node.px = nodeToMove.px ;
+                                        node.py = nodeToMove.py ;
+                                        node.x = nodeToMove.x ;
+                                        node.y = nodeToMove.y ;
+                                        node.setLocked(true);
+                                        node.fixed=node.isLocked();
+
+                                        metExploreD3.GraphNode.fixNode(node);
+                                        if(highlight)
+                                            metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
+                                    }
+                                });
+
+                            metExploreD3.GraphNetwork.tick("viz");
+                            metExploreD3.hideMask(myMask);
+
+                        }
+
+                        if(typeof func==='function') func();
+                    }
+                    else
+                    {
+                        //SYNTAX ERROR
+                        metExploreD3.displayWarning("None coordinate mapped", 'None nodes mapped by bdIdentifier verify used biosource.');
+                        metExploreD3.hideMask(myMask);
+                    }
+                }
+
+            }, 100);
+        }
+
+
+
+
+    },
 
 };
