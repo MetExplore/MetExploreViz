@@ -1,6 +1,7 @@
 /**
  * @author MC
- * (a)description : Nodes drawing
+ * Nodes drawing
+ * @property {Number}
  */
 
 metExploreD3.GraphNode = {

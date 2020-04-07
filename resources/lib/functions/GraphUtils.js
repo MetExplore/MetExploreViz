@@ -1,9 +1,15 @@
 /**
+ * @class metExploreD3.GraphUtils
+ * Basic functions
  * @author MC
- * (a)description : Basic functions
  */
 metExploreD3.GraphUtils = {
-    decodeJSON : function(json){
+
+	/*****************************************************
+	 * Decode external JSONs
+	 * @param {String} json Active string from imports
+	 */
+	decodeJSON : function(json){
     	try {
 		    var jsonParsed = Ext.decode(json);
 		}
@@ -12,6 +18,20 @@ metExploreD3.GraphUtils = {
 		}
 		return jsonParsed;
     },
+
+	/*****************************************************
+	 * Decode external JSONs
+	 * @param {String} url WebService to call https://vm-metexplore-prod.toulouse.inra.fr/metexplore-webservice-documentation/
+	 * @param {Function} func Callback function
+	 *
+	 * Example :
+	 * 		@example
+	 *		metExploreViz.GraphUtils.launchWebService(
+	 *			"http://metexplore.toulouse.inra.fr:8080/metExploreWebService/mapping/graphresult/38285/filteredbypathway?pathwayidlist=(123757,123787)",
+	 *			function(myJsonString){
+	 *		})
+	 *
+	 */
     launchWebService : function(url, func){
         //var mapJSON = '{"name": "mapping_D-Galactose", "mappings":[{"name": "conditionName1", "data": [{"node" : "D-Galactose"}, {"node" : "D-galactose"}]  }]}';
         $.ajax({
