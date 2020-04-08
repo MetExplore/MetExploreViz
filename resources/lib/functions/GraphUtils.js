@@ -20,7 +20,7 @@ metExploreD3.GraphUtils = {
     },
 
 	/*****************************************************
-	 * Decode external JSONs
+	 * Function to facilitate launching of MetExplore Web Service
 	 * @param {String} url WebService to call https://vm-metexplore-prod.toulouse.inra.fr/metexplore-webservice-documentation/
 	 * @param {Function} func Callback function
 	 *
@@ -48,6 +48,50 @@ metExploreD3.GraphUtils = {
         }); 
     },
 
+
+	/*****************************************************
+	 * Function to facilitate parsing of MetExplore Web Service mapping results
+	 * @param {String} myJsonMapping JSON string result of MetExplore Web Service
+	 * @return {String} mapJSON String that you can map programmatically in MetExploreViz
+	 */
+	parseWebServiceMapping : function(myJsonMapping){
+		//var mapJSON = '{"name": "mapping_D-Galactose", "mappings":[{"name": "conditionName1", "data": [{"node" : "D-Galactose"}, {"node" : "D-galactose"}]  }]}';
+		var mappingJSON = Ext.decode(myJsonMapping);
+		var conditions = mappingJSON.mappingdata[0].mappings;
+		conditions.forEach(function(condition){
+			var mappingDatas = condition.data;
+			var i = 0;
+			var valueIsSet = false;
+			while (i < mappingDatas.length && !valueIsSet) {
+				if(mappingDatas.value != undefined)
+					valueIsSet=true;
+
+				i++;
+			}
+			if(!valueIsSet)
+				condition.name="undefined"
+		});
+
+		var mapJSON = JSON.stringify(mappingJSON.mappingdata[0]);
+
+		//Load mapping
+		return mapJSON;
+	},
+
+	/*****************************************************
+	 * Function to pass in array filter to allow unicity of array elements
+	 * If the current iterator object hasn't the same index that the first similar element find with find index return false and remove it through filter
+	 * @param {Object} value Current value
+	 * @param {Number} index Current index
+	 * @param {Array} self The array
+	 *
+	 * Example :
+	 * 		@example
+	 * 		var arrayOfNodes = [1,1,2,3,5,7,7,10];
+	 *		console.log(arrayOfNodes.filter(metExploreD3.GraphUtils.onlyUnique));
+	 *		//[1,2,3,5,7,10];
+	 *
+	 */
 	onlyUnique : function(value, index, self) {
 		return self
 			.findIndex(
@@ -55,35 +99,12 @@ metExploreD3.GraphUtils = {
 			) === index;
 	},
 
-    parseWebServiceMapping : function(myJsonMapping){
-        //var mapJSON = '{"name": "mapping_D-Galactose", "mappings":[{"name": "conditionName1", "data": [{"node" : "D-Galactose"}, {"node" : "D-galactose"}]  }]}';
-        var mappingJSON = Ext.decode(myJsonMapping); 
-        var conditions = mappingJSON.mappingdata[0].mappings;
-        conditions.forEach(function(condition){
-        	var mappingDatas = condition.data;
-    		var i = 0;
-        	var valueIsSet = false;
-        	while (i < mappingDatas.length && !valueIsSet) {
-			    if(mappingDatas.value != undefined)
-			    	valueIsSet=true;
-
-			    i++;
-			}
-			if(!valueIsSet) 
-				condition.name="undefined"
-        });
-        
-        var mapJSON = JSON.stringify(mappingJSON.mappingdata[0]);
-
-        //Load mapping
-        return mapJSON;
-    },
-
-    /***********************************************
-    *	Read input file
-    */
-    handleFileSelect : function(input, func)
-	{               
+	/*****************************************************
+	 * Read input file
+	 * @param {Element} input DOM element of input file
+	 * @param {Function} func Callback function
+     */
+    handleFileSelect : function(input, func){
 
 		if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
 			alert('The File APIs are not fully supported in this browser.');
@@ -109,13 +130,11 @@ metExploreD3.GraphUtils = {
 
 
     /*******************************************
-    * Convert colorName in hex  
-    * @param {} r : Red  
-    * @param {} g : green  
-    * @param {} b : Bleu
-    */
-	colorNameToHex : function(color)
-	{
+     * Convert colorName in hex
+     * @param {String} color Classic color name
+	 * @return {String}
+     */
+	colorNameToHex : function(color) {
 	    var colors = {"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
 	    "beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
 	    "cadetblue":"#5f9ea0","chartreuse":"#7fff00","chocolate":"#d2691e","coral":"#ff7f50","cornflowerblue":"#6495ed","cornsilk":"#fff8dc","crimson":"#dc143c","cyan":"#00ffff",
@@ -148,19 +167,21 @@ metExploreD3.GraphUtils = {
 	},
 
     /*******************************************
-    * Convert hexa in rgb  
-    * @param {} r : Red  
-    * @param {} g : green  
-    * @param {} b : Bleu
-    */
+     * Convert rgb in hexa
+	 * @param {Number} r : Red
+     * @param {Number} g : green
+     * @param {Number} b : Bleu
+	 * @return {String}
+	 */
     RGB2Color : function(r,g,b){ 
       return '#' + metExploreD3.GraphUtils.byte2Hex(r) + metExploreD3.GraphUtils.byte2Hex(g) + metExploreD3.GraphUtils.byte2Hex(b);
     },
 
     /*******************************************
-    * Choose text color in function of contrast with background  
-    * @param {} backgroundColor : Color of background 
-    */
+     * Choose text color in function of contrast with background
+     * @param {String} backgroundColor Background color
+	 * @return {String} The color assigned to text
+	 */
     RGBString2Color : function(backgroundColor){ 
 	    if(backgroundColor!=undefined){	
 			var color;
@@ -180,9 +201,11 @@ metExploreD3.GraphUtils = {
     },
 
     /*******************************************
-    * Choose text color in function of contrast with background  
-    * @param {} backgroundColor : Color of background 
-    */
+     * Choose text color in function of contrast with background
+     * @param {} backgroundColor : Color of background
+	 * @return {String}
+	 * @private
+	 */
     chooseTextColor : function(backgroundColor){ 
 	    if(backgroundColor!=undefined){	
 			var color;
@@ -221,15 +244,20 @@ metExploreD3.GraphUtils = {
     },
 
     /*******************************************
-    * Convert byte in hexa  
-    * @param {} n : Color in byte
-    */
+     * Convert byte in hexa
+     * @param {String} n : Color in byte
+	 * @return {String}
+     */
     byte2Hex : function(n){
       var nybHexString = "0123456789ABCDEF";
       return String(nybHexString.substr((n >> 4) & 0x0F,1)) + nybHexString.substr(n & 0x0F,1);
     },
 
-    // convert a hexidecimal color string to 0..255 R,G,B
+	/*******************************************
+	 * Convert a hexidecimal color string to 0..255 R,G,B
+	 * @param {String} hex Color in hex
+	 * @return {String}
+	 */
 	hexToRGB : function(hex){
 	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -245,25 +273,16 @@ metExploreD3.GraphUtils = {
 	    } : null;
 	},
 
-    /** ******************************************** */
-	// EXPORT FUNCTION....ONGOING
-	/** **************************************** */
-	exportGraphPng : function() {
-		var cy = $("#viz").cytoscape('get');
-		var png = cy.png();
-		var blob = new Blob([ String(png) ], {
-			type : "image/png",
-			encoding : 'utf-8'
-		});
-		saveAs(blob, "graph.png");
-	},
+	/*******************************************
+	* EXPORT FUNCTIONS
+	*****************************************/
 
 	/*******************************************
-    * Export a metabolic network in PNG. 
-    * You can choice the png
-    */
-	exportPNG : function(size){
-	    metExploreD3.GraphUtils.escapeUnExportNode();
+	 * Export a metabolic network in PNG.
+	 * @param {Number} size Number to multiply the size
+	 */
+	exportPNG: function (size) {
+		metExploreD3.GraphUtils.escapeUnExportNode();
 
 		window.URL = (window.URL || window.webkitURL);
 
@@ -271,9 +290,9 @@ metExploreD3.GraphUtils = {
 	},
 
 	/*******************************************
-    * Export a metabolic network in JPG. 
-    * You can choice the png
-    */
+	 * Export a metabolic network in JPG.
+	 * @param {Number} size Number to multiply the size
+	 */
 	exportJPG : function(size){
 		metExploreD3.GraphUtils.escapeUnExportNode();
 		
@@ -286,29 +305,17 @@ metExploreD3.GraphUtils = {
     * Escape nodes which don't appear in export. 
     */
 	escapeUnExportNode: function(){
-
         var brush = d3.selectAll("#brush");
 		if(brush!=null)  
 		  brush.style("display", "none");
 
 		d3.selectAll("#D3viz")
 			.style("box-shadow", "");
-
-		// var tooltip = d3.selectAll("#tooltip");
-		// if(tooltip!=null)  
-		//   tooltip.style("display", "none");
-
-		// var e = document.createElement('script'); 
-		// e.setAttribute('src', 'lib/javascript/svg-crowbar-2.js/svg-crowbar-2.js'); 
-		// e.setAttribute('class', 'svg-crowbar'); 
-		// document.body.appendChild(e); 
 	},
-
 	
 	/*******************************************
-    * Export a metabolic network in SVG. 
-    * You can choice the svg
-    */
+     * Export a metabolic network in SVG.
+	 */
 	exportSVG : function(){
 
 		metExploreD3.GraphUtils.escapeUnExportNode();
@@ -316,23 +323,21 @@ metExploreD3.GraphUtils = {
 		window.URL = (window.URL || window.webkitURL);
 
 		var stringSvg = metExploreD3.GraphUtils.initialize("svg");
-		
-		//metExploreD3.GraphNetwork.loadSvg(metExploreD3.getSessionById(metExploreD3.getSessionsSet(), 'viz'), 'viz');
-
-		// var html = d3.select("#viz").select("svg");
 	},
 
 	/*******************************************
-    * Initialize exportSVG  
-    */
+     * Initialize export
+	 * @param {String} type PNG, JPG, SVG
+	 * @param {Number} size Number to multiply the size
+	 * @private
+     */
 	initialize : function(type, size){
 		var session = _metExploreViz.getSessionById('viz');
 		var force = session.getForce();
-		if(session!=undefined) 
+		if(session!==undefined)
 		{
 			// We stop the previous animation
-			var force = session.getForce();
-			if(force!=undefined)  
+			if(force!==undefined)
 			{
 				if(metExploreD3.GraphNetwork.isAnimated('viz'))
 					force.stop();
@@ -354,9 +359,8 @@ metExploreD3.GraphUtils = {
 		// add empty svg element
 		var emptySvg = window.document.createElementNS(prefix.svg, 'svg');
 		window.document.body.appendChild(emptySvg);
-		var emptySvgDeclarationComputed = getComputedStyle(emptySvg);
 		var myMask = metExploreD3.createLoadMask("Export initialization...", 'graphPanel');
-		if(myMask!= undefined){
+		if(myMask !== undefined){
 
 			metExploreD3.showMask(myMask);
 			metExploreD3.deferFunction(function() {
@@ -381,7 +385,7 @@ metExploreD3.GraphUtils = {
 				});
 
 				documents.forEach(function(doc) {
-				  var newSources = metExploreD3.GraphUtils.getSources(doc, emptySvgDeclarationComputed, prefix);
+				  var newSources = metExploreD3.GraphUtils.getSources(doc, prefix);
 				  // because of prototype on NYT pages
 				  for (var i = 0; i < newSources.length; i++) {
 
@@ -407,8 +411,12 @@ metExploreD3.GraphUtils = {
 	},
 
 	/*******************************************
-    * Permit to make a choice between all networks  
-    */
+	 * Permits to make a choice between all networks
+	 * @param {Object} sources Several networks compared in MetExplore
+	 * @param {String} type PNG, JPG, SVG
+	 * @param {Number} size Number to multiply the size
+	 * @private
+	 */
 	createPopover : function(sources, type, size) {
 		metExploreD3.GraphUtils.cleanup();
 
@@ -474,13 +482,13 @@ metExploreD3.GraphUtils = {
 		  button.onclick = function(el) {
 		    metExploreD3.GraphUtils.download(d, type, size);
 		  };
-
 		});
 	},
 
 	/*******************************************
-    * Cleanup svg of unused thinks  
-    */
+     * Cleanup svg of unused thinks
+	 * @private
+     */
 	cleanup : function() {
 		var crowbarElements = document.querySelectorAll(".svg-crowbar");
 
@@ -510,32 +518,32 @@ metExploreD3.GraphUtils = {
 
 		d3.select("#"+_MyThisGraphNode.activePanel).select("#D3viz")
 			.style("box-shadow", " 0px 0px 10px 3px #144778 inset");
-
-		// var tooltip = d3.selectAll("#tooltip");
-		// if(tooltip!=null)  
-		//   tooltip.style("display", "inline");
 	},
 
 	/*******************************************
-    * Get all networks displayed all networks  
-    */
-	getSources : function(doc, emptySvgDeclarationComputed, prefix) {
+     * Get all networks displayed all networks
+	 * @param {Object} doc DOM in window
+	 * @param {Number} prefix Namespace prefix
+	 * @return {Array} All D3viz in the DOM
+	 * @private
+	 */
+	getSources : function(doc, prefix) {
 		var svgInfo = [],
 		svgs = doc.querySelectorAll("svg");
 
 		[].forEach.call(svgs, function (aSvg) {
 			svg = aSvg;
 			
-			if(svg.id=="D3viz")
+			if(svg.id==="D3viz")
 			{
 				function clonef(selector) {
 					var node = d3.select(selector).node();
 					return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling)).node();
-				};
+				}
 
-var clone = clonef(svg);
+				var clone = clonef(svg);
 
-clone.setAttribute("version", "1.1");
+				clone.setAttribute("version", "1.1");
 
 				// removing attributes so they aren't doubled up
 				clone.removeAttribute("xmlns");
@@ -565,9 +573,6 @@ clone.setAttribute("version", "1.1");
 				var buttonExportCoordinates = clone.getElementById("buttonExportCoordinates");
 				if(buttonExportCoordinates!=null)
                     buttonExportCoordinates.parentNode.removeChild(buttonExportCoordinates);
-
-				// var tooltip = clone.getElementById("tooltip");
-				// tooltip.parentNode.removeChild(tooltip);
 
 				var brush = clone.getElementById("brush");
 				if(brush!=null) 
@@ -600,8 +605,6 @@ clone.setAttribute("version", "1.1");
 									mySVG.setAttribute("height", this.firstChild.getAttribute("height").split('px')[0]);
 									mySVG.setAttribute("class", "logoViz");
 
-									var nodeChilds = mySVG.children;
-
 									var parent = this;
 									parent.removeChild(this.firstChild);
 									parent.appendChild(mySVG);
@@ -618,9 +621,6 @@ clone.setAttribute("version", "1.1");
 						this.parentNode.removeChild(this);
 					}
 					);
-
-				var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-				var component = s_GeneralStyle.isDisplayedCaption();
 
 				d3Clone.selectAll(".hide").remove();
 
@@ -663,7 +663,7 @@ clone.setAttribute("version", "1.1");
 							}
 						});
 
-					allElements = metExploreD3.GraphUtils.setInlineStyles(clone, emptySvgDeclarationComputed, allElements);
+					metExploreD3.GraphUtils.setInlineStyles(clone, allElements);
 				}
 				else
 				{
@@ -673,22 +673,12 @@ clone.setAttribute("version", "1.1");
 						});
 				}
 
-
-
-				
-				// Version to catch all nodes in the picture
-				// d3.select(clone).select("#graphComponent").attr("transform",  "translate(0, 0) scale(1)");
-
 				var rectGraphComponent = d3Clone.select("#graphComponent").node().getBoundingClientRect();
 				
 				var translateX = rectSvg.left+100 - rectGraphComponent.left;
 				var translateY = rectSvg.top+50 - rectGraphComponent.top;
 
 				d3Clone.select("#graphComponent").attr("transform",  "translate(" + translateX + "," + translateY + ") scale(1)");
-				// d3.select(clone).selectAll("path")
-				// 	.each(function(d){
-				// 			d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
-				// 	});
 
 				rectGraphComponent = d3Clone.select("#graphComponent").node().getBoundingClientRect();
                 if((rectSvg.width + rectGraphComponent.right - rectSvg.right +20 )>canvasWidth){
@@ -697,28 +687,13 @@ clone.setAttribute("version", "1.1");
 				else
 				{
 					d3Clone.select("#graphComponent").attr("transform",  "translate(0," + translateY + ") scale(1)");
-					// d3.select(clone).selectAll("path")
-					// 	.each(function(d){
-					// 			d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
-					// 	});
 				}
 				clone.setAttribute("width",  canvasWidth);
                 if((rectSvg.height + rectGraphComponent.bottom - rectSvg.bottom +20 )>canvasHeight)
 					canvasHeight = rectSvg.height + rectGraphComponent.bottom - rectSvg.bottom +20;
 				clone.setAttribute("height", canvasHeight);
 
-				var rectGraphComponent = d3Clone.select("#graphComponent").node().getBoundingClientRect();
-				
-				var translateX = rectSvg.left+100 - rectGraphComponent.left;
-				var translateY = rectSvg.top+50 - rectGraphComponent.top;
 				d3Clone.select("#graphComponent").attr("transform",  d3.select(svg).select("#graphComponent").attr("transform"));
-
-				// d3.select(clone).selectAll("path")
-				// 	.each(function(d){
-				// 		d3.select(this).attr("transform", d3.select(clone).select("#graphComponent").attr("transform"));	 
-				// 	});
-
-				rectGraphComponent = d3Clone.select("#graphComponent").node().getBoundingClientRect();
 
 				var canvasWidth = rectSvg.width;
 				clone.setAttribute("width",  canvasWidth);
@@ -726,7 +701,6 @@ clone.setAttribute("version", "1.1");
 				var canvasHeight = rectSvg.height;
 				clone.setAttribute("height", canvasHeight);
 
-				
 				var source = (new XMLSerializer()).serializeToString(clone);
 				var doctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 				
@@ -743,9 +717,6 @@ clone.setAttribute("version", "1.1");
 				});
 
 				d3Clone.remove();
-				
-				
-		
 			}
 		});
 
@@ -754,8 +725,9 @@ clone.setAttribute("version", "1.1");
 
 	 /**
      * Save file or data directly, with a given filename --> cause download dialog in the browser
-     * @param {} uri: file or data to download
-     * @param {} filename: default filename of the downloaded file
+     * @param {String} uri File or data to download
+     * @param {String} filename Default filename of the downloaded file
+	  * @private
      */
     saveAsSvg: function(uri, filename) {
 		var link = document.createElement('a');
@@ -789,6 +761,12 @@ clone.setAttribute("version", "1.1");
 		}
 	},
 
+	/*******************************************
+	 * Get image from computer to import it in SVG
+	 * @param {String} url File location on client computer
+	 * @param {Function} callback Callback function
+	 * @private
+	 */
     getDataUri : function(url, callback) {
 
         var XMLrequest = new XMLHttpRequest(); // new XML request
@@ -825,7 +803,13 @@ clone.setAttribute("version", "1.1");
 		}
 	},
 
-
+	/*******************************************
+	 * Convert canvas to file URL
+	 * @param {CanvasDrawImage} canvas Canvas drawn to export PNG or JPG
+	 * @param {String} type PNG or JPG
+	 * @return {String} Url used to download exported file
+	 * @private
+	 */
 	binaryblob : function(canvas, type){
 
 		var byteString = window.atob(canvas.toDataURL("image/"+type).replace(/^data:image\/(png|jpeg);base64,/, ""));
@@ -844,11 +828,14 @@ clone.setAttribute("version", "1.1");
 	  	return newurl;
 	},
 
-	 /**
-     * Save file or data directly, with a given filename --> cause download dialog in the browser
-     * @param {} uri: file or data to download
-     * @param {} filename: default filename of the downloaded file
-     */
+	/*******************************************
+	 * Save file or data directly, with a given filename --> cause download dialog in the browser
+	 * @param {Object} source Element(a D3viz svg) to export
+	 * @param {String} filename Default filename of the downloaded file
+	 * @param {String} type PNG or JPG
+	 * @param {Number} size Number to multiply the size
+	 * @private
+	 */
     saveAsBinary: function(source, filename, type, size) {
 		var imgsrc = 'data:image/svg+xml;base64,'+ window.btoa(unescape(encodeURIComponent(source.source)));
 
@@ -915,10 +902,13 @@ clone.setAttribute("version", "1.1");
 	},
 
 	/*******************************************
-    * Download the svg
-    */
+	 * Download, define the name and apply export in function of type
+	 * @param {Object} source Element(a D3viz svg) to export
+	 * @param {String} type PNG or JPG or SVG
+	 * @param {Number} size Number to multiply the size
+	 * @private
+	 */
 	download : function(source, type, size) {
-
 	    var today = new Date();
 		var dd = today.getDate();
 		var mm = today.getMonth()+1; //January is 0!
@@ -948,43 +938,11 @@ clone.setAttribute("version", "1.1");
 	},
 
 	/*******************************************
-    * Fix all styles
-    */
-	/*explicitlySetStyle : function(element, emptySvgDeclarationComputed) {
-	    var cSSStyleDeclarationComputed = getComputedStyle(element);
-  	    var i, len, key, value;
-	    var computedStyleStr = "";
-	    for (i=0, len=cSSStyleDeclarationComputed.length; i<len; i++) {
-	        key=cSSStyleDeclarationComputed[i];
-
-            if(element.tagName == "rect") 
-            {
-            	if(element.getAttribute("class")=="stroke"){
-            		if(key!="height" && key!="width"){
-	        			value=cSSStyleDeclarationComputed.getPropertyValue(key);
-			            	computedStyleStr+=key+":"+value+";";
- 					}
-            	}
-            	else
-            	{
-            		if(key!="fill" && key!="height" && key!="width"){
-	        			value=cSSStyleDeclarationComputed.getPropertyValue(key);
-			            	computedStyleStr+=key+":"+value+";";
-            		}
-            	}
-	        }
-	        else
-	        {	
-	        	if(key!="marker-start" && key!="marker-end"){
-	        		value=cSSStyleDeclarationComputed.getPropertyValue(key);
-		            	computedStyleStr+=key+":"+value+";";
-	        	}
-	        }
-  	    }*/
-	/*******************************************
-    * Fix all styles
-    */
-	explicitlySetStyle : function(element, emptySvgDeclarationComputed) {
+	 * Fix all styles
+	 * @param {Object} element Element to export
+	 * @private
+     */
+	explicitlySetStyle : function(element) {
 	    var cSSStyleDeclarationComputed = getComputedStyle(element);
   	    var i, len, key, value;
 	    var computedStyleStr = [];
@@ -1033,8 +991,10 @@ clone.setAttribute("version", "1.1");
 	},
 
 	/*******************************************
-	* Route all nodes 
-	*/
+	 * Route all nodes
+	 * @param {Object} obj Element to export
+	 * @private
+	 */
 	traverse : function(obj){
 	    var tree = [];
 	    tree.push(obj);
@@ -1131,111 +1091,27 @@ clone.setAttribute("version", "1.1");
 	    return tree;
 	},
 
-
-	setInlineStyles : function(svg, emptySvgDeclarationComputed, allElmts) {
+	/*******************************************
+	 * Fix all styles
+	 * @param {Object} obj Element to export
+	 * @param {Object} allElmts Element to export
+	 * @private
+	 */
+	setInlineStyles : function(svg, allElmts) {
 
 		// hardcode computed css styles inside svg
 		var allElements = metExploreD3.GraphUtils.traverse(svg);
 		allElmts=allElements;
 		var i = allElements.length;
 		while (i--){
-		    metExploreD3.GraphUtils.explicitlySetStyle(allElements[i], emptySvgDeclarationComputed);
+		    metExploreD3.GraphUtils.explicitlySetStyle(allElements[i]);
 		}
 		return allElmts;
 	},
 
 	/*******************************************
-    * Export the main metabolic network for XGMML conversion. 
-	*/
-	exportSVGMain : function(){
-
-		var brush = d3.selectAll("#brush");
-		if(brush!=null)  
-		  brush.style("display", "none");
-
-		window.URL = (window.URL || window.webkitURL);
-
-		var stringSvg = metExploreD3.GraphUtils.initializeMain();
-		return stringSvg;
-	},
-
-	/*******************************************
-    * Initialize exportSVGMain 
-    */
-	initializeMain : function() {
-
-		var prefix = {
-		xmlns: "http://www.w3.org/TR/xml-names/",
-		xlink: "http://www.w3.org/1999/xlink",
-		svg: "http://www.w3.org/2000/svg"
-		};
-
-		var documents = [window.document],
-		    SVGSources = [];
-		    iframes = document.querySelectorAll("iframe"),
-		    objects = document.querySelectorAll("object");
-
-		// add empty svg element
-		var emptySvg = window.document.createElementNS(prefix.svg, 'svg');
-		window.document.body.appendChild(emptySvg);
-		var emptySvgDeclarationComputed = getComputedStyle(emptySvg);
-
-		[].forEach.call(iframes, function(el) {
-		  try {
-		    if (el.contentDocument) {
-		      documents.push(el.contentDocument);
-		    }
-		  } catch(err) {
-		    console.log(err);
-		  }
-		});
-
-		[].forEach.call(objects, function(el) {
-		  try {
-		    if (el.contentDocument) {
-		      documents.push(el.contentDocument);
-		    }
-		  } catch(err) {
-		    console.log(err)
-		  }
-		});
-
-		documents.forEach(function(doc) {
-		  var newSources = metExploreD3.GraphUtils.getSources(doc, emptySvgDeclarationComputed, prefix);
-		  // because of prototype on NYT pages
-		  for (var i = 0; i < newSources.length; i++) {
-		  	if(newSources[i].classe.includes("D3viz"))
-		   	{
-		   		SVGSources.push(newSources[i]);
-		   	}
-		  }
-		});
-		if (SVGSources.length > 0) {
-		  return metExploreD3.GraphUtils.downloadMain(SVGSources[SVGSources.length-1]);
-		} else {
-		  alert("The Crowbar couldn’t find any SVG nodes.");
-		}
-	},
-
-	/*******************************************
-    * Download the main svg
-    */
-	downloadMain : function(source) {
-		var filename = "untitled";
-
-		if (source.id) {
-		  filename = source.id;
-		} else if (source.classe) {
-		  filename = source.classe;
-		} else if (window.document.title) {
-		  filename = window.document.title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-		}
-
-		var url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text\/xml" }));
-		metExploreD3.GraphUtils.cleanup();
-		return source.source[0];		
-	},
-
+	 * Export networt to DOT format
+	 */
 	saveNetworkDot : function() {
 		var myMask = metExploreD3.createLoadMask("Export DOT file...", 'graphPanel');
 		if(myMask!= undefined){
@@ -1330,6 +1206,127 @@ clone.setAttribute("version", "1.1");
 	        }, 100);
 		}
 	},
+
+	/*******************************************
+	 * Export networt to GML format
+	 */
+	saveNetworkGml : function() {
+		var myMask = metExploreD3.createLoadMask("Export GML file...", 'graphPanel');
+		if(myMask!==undefined){
+
+			metExploreD3.showMask(myMask);
+
+			metExploreD3.deferFunction(function() {
+				var networkJSON ="graph [";
+				networkJSON +="\ndirected 1\n";
+				var i = 0;
+				//var corresp = {};
+				var sideCompounds = {};
+
+				_metExploreViz.getSessionById('viz').getD3Data().getNodes()
+					.filter(function(node){return !node.isHidden();})
+					.forEach(function(node){
+						//corresp[node.getId()] = i;
+						networkJSON+="node [\n";
+						networkJSON+="id "+node.getId()+"\n";
+						if(node.getIsSideCompound()){
+							if(sideCompounds[node.getName()]!==undefined)
+							{
+								sideCompounds[node.getName()]++;
+							}
+							else
+							{
+								sideCompounds[node.getName()]=1;
+							}
+							networkJSON+='label "'+node.getName()+'('+sideCompounds[node.getName()]+')"\n';
+						}
+						else{
+							networkJSON+='label "'+node.getName()+'"\n';
+						}
+
+						networkJSON+="graphics [\n";
+						networkJSON+="x "+node.x+"\n";
+						networkJSON+="y "+node.y+"\n";
+						networkJSON+="]\n";
+						networkJSON+="]\n";
+						i++;
+					});
+
+				_metExploreViz.getSessionById('viz').getD3Data().getLinks()
+					.filter(function(link){
+						return ((!link.getSource().isHidden()) &&
+							(!link.getTarget().isHidden()));
+					})
+					.forEach(function(link){
+
+						networkJSON+="edge [\n";
+						//networkJSON+="source "+corresp[link.getSource().getId()]+"\n";
+						networkJSON+="source "+link.getSource().getId()+"\n";
+						networkJSON+="target "+link.getTarget().getId()+"\n";
+						networkJSON+='label "'+
+							link.getSource().getId().replace("-", "")+
+							"-"+
+							link.getTarget().getId().replace("-", "")+
+							'"\n';
+						networkJSON+="]\n";
+
+						if(link.isReversible()==="true"){
+							networkJSON+="edge [\n";
+							networkJSON+="source "+link.getTarget().getId()+"\n";
+							networkJSON+="target "+link.getSource().getId()+"\n";
+							networkJSON+='label "'+
+								link.getSource().getId().replace("-", "")+
+								"-"+
+								link.getTarget().getId().replace("-", "")+
+								'"\n';
+							networkJSON+="]\n";
+						}
+					});
+
+				networkJSON+="]";
+
+				var blob = new Blob([networkJSON], {type: "text"}); // pass a useful mime type here
+				var url = URL.createObjectURL(blob);
+
+				// var url = 'data:text/json;charset=utf8,' + encodeURIComponent(networkJSON);
+				var link = document.createElement('a');
+				if (typeof link.download === 'string') {
+					link.href = url;
+
+					var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1; //January is 0!
+					var yyyy = today.getFullYear();
+
+					if(dd<10) {
+						dd='0'+dd
+					}
+
+					if(mm<10) {
+						mm='0'+mm
+					}
+
+					today = mm+'-'+dd+'-'+yyyy;
+
+					link.download = "MetExploreViz_"+today+".gml";
+					//Firefox requires the link to be in the body
+					document.body.appendChild(link);
+
+					//simulate click
+					link.click();
+
+					//remove the link when done
+					document.body.removeChild(link);
+				}
+				else {
+					window.open(uri);
+				}
+				metExploreD3.hideMask(myMask);
+
+			}, 100);
+		}
+	},
+
 	/*****************************************************
 	* Retrieve all necessary data to load saved visualization
     */
@@ -1673,6 +1670,8 @@ clone.setAttribute("version", "1.1");
 
 	/*****************************************************
 	 * Save nodes coordinates
+	 * @param {Object} scaleRange Styles applied
+	 * @param {Boolean} all Boolean to know if it save all styles or only one
 	 */
 	saveStyles : function(scaleRange, all) {
 		var myMask = metExploreD3.createLoadMask("Saving...", 'graphPanel');
@@ -1682,46 +1681,14 @@ clone.setAttribute("version", "1.1");
 
 			metExploreD3.deferFunction(function() {
 
-				//
-				// var networkJSON ="{";
-				//  var session = _metExploreViz.getSessionById('viz');
-				//  session.getD3Data().initNodeIndex();
-				//
-				//
-				// networkJSON+="\"nodes\":[" ;
-				//
-				// /**************
-				// * Saving nodes
-				// */
-				// session.getD3Data().getNodes()
-				//    .filter(function (node) {
-				//         return !node.getIsSideCompound();
-				//     })
-				//    .forEach(function(node, index){
-				//         	networkJSON+="{";
-				// 	    if(node.dbIdentifier!==undefined) networkJSON+="\"dbIdentifier\":"+JSON.stringify(node.getDbIdentifier())+",";
-				// 	    if(node.x!==undefined) networkJSON+="\"x\":"+JSON.stringify(node.x)+",";
-				// 		if(node.y!==undefined) networkJSON+="\"y\":"+JSON.stringify(node.y)+",";
-				// 		if(node.px!==undefined) networkJSON+="\"px\":"+JSON.stringify(node.px)+",";
-				// 		if(node.py!==undefined) networkJSON+="\"py\":"+JSON.stringify(node.py);
-				// 		networkJSON+="}";
-				//
-				// 		if(index !== session.getD3Data().getNodes().length-1)
-				// 			networkJSON+=",";
-				//    }
-				// );
-				//
-				// networkJSON+="]}";
 				var scaleRangeString = JSON.stringify(scaleRange);
-				// console.log(networkJSON);
-				// console.log(JSON.parse(networkJSON));
+
 				var blob = new Blob([scaleRangeString], {type: "text/json"}); // pass a useful mime type here
 				var url = URL.createObjectURL(blob);
-				// var url = 'data:text/json;charset=utf8,' + encodeURIComponent(networkJSON);
+
 				var link = document.createElement('a');
 				if (typeof link.download === 'string') {
 					link.href = url;
-
 
 					var today = new Date();
 					var dd = today.getDate();
@@ -1761,123 +1728,9 @@ clone.setAttribute("version", "1.1");
 		}
 	},
 
-	saveNetworkGml : function() {
-		var myMask = metExploreD3.createLoadMask("Export GML file...", 'graphPanel');
-		if(myMask!==undefined){
-
-			metExploreD3.showMask(myMask);
-
-	        metExploreD3.deferFunction(function() {
-				var networkJSON ="graph [";
-				networkJSON +="\ndirected 1\n";
-				var i = 0;
-				//var corresp = {};
-				var sideCompounds = {};
-
-			   	_metExploreViz.getSessionById('viz').getD3Data().getNodes()
-				.filter(function(node){return !node.isHidden();})
-			   	.forEach(function(node){
-				    //corresp[node.getId()] = i;
-					networkJSON+="node [\n";
-						networkJSON+="id "+node.getId()+"\n";
-						if(node.getIsSideCompound()){
-							if(sideCompounds[node.getName()]!==undefined)
-							{
-								sideCompounds[node.getName()]++;
-							}
-							else
-							{
-								sideCompounds[node.getName()]=1;
-							}
-							networkJSON+='label "'+node.getName()+'('+sideCompounds[node.getName()]+')"\n';
-						}
-						else{
-							networkJSON+='label "'+node.getName()+'"\n';
-						}
-
-						networkJSON+="graphics [\n";
-							networkJSON+="x "+node.x+"\n";
-							networkJSON+="y "+node.y+"\n";
-						networkJSON+="]\n"; 
-					networkJSON+="]\n"; 
-					i++;
-				});
-
-				_metExploreViz.getSessionById('viz').getD3Data().getLinks()
-				.filter(function(link){
-						return ((!link.getSource().isHidden()) &&
-							(!link.getTarget().isHidden()));
-					})
-				.forEach(function(link){
-				    	
-			    	networkJSON+="edge [\n";
-						//networkJSON+="source "+corresp[link.getSource().getId()]+"\n";
-						networkJSON+="source "+link.getSource().getId()+"\n";
-						networkJSON+="target "+link.getTarget().getId()+"\n";
-						networkJSON+='label "'+
-										link.getSource().getId().replace("-", "")+
-										"-"+
-										link.getTarget().getId().replace("-", "")+
-										'"\n';
-					networkJSON+="]\n";
-				    
-				    if(link.isReversible()==="true"){
-				    	networkJSON+="edge [\n";
-							networkJSON+="source "+link.getTarget().getId()+"\n";
-							networkJSON+="target "+link.getSource().getId()+"\n";
-							networkJSON+='label "'+
-										link.getSource().getId().replace("-", "")+
-										"-"+
-										link.getTarget().getId().replace("-", "")+
-										'"\n';
-						networkJSON+="]\n";
-					}  
-				});
-				
-				networkJSON+="]";
-
-				var blob = new Blob([networkJSON], {type: "text"}); // pass a useful mime type here
-				var url = URL.createObjectURL(blob);
-
-				// var url = 'data:text/json;charset=utf8,' + encodeURIComponent(networkJSON);
-				var link = document.createElement('a');
-				if (typeof link.download === 'string') {
-				    link.href = url;
-
-				    var today = new Date();
-					var dd = today.getDate();
-					var mm = today.getMonth()+1; //January is 0!
-					var yyyy = today.getFullYear();
-
-					if(dd<10) {
-					    dd='0'+dd
-					} 
-
-					if(mm<10) {
-					    mm='0'+mm
-					} 
-
-					today = mm+'-'+dd+'-'+yyyy;
-
-				    link.download = "MetExploreViz_"+today+".gml";
-				    //Firefox requires the link to be in the body
-				    document.body.appendChild(link);
-				    
-				    //simulate click
-				    link.click();
-				
-				    //remove the link when done
-				    document.body.removeChild(link);
-				}
-				else {
-				    window.open(uri);
-				}
-				metExploreD3.hideMask(myMask);
-
-	        }, 100);
-		}
-	},
-	
+	/*****************************************************
+	 * Save cycles
+	 */
 	saveCyclesList : function () {
         var allDrawnCycles = metExploreD3.GraphStyleEdition.allDrawnCycles;
         if ( metExploreD3.GraphStyleEdition.allDrawnCycles.length) {
