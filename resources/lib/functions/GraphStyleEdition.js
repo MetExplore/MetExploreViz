@@ -1,14 +1,25 @@
 /**
+ * @class metExploreD3.GraphStyleEdition
+ * Style Edition
+ *
  * @author Adrien Rohan
- * (a)description : Style Edition
+ *
+ * @uses metExploreD3.GraphLink
  */
-
 metExploreD3.GraphStyleEdition = {
-
+    /**
+    *  @property {Boolean} [editMode=false]
+    *  @property {Boolean} [curvedPath=false]
+    *  @property {Array} [allDrawnCycles=[]]
+    */
     editMode: false,
     curvedPath: false,
     allDrawnCycles: [],
 
+    /*******************************************
+     * Apply respective styles to labels
+     * @param {String} panelLinked The panel where the action is launched
+     */
     applyLabelStyle : function(panelLinked){
         var GraphNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 
@@ -32,6 +43,7 @@ metExploreD3.GraphStyleEdition = {
             if (elemtNode.attr("transform")) { selection.attr("transform", elemtNode.attr("transform")); }
         });
     },
+
     /*******************************************
      * Enter or exit style edition mode
      */
@@ -106,6 +118,7 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Allow moving of node label on drag
+     * @param {String} panel The panel where the action is launched
      */
     startDragLabel : function (panel) {
         // Apply drag event on node labels
@@ -119,6 +132,7 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * End moving of node label on drag
+     * @param {String} panel The panel where the action is launched
      */
     endDragLabel : function (panel) {
         // Remove drag event on node labels
@@ -132,6 +146,7 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Create drag-and-drop behavior
+     * @param {String} panel The panel where the action is launched
      */
     createDragBehavior : function (panel) {
         var deltaX;
@@ -196,9 +211,9 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change text of node label
-     * @param {Object} node : The node whose label will be modified
-     * @param {String} panel : The panel where the action is launched
-     * @param {String} text : The new text of the node label
+     * @param {Object} node The node whose label will be modified
+     * @param {String} panel The panel where the action is launched
+     * @param {String} text The new text of the node label
      */
     changeNodeLabel: function (node, panel, text) {
         var nodeElement = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
@@ -233,7 +248,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change the font size of a node label
-     * @param {Object} node : The node whose label will be modified
+     * @param {Object} node The node whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     changeFontSize : function (node, panel) {
         // Change the font size of the node label
@@ -250,8 +266,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change the font size of multiple node labels
-     * @param {String} text : The new font size of the node label
-     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
+     * @param {String} text The new font size of the node label
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets The nodes whose label will be modified
      */
     changeAllFontSize : function (text, targets, panel) {
         // Change the font size of all the targeted nodes labels
@@ -272,10 +288,12 @@ metExploreD3.GraphStyleEdition = {
             .select("text")
             .style("font-size",text+"px");
     },
+
     /*******************************************
      * Change the font of a node label
-     * @param {Object} node : The node whose label will be modified
-     * @param {String} text : The new font of the node label
+     * @param {Object} node The node whose label will be modified
+     * @param {String} text The new font of the node label
+     * @param {String} panel The panel where the action is launched
      */
     changeFontType : function (node, text, panel) {
         // Change the font of the node label
@@ -288,8 +306,9 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change the font family of multiple node labels
-     * @param {String} text : The new font of the node label
+     * @param {String} text The new font of the node label
      * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     changeAllFontType : function (text, targets, panel) {
         // Change the font of all the targeted nodes labels
@@ -313,7 +332,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether the font of a node label is bold or not
-     * @param {Object} node : The node whose label will be modified
+     * @param {Object} node The node whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     changeFontBold : function (node, panel) {
         // Change the font boldness of the node label
@@ -331,8 +351,9 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether the font of multiple node labels is bold or not
-     * @param {Boolean} bool : True to change the font to bold, false to change back to normal
-     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
+     * @param {Boolean} bool True to change the font to bold, false to change back to normal
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets The nodes whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     changeAllFontBold : function (bool, targets, panel) {
         // Change the font boldness of all the targeted nodes labels
@@ -357,7 +378,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether the font of a node label is italic or not
-     * @param {Object} node : The node whose label will be modified
+     * @param {Object} node The node whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     changeFontItalic : function (node, panel) {
         // Italicize the font of the node label or revert to normal
@@ -375,8 +397,9 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether the font of multiple node labels is italic or not
-     * @param {Boolean} bool : True to change the font to italic, false to change back to normal
-     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
+     * @param {Boolean} bool True to change the font to italic, false to change back to normal
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets The nodes whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     changeAllFontItalic : function (bool, targets, panel) {
         // Italicize the font of all the targeted nodes labels or revert to normal
@@ -401,7 +424,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Change whether a node label is underlined or not
-     * @param {Object} node : The node whose label will be modified
+     * @param {Object} node The node whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     changeFontUnderline : function (node, panel) {
         // Underline the font of the node label or revert to normal
@@ -419,8 +443,9 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Add or remove underline to multiple node labels
-     * @param {Boolean} bool : True to add underline to the label, false to remove them
-     * @param {"all"/"selection"/"metabolite"/"reaction"} targets : The nodes whose label will be modified
+     * @param {Boolean} bool True to add underline to the label, false to remove them
+     * @param {"all"/"selection"/"metabolite"/"reaction"} targets The nodes whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     changeAllFontUnderline : function (bool, targets, panel) {
         // Underline the font of all the targeted nodes labels or revert to normal
@@ -445,8 +470,9 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Set the opacity of multiple node labels
-     * @param {Number} labelOpacity : New opacity value
-     * @param {"all"/"selection"/"metabolite"/"reaction"} flag : The nodes whose label will be modified
+     * @param {Number} labelOpacity New opacity value
+     * @param {"all"/"selection"/"metabolite"/"reaction"} flag The nodes whose label will be modified
+     * @param {String} panel The panel where the action is launched
      */
     setAllFontOpacity: function (labelOpacity, flag, panel) {
         var s_MetaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -478,7 +504,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Create an object containing the label style data associated to a node
-     * @param {Object} node : The node whose label syle data will be put in the object
+     * @param {Object} node The node whose label syle data will be put in the object
+     * @param {String} panel The panel where the action is launched
      */
     createLabelStyleObject : function (node, panel) {
         var nodeLabel = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
@@ -504,7 +531,8 @@ metExploreD3.GraphStyleEdition = {
 
     /*******************************************
      * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * @param {Object} node The node whose image position and dimension data will be put in the object
+     * @param {String} panel The panel where the action is launched
      */
     createImageStyleObject : function (node, panel) {
         var nodeImage = d3.select("#"+ panel).select("#D3viz").select("#graphComponent")
@@ -526,8 +554,12 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Set specific style of selection of nodes
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @param {String} value Value to assign
      */
     setCollectionStyle : function (targetSet, attrType, attrName, biologicalType, value) {
 
@@ -545,8 +577,12 @@ metExploreD3.GraphStyleEdition = {
 
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Set specific label style of selection of nodes
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @param {String} value Value to assign
      */
     setCollectionLabel : function (targetSet, attrType, attrName, biologicalType, value) {
         console.log(targetSet);
@@ -580,10 +616,14 @@ metExploreD3.GraphStyleEdition = {
         });
     },
 
-
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Set specific style of selection of nodes for mapping
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @param {String} conditionName Name of condition to map
+     * @param {String} mappingName Name of mapping to map
      */
     setCollectionLabelMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
@@ -640,8 +680,11 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Remove mappings on specified style and specified selection
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
      */
     removeMappedClassStyle : function (targetSet, attrType, attrName, biologicalType, value) {
         targetSet.forEach(function setStyles(target) {
@@ -658,8 +701,12 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Set specific style of selection of nodes for bypass
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @param {String} value Value to assign
      */
     setCollectionStyleBypass : function (targetSet, attrType, attrName, biologicalType, value) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
@@ -711,8 +758,12 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Set specific style of selection of nodes for bypass
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @param {String} value Value to assign
      */
     setCollectionLabelBypass : function (targetSet, attrType, attrName, biologicalType, value) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
@@ -778,8 +829,15 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Set specific style of selection of nodes for discrete mapping
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @param {String} conditionName Name of condition to map
+     * @param {String} mappingName Name of mapping to map
+     * @param {String} valueMapping Value to assign
+     * @param {String} valueStyle Value to assign
      */
     setCollectionStyleDiscreteMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName, valueMapping, valueStyle) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
@@ -821,8 +879,15 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Set specific style of selection of nodes for AsSelection mapping
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @param {String} conditionName Name of condition to map
+     * @param {String} mappingName Name of mapping to map
+     * @param {String} valueMapping Value to assign
+     * @param {String} valueStyle Value to assign
      */
     setCollectionStyleAsSelectionMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName, valueMapping, valueStyle) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
@@ -859,8 +924,14 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Set specific style of selection of nodes for AsSelection mapping
+     * @param {String} targetSet d3 selection to map
+     * @param {"attr"/"style"/"attrEditor"} attrType Accessor to style
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @param {String} conditionName Name of condition to map
+     * @param {String} mappingName Name of mapping to map
+     * @param {Function} linearScale d3.scaleLinear()
      */
     setCollectionStyleContinuousMapping : function (targetSet, attrType, attrName, biologicalType, conditionName, mappingName, linearScale) {
         console.log(conditionName);
@@ -905,8 +976,12 @@ metExploreD3.GraphStyleEdition = {
     },
 
     /*******************************************
-     * Create an object containing the image position and dimension data associated to a node
-     * @param {Object} node : The node whose image position and dimension data will be put in the object
+     * Define how value are assign for this selection
+     * @param {String} targetSet d3 selection to map
+     * @param {String} attrType Accessor to style {"attr", "style", "attrEditor"}
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     * @returns {String/"none"/"multiple"}
      */
     getCollectionStyleBypass : function (targetSet, attrType, attrName, biologicalType) {
         var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
