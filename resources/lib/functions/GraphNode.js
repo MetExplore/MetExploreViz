@@ -2,17 +2,6 @@
  * @author MC
  * Nodes drawing
  *
- *
- * @property {Element} [node=""]
- * @property {Element} [updatedNodes=""]
- * @property {String} [panelParent=""]
- * @property {String} [activePanel=""]
- * @property {Function} [taskClick=""]
- * @property {Number} [charKey=""]
- * @property {Number} [ctrlKey=""]
- * @property {Function} [groupFill=""]
- * @property {Boolean} [dblClickable=false]
- *
  * @uses metExploreD3.GraphLink
  * @uses metExploreD3.GraphPanel
  * @uses metExploreD3.GraphNetwork
@@ -21,7 +10,17 @@
  */
 
 metExploreD3.GraphNode = {
-
+    /**
+     * @property {Element} [node=""]
+     * @property {Element} [updatedNodes=""]
+     * @property {String} [panelParent=""]
+     * @property {String} [activePanel=""]
+     * @property {Function} [taskClick=""]
+     * @property {Number} [charKey=""]
+     * @property {Number} [ctrlKey=""]
+     * @property {Function} [groupFill=""]
+     * @property {Boolean} [dblClickable=false]
+     */
     node: "",
     _MyThisGraphNode: "",
     updatedNodes: "",

@@ -1,5 +1,6 @@
-
 /**
+ * @class metExploreD3.GraphNetwork
+ *
  * @author MC
  * To manage the metabolic network
  *
@@ -7,14 +8,6 @@
  * Comparison functions : alignments, link
  * Refresh viz & Tick of animation
  * Node & Link operations (maybe to pass in GraphNode and GraphLink)
- *
- * @property {Function} [task=""]
- * @property {Boolean} [brushing=false]
- * @property {Function} [brushEvnt=undefined]
- * @property {Function} [taskZoom=""]
- * @property {Boolean} [first=true]
- * @property {Boolean} [focus=false]
- * @property {Boolean} [scrollable=false]
  *
  * @uses metExploreD3.GraphLink
  * @uses metExploreD3.GraphNode
@@ -27,6 +20,15 @@
 
 metExploreD3.GraphNetwork = {
 
+    /**
+     * @property {Function} [task=""]
+     * @property {Boolean} [brushing=false]
+     * @property {Function} [brushEvnt=undefined]
+     * @property {Function} [taskZoom=""]
+     * @property {Boolean} [first=true]
+     * @property {Boolean} [focus=false]
+     * @property {Boolean} [scrollable=false]
+     */
     task:"",
     brushing:false,
     brushEvnt:undefined,

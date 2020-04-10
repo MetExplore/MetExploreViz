@@ -2,16 +2,15 @@
  * @author MC
  * Links drawing
  *
- *
- * @property {Element} link
- * @property {Element} visibleLinks
- *
  * @uses metExploreD3.GraphUtil
  * @uses metExploreD3.GraphStyleEdition
  * @uses metExploreD3.GraphCaption
  */
 metExploreD3.GraphLink = {
-
+    /**
+     * @property {Element} link
+     * @property {Element} visibleLinks
+     */
     link: "",
     visibleLinks: "",
 
