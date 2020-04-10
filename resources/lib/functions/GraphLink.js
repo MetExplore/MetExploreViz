@@ -1,23 +1,31 @@
 /**
  * @author MC
- * (a)description : Drawing links
+ * Links drawing
+ *
+ *
+ * @property {Element} link
+ * @property {Element} visibleLinks
+ *
+ * @uses metExploreD3.GraphUtil
+ * @uses metExploreD3.GraphStyleEdition
+ * @uses metExploreD3.GraphCaption
  */
 metExploreD3.GraphLink = {
 
     link: "",
     visibleLinks: "",
-    panelParent: "",
 
-    /**********************************************/
-    // INIT FUNCTIONS
-    /**********************************************/
+    /*******************************************
+     * Initialization of variables
+     * @param {String} parent The panel where are the node
+     */
     delayedInitialisation: function (parent) {
         metExploreD3.GraphLink.panelParent = parent;
     },
 
     /**
      * Color links in function of pathways
-     * @param parent : active panel
+     * @param parent Active panel
      */
     pathwaysOnLink: function (parent) {
 
@@ -81,6 +89,12 @@ metExploreD3.GraphLink = {
             });
     },
 
+    /*******************************************
+     * Link drawing : path without arrow head
+     * @param {LinkData} link The link to draw
+     * @param {String} panel
+     * @returns {String}
+     */
     funcPath1: function (link, panel) {
         var source, target, path;
 
@@ -101,10 +115,10 @@ metExploreD3.GraphLink = {
     },
 
     /**
-     * Default drawing of links
-     * @param link
-     * @param panel
-     * @returns {function(*, *): string}
+     * Default drawing of links : path with arrow head
+     * @param {LinkData} link The link to draw
+     * @param {String} panel
+     * @returns {String}
      */
     funcPath3: function (link, panel) {
         var source, target, path;
@@ -248,11 +262,8 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Init the visualization of links
-     * @param {} parent : The panel where the action is launched
-     * @param {} session : Store which contains global characteristics of session
-     * @param {} linkStyle : Store which contains links style
-     * @param {} linkStyle : Store which contains links style
-     * @param {} metaboliteStyle : Store which contains metabolites style
+     * @param {String} parent The panel where the action is launched
+     * @param {NetworkVizSession} session Store which contains global characteristics of session
      */
     refreshDataLink: function (parent, session) {
         metExploreD3.GraphLink.panelParent = "#" + parent;
@@ -301,11 +312,8 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Init the visualization of links
-     * @param {} parent : The panel where the action is launched
-     * @param {} session : Store which contains global characteristics of session
-     * @param {} linkStyle : Store which contains links style
-     * @param {} linkStyle : Store which contains links style
-     * @param {} metaboliteStyle : Store which contains metabolites style
+     * @param {String} parent The panel where the action is launched
+     * @param {LinkStyle} linkStyle Store which contains links style
      */
     refreshLink: function (parent, linkStyle) {
 
@@ -342,13 +350,11 @@ metExploreD3.GraphLink = {
 
     },
 
- /*******************************************
+    /*******************************************
      * Init the visualization of links
-     * @param {} parent : The panel where the action is launched
-     * @param {} session : Store which contains global characteristics of session
-     * @param {} linkStyle : Store which contains links style
-     * @param {} linkStyle : Store which contains links style
-     * @param {} metaboliteStyle : Store which contains metabolites style
+     * @param {String} parent The panel where the action is launched
+     * @param {NetworkVizSession} session Store which contains global characteristics of session
+     * @param {LinkStyle} linkStyle Store which contains links style
      */
     refreshLinkActivity: function (parent, session, linkStyle) {
         metExploreD3.GraphLink.panelParent = "#" + parent;
@@ -387,14 +393,15 @@ metExploreD3.GraphLink = {
 
     },
 
-    /**
+    /*******************************************
      * Change function used to drawing links to fluxes
-     * @param parent
-     * @param networkData
-     * @param linkStyle
+     * @param {String} parent The panel where the action is launched
+     * @param {NetworkData} networkData Store which contains nodes and links
+     * @param {LinkStyle} linkStyle Store which contains links style
      * @param metaboliteStyle
      * @param showValues
      * @param conditionName
+     * @deprecated
      */
     loadLinksForFlux: function (parent, networkData, linkStyle, metaboliteStyle, showValues, conditionName) {
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup").remove();
@@ -436,11 +443,12 @@ metExploreD3.GraphLink = {
         metExploreD3.GraphNetwork.tick('viz');
     },
 
-    /**
+    /*******************************************
      * Display flux values on links
-     * @param parent
-     * @param conditionName
+     * @param {String} parent The panel where the action is launched
+     * @param {String} conditionName
      * @param fluxType
+     * @deprecated
      */
     showValue : function(parent, conditionName, fluxType){
         d3.select("#" + parent).select("#D3viz").select("#graphComponent").selectAll(".linkGroup")
@@ -585,6 +593,12 @@ metExploreD3.GraphLink = {
         }
     },
 
+    /*******************************************
+     * Display hidden links
+     * @param {String} panel The panel where the action is launched
+     * @param {NetworkData} networkData Store which contains nodes and links
+     * @param {LinkStyle} linkStyle Store which contains links style
+     */
     reloadLinks : function(panel, networkData, linkStyle){
         d3.select("#"+panel).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
             .data(networkData.getLinks())
@@ -607,10 +621,9 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Tick function of links
-     * @param {} panel : The panel where the action is launched
-     * @param {} scale = Ext.getStore('S_Scale').getStoreByGraphName(panel);
+     * @param {String} panel The panel where the action is launched
      */
-    tick : function(panel, scale) {
+    tick : function(panel) {
         // If you want to use selection on compartments path
         var convexHullPath = d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull");
 
@@ -680,9 +693,9 @@ metExploreD3.GraphLink = {
             });
     },
 
-    /**
+    /*******************************************
      * Display convex hull on network
-     * @param panel
+     * @param {String} panel The panel where the action is launched
      */
     displayConvexhulls : function(panel){
 
@@ -706,6 +719,11 @@ metExploreD3.GraphLink = {
         }
     },
 
+    /*******************************************
+     * Show or hide convex hull on network
+     * @param {String} panelLinked The panel where the action is launched
+     * @param {String} type Biological type Pathway or Compartment
+     */
     majConvexhullsVisibility : function(panelLinked, type){
         d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
             .classed("hide", function (conv) {
@@ -721,10 +739,9 @@ metExploreD3.GraphLink = {
             });
     },
 
-
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction.
-     * @param {String} panel : The panel in which to draw the links.
+     * @param {String} panel The panel in which to draw the links.
      */
     bundleLinks : function (panel) {
         if (panel !== "viz") {
@@ -933,14 +950,13 @@ metExploreD3.GraphLink = {
                 .style("stroke-linejoin", "bevel")
                 .style("opacity", 0.2);
         }
-
     },
 
     /*******************************************
      * Compute path of an edge belonging to a cycle.
-     * @param {Object} startNode : The node at the start of the path.
-     * @param {} link : The link between the two nodes.
-     * @param {Object} endNode : The node at the end of the path.
+     * @param {Object} startNode The node at the start of the path.
+     * @param {LinkData} link The link between the two nodes.
+     * @param {Object} endNode The node at the end of the path.
      */
     computePathCycleArc : function (startNode, link, endNode) {
         var path = "";
@@ -964,10 +980,10 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Compute path of an edge so that the axe of the reaction is horizontal.
-     * @param {Object} startNode : The node at the start of the path.
-     * @param {Number} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {Number} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {Object} endNode : The node at the end of the path
+     * @param {Object} startNode The node at the start of the path.
+     * @param {Number} firstPointX The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode The node at the end of the path
      */
     computePathHorizontal : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
@@ -1072,10 +1088,10 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Compute path of an edge so that the axe of the reaction is vertical.
-     * @param {Object} startNode : The node at the start of the path.
-     * @param {Number} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {Number} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {Object} endNode : The node at the end of the path.
+     * @param {Object} startNode The node at the start of the path.
+     * @param {Number} firstPointX The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode The node at the end of the path.
      */
     computePathVertical : function (startNode, firstPointX, firstPointY, endNode) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
@@ -1179,11 +1195,11 @@ metExploreD3.GraphLink = {
 
     /*******************************************
      * Compute path of an edge that is not itself part of a cycle but merge with one that is part of a cycle.
-     * @param {Object} startNode : The node at the start of the path.
-     * @param {Number} firstPointX : The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {Number} firstPointY : The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
-     * @param {Object} endNode : The node at the end of the path.
-     * @param {} arcLink : The link that is part of cycle.
+     * @param {Object} startNode The node at the start of the path.
+     * @param {Number} firstPointX The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode The node at the end of the path.
+     * @param {LinkData} arcLink : The link that is part of cycle.
      */
     computePathArcSibling: function (startNode, firstPointX, firstPointY, endNode, arcLink) {
         var path = "";
@@ -1230,8 +1246,8 @@ metExploreD3.GraphLink = {
     /*******************************************
      * For a reaction node, compute the coordinates of the centroid of all the substrate of that node and the coordinates of the centroid of all the product of that node.
      * @param {Object} node : The reaction node.
-     * @param {} enteringLinks : All the links going from a substrate to the node.
-     * @param {} exitingLinks : All the links going from the node to a product.
+     * @param {Element} enteringLinks : All the links going from a substrate to the node.
+     * @param {Element} exitingLinks : All the links going from the node to a product.
      */
     computeCentroid : function (node, enteringLinks, exitingLinks) {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
@@ -1263,7 +1279,10 @@ metExploreD3.GraphLink = {
         return [centroidSourceX, centroidSourceY, centroidTargetX, centroidTargetY];
     },
 
-    removeReactionLinks: function (node, enteringLinks, exitingLinks) {
+    /*******************************************
+     * Remove link for animation on big network
+     */
+    removeReactionLinks: function () {
         d3.selectAll("path.link.reaction").remove();
     }
 };
