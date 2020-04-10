@@ -1,6 +1,11 @@
 /**
  * @class metExploreD3.GraphPanel
  * To manage the panel where is the graph
+ *
+ * Initialization of visualization panel
+ * Treatment of JSON network
+ * Resizing of panel
+ *
  * @author MC
  * @uses metExploreD3.GraphNode
  * @uses metExploreD3.GraphNetwork
@@ -731,6 +736,63 @@ metExploreD3.GraphPanel = {
 		if (vizEngine === 'D3') {
 			metExploreD3.GraphNetwork.delayedInitialisation('viz');	
 		}
-	}
+	},
+
+	/*****************************************************
+	 * Init keyboard shortsut events
+	 * @private
+	 */
+	initShortCut: function () {
+		d3.select("body")
+			.on("keydown", function () {
+				_MyThisGraphNode.charKey = d3.event.keyCode;
+				_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+				_MyThisGraphNode.altKey = d3.event.altKey;
+				var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+
+				//H	72
+				if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
+				}
+
+				if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.GraphFunction.horizontalReverse(_MyThisGraphNode.activePanel);
+				}
+
+				//V 86
+				if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
+				}
+
+				if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.GraphFunction.verticalReverse(_MyThisGraphNode.activePanel);
+				}
+
+
+				// 65=A
+				if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey && metExploreD3.GraphNetwork.focus) {
+					d3.select("#" + _MyThisGraphNode.activePanel).select("#D3viz").select("#graphComponent").selectAll("g.node")
+						.each(function (node) {
+							if (!node.isSelected()) {
+								_MyThisGraphNode.selection(node, _MyThisGraphNode.activePanel);
+							}
+						});
+				}
+			})
+			.on("keyup", function (e) {
+				// 46=Suppr
+				var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+				if (_MyThisGraphNode.charKey == 46 && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.displayMessageYesNo("Selected nodes", 'Do you want remove selected nodes?', function (btn) {
+						if (btn == "yes") {
+							metExploreD3.GraphNetwork.removeSelectedNode(_MyThisGraphNode.activePanel)
+						}
+					});
+				}
+
+				_MyThisGraphNode.charKey = 'none';
+				_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+			});
+	},
 };
 

@@ -65,4 +65,4 @@ metExploreD3.Features = {
     		return this.features[feature].enabledTo.indexOf("all")!==-1;
     	return false;
     }
-}
+};

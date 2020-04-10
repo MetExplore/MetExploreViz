@@ -4,57 +4,6 @@
  */
 metExploreD3.GraphCaption = {
 
-
-    /*****************************************************
-     * refresh reactions style in caption
-     */
-    refreshStyleOfReaction : function(){
-
-
-        // Load user's preferences
-        var reactionStyle = metExploreD3.getReactionStyle();
-        var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
-        var xRea = 15/maxDimRea;
-
-        d3.select("#viz").select("#D3viz")
-            .select('.reactionCaption')
-            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
-            .attr('y', 15 + 15/2 - reactionStyle.getHeight()*xRea/2)
-            .attr("width", reactionStyle.getWidth()*xRea)
-            .attr("height", reactionStyle.getHeight()*xRea)
-            .attr("rx", reactionStyle.getRX()*xRea)
-            .attr("ry", reactionStyle.getRY()*xRea)
-            .attr("fill", "white")
-            .attr("transform", "translate(15,95)")
-            .style("stroke",reactionStyle.getStrokeColor())
-            .style("stroke-width", 2);
-    },
-
-    /*****************************************************
-     * refresh metabolites style in caption
-     */
-    refreshStyleOfMetabolite : function(){
-
-
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-        var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
-        var xMet = 15/maxDimMet;
-
-        d3.select("#viz").select("#D3viz")
-            .select('.metaboliteCaption')
-            .attr('x', 15/2 - metaboliteStyle.getWidth()*xMet/2)
-            .attr('y', 15 + 15/2 - metaboliteStyle.getHeight()*xMet/2)
-            .attr("width", metaboliteStyle.getWidth()*xMet)
-            .attr("height", metaboliteStyle.getHeight()*xMet)
-            .attr("rx", metaboliteStyle.getRX()*xMet)
-            .attr("ry", metaboliteStyle.getRY()*xMet)
-            .attr("fill", "white")
-            .style("stroke", "#000000")
-            .style("stroke-width", 2)
-            .attr("transform","translate(15,130)");
-
-    },
-
     /*****************************************************
      * Draw caption
      */
