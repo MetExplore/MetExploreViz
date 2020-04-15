@@ -1,7 +1,12 @@
 /**
+ * @class metExploreD3.GraphCaption
+ * Drawing caption
+ * Add update convexhulls
  * @author MC
- * (a)description : Drawing caption
+ * @uses metExploreD3.GraphNode
+ * @uses metExploreD3.GraphUtils
  */
+
 metExploreD3.GraphCaption = {
 
     /*****************************************************
@@ -443,6 +448,7 @@ metExploreD3.GraphCaption = {
 
     /*****************************************************
      * Maj caption for convex hulls
+     * @param {String} panel Panel to update convex hull
      */
     majCaption : function(panel){
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
@@ -567,6 +573,9 @@ metExploreD3.GraphCaption = {
 
     /*****************************************************
      * Maj caption color for convex hulls and links
+     * @param {Object} components Component to update
+     * @param {"Compartments"|"Pathways"} selectedComponent
+     * @param {String} panel Panel to update convex hull
      */
     majCaptionColor : function(components, selectedComponent, panel){
         var generalStyle = _metExploreViz.getGeneralStyle();
@@ -621,7 +630,8 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
-     * Draw caption of metabolic compartiments
+     * Draw caption of metabolic compartments
+     * @fires afterColorCalculating
      */
     colorMetaboliteLegend : function(){
         // Load user's preferences
@@ -653,6 +663,7 @@ metExploreD3.GraphCaption = {
 
     /*****************************************************
      * Draw caption of pathways
+     * @fires afterColorCalculating
      */
     colorPathwayLegend : function(){
 

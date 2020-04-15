@@ -304,6 +304,7 @@ metExploreD3.GraphPanel = {
 	 * Fill the data models imported from JSON file
 	 * @param {Object} json JSON to load
 	 * @param {Function} endFunc Callback function
+	 * @fires loadNetworkBiosource jsoninit initiateviz sideCompound jsonmapping reloadMapping closeMapping
 	 * @private
 	 */
 	loadDataJSON : function(json, endFunc){
@@ -586,6 +587,7 @@ metExploreD3.GraphPanel = {
 	 * Fill the data models with the store reaction
 	 * @param {Object} json JSON to load
 	 * @param {Function} func Callback function
+	 * @fires loadNetworkBiosource jsoninit jsonmapping
 	 * @private
 	 */
 	initDataJSON : function(json, func){
@@ -724,6 +726,7 @@ metExploreD3.GraphPanel = {
 	/*****************************************************
 	 * Initialization of visualization
 	 * @param {String} vizEngine : library used to make the visualization
+	 * @fires initiateviz
 	 * @private
 	 */
 	initiateViz : function(vizEngine) {

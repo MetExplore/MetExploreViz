@@ -1,6 +1,11 @@
 /**
  * @author MC
- * Links drawing
+ *
+ * Links initialization
+ * Add, update and remove links
+ * Tick of links
+ * Drawing functions for links
+ * Add, update and remove links convex hull (to refactor in other file)
  *
  * @uses metExploreD3.GraphUtil
  * @uses metExploreD3.GraphStyleEdition

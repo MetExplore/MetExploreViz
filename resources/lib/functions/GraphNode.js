@@ -1,6 +1,10 @@
 /**
  * @author MC
- * Nodes drawing
+ *
+ * Node Events and Interactions initialisation
+ * Add, update and remove nodes
+ * Tick of nodes
+ * Search and highlight nodes
  *
  * @uses metExploreD3.GraphLink
  * @uses metExploreD3.GraphPanel

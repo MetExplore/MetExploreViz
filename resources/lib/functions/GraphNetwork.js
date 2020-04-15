@@ -1332,6 +1332,7 @@ metExploreD3.GraphNetwork = {
     /*******************************************
      * Refresh the graph data, it generate graph visualization
      * @param {String} panel : The panel to refresh
+     * @throws error in function
      */
     refreshViz : function(panel){
         var mask = metExploreD3.createLoadMask("Draw graph", panel);

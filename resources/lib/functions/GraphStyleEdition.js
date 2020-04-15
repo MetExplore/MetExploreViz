@@ -2,6 +2,10 @@
  * @class metExploreD3.GraphStyleEdition
  * Style Edition
  *
+ * Manage label edition mode
+ * Manage image mapping
+ * Generic functions to set elements styles
+ *
  * @author Adrien Rohan
  *
  * @uses metExploreD3.GraphLink

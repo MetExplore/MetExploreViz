@@ -1,8 +1,19 @@
 /**
+ * @class metExploreD3.GraphPanel
+ * Basic graph functions
+ *
+ * Hierarchical drawing algorithm
+ * Distance algorithm
+ * Extraction algorithm
+ * Cycle detection algorithm
+ * Alignment function
+ *
  * @author MC
- * (a)description : Basic graph functions
+ * @uses metExploreD3.GraphNode
+ * @uses metExploreD3.GraphNetwork
+ * @uses metExploreD3.GraphStyleEdition
+ * @uses metExploreD3.GraphLink
  */
-    
 metExploreD3.GraphFunction = {
 
 	/*****************************************************
@@ -216,7 +227,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Breadth First Search
-	 * @param node
+	 * @param {NodeData} node
 	 * @returns {*|Graph}
 	 */
     bfs : function (node){
@@ -327,7 +338,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Highlight sinks in visualisation
-	 * @param panel
+	 * @param {String} panel
 	 */
     highlightSink : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
@@ -359,7 +370,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Highlight sinks in visualisation
-	 * @param panel
+	 * @param {String} panel
 	 */
     highlightSource : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
@@ -391,7 +402,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Allows horizontal alignment of selected nodes
-	 * @param panel
+	 * @param {String} panel
 	 */
 	horizontalAlign : function(panel) {
 		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
@@ -428,7 +439,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Allows vertical alignment of selected nodes
-	 * @param panel
+	 * @param {String} panel
 	 */
 	verticalAlign : function(panel) {
 		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
@@ -465,7 +476,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Inverse x axis position of selected nodes from them median x
-	 * @param panel
+	 * @param {String} panel
 	 */
     horizontalReverse : function(panel) {
         metExploreD3.GraphNode.fixSelectedNode();
@@ -500,7 +511,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Inverse y axis position of selected nodes from them median y
-	 * @param panel
+	 * @param {String} panel
 	 */
     verticalReverse : function(panel) {
         metExploreD3.GraphNode.fixSelectedNode();
@@ -540,9 +551,10 @@ metExploreD3.GraphFunction = {
 	colorDistanceOnNode : function(graph, func){
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();
 		var maxDistance = 0; 
-		for (var key in graph.nodes) {	
-	        var dist = graph.nodes[key].distance;   
-	        if(maxDistance<dist)
+		for (var key in graph.nodes) {
+	        var dist = graph.nodes[key].distance;
+
+			if(maxDistance<dist)
 	        	maxDistance=dist;    
 	        networkData.getNodeById(key).distance = dist;
 	    }
@@ -552,7 +564,7 @@ metExploreD3.GraphFunction = {
 			.range(["blue", "white"]);
 
 
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("rect:not(.fontSelected)")
 			.style("fill", function(node) { return color(node.distance); });
 
 		if(func!=undefined){
@@ -560,6 +572,9 @@ metExploreD3.GraphFunction = {
 		}
     },
 
+	/**
+	 *	POC : Color nodes in function of graph distances
+	 */
     test3 : function(){
 		
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
@@ -594,27 +609,17 @@ metExploreD3.GraphFunction = {
 				metExploreD3.GraphFunction.colorDistanceOnNode(finalGraph);
 		});
     },
-    testFlux : function(){
-		
-		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
-		
-			var color = d3.scaleLinear()
-				.domain([0, 0.1, 0.2, 0.5, 1])
-				.range([-30, -50, -60,-500 -600]);
 
-			metExploreD3.getGlobals().getSessionById('viz').getForce().charge(function(node){
-				var value = d3.select('g#node'+node.getId()+'.node').attr('opacity');
-				var val = color(value);
-				return val;
-			});	
-		
-    },
+	/**
+	 *	POC : Color nodes in function of graph distances
+	 */
     test : function(){
 		
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
 		
 		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.on("click", function(node){
+				console.log("test");
 				metExploreD3.GraphFunction.colorDistanceOnNode(metExploreD3.GraphFunction.bfs(node));
 		});
     },
@@ -622,6 +627,7 @@ metExploreD3.GraphFunction = {
     /*******************************************
     * Hierarchical drawing of the current tulip network
     * It uses the default algorithm provided by Tulip.js
+	 * @deprecated
     */
     hierarchicalDrawingTulip : function(){
     	var algo = "Hierarchical Tree (R-T Extended)";
@@ -633,6 +639,7 @@ metExploreD3.GraphFunction = {
     /*******************************************
     * Sugiyama (OGDF) drawing of the current tulip network
     * It uses the default algorithm provided by Tulip.js
+	 * @deprecated
     */
     sugiyamaDrawing : function(){
     	var algo = "Sugiyama (OGDF)";
@@ -646,6 +653,7 @@ metExploreD3.GraphFunction = {
     /*******************************************
     * Betweenness Centrality of the current tulip network
     * It uses the default algorithm provided by Tulip.js
+	 * @deprecated
     */
     betweennessCentrality : function(){
     	var algo = "Betweenness Centrality";
@@ -658,6 +666,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
     * Layout drawing application provided by the tulip.js library
+	 * @deprecated
     */
 	applyTulipLayoutAlgorithmInWorker : function(algo, parameters) {
 
@@ -792,6 +801,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
     * Algorithms provided by the tulip.js library
+	 * @deprecated
     */
 	applyTulipDoubleAlgorithmInWorker : function(algo, parameters) {
 
@@ -940,25 +950,13 @@ metExploreD3.GraphFunction = {
 		}
 	},
 
-	drawNetwork : function() {
-	},
-
-	randomDrawing : function() {
-	},
-
-	// Force based drawing
-	// Use the arbor version of the algorithm provided by
-	// Cytoscape
-	// If there are more than maxDisplayedLabels,then the
-	// animation is not used
-	stopSpringDrawing : function() {
-	},
-	
 	/**
 	 * Extract a subnetwork based on lightest path length
 	 * between each pair of selected nodes it returns a graph
 	 * where nodes have a subnet attribute telling wether they
 	 * are in subnet or not
+	 * @param {Graph} graph Network structure
+	 * @param {Array} nodeToLink Array of node ids
 	 */
 	extractSubNetwork : function(graph, nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
@@ -1140,7 +1138,10 @@ metExploreD3.GraphFunction = {
 		}
 	},
 
-
+	/**
+	 * Build Directed graph from visualisation
+	 * @return {Graph}
+	 */
 	getGraph : function() {
 		var session = _metExploreViz.getSessionById( 'viz');
 		var graph = new Graph();
@@ -1183,6 +1184,10 @@ metExploreD3.GraphFunction = {
 			return graph;
 	},
 
+	/**
+	 * Build Not Directed graph from visualisation
+	 * @return {Graph}
+	 */
 	getGraphNotDirected : function() {
 		var session = _metExploreViz.getSessionById( 'viz');
 		var graph = new Graph();
@@ -1207,10 +1212,15 @@ metExploreD3.GraphFunction = {
 			return graph;
 	},
 
-	// Once the shortest path is computed, we have, for each
-	// node on the path its predecessor
-	// It is necessary to go backward in order to get the right
-	// path
+
+	/**
+	 * Once the shortest path is computed, we have, for each
+	 * node on the path its predecessor
+	 * It is necessary to go backward in order to get the right path
+	 * @param {Graph} graph
+	 * @param {Number} nodeJid
+	 * @return {any[]}
+	 */
 	getPathBasedOnPredecessors : function(graph, nodeJid) {
 		var path = new Array();
 		// get the path from I to J
@@ -1242,6 +1252,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Hihglight nodes and edges belonging to a subnetwork
+	 * @param {Array} nodeToLink Array of node ids
 	 */
 	keepOnlySubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
@@ -1376,6 +1387,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Hihglight nodes and edges belonging to a subnetwork
+	 * @param {Array} nodeToLink Array of node ids
 	 */
 	highlightSubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
@@ -2662,4 +2674,4 @@ metExploreD3.GraphFunction = {
         });
         return result;
     }
-}
+};
