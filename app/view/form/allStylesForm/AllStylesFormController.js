@@ -17,6 +17,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
 
         view.on({
             refreshAllStyles : this.reloadAllScales,
+            refreshMetaboliteColorStyles : this.refreshMetaboliteColorStyles,
             scope:me
         });
 
@@ -250,5 +251,55 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                     })
             });
         */
+    },
+    refreshMetaboliteColorStyles:function (mappingName, conditionName) {
+        var me 		= this,
+            viewModel   = me.getViewModel(),
+            view      	= me.getView();
+        var form = Ext.getCmp("metaboliteStyleForm");
+        if(form){
+            var theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title==="Node background";});
+            if(theStyleForm){
+
+                theStyleForm.expand();
+
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("Discrete");
+            }
+
+            theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title==="Width";});
+            if(theStyleForm){
+
+                theStyleForm.expand();
+
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("As selection");
+            }
+
+            theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title==="Height";});
+            if(theStyleForm){
+
+                theStyleForm.expand();
+
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("As selection");
+            }
+            theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title==="Rx";});
+            if(theStyleForm){
+
+                theStyleForm.expand();
+
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("As selection");
+            }
+            theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title==="Ry";});
+            if(theStyleForm){
+
+                theStyleForm.expand();
+
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("As selection");
+            }
+        }
     }
 });

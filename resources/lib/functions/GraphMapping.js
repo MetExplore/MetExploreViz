@@ -565,6 +565,16 @@ metExploreD3.GraphMapping = {
 			}
 		});
 	},
+	/***********************************************
+	 * Mapping to discrete data
+	 * This function will look at metabolites that have data
+	 * mapped and will assign them in a calculated value
+	 * @param {String} mappingName Mapping choosed by the user
+	 * @param {String} conditionName Condition choosed by the user
+	 */
+	graphMappingDiscreteDataOnColorNode : function(mappingName, conditionName) {
+		metExploreD3.fireEvent2Arg('allStylesForm', "refreshMetaboliteColorStyles", mappingName, conditionName);
+	},
 
 	/***********************************************
 	* Mapping to As Selection data
