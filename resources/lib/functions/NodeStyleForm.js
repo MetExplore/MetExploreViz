@@ -2,6 +2,7 @@
 /**
  * @author MC
  * (a)description : To manage node exemple in style forms
+ * @deprecated
  */
 
 

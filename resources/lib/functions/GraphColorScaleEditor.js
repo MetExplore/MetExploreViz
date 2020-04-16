@@ -1,12 +1,35 @@
 
 
 /**
+ * @class metExploreD3.GraphColorScaleEditor
  * @author Maxime Chazalviel
- * (a)description : Style Edition
+ * Manage the scale editor of colors
  */
 
 metExploreD3.GraphColorScaleEditor = {
 
+    /**
+     * @property {Function} colorRange d3.scaleLinear()
+     * @property {Object} values
+     * @property {Array} colorDomain
+     * @property {Array} color
+     * @property {Function} xScale d3.scaleLinear()
+     * @property {Function} scaleXInPercent d3.scaleLinear()
+     * @property {Function} scalePercentInX d3.scaleLinear()
+     * @property {Object} button
+     * @property {Object} delButton
+     * @property {Number} textfieldValue
+     * @property {Number} valueMin
+     * @property {Number} valueMax
+     * @property {Number} selectedValue
+     * @property {Function} scaleValueInPercentCaption d3.scaleLinear()
+     * @property {Function} scalePercentInValueCaption d3.scaleLinear()
+     * @property {Array} colorRangeInit
+     * @property {Object} valuesInit
+     * @property {Array} colorDomainInit
+     * @property {Number} valueMinInit
+     * @property {Number} valueMaxInit
+     */
     colorRange: undefined,
     values: undefined,
     colorDomain: undefined,
@@ -29,6 +52,14 @@ metExploreD3.GraphColorScaleEditor = {
     valueMinInit: undefined,
     valueMaxInit: undefined,
 
+    /**
+     *
+     * @param svg
+     * @param width
+     * @param height
+     * @param margin
+     * @param scaleRange
+     */
     createColorScaleCaption : function(svg, width, height, margin, scaleRange){
         var me = this;
 
@@ -140,6 +171,17 @@ metExploreD3.GraphColorScaleEditor = {
         })
     },
 
+    /**
+     *
+     * @param svg
+     * @param width
+     * @param height
+     * @param margin
+     * @param but
+     * @param textfieldValue
+     * @param delButton
+     * @param scaleRange
+     */
     createColorScaleEditor : function(svg, width, height, margin, but, textfieldValue, delButton, scaleRange){
         var me = this;
         me.svg=svg;
@@ -285,6 +327,9 @@ metExploreD3.GraphColorScaleEditor = {
         me.update();
     },
 
+    /**
+     *
+     */
     reset : function(){
         var me = this;
         me.colorRange = me.colorRangeInit.slice(0);
@@ -297,6 +342,11 @@ metExploreD3.GraphColorScaleEditor = {
 
         me.update();
     },
+
+    /**
+     *
+     * @param val
+     */
     updateValues : function(val){
         var me = this;
         var indexVal = me.selectedValue-1;
@@ -350,11 +400,24 @@ metExploreD3.GraphColorScaleEditor = {
             }
         }
     },
+
+    /**
+     *
+     * @param indexVal
+     * @param theLinearGradient
+     * @param deltaX
+     */
     updateLinearGradient : function(indexVal,theLinearGradient, deltaX){
         this.values.splice(indexVal, 1, this.scalePercentInValueCaption(this.round(this.scaleXInPercent(d3.event.x+deltaX))));
         theLinearGradient
             .attr("offset", this.round(this.scaleXInPercent(d3.event.x+deltaX))+"%");
     },
+
+    /**
+     *
+     * @param color
+     * @param svg
+     */
     updateColor : function(color, svg){
 
         if(isNaN(this.selectedValue)){
@@ -373,9 +436,20 @@ metExploreD3.GraphColorScaleEditor = {
             this.update();
         }
     },
+
+    /**
+     *
+     * @param operation
+     * @return {number}
+     */
     round : function(operation){
         return Math.round((operation) * 100) / 100;
     },
+
+    /**
+     *
+     * @param svg
+     */
     addColor : function(svg){
         var me = this;
 
@@ -393,6 +467,10 @@ metExploreD3.GraphColorScaleEditor = {
 
         me.update();
     },
+
+    /**
+     *
+     */
     delColor : function(){
         var me = this;
         if(me.values.length>2)
@@ -406,6 +484,10 @@ metExploreD3.GraphColorScaleEditor = {
             me.update();
         }
     },
+
+    /**
+     *
+     */
     update : function(){
         var me = this;
         var svg = me.svg;
@@ -537,6 +619,11 @@ metExploreD3.GraphColorScaleEditor = {
 
 
     },
+
+    /**
+     *
+     * @return {[]}
+     */
     getScaleRange: function(){
         var me = this;
 

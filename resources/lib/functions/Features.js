@@ -1,6 +1,8 @@
 /**
+ * @class metExploreD3.Features
+ * Feature flipping allows to enable function in function of user
  * @author MC
- * (a)description : Feature flipping allows to enable function in function of user
+ * @experimental
  */
 metExploreD3.Features = {
 
@@ -63,4 +65,4 @@ metExploreD3.Features = {
     		return this.features[feature].enabledTo.indexOf("all")!==-1;
     	return false;
     }
-}
+};

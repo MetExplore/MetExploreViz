@@ -1,12 +1,34 @@
-
 /**
+ * @class metExploreD3.GraphNetwork
+ *
  * @author MC
- * (a)description : Tu manage the metabolic network
+ * To manage the metabolic network
+ *
+ * Events & Interactions initialization
+ * Comparison functions : alignments, link
+ * Refresh viz & Tick of animation
+ * Node & Link operations (maybe to pass in GraphNode and GraphLink)
+ *
+ * @uses metExploreD3.GraphLink
+ * @uses metExploreD3.GraphNode
+ * @uses metExploreD3.GraphStyleEdition
+ * @uses metExploreD3.GraphPanel
+ * @uses metExploreD3.GraphUtils
+ * @uses metExploreD3.GraphCaption
+ * @uses metExploreD3.GraphFunction
  */
-
 
 metExploreD3.GraphNetwork = {
 
+    /**
+     * @property {Function} [task=""]
+     * @property {Boolean} [brushing=false]
+     * @property {Function} [brushEvnt=undefined]
+     * @property {Function} [taskZoom=""]
+     * @property {Boolean} [first=true]
+     * @property {Boolean} [focus=false]
+     * @property {Boolean} [scrollable=false]
+     */
     task:"",
     brushing:false,
     brushEvnt:undefined,
@@ -16,7 +38,7 @@ metExploreD3.GraphNetwork = {
     scrollable: false,
     /*******************************************
      * Initialization of variables
-     * @param {string} panel : The panel where are the node
+     * @param {String} panel The panel where are the node
      */
     delayedInitialisation : function(panel) {
 
@@ -41,7 +63,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Refresh the graph interface & resize it if it's big at the beginnning
-     * @param {string} panel : The panel to refresh
+     * @param {string} panel The panel to refresh
      */
     tick : function(panel){
         if((_metExploreViz.getComparedPanelById(panel)!==null || panel==="viz") && _metExploreViz.getSessionById(panel).getForce()){
@@ -78,7 +100,6 @@ metExploreD3.GraphNetwork = {
                         }
                     }
                 }
-
             }
 
             // Control if the user can see all the graph
@@ -86,77 +107,15 @@ metExploreD3.GraphNetwork = {
                 session.setResizable(false);
                 metExploreD3.GraphNetwork.task.cancel();
                 metExploreD3.GraphNetwork.rescale(panel);
-                // metExploreD3.GraphNetwork.task.cancel();
-                // var vizRect = document.getElementById(panel).getBoundingClientRect();
-                // var graphComponent = d3.select("#"+panel).select("#D3viz").select('#graphComponent');
-                // var graphComponentRect = d3.select("#"+panel).select("#D3viz").node().getElementById('graphComponent').getBoundingClientRect();
-                //
-                // var width = parseInt(metExploreD3.GraphPanel.getHeight(panel));
-                // var height = parseInt(metExploreD3.GraphPanel.getWidth(panel));
-                //
-                // if(vizRect.top>graphComponentRect.top
-                //     || vizRect.left>graphComponentRect.left
-                //     || vizRect.bottom<graphComponentRect.bottom
-                //     || vizRect.right<graphComponentRect.right)
-                // {
-                //     var dataLength =session.getD3Data().getNodesLength();
-                //     var delay = 3000;
-                //     if (dataLength < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
-                //         delay = 3000;
-                //
-                //
-                //
-                //     var zoomListener = scale.getZoom();
-                //
-                //     var updateScale = 0.01*dataLength/100;
-                //     var newScale = previousScale-(previousScale*updateScale);
-                //     zoomListener.scaleBy(d3.select("#"+panel).select("#D3viz"), newScale);
-                //
-                //     var newWidth = newScale*width;
-                //     var newHeight = newScale*height;
-                //     var xScale = (width-newWidth)/2;
-                //     var yScale = (height-newHeight)/2;
-                //     zoomListener.translateBy(d3.select("#"+panel).select("#D3viz"), xScale, yScale);
-                //
-                //     scale.setZoomScale(newScale);
-                //
-                // }
-                // else
-                // {
-                //     if(!((vizRect.top+height/10>graphComponentRect.top && vizRect.bottom-height/10<graphComponentRect.bottom)
-                //                         || (vizRect.left+width/10>graphComponentRect.left && vizRect.right-width/10<graphComponentRect.right))){
-                //         var dataLength =session.getD3Data().getNodesLength();
-                //         var delay = 3000;
-                //         if (dataLength < generalStyle.getReactionThreshold() || !generalStyle.isDisplayedLabelsForOpt())
-                //             delay = 3000;
-                //
-                //         metExploreD3.fixDelay(metExploreD3.GraphNetwork.task, delay);
-                //
-                //         var zoomListener = scale.getZoom();
-                //
-                //         if(updateScale==undefined) updateScale = 0.01;
-                //         else updateScale = updateScale/2;
-                //
-                //         var newScale = previousScale+(previousScale*updateScale);
-                //         zoomListener.scaleBy(d3.select("#"+panel).select("#D3viz"), newScale);
-                //
-                //         var newWidth = newScale*width;
-                //         var newHeight = newScale*height;
-                //         var xScale = (width-newWidth)/2;
-                //         var yScale = (height-newHeight)/2;
-                //
-                //         zoomListener.translateBy(d3.select("#"+panel).select("#D3viz"), xScale,yScale);
-                //
-                //         scale.setZoomScale(newScale);
-                //
-                //     }
-                // }
             }
         }
 	},
 
-    ////////////////////////////////////////////////////////////// Event on nodes
-
+    /*******************************************
+     * Rescale the SVG to fit with the frame
+     * @param {String} panel The panel to refresh
+     * @param {Function} func Callback function
+     */
     rescale : function(panel, func){
         var mask = metExploreD3.createLoadMask("Rescaling graph", panel);
 
@@ -254,7 +213,7 @@ metExploreD3.GraphNetwork = {
         }
     },
 
-
+////////////////////////////////////////////////////////////// Events
     /*******************************************
      * Change the cursor state to move the graph
      */
@@ -281,7 +240,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Zoom on the main panel and on link graph
-     * @param {string} panel : The panel to refresh
+     * @param {string} panel : The panel to zoom
      */
     zoom:function(panel) {
         var d3EventScale = d3.event.transform.k;
@@ -358,7 +317,6 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Zoom out the main panel and on link graph with button
-     * @param {} panel : The panel to refresh
      */
     zoomOut:function() {
         _MyThisGraphNode.dblClickable=false;
@@ -372,10 +330,9 @@ metExploreD3.GraphNetwork = {
         scale.setZoomScale(scale.getZoomScale()*0.9);
     },
 
-
     /*******************************************
-     * Refresh the graph data, it generate graph visualization
-     * @param {} panel : The panel to refresh
+     * Assign brush event
+     * @param {String} panel The panel to assign brush event
      */
     defineBrush: function(panel) {
 
@@ -630,14 +587,11 @@ metExploreD3.GraphNetwork = {
 
     },
 
-    ////////////////////////////////////////////////////////////// Event on nodes
-
     /*******************************************
      * Put animation button on
-     * @param {} panel : The panel where the button must be on
+     * @param {String} panel The panel where the button must be on
      */
     animationButtonOn:function(panel) {
-
         // disable button
         d3.select("#"+panel).select("#buttonAnim").select("image").remove();
 
@@ -646,7 +600,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Put animation button off
-     * @param {} panel : The panel where the button must be off
+     * @param {String} panel The panel where the button must be off
      */
     animationButtonOff:function(panel) {
         // disable button
@@ -715,13 +669,13 @@ metExploreD3.GraphNetwork = {
 
         }
     },
+///// Events
 
 ////////////////////////////////////////////////////////////// Compared network
-
     /*******************************************
      * Link or unlink the main graph and the selected graph
      */
-    setLink:function(d) {
+    setLink:function() {
         that = this;
         var panel = this.parentNode.parentNode.id;
         var session = _metExploreViz.getSessionById(panel);
@@ -740,7 +694,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Link the main graph and the selected graph
-     * @param {} panel : The panel to link
+     * @param {String} panel The panel to link
      */
     link :function(panel){
         var session = _metExploreViz.getSessionById(panel);
@@ -797,7 +751,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Unlink the main graph and the selected graph
-     * @param {} panel : The panel to unlink
+     * @param {String} panel The panel to unlink
      */
     unLink :function(panel){
         var session = _metExploreViz.getSessionById(panel);
@@ -835,7 +789,8 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Align linked graphs
-     * @param {} panel : The panel to align with the main
+     * @param {String} panel : The panel to align with the main
+     * @param {String} panel2 : The panel to align with the main
      */
     graphAlignment : function(panel, panel2){
         var session = _metExploreViz.getSessionById(panel);
@@ -875,7 +830,6 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Link mapping of compared networks
-     * @param {} panel : The panel to align with the main
      */
     mappingAlignment : function(){
         that = this;
@@ -994,64 +948,10 @@ metExploreD3.GraphNetwork = {
 
 ////////////////////////////////////////////////////////////// Compared network
 
-    ////////////////////////////////////////////////////////////// GraphPanel?
-    initShortCut: function () {
-        d3.select("body")
-            .on("keydown", function () {
-                _MyThisGraphNode.charKey = d3.event.keyCode;
-                _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
-                _MyThisGraphNode.altKey = d3.event.altKey;
-                var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-
-                //H	72
-                if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
-                    metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
-                }
-
-                if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
-                    metExploreD3.GraphFunction.horizontalReverse(_MyThisGraphNode.activePanel);
-                }
-
-                //V 86
-                if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
-                    metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
-                }
-
-                if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
-                    metExploreD3.GraphFunction.verticalReverse(_MyThisGraphNode.activePanel);
-                }
-
-
-                // 65=A
-                if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey && metExploreD3.GraphNetwork.focus) {
-                    d3.select("#" + _MyThisGraphNode.activePanel).select("#D3viz").select("#graphComponent").selectAll("g.node")
-                        .each(function (node) {
-                            if (!node.isSelected()) {
-                                _MyThisGraphNode.selection(node, _MyThisGraphNode.activePanel);
-                            }
-                        });
-                }
-            })
-            .on("keyup", function (e) {
-                // 46=Suppr
-                var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
-                if (_MyThisGraphNode.charKey == 46 && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
-                    metExploreD3.displayMessageYesNo("Selected nodes", 'Do you want remove selected nodes?', function (btn) {
-                        if (btn == "yes") {
-                            metExploreD3.GraphNetwork.removeSelectedNode(_MyThisGraphNode.activePanel)
-                        }
-                    });
-                }
-
-                _MyThisGraphNode.charKey = 'none';
-                _MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
-            });
-    },
-    ////////////////////////////////////////////////////////////// GraphPanel?
 
     /*******************************************
      * Refresh the graph data, it generate graph visualization
-     * @param {} panel : The panel to refresh
+     * @param {String} panel : The panel to refresh
      */
     refreshSvg : function(panel) {
 
@@ -1065,7 +965,7 @@ metExploreD3.GraphNetwork = {
             }
         }, false);
 
-        metExploreD3.GraphNetwork.initShortCut();
+        metExploreD3.GraphPanel.initShortCut();
 
 
 
@@ -1429,6 +1329,11 @@ metExploreD3.GraphNetwork = {
 
     },
 
+    /*******************************************
+     * Refresh the graph data, it generate graph visualization
+     * @param {String} panel : The panel to refresh
+     * @throws error in function
+     */
     refreshViz : function(panel){
         var mask = metExploreD3.createLoadMask("Draw graph", panel);
         metExploreD3.showMask(mask);
@@ -1483,6 +1388,7 @@ metExploreD3.GraphNetwork = {
     /**
      * Init centroids to clust nodes in function of pathways or compartments
      * @param panel
+     * @deprecated
      */
     initCentroids : function(panel){
         //d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").filter(function(node){return node.getPathways().length>1}).style("fill", 'red');
@@ -1647,12 +1553,12 @@ metExploreD3.GraphNetwork = {
 /////////////////////////////////////////////////////GraphLink?
     /*******************************************
      * Add link in visualization
-     * @param {} identifier : Id of this link
-     * @param {} source : Source of this link
-     * @param {} target : Target of this link
-     * @param {} interaction : Interaction beetween nodes of this link
-     * @param {} reversible : Reversibility of link
-     * @param {} panel : The panel where is the new link
+     * @param {String} identifier : Id of this link
+     * @param {NodeData} source : Source of this link
+     * @param {NodeData} target : Target of this link
+     * @param {String} interaction : Interaction beetween nodes of this link "in/out"
+     * @param {Boolean} reversible : Reversibility of link
+     * @param {String} panel : The panel where is the new link
      */
     addLinkInDrawing:function(identifier,source,target,interaction,reversible,panel, hide){
 
@@ -1663,10 +1569,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * @returns {NodeData} newNode : The created node
      */
     addPathwayLinks: function(newNode){
         var pathwayName = newNode.getName();
@@ -1704,10 +1607,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * @returns {NodeData} newNode : The created node
      */
     addPathwayLinksData: function(newNode){
         var pathwayName = newNode.getName();
@@ -1773,10 +1673,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * @returns {NodeData} newNode : The created node
      */
     addPathwayLinksDataSinkSource: function(newNode){
         var pathwayName = newNode.getName();
@@ -1841,6 +1738,9 @@ metExploreD3.GraphNetwork = {
         metExploreD3.GraphNetwork.tick("viz");
     },
 
+    /*******************************************
+     * Remove end markers
+     */
     removeMarkerEnd : function(){
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction").attr("marker-end", "none");
     },
@@ -1850,10 +1750,10 @@ metExploreD3.GraphNetwork = {
 /////////////////////////////////////////////////////GraphNode?
     /*******************************************
      * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * @param {NodeData} theNode The node to create
+     * @param {String} theNodeId Id the node to create
+     * @param {String} reactionId Reaction linked to metabolite created
+     * @returns {String} panel : The panel to update
      */
     addMetaboliteInDrawing: function(theNode, theNodeId, reactionId, panel){
 
@@ -1923,6 +1823,9 @@ metExploreD3.GraphNetwork = {
         return newNode;
     },
 
+    /*******************************************
+     * Init node data for pathways.
+     */
     initPathwaysData:function(){
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
@@ -1982,6 +1885,10 @@ metExploreD3.GraphNetwork = {
         });
     },
 
+    /*******************************************
+     * Init DOM for a pathway.
+     * @param pathName Name of the pathway to update
+     */
     initPathway:function(pathName){
         var activePanel = _MyThisGraphNode.activePanel;
         if(!activePanel) activePanel='viz';
@@ -1997,13 +1904,10 @@ metExploreD3.GraphNetwork = {
             });
     },
 
-
     /*******************************************
-     * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * Add pathway element
+     * @param pathName Name of the pathway to update
+     * @returns {NodeData} newNode : The created node
      */
     addPathwayNode: function(pathwayName){
         var panel = "viz";
@@ -2110,11 +2014,10 @@ metExploreD3.GraphNetwork = {
     },
 
     /*******************************************
-     * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * Expand pathway : hide a pathway node & show all nodes present in this pathway
+     * @param {String} pathwayName The pathway to expand
+     * @param {String} panel The panel
+     * @fires enableMakeClusters
      */
     expandPathwayNode: function(pathwayName, panel){
         var session = _metExploreViz.getSessionById(panel);
@@ -2142,11 +2045,9 @@ metExploreD3.GraphNetwork = {
     },
 
     /*******************************************
-     * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * Expand all pathways : hide all pathway nodes & show all nodes present in all pathway
+     * @param {String} panel The panel
+     * @fires enableMakeClusters
      */
     expandAllPathwayNode: function(panel){
 
@@ -2178,13 +2079,10 @@ metExploreD3.GraphNetwork = {
         metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
     },
 
-
     /*******************************************
-     * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * Collapse pathway : Show pathway node & hide all nodes present in this pathway and not present in other pathway extended
+     * @param {String} pathwayName The pathway to collapse
+     * @fires enableMakeClusters
      */
     collapsePathway: function(pathwayName){
         var activePanel = _MyThisGraphNode.activePanel;
@@ -2258,11 +2156,9 @@ metExploreD3.GraphNetwork = {
     },
 
     /*******************************************
-     * identifier parameter is used if there is a new parameter to add.
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @param {} panel : The panel to unlink
-     * @returns {} newNode : The created node
+     * Collapse all pathways : Show all pathway nodes & hide all nodes present in a pathway
+     * @param {String} panel The panel
+     * @fires enableMakeClusters
      */
     collapseAllPathway: function(panel){
         var activePanel = panel;
@@ -2331,8 +2227,9 @@ metExploreD3.GraphNetwork = {
     /*******************************************
      * Duplicate a node
      * Each time the metabolite occurs in a reaction we create a new node and connect it only to the reaction
-     * @param {} theNode : The node to duplicate
-     * @param {} panel : The panel to unlink
+     * @param {NodeData} theNode The node to duplicate
+     * @param {String} panel The panel to unlink
+     * @fires fireEventParentWebSite_sideCompound
      */
     duplicateANode : function(theNode, panel) {
         var session = _metExploreViz.getSessionById(panel);
@@ -2433,7 +2330,9 @@ metExploreD3.GraphNetwork = {
 
     /************************************
      * Duplicate side compounds
-     * @param {} panel : The panel where the SC must be duplicated
+     * @param {String} panel The panel where the SC must be duplicated
+     * @param {Function} func Callback function
+     * @fires enableMakeClusters afterDuplicate
      */
     duplicateSideCompounds : function(panel, func){
 
@@ -2537,7 +2436,9 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Duplicate side compounds with an ids array
-     * @param {} panel : The panel where the SC must be duplicated
+     * @param {Array} ids Array of metabolite ids
+     * @param {String} panel The panel where the SC must be duplicated
+     * @fires enableMakeClusters
      */
     duplicateSideCompoundsById : function(ids, panel){
 
@@ -2588,8 +2489,9 @@ metExploreD3.GraphNetwork = {
     },
 
     /*******************************************
-     * Duplicate side compounds which is selected
-     * @param {} panel : The panel where the SC must be duplicated
+     * Duplicate side compounds selected
+     * @param {String} panel The panel where the SC must be duplicated
+     * @fires enableMakeClusters afterDuplicate
      */
     duplicateSideCompoundsSelected : function(panel) {
         var vis = d3.select("#"+panel).select("#D3viz");
@@ -2692,7 +2594,9 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Duplicate a side compound which is selected
-     * @param {} panel : The panel where the SC must be duplicated
+     * @param {NodeData} theNode Node to duplicate
+     * @param {String} panel The panel where the SC must be duplicated
+     * @fires enableMakeClusters afterDuplicate
      */
     duplicateASideCompoundSelected : function(theNode, panel) {
         var session = _metExploreViz.getSessionById(panel);
@@ -2791,8 +2695,8 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Duplication of side compounds
-     * @param {} theNodeElement : node to duplicate
-     * @param {} panel :panel where node must be duplicated
+     * @param {Element} theNodeElement Node to duplicate
+     * @param {String} panel Panel where node must be duplicated
      */
     duplicateSideCompound : function(theNodeElement, panel){
 
@@ -2844,7 +2748,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Remove selected nodes
-     * @param {} panel : The panel where are selected nodes
+     * @param {String} panel The panel where are selected nodes
      */
     removeSelectedNode : function(panel) {
         var session = _metExploreViz.getSessionById(panel);
@@ -2931,7 +2835,8 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Remove only clicked node
-     * @param {} panel : The panel where are selected nodes
+     * @param {NodeData} theNode Node to remove
+     * @param {String} panel Panel where node must be duplicated
      */
     removeOnlyClickedNode : function(theNode, panel) {
         var session = _metExploreViz.getSessionById(panel);
@@ -3003,11 +2908,10 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Remove a node from convex hull (pathway or compartment)
-     * @param {} theNode : The node to remove
-     * @param {} panel : The panel
+     * @param {NodeData} theNode The node to remove
+     * @param {String} panel  The panel
      */
-    removeNodeFromConvexHull : function(theNode, panel, setdata) {
-        if(setdata===undefined) setdata=true;
+    removeNodeFromConvexHull : function(theNode, panel) {
         var session = _metExploreViz.getSessionById(panel);
         // Remove the node from group to draw convex hulls
 
@@ -3089,7 +2993,8 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Remove node which is Isolated
-     * @param {} panel : The panel
+     * @param {NodeData} nodeRemoved Node to remove
+     * @param {String} panel Panel where node must be duplicated
      */
     removeIsolatedNode : function(nodeRemoved, panel) {
         var session = _metExploreViz.getSessionById(panel);
@@ -3135,6 +3040,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Remove side compounds
+     * @fires enableMakeClusters
      */
     removeSideCompounds : function(){
         var session = _metExploreViz.getSessionById("viz");
@@ -3168,8 +3074,9 @@ metExploreD3.GraphNetwork = {
 
     /**
      * Update visualisation in function of nodes attributes
-     * @param panelLinked
-     * @param sessionLinked
+     * @param {String} panelLinked
+     * @param {Object} sessionLinked
+     * @fires enableMakeClusters
      */
     updateNetwork : function(panelLinked, sessionLinked){
         metExploreD3.GraphNode.refreshNode(panelLinked);
@@ -3235,8 +3142,8 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Update animation of graph
-     * @param {} panel : The panel to animate or not
-     * @param {} bool
+     * @param {String} panel : The panel to animate or not
+     * @param {Boolean} bool
      */
     setAnimated: function(panel, bool){
         if(bool){
@@ -3250,7 +3157,7 @@ metExploreD3.GraphNetwork = {
 
     /**
      * Put visualisation in black and white
-     * @param bool
+     * @param {Boolean} bool
      */
     blackWhite: function(bool){
         var filter = d3.select("#viz").select("#D3viz").select('#grayscale');
@@ -3276,7 +3183,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * True if graph is animated
-     * @param {} panel : The panel animated or not
+     * @param {String} panel The panel animated or not
      */
     isAnimated : function(panel){
         return _metExploreViz.getSessionById(panel).isAnimated();
@@ -3284,6 +3191,7 @@ metExploreD3.GraphNetwork = {
 
     /*******************************************
      * Function to stop force
+     * @param {Object} session Session to stop force
      */
     stopForce : function(session){
         var force = session.getForce();
@@ -3296,7 +3204,7 @@ metExploreD3.GraphNetwork = {
 
     /**
      * Define button to zoom and pan
-     * @param panel
+     * @param {String} panel
      */
     defineInteractionButtons : function(panel){
         var tooltip =  d3.select("#"+panel).select('#tooltipButtons');
@@ -3407,7 +3315,11 @@ metExploreD3.GraphNetwork = {
             });
     },
 
-    defineBasalButtons : function(panel, animated){
+    /**
+     * Define button to zoom and pan
+     * @param {String} panel
+     */
+    defineBasalButtons : function(panel){
         var tooltipPathways = d3
             .select("#"+panel)
             .select("#D3viz")
@@ -3458,6 +3370,96 @@ metExploreD3.GraphNetwork = {
             });
     },
 
+    /*****************************************************
+     * Import node coordinates
+     * @param {String} json JSON to load
+     * @param {Function} func Callback function
+     */
+    refreshCoordinates : function(json, func) {
+        metExploreD3.hideInitialMask();
+
+        var panel = "viz";
+        var myMask = metExploreD3.createLoadMask("Move nodes in progress...", panel);
+        if(myMask!== undefined){
+
+            metExploreD3.showMask(myMask);
+
+            metExploreD3.deferFunction(function() {
+
+                metExploreD3.displayMessageYesNo("Set nodes coordinates",'Do you want highlight moved nodes.',function(btn){
+                    if(btn==="yes")
+                    {
+                        moveNodes(true);
+                    }
+                    else
+                    {
+                        moveNodes(false);
+                    }
+                });
+
+                function moveNodes(highlight){
+                    var session = _metExploreViz.getSessionById("viz");
+
+                    var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
+                    var nodesToMove = jsonParsed.nodes.filter(function(node){
+                        return session.getD3Data().getNodes().find(function(nodeInNetwork){
+                            return node.dbIdentifier === nodeInNetwork.getDbIdentifier();
+                        });
+                    });
+                    if(nodesToMove.length>0){
+                        if(session!==undefined)
+                        {
+                            if(highlight)
+                                metExploreD3.GraphNode.unselectAll("#viz");
+
+                            metExploreD3.GraphNetwork.animationButtonOff("viz");
+                            var force = session.getForce();
+                            force.stop();
+                            d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+                                .each(function(node){
+                                    var nodeToMove = nodesToMove.find(function (aNode) {
+                                        return aNode.dbIdentifier === node.getDbIdentifier();
+                                    });
+                                    if(nodeToMove){
+                                        node.px = nodeToMove.px ;
+                                        node.py = nodeToMove.py ;
+                                        node.x = nodeToMove.x ;
+                                        node.y = nodeToMove.y ;
+                                        node.setLocked(true);
+                                        node.fixed=node.isLocked();
+
+                                        metExploreD3.GraphNode.fixNode(node);
+                                        if(highlight)
+                                            metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
+                                    }
+                                });
+
+                            metExploreD3.GraphNetwork.tick("viz");
+                            metExploreD3.hideMask(myMask);
+
+                        }
+
+                        if(typeof func==='function') func();
+                    }
+                    else
+                    {
+                        //SYNTAX ERROR
+                        metExploreD3.displayWarning("None coordinate mapped", 'None nodes mapped by bdIdentifier verify used biosource.');
+                        metExploreD3.hideMask(myMask);
+                    }
+                }
+
+            }, 100);
+        }
+
+
+
+
+    },
+
+    /*************************************************************************
+     * MetExploreViz easterEggs
+     */
     easterEggNoel: function(){
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.linkGroup").selectAll("*").remove();
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("*").remove();
@@ -3550,5 +3552,4 @@ metExploreD3.GraphNetwork = {
             .attr("height", "170px")
             .attr("transform", "translate(-35,-35)");
     }
-
 };

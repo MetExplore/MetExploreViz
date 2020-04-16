@@ -114,6 +114,6 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 	},
 	hierarchicalLayout : function(){
 		console.log("--- start hierarchical drawing");
-		metExploreD3.GraphPanel.hierarchicalDrawing();
+		metExploreD3.GraphFunction.hierarchicalDrawing();
 	}
 });

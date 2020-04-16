@@ -1,6 +1,7 @@
 /**
+ * @class metExploreD3.GraphColorScaleEditor
  * @author Maxime Chazalviel
- * (a)description : Style Edition
+ * Manage the scale editor of numbers
  */
 
 metExploreD3.GraphNumberScaleEditor = {
