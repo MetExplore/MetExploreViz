@@ -30,6 +30,7 @@ metExploreD3.GraphMapping = {
 	        setTimeout(
 			function() {
 				try {
+					var session = _metExploreViz.getSessionById('viz');
 					var networkData = session.getD3Data();
 					var conditions = mapping.getConditions().filter(function (c) {
 						return c !== "PathwayCoverage" && c !== "PathwayEnrichment"
@@ -136,9 +137,10 @@ metExploreD3.GraphMapping = {
 
 					e.functionUsed="mapNodeDataFile";
 					metExploreD3.hideMask(myMask);
+					var session = _metExploreViz.getSessionById('viz');
+
 					var anim=session.isAnimated("viz");
 					if (anim) {
-						var session = _metExploreViz.getSessionById('viz');
 						var force = session.getForce();
 
 						force.alpha(force.alpha()).restart();
@@ -1045,12 +1047,11 @@ metExploreD3.GraphMapping = {
 		if(myMask!= undefined){
 
 			metExploreD3.showMask(myMask);
-	        d3.tsv(url, function(data) {
-	            
+	        d3.tsv(url).then(function(data) {
 	            var urlSplit = url.split('/');
 	            var title = url.split('/')[urlSplit.length-1];
 
-	            var targetName = Object.keys(data[0])[0];
+				var targetName = Object.keys(data[0])[0];
 
 	            var indexOfTarget = Object.keys(data[0]).indexOf(targetName);
 	            var arrayAttr = Object.keys(data[0]);
