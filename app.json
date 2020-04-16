@@ -7,7 +7,7 @@
     /**
      * The version of the application.
      */
-    "version": "3.0.15",
+    "version": "3.0.16",
 
     /**
      * The relative path to the application's markup file (html, jsp, asp, etc.).
@@ -355,6 +355,10 @@
         },
         {
             "path": "resources/lib/functions/GraphPanel.js",
+            "bundle": true
+        },
+        {
+            "path": "resources/lib/functions/GraphPath.js",
             "bundle": true
         },
         {
