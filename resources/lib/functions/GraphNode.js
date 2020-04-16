@@ -1,10 +1,30 @@
 /**
  * @author MC
- * (a)description : Nodes drawing
+ *
+ * Node Events and Interactions initialisation
+ * Add, update and remove nodes
+ * Tick of nodes
+ * Search and highlight nodes
+ *
+ * @uses metExploreD3.GraphLink
+ * @uses metExploreD3.GraphPanel
+ * @uses metExploreD3.GraphNetwork
+ * @uses metExploreD3.GraphLink
+ * @uses metExploreD3.GraphStyleEdition
  */
 
 metExploreD3.GraphNode = {
-
+    /**
+     * @property {Element} [node=""]
+     * @property {Element} [updatedNodes=""]
+     * @property {String} [panelParent=""]
+     * @property {String} [activePanel=""]
+     * @property {Function} [taskClick=""]
+     * @property {Number} [charKey=""]
+     * @property {Number} [ctrlKey=""]
+     * @property {Function} [groupFill=""]
+     * @property {Boolean} [dblClickable=false]
+     */
     node: "",
     _MyThisGraphNode: "",
     updatedNodes: "",
@@ -18,7 +38,7 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Initialization of variables
-     * @param {} parent : The panel where are the node
+     * @param {String} parent The panel where are the node
      */
     delayedInitialisation: function (parent) {
 
@@ -29,7 +49,7 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Permit to highlight a node : Select, Fix & grow up
-     * @param {} d : a node
+     * @param {String} id A nodeid
      */
     highlightANode: function (id) {
         d3.select("#viz").select("#D3viz")
@@ -65,7 +85,8 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Permit to select neighbour of a node
-     * @param {} d : a node
+     * @param {NodeData} d A node
+     * @param {String} panel A node
      */
     selectNeighbours: function (d, panel) {
 
@@ -85,12 +106,13 @@ metExploreD3.GraphNode = {
                 }
             });
     },
+
     /*******************************************
      * Permit to select all nodes of a pathway
-     * @param {} d : a node
+     * @param {String} pathway A pathway name
+     * @param {String} panel A node
      */
     selectNodesOfPathway: function (pathway, panel) {
-
         d3.select("#"+panel).select("#D3viz")
             .selectAll("g.node")
             .filter(function (d) {
@@ -104,7 +126,7 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Permit to set name of a node
-     * @param {} d : a node
+     * @param {NodeData} node A node
      */
     changeName: function (node) {
         var generalStyle = metExploreD3.getGeneralStyle();
@@ -142,7 +164,7 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Fix node position
-     * @param {} d : a node
+     * @param {NodeData} node A node
      */
     fixNode: function (node) {
         if(node.x){
@@ -153,7 +175,7 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Unlock node position
-     * @param {} d : a node
+     * @param {NodeData} node A node
      */
     unfixNode: function (node) {
         node.fx=undefined;
@@ -162,9 +184,9 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Permit to start drag and drop of nodes
-     * @param {} d : Color in byte
+     * @param {NodeData} d A node
      */
-    dragstart: function (d, i) {
+    dragstart: function (d) {
     var elmt = this;
         function isChildOf(child, parent) {
             var node = child.parentNode;
@@ -271,85 +293,9 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
-     * Change the style of reaction
-     */
-    refreshStyleOfReaction: function () {
-        var reactionStyle = metExploreD3.getReactionStyle();
-
-        var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
-            .selectAll("g.node")
-            .filter(function (node) {
-                return node.getBiologicalType() == "reaction";
-            });
-
-        reactions
-            .setNodeForm(
-                reactionStyle.getWidth(),
-                reactionStyle.getHeight(),
-                reactionStyle.getRX(),
-                reactionStyle.getRY(),
-                reactionStyle.getStrokeColor(),
-                reactionStyle.getStrokeWidth()
-            );
-
-
-        reactions.each(function (node) {
-            metExploreD3.GraphNode.addText(node, "viz");
-        });
-
-        var minDim = Math.min(reactionStyle.getWidth(), reactionStyle.getHeight());
-
-
-        // Lock Image definition
-        var box = reactions
-            .selectAll(".locker")
-            .attr(
-                "viewBox",
-                function (d) {
-                    +" " + minDim;
-                }
-            )
-            .attr("width", reactionStyle.getWidth())
-            .attr("height", reactionStyle.getHeight())
-            .attr("preserveAspectRatio", "xMinYMin")
-            .attr("y", -reactionStyle.getHeight())
-            .attr("x", -reactionStyle.getWidth())
-            .attr("class", "locker")
-            .classed('hide', true);
-
-        box.select(".backgroundlocker")
-            .attr("d", function (node) {
-                var pathBack = "M" + reactionStyle.getWidth() + "," + reactionStyle.getHeight() +
-                    " L0," + reactionStyle.getHeight() +
-                    " L0," + reactionStyle.getRY() * 2 +
-                    " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
-                    " L" + reactionStyle.getWidth() + ",0";
-                return pathBack;
-            })
-            .attr("opacity", "0.20")
-            .attr("fill", "#000000");
-
-        box.select(".iconlocker")
-            .attr("y", function (node) {
-                return reactionStyle.getHeight() / 4 - (reactionStyle.getHeight() - reactionStyle.getRY() * 2) / 8;
-            })
-            .attr("x", function (node) {
-                return reactionStyle.getWidth() / 4 - (reactionStyle.getWidth() - reactionStyle.getRX() * 2) / 8;
-            })
-            .attr("width", "40%")
-            .attr("height", "40%");
-
-        reactions
-            .select("text")
-            .attr("opacity", reactionStyle.getLabelOpacity());
-
-
-    },
-
-    /*******************************************
      * Change the node position
-     * @param {} d : The node to move
-     * @param {} parent : The panel where the action is launched
+     * @param {NodeData} d A node to move
+     * @param {String} panel The panel where the action is launched
      */
     moveNode: function (d, panel) {
         d3.select("#" + panel).select("#D3viz").select("#graphComponent")
@@ -374,9 +320,9 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Updating both px,py,x,y on d
-     * @param {} d : The node to move
+     * @param {NodeData} d A node to move
      */
-    dragmove: function (d, i) {
+    dragmove: function (d) {
 
         if (!d.isSelected() && !(d3.event.sourceEvent.target.classList.contains("backgroundlocker") || d3.event.sourceEvent.target.classList.contains("iconlocker"))) {
             _MyThisGraphNode.selection(d, _MyThisGraphNode.activePanel);
@@ -446,9 +392,8 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Stop dragging
-     * @param {} d : The node to move
      */
-    dragend: function (d, i) {
+    dragend: function () {
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
         var mainSession = _metExploreViz.getSessionById("viz");
 
@@ -496,9 +441,9 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
-     * To Select a node
-     * @param {} d : The node to move
-     * @param {} parent : The panel where the action is launched
+     * Fix node already present on refresh
+     * @param {NodeData} d A node to move
+     * @param {String} panel The panel where the action is launched
      */
     fixNodeOnRefresh: function (d, panel) {
         var session = _metExploreViz.getSessionById(panel);
@@ -546,8 +491,8 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * To Select a node
-     * @param {} d : The node to move
-     * @param {} parent : The panel where the action is launched
+     * @param {NodeData} d A node to move
+     * @param {String} panel The panel where the action is launched
      */
     selection: function (d, panel) {
         var session = _metExploreViz.getSessionById(panel);
@@ -627,8 +572,8 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * To Select a node in visualization
-     * @param {} d : The node to move
-     * @param {} parent : The panel where the action is launched
+     * @param {NodeData} d A node to move
+     * @param {String} panel The panel where the action is launched
      */
     selectNode: function (d, panel) {
         var reactionStyle = metExploreD3.getReactionStyle();
@@ -692,8 +637,8 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * To Unselect a node in visualization
-     * @param {} d : The node to move
-     * @param {} parent : The panel where the action is launched
+     * @param {NodeData} d A node to move
+     * @param {String} panel The panel where the action is launched
      */
     unSelectNode: function (d, panel) {
         var session = _metExploreViz.getSessionById(panel);
@@ -725,8 +670,9 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * To remove text on node in visualization
-     * @param {} d : The node to move
-     * @param {} parent : The panel where the action is launched
+     * @param {NodeData} d A node to move
+     * @param {String} panel The panel where the action is launched
+     * @deprecated
      */
     removeText: function (d, panel) {
         d3.select("#" + panel).select("#D3viz").select("#graphComponent")
@@ -740,8 +686,8 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * To add text on node in visualization
-     * @param {} d : The node to move
-     * @param {} parent : The panel where the action is launched
+     * @param {NodeData} d A node to move
+     * @param {String} panel The panel where the action is launched
      */
     addText: function (d, panel) {
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -877,24 +823,9 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
-     * To add text on node in visualization
-     * @param {} parent : The panel where the action is launched
-     */
-    addTextAllPanels: function () {
-        var sessions = _metExploreViz.getSessionsSet();
-
-        for (var key in sessions) {
-            d3.select("#" + sessions[key].getId()).select("#D3viz").select("#graphComponent")
-                .selectAll("g.node")
-                .each(function (node) {
-                    metExploreD3.GraphNode.addText(node, sessions[key].getId());
-                });
-        }
-    },
-
-    /*******************************************
      * To remove text on node in visualization
-     * @param {} parent : The panel where the action is launched
+     * @param {String} panel The panel where the action is launched
+     * @deprecated
      */
     removeText: function (panel) {
         // if there is no text we define it for a metabolie WITHOUT the coresponding SVG image
@@ -906,7 +837,8 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * To remove text on node in visualization
-     * @param {} parent : The panel where the action is launched
+     * @param {String} panel The panel where the action is launched
+     * @deprecated
      */
     removeTextAllPanels: function (panel) {
         var sessions = _metExploreViz.getSessionsSet();
@@ -918,7 +850,7 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * To Search nodes in visualization
-     * @param {} selectedVal : The value of search field text
+     * @param {String} selectedVal The value of search field text
      */
     searchNode: function (selectedVal) {
         var mask = metExploreD3.createLoadMask("Search nodes", "viz");
@@ -982,8 +914,8 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
-     * To add nodes in visualization
-     * @param {} panel : The panel where the action is launched
+     * To refresh nodes in visualization
+     * @param {String} parent The panel where the action is launched
      */
     refreshNode: function (parent) {
         // Load user's preferences
@@ -1388,7 +1320,7 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Fonction call for each update
-     * @param {} panel : The panel where the action is launched
+     * @param {String} panel The panel where the action is launched
      */
     tick: function (panel) {
         d3.select("#" + panel).select("#D3viz").select("#graphComponent")
@@ -1445,15 +1377,15 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Return data corresponding to the node
-     * @param {} panel : The panel where the action is launched
+     * @param {NodeData} d A node
      */
     selectNodeData: function (node) {
         return d3.select(node).datum();
     },
 
     /*******************************************
-     * Function to select node (front-end)
-     * @param {} node : a set of nodes
+     * Function to select node (front-end) from parent website
+     * @param {NodeData} d A node
      */
     selectNodeFromGrid: function (id) {
         d3.select("#viz").select("#D3viz")
@@ -1469,7 +1401,7 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * Assign color according to metabolite compartment
-     * @param {} selection : The selection of
+     * @param {Array} selection Array of nodes
      */
     colorStoreByCompartment: function (selection) {
         for (var i = 0; i < metExploreD3.getCompartmentInBiosourceLength(); i++) {
@@ -1484,6 +1416,10 @@ metExploreD3.GraphNode = {
         }
     },
 
+    /*******************************************
+     * Unselect all nodes
+     * @param {Element} me SVG panel
+     */
     unselectAll: function (me) {
         if (_MyThisGraphNode.activePanel === undefined || _MyThisGraphNode.activePanel === "") _MyThisGraphNode.activePanel == "viz";
 
@@ -1511,6 +1447,9 @@ metExploreD3.GraphNode = {
         session.removeAllSelectedPathways();
     },
 
+    /*******************************************
+     * Listen double click to unselct or unfix nodes
+     */
     unselectIfDBClick: function () {
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
         if(d3.event.type==="start" && d3.event.sourceEvent.type!=="end"){
@@ -1598,8 +1537,9 @@ metExploreD3.GraphNode = {
 
     /*****************************************************
      * Set side compounds from array of nodes
-     * @param {} sideCompounds : An array of id
-     * @return {} bool : true if at less one is find
+     * @param {Array} sideCompounds An array of id
+     * @return {Boolean} bool : true if at less one is find
+     * @fires sideCompoundFromFile
      */
     loadSideCompounds: function (sideCompounds, func) {
         var array = [];
@@ -1627,8 +1567,9 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
-     * To load nodes in visualization
-     * @param {} panel : The panel where the action is launched
+     * Set is side compound in parent website
+     * @param {Number} idM Metabolite id
+     * @param {Boolean} val Value to assign
      */
     setIsSideCompoundById: function (idM, val) {
         var networkData = _metExploreViz.getSessionById("viz").getD3Data();
@@ -1663,8 +1604,8 @@ metExploreD3.GraphNode = {
 
     /*******************************************
      * To load alias in visualization
-     * @param {} dbId : The dbId of element
-     * @param {} alias : The alias value
+     * @param {String} dbId The dbId of element
+     * @param {String} alias The alias value
      */
     setAliasByDBId: function (dbId, alias) {
         var me = this;
@@ -1741,6 +1682,12 @@ metExploreD3.GraphNode = {
 
     },
 
+    /*******************************************
+     * To load alias in visualization
+     * @param {Array} json Array of NodeData
+     * @param {String} type Biological type
+     * fires checkCheckboxAlias
+     */
     setAliasesFromJSON: function (json, type) {
         var style = metExploreD3.getMetaboliteStyle();
         if(type==="reaction")
@@ -1755,8 +1702,9 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
-     * To load nodes in visualization
-     * @param {} panel : The panel where the action is launched
+     * Set is reversible in parent website
+     * @param {Number} idM Reaction id
+     * @param {Boolean} val Value to assign
      */
     setIsReversibleById: function (idR, val) {
         var networkData = _metExploreViz.getSessionById("viz").getD3Data();
@@ -1779,9 +1727,9 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
-     * Init the visualization of links
-     * @param {} parent : The panel where the action is launched
-     * @param {} component : pathway or compartment
+     * Load path convexhull
+     * @param {String} parent The panel where the action is launched
+     * @param {String} component Pathway or Compartment
      */
     loadPath: function (parent, component) {
         var session = _metExploreViz.getSessionById(parent);
@@ -1941,6 +1889,10 @@ metExploreD3.GraphNode = {
                 metExploreD3.GraphNode.fixNode(node);
             })
     },
+
+    /*******************************************
+     * Unfix all selected node
+     */
     unfixSelectedNode: function () {
         metExploreD3.GraphNode.node
             .filter(function (node) {
@@ -1953,6 +1905,11 @@ metExploreD3.GraphNode = {
                 metExploreD3.GraphNode.unfixNode(node);
             })
     },
+
+    /*******************************************
+     * Get translation from transform
+     * @param {String} transform
+     */
     getTranslation: function (transform) {
         // Create a dummy g for calculation purposes only. This will never
         // be appended to the DOM and will be discarded once this function
@@ -1970,6 +1927,12 @@ metExploreD3.GraphNode = {
         // As per definition values e and f are the ones for the translation.
         return [matrix.e, matrix.f];
     },
+
+
+    /*******************************************
+     * Apply mouse event on nodes
+     * @param {String} parent The panel used
+     */
     applyEventOnNode: function (parent) {
         var reactionStyle = metExploreD3.getReactionStyle();
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -2496,5 +2459,4 @@ metExploreD3.GraphNode = {
             });
 
     }
-
 };

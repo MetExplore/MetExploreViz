@@ -1,59 +1,13 @@
 /**
+ * @class metExploreD3.GraphCaption
+ * Drawing caption
+ * Add update convexhulls
  * @author MC
- * (a)description : Drawing caption
+ * @uses metExploreD3.GraphNode
+ * @uses metExploreD3.GraphUtils
  */
+
 metExploreD3.GraphCaption = {
-
-
-    /*****************************************************
-     * refresh reactions style in caption
-     */
-    refreshStyleOfReaction : function(){
-
-
-        // Load user's preferences
-        var reactionStyle = metExploreD3.getReactionStyle();
-        var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
-        var xRea = 15/maxDimRea;
-
-        d3.select("#viz").select("#D3viz")
-            .select('.reactionCaption')
-            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
-            .attr('y', 15 + 15/2 - reactionStyle.getHeight()*xRea/2)
-            .attr("width", reactionStyle.getWidth()*xRea)
-            .attr("height", reactionStyle.getHeight()*xRea)
-            .attr("rx", reactionStyle.getRX()*xRea)
-            .attr("ry", reactionStyle.getRY()*xRea)
-            .attr("fill", "white")
-            .attr("transform", "translate(15,95)")
-            .style("stroke",reactionStyle.getStrokeColor())
-            .style("stroke-width", 2);
-    },
-
-    /*****************************************************
-     * refresh metabolites style in caption
-     */
-    refreshStyleOfMetabolite : function(){
-
-
-        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
-        var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
-        var xMet = 15/maxDimMet;
-
-        d3.select("#viz").select("#D3viz")
-            .select('.metaboliteCaption')
-            .attr('x', 15/2 - metaboliteStyle.getWidth()*xMet/2)
-            .attr('y', 15 + 15/2 - metaboliteStyle.getHeight()*xMet/2)
-            .attr("width", metaboliteStyle.getWidth()*xMet)
-            .attr("height", metaboliteStyle.getHeight()*xMet)
-            .attr("rx", metaboliteStyle.getRX()*xMet)
-            .attr("ry", metaboliteStyle.getRY()*xMet)
-            .attr("fill", "white")
-            .style("stroke", "#000000")
-            .style("stroke-width", 2)
-            .attr("transform","translate(15,130)");
-
-    },
 
     /*****************************************************
      * Draw caption
@@ -494,6 +448,7 @@ metExploreD3.GraphCaption = {
 
     /*****************************************************
      * Maj caption for convex hulls
+     * @param {String} panel Panel to update convex hull
      */
     majCaption : function(panel){
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
@@ -618,6 +573,9 @@ metExploreD3.GraphCaption = {
 
     /*****************************************************
      * Maj caption color for convex hulls and links
+     * @param {Object} components Component to update
+     * @param {"Compartments"|"Pathways"} selectedComponent
+     * @param {String} panel Panel to update convex hull
      */
     majCaptionColor : function(components, selectedComponent, panel){
         var generalStyle = _metExploreViz.getGeneralStyle();
@@ -672,7 +630,8 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
-     * Draw caption of metabolic compartiments
+     * Draw caption of metabolic compartments
+     * @fires afterColorCalculating
      */
     colorMetaboliteLegend : function(){
         // Load user's preferences
@@ -704,6 +663,7 @@ metExploreD3.GraphCaption = {
 
     /*****************************************************
      * Draw caption of pathways
+     * @fires afterColorCalculating
      */
     colorPathwayLegend : function(){
 

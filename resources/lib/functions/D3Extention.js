@@ -1,6 +1,12 @@
 /*******************************
  * @author MC
- * Functions to extend d3js selection function
+ * Functions to extend d3js selection functions
+ */
+
+/*******************************
+ * Manage attribute setting
+ * @param attr
+ * @param val
  */
 d3.selection.prototype.attrEditor = function(attr, val) {
 	var selection = this;
@@ -41,6 +47,8 @@ d3.selection.prototype.attrEditor = function(attr, val) {
  * @param ry
  * @param stroke
  * @param strokewidth
+ * @param backgroundColor
+ * @param transparency
  */
 d3.selection.prototype.addNodeForm = function(width, height, rx, ry, stroke, strokewidth, backgroundColor, transparency) {
 
@@ -110,7 +118,7 @@ d3.selection.prototype.addNodeText = function(style) {
 
 	var minDim = Math.min(style.getWidth(),style.getHeight());
 
-	// Listening font-size attribute tu update tspan dy attr similarly
+	// Listening font-size attribute to update tspan dy attr similarly
 	var observer = new MutationObserver(function(mutations) {
 		mutations.forEach(function(mutation) {
 			if (mutation.type == "attributes") {
@@ -223,20 +231,13 @@ d3.selection.prototype.addNodeText = function(style) {
 };
 
 /*******************************
- * Add text to node
+ * Set node label
  * @param style in function of node biological type
+ * @param label to give
  */
 d3.selection.prototype.setLabelNodeText = function(style, label) {
 	this
 		.each(function(d) {
-			//
-			// observer.observe(this, {
-			// 	attributes: true, //configure it to listen to attribute changes
-			// 	characterData: true,
-			// 	attributeOldValue: true,
-			// 	characterDataOldValue: true,
-			// 	attributeFilter:["style"]
-			// });
 
 			var el = d3.select(this);
 			var name = style.getDisplayLabel(d, label, false);
@@ -273,6 +274,7 @@ d3.selection.prototype.setLabelNodeText = function(style, label) {
 /*******************************
  * Add text to node
  * @param style in function of node biological type
+ * @param val to use as label
  */
 d3.selection.prototype.setLabelNodeTextByValue = function(style, val) {
 	var selection = this;

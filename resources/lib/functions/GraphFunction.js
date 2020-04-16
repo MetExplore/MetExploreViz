@@ -1,13 +1,233 @@
 /**
+ * @class metExploreD3.GraphPanel
+ * Basic graph functions
+ *
+ * Hierarchical drawing algorithm
+ * Distance algorithm
+ * Extraction algorithm
+ * Cycle detection algorithm
+ * Alignment function
+ *
  * @author MC
- * (a)description : Basic graph functions
+ * @uses metExploreD3.GraphNode
+ * @uses metExploreD3.GraphNetwork
+ * @uses metExploreD3.GraphStyleEdition
+ * @uses metExploreD3.GraphLink
  */
-    
 metExploreD3.GraphFunction = {
+
+	/*****************************************************
+	 * Draw network in a hierarchical way
+	 */
+	hierarchicalDrawing : function() {
+		//graph structure used by dagre library (and behind graphviz) to compute the drawing
+		var graph = new dagre.graphlib.Graph().setGraph({});
+		var session = _metExploreViz.getSessionById('viz');
+
+		//create the graph structure from the MetExploreViz graph
+		//In order to reduce the number of layers, we won't consider all ther reactions to be nodes in the dagre graph
+		//If a reaction has only one substrate and one product (two connected links), we won't use it in the computation
+		//Algorithm is as follow:
+		//For each reaction node in the original graph
+		//	if the node has two links
+		//		if it is the first time we visit the reaction
+		//			add the substrate as a node in the graph
+		//			add the product as a node in the graph
+		//			add the edge (substrate,product) in the graph
+		//			set the label of the edge as the id of the reaction
+		//		else
+		//			find the reaciton r corresponding to the edge in the graph which has the same substrate and product
+		//			add the current reaction to the associated reaction list of r
+		//	else
+		//		for each link connected to the reaction
+		//			add the metabolite to the graph
+		//			add the reaction to the graph
+		//			add the edge (metabolite,reaction) to the graph
+
+		session.getD3Data().getNodes()
+			.filter(function (node){return node.biologicalType=="reaction" && !node.isHidden();})
+			.filter(function (node){
+				// check if the reaction has only one substrate and one product
+				var connectedLinks=session.getD3Data().getLinks()
+					.filter(function(link){
+						return (link.source == node) || (link.target == node);
+					});
+				//console.log(connectedLinks);
+				if(connectedLinks.length==2){
+					//the node won't be used in the computation so we are going to add the source and the target and connect them
+					//For each of both links, get the source node and target nodes
+					var source;
+					var target;
+					connectedLinks.forEach(function(link){
+						if(link.source == node){
+							target=link.getTarget();
+						}
+						if(link.target == node){
+							source=link.getSource();
+						}
+					});
+
+					if(source && target) {
+						var sourceNode = graph.setNode(source, {label: source.id});
+
+						var targetNode = graph.setNode(target, {label: target.id});
+
+						if (graph.edge(source, target)) {
+							//The label of the reaction which has the same substrate and product and is already in the graph.
+							var referenceReactionLabel = graph.edge(source, target).label;
+							var referenceNode = session.getD3Data().getNodes()
+								.find(function (n) {
+									return n.id == referenceReactionLabel;
+								});
+							//if the edge is already in the graph we have to store the reaction since it won't be placed in the final view.
+							//indeed dagre doesn't allow multi-edges.
+							// who have to associate the current reaction to the one that will be drawn
+
+							if (!referenceNode.associatedReactions) {
+								var associatedReactions = [];
+								referenceNode.associatedReactions = associatedReactions;
+								referenceNode.associatedReactions.push(node);
+							}
+							else {
+								referenceNode.associatedReactions.push(node);
+							}
+						}
+						else {
+							graph.setEdge(source.id, target.id, {label: node.getId()});
+						}
+					}
+				}
+				else{
+					//Add the reaction to the node list
+					//add connection to the reaction and substrate product
+					connectedLinks.forEach(function(link){
+						graph.setNode(link.getSource(), {label:link.getSource().id});
+						graph.setNode(link.getTarget(), {label:link.getTarget().id});
+						graph.setEdge(link.getSource().id, link.getTarget().id, { label: link.getSource().id+' -- '+link.getTarget().id });
+					});
+				}
+
+			});
+
+		var layout=dagre.layout(graph);
+
+
+		//-----Drawing the graph
+		//For each node of the visualised graph
+		//		if the node is in the Dagre graph
+		//			use the Dagre coordinates to draw the node
+		//		else
+		//			for each edge
+		//				if the edge has a reaction as a label (it means this reaction has no corresponding node in the Dagre graph)
+		//					affect to the coordinates of the first bend to the reaction
+		//					for r=0 to the size of associated reaction AR table
+		//						set same y to AR[r]
+		//						set AR[r].x <- x+ 10*(AR[r]+1)
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+			.each(function(node){
+				//place nodes that were in the graph
+				if(graph.node(node)){
+					var x;
+					var y;
+					graph.nodes().forEach(function(n) {
+						var nodeG = graph.node(n);
+						if(nodeG.label === node.getId())
+						{
+							x=nodeG.x;
+							y=nodeG.y;
+						}
+					});
+					node.px = x;
+					node.py = y;
+					node.x = x;
+					node.y = y;
+					node.setLocked(true);
+					node.fixed=node.isLocked();
+
+					metExploreD3.GraphNode.fixNode(node);
+				}
+				//place nodes that were not in the graph
+				else
+				{
+
+					for(label in  graph._edgeLabels){
+						//look for the edge where the node is located
+						var edgeLabel=graph._edgeLabels[label].label;
+						if(edgeLabel == node.getId()){
+							node.px = graph._edgeLabels[label].points[1].x;
+							node.py = graph._edgeLabels[label].points[1].y;
+							node.x = graph._edgeLabels[label].points[1].x;
+							node.y = graph._edgeLabels[label].points[1].y;
+							node.setLocked(true);
+							node.fixed=node.isLocked();
+
+							metExploreD3.GraphNode.fixNode(node);
+
+							if(node.associatedReactions){
+								for(associated in node.associatedReactions){
+									var associatedNode=node.associatedReactions[associated];
+									associatedNode.px=node.px+10*(associated+1);
+									associatedNode.py=node.py;
+									associatedNode.x=node.x+10*(associated+1);
+									associatedNode.y=node.y;
+									associatedNode.setLocked(true);
+									associatedNode.fixed=associatedNode.isLocked();
+
+									metExploreD3.GraphNode.fixNode(associatedNode);
+								}
+							}
+						}
+					}
+				}
+
+
+			});
+
+
+
+
+		metExploreD3.GraphNetwork.tick("viz");
+
+
+
+		// d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
+		//                               .each(function(link){
+		//                               	//console.log("---draw edges");
+		//                               	var source=link.getSource();
+		//                               	console.log(source.getId())
+		//                               	var target=link.getTarget();
+		//                               	// for all the edges in the Dagre graph
+		//                               	//		if it corresponds to a link
+		//                               	//			Draw the liknk with the points of the Dagre graph.
+		//                               	for(label in  graph._edgeLabels){
+		//                               			//look for the edge where the node is located
+		//                               			var edgeSource=graph._edgeLabels[label].label.split(" -- ")[0];
+		//                               			var edgeTarget=graph._edgeLabels[label].label.split(" -- ")[1];
+		//                               			 if(edgeSource==source.getId() && edgeTarget==target.getId()){
+		//                               			 	//get coordinates in DAGRE
+		//                               			 	//console.log(link);
+		//                               			 	console.log(d3.select(this).attr("d"));
+		//                               			 	var lineData = [ { "x": 120, "y": 20}, { "x": 120,  "y": 100},
+		//                 									{ "x": 40,  "y": 100}, { "x": 40,   "y": 180},
+		//                									{ "x": 500,  "y": 180}, { "x": 500,   "y": 100}];
+		// 										var lineFunction = d3.svg.line()
+		// 										 .x(function(d) { return d.x; })
+		// 										 .y(function(d) { return d.y; })
+		// 										 .interpolate("linear");
+		// 										d3.select(this).attr("d",lineFunction(lineData));
+		// 										console.log("after",d3.select(this).attr("d"));
+
+		//                               			 	//d3.select(this).attr("d", );
+		//                               			 }
+
+		//                               		}
+		//                               });
+
+	},
 
 	/**
 	 * Breadth First Search
-	 * @param node
+	 * @param {NodeData} node
 	 * @returns {*|Graph}
 	 */
     bfs : function (node){
@@ -118,7 +338,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Highlight sinks in visualisation
-	 * @param panel
+	 * @param {String} panel
 	 */
     highlightSink : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
@@ -150,7 +370,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Highlight sinks in visualisation
-	 * @param panel
+	 * @param {String} panel
 	 */
     highlightSource : function(panel) {
         var nodes=d3.select("#"+panel).select("#D3viz").selectAll("g.node");
@@ -182,7 +402,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Allows horizontal alignment of selected nodes
-	 * @param panel
+	 * @param {String} panel
 	 */
 	horizontalAlign : function(panel) {
 		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
@@ -219,7 +439,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Allows vertical alignment of selected nodes
-	 * @param panel
+	 * @param {String} panel
 	 */
 	verticalAlign : function(panel) {
 		var nodes = _metExploreViz.getSessionById(panel).getSelectedNodes();
@@ -256,7 +476,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Inverse x axis position of selected nodes from them median x
-	 * @param panel
+	 * @param {String} panel
 	 */
     horizontalReverse : function(panel) {
         metExploreD3.GraphNode.fixSelectedNode();
@@ -291,7 +511,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Inverse y axis position of selected nodes from them median y
-	 * @param panel
+	 * @param {String} panel
 	 */
     verticalReverse : function(panel) {
         metExploreD3.GraphNode.fixSelectedNode();
@@ -331,9 +551,10 @@ metExploreD3.GraphFunction = {
 	colorDistanceOnNode : function(graph, func){
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();
 		var maxDistance = 0; 
-		for (var key in graph.nodes) {	
-	        var dist = graph.nodes[key].distance;   
-	        if(maxDistance<dist)
+		for (var key in graph.nodes) {
+	        var dist = graph.nodes[key].distance;
+
+			if(maxDistance<dist)
 	        	maxDistance=dist;    
 	        networkData.getNodeById(key).distance = dist;
 	    }
@@ -343,7 +564,7 @@ metExploreD3.GraphFunction = {
 			.range(["blue", "white"]);
 
 
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("rect:not(.fontSelected)")
 			.style("fill", function(node) { return color(node.distance); });
 
 		if(func!=undefined){
@@ -351,6 +572,9 @@ metExploreD3.GraphFunction = {
 		}
     },
 
+	/**
+	 *	POC : Color nodes in function of graph distances
+	 */
     test3 : function(){
 		
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
@@ -385,27 +609,17 @@ metExploreD3.GraphFunction = {
 				metExploreD3.GraphFunction.colorDistanceOnNode(finalGraph);
 		});
     },
-    testFlux : function(){
-		
-		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
-		
-			var color = d3.scaleLinear()
-				.domain([0, 0.1, 0.2, 0.5, 1])
-				.range([-30, -50, -60,-500 -600]);
 
-			metExploreD3.getGlobals().getSessionById('viz').getForce().charge(function(node){
-				var value = d3.select('g#node'+node.getId()+'.node').attr('opacity');
-				var val = color(value);
-				return val;
-			});	
-		
-    },
+	/**
+	 *	POC : Color nodes in function of graph distances
+	 */
     test : function(){
 		
 		var networkData = _metExploreViz.getSessionById('viz').getD3Data();	
 		
 		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
 			.on("click", function(node){
+				console.log("test");
 				metExploreD3.GraphFunction.colorDistanceOnNode(metExploreD3.GraphFunction.bfs(node));
 		});
     },
@@ -413,8 +627,9 @@ metExploreD3.GraphFunction = {
     /*******************************************
     * Hierarchical drawing of the current tulip network
     * It uses the default algorithm provided by Tulip.js
+	 * @deprecated
     */
-    hierarchicalDrawing : function(){
+    hierarchicalDrawingTulip : function(){
     	var algo = "Hierarchical Tree (R-T Extended)";
 		var params = [];
 		params.push({"name":"node spacing", "value":50});
@@ -424,6 +639,7 @@ metExploreD3.GraphFunction = {
     /*******************************************
     * Sugiyama (OGDF) drawing of the current tulip network
     * It uses the default algorithm provided by Tulip.js
+	 * @deprecated
     */
     sugiyamaDrawing : function(){
     	var algo = "Sugiyama (OGDF)";
@@ -437,6 +653,7 @@ metExploreD3.GraphFunction = {
     /*******************************************
     * Betweenness Centrality of the current tulip network
     * It uses the default algorithm provided by Tulip.js
+	 * @deprecated
     */
     betweennessCentrality : function(){
     	var algo = "Betweenness Centrality";
@@ -449,6 +666,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
     * Layout drawing application provided by the tulip.js library
+	 * @deprecated
     */
 	applyTulipLayoutAlgorithmInWorker : function(algo, parameters) {
 
@@ -583,6 +801,7 @@ metExploreD3.GraphFunction = {
 
     /*******************************************
     * Algorithms provided by the tulip.js library
+	 * @deprecated
     */
 	applyTulipDoubleAlgorithmInWorker : function(algo, parameters) {
 
@@ -731,25 +950,13 @@ metExploreD3.GraphFunction = {
 		}
 	},
 
-	drawNetwork : function() {
-	},
-
-	randomDrawing : function() {
-	},
-
-	// Force based drawing
-	// Use the arbor version of the algorithm provided by
-	// Cytoscape
-	// If there are more than maxDisplayedLabels,then the
-	// animation is not used
-	stopSpringDrawing : function() {
-	},
-	
 	/**
 	 * Extract a subnetwork based on lightest path length
 	 * between each pair of selected nodes it returns a graph
 	 * where nodes have a subnet attribute telling wether they
 	 * are in subnet or not
+	 * @param {Graph} graph Network structure
+	 * @param {Array} nodeToLink Array of node ids
 	 */
 	extractSubNetwork : function(graph, nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
@@ -931,7 +1138,10 @@ metExploreD3.GraphFunction = {
 		}
 	},
 
-
+	/**
+	 * Build Directed graph from visualisation
+	 * @return {Graph}
+	 */
 	getGraph : function() {
 		var session = _metExploreViz.getSessionById( 'viz');
 		var graph = new Graph();
@@ -974,6 +1184,10 @@ metExploreD3.GraphFunction = {
 			return graph;
 	},
 
+	/**
+	 * Build Not Directed graph from visualisation
+	 * @return {Graph}
+	 */
 	getGraphNotDirected : function() {
 		var session = _metExploreViz.getSessionById( 'viz');
 		var graph = new Graph();
@@ -998,10 +1212,15 @@ metExploreD3.GraphFunction = {
 			return graph;
 	},
 
-	// Once the shortest path is computed, we have, for each
-	// node on the path its predecessor
-	// It is necessary to go backward in order to get the right
-	// path
+
+	/**
+	 * Once the shortest path is computed, we have, for each
+	 * node on the path its predecessor
+	 * It is necessary to go backward in order to get the right path
+	 * @param {Graph} graph
+	 * @param {Number} nodeJid
+	 * @return {any[]}
+	 */
 	getPathBasedOnPredecessors : function(graph, nodeJid) {
 		var path = new Array();
 		// get the path from I to J
@@ -1033,6 +1252,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Hihglight nodes and edges belonging to a subnetwork
+	 * @param {Array} nodeToLink Array of node ids
 	 */
 	keepOnlySubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
@@ -1167,6 +1387,7 @@ metExploreD3.GraphFunction = {
 
 	/**
 	 * Hihglight nodes and edges belonging to a subnetwork
+	 * @param {Array} nodeToLink Array of node ids
 	 */
 	highlightSubnetwork : function(nodeToLink) {
 		var session = _metExploreViz.getSessionById('viz');
@@ -2453,4 +2674,4 @@ metExploreD3.GraphFunction = {
         });
         return result;
     }
-}
+};

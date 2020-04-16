@@ -358,10 +358,6 @@
             "bundle": true
         },
         {
-            "path": "resources/lib/functions/GraphPath.js",
-            "bundle": true
-        },
-        {
             "path": "resources/lib/functions/GraphStyleEdition.js",
             "bundle": true
         }

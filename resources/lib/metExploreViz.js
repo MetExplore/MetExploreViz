@@ -9,7 +9,6 @@ var metExploreD3 = {
     GraphFunction:"",
     GraphMapping:"",
     GraphPanel:"",
-    GraphPath:"",
     GraphNode:"",
     GraphStyleEdition:"",
     GraphColorScaleEditor:"",

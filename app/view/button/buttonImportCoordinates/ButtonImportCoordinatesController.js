@@ -17,7 +17,7 @@ Ext.define('metExploreViz.view.button.buttonImportCoordinates.ButtonImportCoordi
 			change:function(){
                 metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importCoordinates').fileInputEl.dom, function(json){
                     // Allows to reload the same file
-                    metExploreD3.GraphPanel.refreshCoordinates(json, view.lookupReference('importCoordinates').reset());
+                    metExploreD3.GraphNetwork.refreshCoordinates(json, view.lookupReference('importCoordinates').reset());
                 });
 			},
 			scope:me

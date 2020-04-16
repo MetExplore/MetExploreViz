@@ -1,25 +1,41 @@
 /**
+ * @class metExploreD3.GraphPanel
+ * To manage the panel where is the graph
+ *
+ * Initialization of visualization panel
+ * Treatment of JSON network
+ * Resizing of panel
+ *
  * @author MC
- * (a)description : To manage the panel where is the graph
+ * @uses metExploreD3.GraphNode
+ * @uses metExploreD3.GraphNetwork
+ * @uses metExploreD3.GraphUtils
  */
 metExploreD3.GraphPanel = {
 
 	/*****************************************************
-	* Get panel height
-    * @param {} panel : active panel
-	*/
+	 * Get panel height
+     * @param {String} panel Active panel
+	 * @return {String}
+	 */
 	getHeight : function(panel){
 		return document.getElementById(panel).style.height;
 	},
 
     /*****************************************************
 	* Get panel width
-    * @param {} panel : active panel
+    * @param {String} panel Active panel
+	 * @return {String}
 	*/
 	getWidth : function(panel){
         return document.getElementById(panel).style.width;
 	},
 
+	/*****************************************************
+	 * Add border to the selected panel to highlight it
+	 * @param String} panel Panel to activate
+	 * @private
+	 */
 	setActivePanel : function(panel){
 		var lastPanel = _MyThisGraphNode.activePanel;
         if(!lastPanel)
@@ -45,8 +61,10 @@ metExploreD3.GraphPanel = {
     },
 
 	/*****************************************************
-	* To resize svg viz when layout is modified
-	*/
+	 * Resize svg viz when layout is modified
+	 *  @param {String} panel Active panel
+	 * @private
+	 */
 	resizeViz : function(panel){
 		var scale = metExploreD3.getScaleById(panel);
 		if(scale!=undefined){
@@ -79,9 +97,6 @@ metExploreD3.GraphPanel = {
 
 
             // Redefine Zoom and brush
-			var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
-			var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
-			var scaleZ = scale.getZoomScale();
 			metExploreD3.GraphNetwork.zoomListener
 				.scaleExtent([ 0.01, 30 ])
 				.extent([[w*.45, h*.45], [w*.55, h*.55]])
@@ -112,11 +127,11 @@ metExploreD3.GraphPanel = {
 	},
 
 	/*****************************************************
-	* To resize svg panels when layout is modified
-    * @param {} panel : active panel
-	*/
+	 * Resize svg panels when layout is modified
+     * @param {String}panel Active panel
+	 * @private
+	 */
 	resizePanels : function(panel){
-		var sessionsStore = _metExploreViz.getSessionsSet();
 		var session = _metExploreViz.getSessionById(panel);
 		var h = $("#"+panel).height();
 		var w = $("#"+panel).width();
@@ -128,8 +143,8 @@ metExploreD3.GraphPanel = {
 				var sessionMain = _metExploreViz.getSessionById("viz");
 				var force = sessionMain.getForce();
 				if(force!=undefined){
-					var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
-					var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
+					h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+					w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 
 					var forceX = d3.forceX()
 						.x(w/2)
@@ -152,8 +167,8 @@ metExploreD3.GraphPanel = {
 			{
 				var force = session.getForce();
 				if(force!=undefined){
-					var h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
-					var w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
+					h = parseInt(metExploreD3.GraphPanel.getHeight(panel));
+					w = parseInt(metExploreD3.GraphPanel.getWidth(panel));
 
 					var forceX = d3.forceX()
 						.x(w/2)
@@ -176,16 +191,11 @@ metExploreD3.GraphPanel = {
 	},
 
 	/*****************************************************
-	* To remove svg components of panel
-    * @param {} panel : active panel
-	*/
-	removeSvgComponents : function(panel){
-		d3.select("#"+panel).select("#D3viz").selectAll("*").remove();
-	},
-
-	/*****************************************************
-	* Update the network to fit the cart content
-	*/
+	 * Init all visualisation panel in function of JSON used from parent website or from JSON
+	 *   @param {Object} json JSON to load
+	 *   @fires resetMapping afterrefresh
+	 *   @throws error in function
+	 */
 	refreshJSON : function(json) {
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
@@ -205,28 +215,16 @@ metExploreD3.GraphPanel = {
 
 					metExploreD3.showMask(myMask);
 
-					var that = this;
 			        setTimeout(
 						function() {
 							try{
 								metExploreD3.fireEvent('selectConditionForm', "resetMapping");
-
-								// var startall = new Date().getTime();
-								// var start = new Date().getTime();
-								// console.log("----Viz: START refresh/init Viz");
 
 								if(jsonParsed.sessions!=undefined)
 									metExploreD3.GraphPanel.loadDataJSON(json, end);
 								else
 									metExploreD3.GraphPanel.initDataJSON(json, end); // Init of metabolite network
 
-								// 62771 ms for recon before refactoring
-								// 41465 ms now
-								// var endall = new Date().getTime();
-								// var timeall = endall - startall;
-								// console.log("----Viz: FINISH refresh/ all "+timeall);
-								/*metExploreD3.hideMask(myMask);
-								metExploreD3.fireEvent('graphPanel', 'afterrefresh');*/
 								function end(){
 									metExploreD3.hideMask(myMask);
 									metExploreD3.hideInitialMask();
@@ -242,7 +240,7 @@ metExploreD3.GraphPanel = {
 
 								e.functionUsed="refreshJSON";
 								metExploreD3.hideMask(myMask);
-								metExploreD3.displayMessage("Warning", 'An error occurs durding loading graph please contact <a href="mailto:contact-metexplore@inra.fr">contact-metexplore@inra.fr</a>.')
+								metExploreD3.displayMessage("Warning", 'An error occurs durding loading graph please contact <a href="mailto:contact-metexplore@inra.fr">contact-metexplore@inra.fr</a>.');
 								throw e;
 							}
 				    }, 100);
@@ -253,9 +251,11 @@ metExploreD3.GraphPanel = {
 
 	/*****************************************************
 	* Update the network
+	 * @param {Object} json JSON to load
+	 * @param {Function} func Callback function
+	 * @fires click
 	*/
 	refreshPanel : function(json, func) {
-		var me = this;
 
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
@@ -301,304 +301,12 @@ metExploreD3.GraphPanel = {
 	},
 
 	/*****************************************************
-	* Draw network in a hierarchical way
-	*/
-    hierarchicalDrawing : function() {
-    	//graph structure used by dagre library (and behind graphviz) to compute the drawing
-		var graph = new dagre.graphlib.Graph().setGraph({});
-		var session = _metExploreViz.getSessionById('viz');
-		
-		//create the graph structure from the MetExploreViz graph
-		//In order to reduce the number of layers, we won't consider all ther reactions to be nodes in the dagre graph
-		//If a reaction has only one substrate and one product (two connected links), we won't use it in the computation
-		//Algorithm is as follow:
-		//For each reaction node in the original graph
-		//	if the node has two links
-		//		if it is the first time we visit the reaction
-		//			add the substrate as a node in the graph
-		//			add the product as a node in the graph
-		//			add the edge (substrate,product) in the graph
-		//			set the label of the edge as the id of the reaction
-		//		else
-		//			find the reaciton r corresponding to the edge in the graph which has the same substrate and product
-		//			add the current reaction to the associated reaction list of r 
-		//	else
-		//		for each link connected to the reaction
-		//			add the metabolite to the graph
-		//			add the reaction to the graph
-		//			add the edge (metabolite,reaction) to the graph
-
-		session.getD3Data().getNodes()
-				.filter(function (node){return node.biologicalType=="reaction" && !node.isHidden();})
-				.filter(function (node){
-				   	// check if the reaction has only one substrate and one product
-				   		var connectedLinks=session.getD3Data().getLinks()
-				   			.filter(function(link){
-				   				return (link.source == node) || (link.target == node);
-				   				});
-				   			//console.log(connectedLinks);
-				   		if(connectedLinks.length==2){
-				   			//the node won't be used in the computation so we are going to add the source and the target and connect them
-				   			//For each of both links, get the source node and target nodes
-				   			var source;
-				   			var target;
-				   			connectedLinks.forEach(function(link){
-				   				if(link.source == node){
-				   					target=link.getTarget();
-				   				}
-				   				if(link.target == node){
-				   					source=link.getSource();
-				   				}	
-				   			});
-				   			
-				   			if(source && target) {
-                                var sourceNode = graph.setNode(source, {label: source.id});
-
-                                var targetNode = graph.setNode(target, {label: target.id});
-
-                                if (graph.edge(source, target)) {
-                                    //The label of the reaction which has the same substrate and product and is already in the graph.
-                                    var referenceReactionLabel = graph.edge(source, target).label;
-                                    var referenceNode = session.getD3Data().getNodes()
-                                        .find(function (n) {
-                                            return n.id == referenceReactionLabel;
-                                        });
-                                    //if the edge is already in the graph we have to store the reaction since it won't be placed in the final view.
-                                    //indeed dagre doesn't allow multi-edges.
-                                    // who have to associate the current reaction to the one that will be drawn
-
-                                    if (!referenceNode.associatedReactions) {
-                                        var associatedReactions = [];
-                                        referenceNode.associatedReactions = associatedReactions;
-                                        referenceNode.associatedReactions.push(node);
-                                    }
-                                    else {
-                                        referenceNode.associatedReactions.push(node);
-                                    }
-                                }
-                                else {
-                                    graph.setEdge(source.id, target.id, {label: node.getId()});
-                                }
-                            }
-				   		}
-				   		else{
-				   			//Add the reaction to the node list
-				   			//add connection to the reaction and substrate product
-				   				connectedLinks.forEach(function(link){
-				   				graph.setNode(link.getSource(), {label:link.getSource().id});
-				   				graph.setNode(link.getTarget(), {label:link.getTarget().id});
-				   				graph.setEdge(link.getSource().id, link.getTarget().id, { label: link.getSource().id+' -- '+link.getTarget().id });
-				   			});
-				   		}
-                    	
-                     });
-
-		var layout=dagre.layout(graph);
-
-
-		//-----Drawing the graph
-		//For each node of the visualised graph
-		//		if the node is in the Dagre graph
-		//			use the Dagre coordinates to draw the node
-		//		else
-		//			for each edge
-		//				if the edge has a reaction as a label (it means this reaction has no corresponding node in the Dagre graph)
-		//					affect to the coordinates of the first bend to the reaction
-		//					for r=0 to the size of associated reaction AR table
-		//						set same y to AR[r]
-		//						set AR[r].x <- x+ 10*(AR[r]+1)
-		d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-                                .each(function(node){
-                                //place nodes that were in the graph
-                                	if(graph.node(node)){
-                                	 	var x;
-                                	 	var y;
-                                		graph.nodes().forEach(function(n) {
-											var nodeG = graph.node(n);
-											if(nodeG.label === node.getId())
-												{
-													x=nodeG.x;
-													y=nodeG.y;
-												}
-											});
-                                        node.px = x;
-                                        node.py = y;
-                                        node.x = x;
-                                        node.y = y;
-                                        node.setLocked(true);
-                                        node.fixed=node.isLocked();
-
-										metExploreD3.GraphNode.fixNode(node);
-                                	}
-                                //place nodes that were not in the graph
-                                	else
-                                	{
-
-                                		for(label in  graph._edgeLabels){
-                                			//look for the edge where the node is located
-                                			var edgeLabel=graph._edgeLabels[label].label;
-                                			if(edgeLabel == node.getId()){
-                                				node.px = graph._edgeLabels[label].points[1].x;
-                                        		node.py = graph._edgeLabels[label].points[1].y;
-                                        		node.x = graph._edgeLabels[label].points[1].x;
-                                        		node.y = graph._edgeLabels[label].points[1].y;
-                                        		node.setLocked(true);
-                                        		node.fixed=node.isLocked();
-
-												metExploreD3.GraphNode.fixNode(node);
-
-                                        		if(node.associatedReactions){
-                                 					for(associated in node.associatedReactions){
-                                 						var associatedNode=node.associatedReactions[associated];
-                                 						associatedNode.px=node.px+10*(associated+1);
-                                 						associatedNode.py=node.py;
-                                 						associatedNode.x=node.x+10*(associated+1);
-                                 						associatedNode.y=node.y;
-                                 						associatedNode.setLocked(true);
-                                 						associatedNode.fixed=associatedNode.isLocked();
-
-														metExploreD3.GraphNode.fixNode(associatedNode);
-                                 					}
-                                        		}
-                                			}
-										}
-                                	}
-
-
-                                    });  
-
-
-
-
-        metExploreD3.GraphNetwork.tick("viz");
-
-
-
-		// d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
-  //                               .each(function(link){
-  //                               	//console.log("---draw edges");
-  //                               	var source=link.getSource();
-  //                               	console.log(source.getId())
-  //                               	var target=link.getTarget();
-  //                               	// for all the edges in the Dagre graph
-  //                               	//		if it corresponds to a link
-  //                               	//			Draw the liknk with the points of the Dagre graph.
-  //                               	for(label in  graph._edgeLabels){
-  //                               			//look for the edge where the node is located
-  //                               			var edgeSource=graph._edgeLabels[label].label.split(" -- ")[0];
-  //                               			var edgeTarget=graph._edgeLabels[label].label.split(" -- ")[1];
-  //                               			 if(edgeSource==source.getId() && edgeTarget==target.getId()){
-  //                               			 	//get coordinates in DAGRE
-  //                               			 	//console.log(link);
-  //                               			 	console.log(d3.select(this).attr("d"));
-  //                               			 	var lineData = [ { "x": 120, "y": 20}, { "x": 120,  "y": 100},
-  //                 									{ "x": 40,  "y": 100}, { "x": 40,   "y": 180},
-  //                									{ "x": 500,  "y": 180}, { "x": 500,   "y": 100}];
-		// 										var lineFunction = d3.svg.line()
-		// 										 .x(function(d) { return d.x; })
-		// 										 .y(function(d) { return d.y; })
-		// 										 .interpolate("linear");
- 	// 										d3.select(this).attr("d",lineFunction(lineData));
- 	// 										console.log("after",d3.select(this).attr("d"));
-
-  //                               			 	//d3.select(this).attr("d", );
-  //                               			 }
-
-  //                               		}
-  //                               });
-        
-		},
-
-
-	/*****************************************************
-	* Update the network
-	*/
-    refreshCoordinates : function(json, func) {
-		var me = this;
-		metExploreD3.hideInitialMask();
-
-        var panel = "viz";
-        var myMask = metExploreD3.createLoadMask("Move nodes in progress...", panel);
-        if(myMask!== undefined){
-
-            metExploreD3.showMask(myMask);
-
-            metExploreD3.deferFunction(function() {
-
-                metExploreD3.displayMessageYesNo("Set nodes coordinates",'Do you want highlight moved nodes.',function(btn){
-                    if(btn==="yes")
-                    {
-                        moveNodes(true);
-                    }
-                    else
-                    {
-                        moveNodes(false);
-                    }
-                });
-
-                function moveNodes(highlight){
-                    var session = _metExploreViz.getSessionById("viz");
-
-                    var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
-                    var nodesToMove = jsonParsed.nodes.filter(function(node){
-                        return session.getD3Data().getNodes().find(function(nodeInNetwork){
-                            return node.dbIdentifier === nodeInNetwork.getDbIdentifier();
-                        });
-                    });
-                    if(nodesToMove.length>0){
-                        if(session!==undefined)
-                        {
-                            if(highlight)
-                                metExploreD3.GraphNode.unselectAll("#viz");
-
-                            metExploreD3.GraphNetwork.animationButtonOff("viz");
-                            var force = session.getForce();
-                            force.stop();
-                            d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
-                                .each(function(node){
-                                    var nodeToMove = nodesToMove.find(function (aNode) {
-                                        return aNode.dbIdentifier === node.getDbIdentifier();
-                                    });
-                                    if(nodeToMove){
-                                        node.px = nodeToMove.px ;
-                                        node.py = nodeToMove.py ;
-                                        node.x = nodeToMove.x ;
-                                        node.y = nodeToMove.y ;
-                                        node.setLocked(true);
-                                        node.fixed=node.isLocked();
-
-										metExploreD3.GraphNode.fixNode(node);
-                                        if(highlight)
-                                        	metExploreD3.GraphNode.highlightANode(node.getDbIdentifier());
-                                    }
-                                });
-
-                            metExploreD3.GraphNetwork.tick("viz");
-                            metExploreD3.hideMask(myMask);
-
-                        }
-
-                        if(typeof func==='function') func();
-                    }
-                    else
-                    {
-                        //SYNTAX ERROR
-                        metExploreD3.displayWarning("None coordinate mapped", 'None nodes mapped by bdIdentifier verify used biosource.');
-                        metExploreD3.hideMask(myMask);
-                    }
-				}
-
-            }, 100);
-        }
-
-
-
-
-	},
-
-	/*****************************************************
-	* Fill the data models with the store reaction
-	*/
+	 * Fill the data models imported from JSON file
+	 * @param {Object} json JSON to load
+	 * @param {Function} endFunc Callback function
+	 * @fires loadNetworkBiosource jsoninit initiateviz sideCompound jsonmapping reloadMapping closeMapping
+	 * @private
+	 */
 	loadDataJSON : function(json, endFunc){
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
@@ -673,7 +381,7 @@ metExploreD3.GraphPanel = {
 					metExploreD3.setLinkStyle(linkStyle);
 
 				}
-				var metaboliteStyle
+				var metaboliteStyle;
 				if(jsonParsed.metaboliteStyle)
 				{
 					metaboliteStyle = new MetaboliteStyle(jsonParsed.metaboliteStyle.backgroundColor,jsonParsed.metaboliteStyle.height, jsonParsed.metaboliteStyle.width, jsonParsed.metaboliteStyle.rx, jsonParsed.metaboliteStyle.ry, jsonParsed.metaboliteStyle.opacity, jsonParsed.metaboliteStyle.strokeColor, jsonParsed.metaboliteStyle.strokeWidth, jsonParsed.metaboliteStyle.fontColor, jsonParsed.metaboliteStyle.fontSize, jsonParsed.metaboliteStyle.labelOpacity, jsonParsed.metaboliteStyle.label,  jsonParsed.metaboliteStyle.useAlias);
@@ -860,7 +568,6 @@ metExploreD3.GraphPanel = {
                     // set style of previous session from JSON
                     var networkDataViz = new NetworkData(key);
                     networkDataViz.cloneObject(sessions[key].d3Data);
-                    var nodesData = networkDataViz.getNodes();
                     // nodesData.forEach(function(node) {
 						// metExploreD3.GraphStyleEdition.setStartingStyle(node, key);
                     // });
@@ -877,8 +584,12 @@ metExploreD3.GraphPanel = {
 	},
 
 	/*****************************************************
-	* Fill the data models with the store reaction
-	*/
+	 * Fill the data models with the store reaction
+	 * @param {Object} json JSON to load
+	 * @param {Function} func Callback function
+	 * @fires loadNetworkBiosource jsoninit jsonmapping
+	 * @private
+	 */
 	initDataJSON : function(json, func){
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
@@ -1013,9 +724,11 @@ metExploreD3.GraphPanel = {
 	},
 
 	/*****************************************************
-	* Initialization of visualization
-    * @param {} vizEngine : library used to make the visualization
-	*/
+	 * Initialization of visualization
+	 * @param {String} vizEngine : library used to make the visualization
+	 * @fires initiateviz
+	 * @private
+	 */
 	initiateViz : function(vizEngine) {
 
 		d3.select("#viz").selectAll("#presentationViz, #presentationLogoViz").classed("hide", true);
@@ -1023,25 +736,66 @@ metExploreD3.GraphPanel = {
 		// Previously we used Cytoscape.js. Now we use D3.js,
 		// that what is this test for
 		_metExploreViz.setLaunched(true);
-		if (vizEngine == 'D3') {
+		if (vizEngine === 'D3') {
 			metExploreD3.GraphNetwork.delayedInitialisation('viz');	
 		}
 	},
 
-	loadData : function(panel){
+	/*****************************************************
+	 * Init keyboard shortsut events
+	 * @private
+	 */
+	initShortCut: function () {
+		d3.select("body")
+			.on("keydown", function () {
+				_MyThisGraphNode.charKey = d3.event.keyCode;
+				_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+				_MyThisGraphNode.altKey = d3.event.altKey;
+				var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
 
-		var newSession = _metExploreViz.getSessionById(panel);
+				//H	72
+				if (_MyThisGraphNode.charKey == 72 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.GraphFunction.horizontalAlign(_MyThisGraphNode.activePanel);
+				}
 
-		// var newDisplayNodeName = oldSession.getDisplayNodeName();
-		// var newIsMapped = oldSession.isMapped();
+				if (_MyThisGraphNode.charKey == 72 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.GraphFunction.horizontalReverse(_MyThisGraphNode.activePanel);
+				}
 
-		// var newSession = new NetworkVizSession();
-	 //    newSession.setVizEngine("D3");
-	 //    newSession.setId('viz');
-	 //    newSession.setMapped(newIsMapped);
-	 //    newSession.setDisplayNodeName(newDisplayNodeName);
+				//V 86
+				if (_MyThisGraphNode.charKey == 86 && !_MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.GraphFunction.verticalAlign(_MyThisGraphNode.activePanel);
+				}
 
-	   
-		return newSession;
-	}
-}
+				if (_MyThisGraphNode.charKey == 86 && _MyThisGraphNode.altKey && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.GraphFunction.verticalReverse(_MyThisGraphNode.activePanel);
+				}
+
+
+				// 65=A
+				if (_MyThisGraphNode.charKey == 65 && _MyThisGraphNode.ctrlKey && metExploreD3.GraphNetwork.focus) {
+					d3.select("#" + _MyThisGraphNode.activePanel).select("#D3viz").select("#graphComponent").selectAll("g.node")
+						.each(function (node) {
+							if (!node.isSelected()) {
+								_MyThisGraphNode.selection(node, _MyThisGraphNode.activePanel);
+							}
+						});
+				}
+			})
+			.on("keyup", function (e) {
+				// 46=Suppr
+				var activesession = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
+				if (_MyThisGraphNode.charKey == 46 && activesession.getSelectedNodes().length > 0 && metExploreD3.GraphNetwork.focus) {
+					metExploreD3.displayMessageYesNo("Selected nodes", 'Do you want remove selected nodes?', function (btn) {
+						if (btn == "yes") {
+							metExploreD3.GraphNetwork.removeSelectedNode(_MyThisGraphNode.activePanel)
+						}
+					});
+				}
+
+				_MyThisGraphNode.charKey = 'none';
+				_MyThisGraphNode.ctrlKey = d3.event.ctrlKey;
+			});
+	},
+};
+

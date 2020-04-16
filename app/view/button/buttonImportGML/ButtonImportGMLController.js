@@ -17,7 +17,7 @@ Ext.define('metExploreViz.view.button.buttonImportGML.ButtonImportGMLController'
 			change:function(){
                 metExploreD3.GraphUtils.handleFileSelect(view.lookupReference('importGML').fileInputEl.dom, function(gml){
                     // Allows to reload the same file
-                    metExploreD3.GraphPanel.refreshCoordinatesFromGML(gml, view.lookupReference('importGML').reset());
+                    metExploreD3.GraphNetwork.refreshCoordinatesFromGML(gml, view.lookupReference('importGML').reset());
                 });
 			},
 			scope:me
