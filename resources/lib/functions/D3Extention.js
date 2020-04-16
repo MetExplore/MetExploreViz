@@ -160,24 +160,24 @@ d3.selection.prototype.addNodeText = function(style) {
 			var name = style.getDisplayLabel(d, style.getLabel(), style.isUseAlias());
 			name = name.split(' ');
 			el.text('');
-			for (var i = 0; i < name.length; i++) {
-				var nameDOMFormat = $("<div/>").html(name[i]).text();
-				var tspan = el.append('tspan').text(nameDOMFormat);
+			if(style.getLabel()!=="hidden") {
+				for (var i = 0; i < name.length; i++) {
+					var nameDOMFormat = $("<div/>").html(name[i]).text();
+					var tspan = el.append('tspan').text(nameDOMFormat);
 
-				if (d.labelFont){
-					if (d.labelFont.fontX) {
-						tspan
-							.attr('x', function () {
-								return d.labelFont.fontX;
-							});
+					if (d.labelFont) {
+						if (d.labelFont.fontX) {
+							tspan
+								.attr('x', function () {
+									return d.labelFont.fontX;
+								});
+						} else tspan.attr('x', 0);
+					} else tspan.attr('x', 0);
+
+
+					if (i > 0) {
+						tspan.attr('dy', style.getFontSize());
 					}
-					else tspan.attr('x', 0);
-				}
-				else tspan.attr('x', 0);
-
-
-				if (i > 0){
-					tspan.attr('dy', style.getFontSize());
 				}
 			}
 		})
