@@ -1311,6 +1311,8 @@ metExploreD3.GraphNetwork = {
 
         session.setForce(force);
 
+        metExploreD3.GraphNode.initNeighboursArrays();
+
         var networkDataInit = new NetworkData('viz');
         networkDataInit.cloneObject(networkData);
         _metExploreViz.setInitialData(networkDataInit);

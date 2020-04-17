@@ -2458,5 +2458,85 @@ metExploreD3.GraphNode = {
                 }
             });
 
+    },
+    initNeighboursArrays: function(){
+        //extract links, keep thoses involving metabolite arg
+        var networkData = _metExploreViz.getSessionById("viz").getD3Data();
+        networkData.getLinks()
+            .forEach(function(link) {
+                if(!(link.getSource().getIsSideCompound() || link.getTarget().getIsSideCompound())){
+                    if(link.getSource().getBiologicalType()==="reaction" && link.getTarget().getBiologicalType()==="metabolite") {
+
+                        metabolite = link.getTarget();
+                        reaction= link.getSource();
+
+                        if(!reaction.substrates)
+                            reaction.substrates=[];
+
+                        if(!reaction.products)
+                            reaction.products=[];
+
+                        if(!metabolite.asSubstrates)
+                            metabolite.asSubstrates=[];
+
+                        if(!metabolite.asProducts)
+                            metabolite.asProducts=[];
+
+                        reaction.products.push(metabolite);
+                        metabolite.asProducts.push(reaction);
+
+                        if(reaction.getReactionReversibility()){
+                            reaction.substrates.push(metabolite);
+                            metabolite.asSubstrates.push(reaction);
+                        }
+                    }
+                    else
+                    {
+                        if(link.getTarget().getBiologicalType()==="reaction" && link.getSource().getBiologicalType()==="metabolite") {
+                            reaction = link.getTarget();
+                            metabolite = link.getSource();
+
+                            if(!reaction.substrates)
+                                reaction.substrates=[];
+
+                            if(!reaction.products)
+                                reaction.products=[];
+
+                            if(!metabolite.asSubstrates)
+                                metabolite.asSubstrates=[];
+
+                            if(!metabolite.asProducts)
+                                metabolite.asProducts=[];
+
+                            reaction.substrates.push(metabolite);
+                            metabolite.asSubstrates.push(reaction);
+
+                            if(reaction.getReactionReversibility()){
+                                reaction.products.push(metabolite);
+                                metabolite.asProducts.push(reaction);
+                            }
+                        }
+                    }
+                }
+                else {
+                    if(link.getSource().getBiologicalType()==="reaction" && link.getTarget().getBiologicalType()==="metabolite") {
+                        reaction = link.getSource();
+                        metabolite = link.getTarget();
+                    }
+                    else
+                    {
+                        if(link.getTarget().getBiologicalType()==="reaction" && link.getSource().getBiologicalType()==="metabolite") {
+                            reaction = link.getTarget();
+                            metabolite = link.getSource();
+                        }
+                    }
+
+                    if(!reaction.sideCompounds){
+                        reaction.sideCompounds=[];
+                        reaction.sideCompoundsHidden=true;
+                    }
+                    reaction.sideCompounds.push(metabolite);
+                }
+            });
     }
 };
