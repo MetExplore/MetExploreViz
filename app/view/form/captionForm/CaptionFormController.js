@@ -559,7 +559,12 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
 
                 selectAllButton.on({
                     click : function (that, newV, oldVV, e) {
+                        if(view.id==="captionFormCompartments"){
+                        var arrayCheckBox = Ext.getCmp("captionFormCompartments").query('checkbox[forId=componentCheckbox]');
+                    }else if(view.id==="captionFormPathways"){
                         var arrayCheckBox = Ext.getCmp("captionFormPathways").query('checkbox[forId=componentCheckbox]');
+                    }
+
                         var allIsSelected = arrayCheckBox.every(function(checkbox){return checkbox.checked});
                         if(allIsSelected){
                             arrayCheckBox.forEach(function (checkBox) {
