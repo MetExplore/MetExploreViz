@@ -930,40 +930,40 @@ var metExploreViz = function(panel, webSite){
             }
         };
 
-        var urlWebHook = "https://hooks.slack.com/services/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"; //the URL you get on your "incoming web hooks" page.
-
-        function sendToSlack (s, theUsername, theIconUrl, attachments) {
-            var payload = {
-                text: s
-            };
-            if (theUsername !== undefined) {
-                payload.username = theUsername;
-            }
-            if (theIconUrl !== undefined) {
-                payload.icon_url = theIconUrl;
-            }
-
-            payload.attachments = [
-                {
-                    "title": "MetExploreViz error report",
-                    "text":
-                        'Date : '+ new Date() + '\n' +
-                        'Browser : '+ browserName + '\n' + 'Version : '+ fullVersion + '\n' +
-                        functionsUsed+
-                        '```\n'+msg+'\n'+url+'\nline n.'+lineNo+' column n.'+columnNo+'\n```'
-                }
-            ];
-
-            xhttp.open("POST", urlWebHook);
-            xhttp.send(JSON.stringify(payload));
-        }
-
-        sendToSlack('An error occured in MetExploreViz! :warning:', "MetExploreViz Error", "https://metexplore.toulouse.inra.fr/tmp/bug.png");
+        // var urlWebHook = "https://hooks.slack.com/services/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"; //the URL you get on your "incoming web hooks" page.
+        //
+        // function sendToSlack (s, theUsername, theIconUrl, attachments) {
+        //     var payload = {
+        //         text: s
+        //     };
+        //     if (theUsername !== undefined) {
+        //         payload.username = theUsername;
+        //     }
+        //     if (theIconUrl !== undefined) {
+        //         payload.icon_url = theIconUrl;
+        //     }
+        //
+        //     payload.attachments = [
+        //         {
+        //             "title": "MetExploreViz error report",
+        //             "text":
+        //                 'Date : '+ new Date() + '\n' +
+        //                 'Browser : '+ browserName + '\n' + 'Version : '+ fullVersion + '\n' +
+        //                 functionsUsed+
+        //                 '```\n'+msg+'\n'+url+'\nline n.'+lineNo+' column n.'+columnNo+'\n```'
+        //         }
+        //     ];
+        //
+        //     xhttp.open("POST", urlWebHook);
+        //     xhttp.send(JSON.stringify(payload));
+        // }
+        //
+        // sendToSlack('An error occured in MetExploreViz! :warning:', "MetExploreViz Error", "https://metexplore.toulouse.inra.fr/tmp/bug.png");
       }
     };
     _metExploreViz = this;
 
-    // Global variables 
+    // Global variables
     this.sessions = {};
 
     this.launched = false;
