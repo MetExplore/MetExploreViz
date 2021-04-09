@@ -139,8 +139,8 @@ metExploreD3.GraphLink = {
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             else {
-                var rTW = (Math.abs(d) * source.getSvgWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * source.getSvgHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             var heightArrow = 5;
@@ -183,8 +183,8 @@ metExploreD3.GraphLink = {
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
             else {
-                var rTW = (Math.abs(d) * source.getSvgWidth() / 2) / Math.abs(dX);
-                var rTH = (Math.abs(d) * source.getSvgHeight() / 2) / Math.abs(dY);
+                var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+                var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
                 var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
             }
 
