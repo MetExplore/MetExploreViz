@@ -1159,7 +1159,7 @@ metExploreD3.GraphNetwork = {
         var manyBody = d3.forceManyBody()
             .strength(-100)
             .distanceMin(1)
-            .distanceMax(1000);
+            .distanceMax(400);
 
         var forceLinks = d3.forceLink(visibleLinks)
             .distance(function(link){
