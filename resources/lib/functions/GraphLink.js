@@ -84,7 +84,7 @@ metExploreD3.GraphLink = {
                                     .style("stroke", pathw.getColor());
 
                             })
-                            //me.parentNode.removeChild(me);
+                            // me.parentNode.removeChild(me);
                         }
                         //if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
                         // return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
@@ -167,8 +167,7 @@ metExploreD3.GraphLink = {
                 "L" + xTarget + "," + yTarget +
                 "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
                 "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xBaseArrowRev + "," + yBaseArrowRev +
-                "Z";
+                "L" + xBaseArrowRev + "," + yBaseArrowRev;
         }
 
         function path(source, target) {
@@ -206,8 +205,7 @@ metExploreD3.GraphLink = {
                 "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
                 "L" + xTarget + "," + yTarget +
                 "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
-                "L" + xBaseArrowT + "," + yBaseArrowT +
-                "Z";
+                "L" + xBaseArrowT + "," + yBaseArrowT;
         }
 
 
