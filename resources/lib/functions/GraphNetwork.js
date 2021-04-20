@@ -1743,6 +1743,7 @@ metExploreD3.GraphNetwork = {
      */
     removeMarkerEnd : function(){
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction").attr("marker-end", "none");
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.pathway").attr("marker-end", "none");
     },
 /////////////////////////////////////////////////////GraphLink?
 
