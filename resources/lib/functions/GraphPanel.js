@@ -405,7 +405,7 @@ metExploreD3.GraphPanel = {
 						jsonParsed.reactionStyle.labelOpacity,
 						jsonParsed.reactionStyle.label,
 						jsonParsed.reactionStyle.useAlias);
-					
+
 					metExploreD3.setReactionStyle(reactionStyle);
 				}
 
@@ -594,9 +594,9 @@ metExploreD3.GraphPanel = {
 		var jsonParsed = metExploreD3.GraphUtils.decodeJSON(json);
 		if(jsonParsed){
 			var networkVizSession = _metExploreViz.getSessionById("viz");
-			
+
 			var networkData = networkVizSession.getD3Data();
-			
+
 	        _metExploreViz.resetOldCoodinates();
 	        networkData.getNodes().forEach(function(node){
 	        	_metExploreViz.addOldCoodinates({"id":node.getId(), "x":node.x, "px":node.px, "y":node.y, "py":node.py});
@@ -668,7 +668,7 @@ metExploreD3.GraphPanel = {
 				}
 
 				if(overlap && !metExploreD3.getGeneralStyle().windowsAlertIsDisable()){
-					metExploreD3.displayMessageYesNo("Coodinates",'Do you want keep node coordinates.',function(btn){
+					metExploreD3.displayMessageYesNo("Coordinates",'Do you want to keep nodes coordinates.',function(btn){
 		                if(btn=="yes")
 		                {
 		                	var selected = [];
@@ -680,13 +680,13 @@ metExploreD3.GraphPanel = {
 					            	node.px = coor.px;
 					            	node.py = coor.py;
 					            	selected.push(coor.id);
-								
+
 					            }
 				            });
 				            d3.select("#viz").select("#graphComponent")
 								.selectAll("g.node")
 						        .filter(function(d) { return selected.indexOf(d.id)!=-1; })
-						        .each(function(d) { 
+						        .each(function(d) {
 						        	d.setLocked(!d.isLocked());
 									d.fixed=d.isLocked();
 									if(d.isLocked())
@@ -705,7 +705,7 @@ metExploreD3.GraphPanel = {
 				}
 			}
 
-			
+
 
 			if(_metExploreViz.getMappingsLength()>0)
 			{
@@ -720,7 +720,7 @@ metExploreD3.GraphPanel = {
 				metExploreD3.GraphNetwork.tick("viz");
 			}
 		}
-		func();			
+		func();
 	},
 
 	/*****************************************************
@@ -737,7 +737,7 @@ metExploreD3.GraphPanel = {
 		// that what is this test for
 		_metExploreViz.setLaunched(true);
 		if (vizEngine === 'D3') {
-			metExploreD3.GraphNetwork.delayedInitialisation('viz');	
+			metExploreD3.GraphNetwork.delayedInitialisation('viz');
 		}
 	},
 
@@ -798,4 +798,3 @@ metExploreD3.GraphPanel = {
 			});
 	},
 };
-
