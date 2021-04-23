@@ -386,9 +386,27 @@ metExploreD3.GraphLink = {
             })
             .style("stroke", linkStyle.getStrokeColor())
             .style("stroke-width", linkStyle.getLineWidth())
-            .style("opacity", 1)
+            .style("opacity", linkStyle.getOpacity())
             .style("stroke-dasharray", null);
 
+
+        if(_metExploreViz.getMappingsLength()>0){
+    		metExploreD3.GraphLink.majMapping(Ext.ComponentQuery.query('aStyleForm'));
+        }
+
+        if (metExploreD3.GraphStyleEdition.curvedPath === true){
+            var flux = _metExploreViz.getSessionById(parent).getMappingDataType()==="Flux";
+            if(flux) {
+                funcPath = metExploreD3.GraphLink.funcPathForFlux;
+                d3.select("#"+parent).select("#D3viz").select("#graphComponent")
+                    .selectAll("path.link.reaction")
+                    .attr("d", function(link){  return funcPath(link, parent, this.id);})
+                    .style("stroke-linejoin", "bevel");
+            }
+            else {
+                metExploreD3.GraphLink.bundleLinks(parent);
+            }
+        }
 
         if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
             metExploreD3.GraphCaption.majCaptionPathwayOnLink();
@@ -1286,5 +1304,31 @@ metExploreD3.GraphLink = {
      */
     removeReactionLinks: function () {
         d3.selectAll("path.link.reaction").remove();
+    },
+
+    majMapping : function(views) {
+        views.forEach(function(view, i) {
+            if (view.lookupReference('selectConditionForm') !== undefined && view.lookupReference('selectConditionForm') !== null){
+                var selectConditionType = view.lookupReference('selectConditionForm').lookupReference('selectConditionType');
+                var dataType = selectConditionType.getValue();
+                var conditionName = view.lookupReference('selectConditionForm').lookupReference('selectCondition').getValue();
+                if (conditionName !== null) {
+                    if(dataType==="Alias"){
+                        metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
+                    }
+
+                    if(dataType==="Discrete"){
+                        metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
+                    }
+
+                    if(dataType==="As selection"){
+                        metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, view);
+                    }
+                    if(dataType==="Continuous") {
+                        metExploreD3.GraphMapping.graphMappingContinuousData(conditionName, view);
+                    }
+                }
+            }
+        });
     }
 };
