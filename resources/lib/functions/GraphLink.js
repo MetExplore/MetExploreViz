@@ -1306,26 +1306,70 @@ metExploreD3.GraphLink = {
         d3.selectAll("path.link.reaction").remove();
     },
 
+    /*******************************************
+     * Re-apply mapping on edge
+     */
     majMapping : function(views) {
+        // views.forEach(function(view, i) {
+        //     if (view.lookupReference('selectConditionForm') !== undefined && view.lookupReference('selectConditionForm') !== null){
+        //         var selectConditionType = view.lookupReference('selectConditionForm').lookupReference('selectConditionType');
+        //         var dataType = selectConditionType.getValue();
+        //         var conditionName = view.lookupReference('selectConditionForm').lookupReference('selectCondition').getValue();
+        //         if (conditionName !== null) {
+        //             if(dataType==="Alias"){
+        //                 metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
+        //             }
+        //
+        //             if(dataType==="Discrete"){
+        //                 metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
+        //             }
+        //
+        //             if(dataType==="As selection"){
+        //                 metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, view);
+        //             }
+        //             if(dataType==="Continuous") {
+        //                 metExploreD3.GraphMapping.graphMappingContinuousData(conditionName, view);
+        //             }
+        //         }
+        //     }
+        // });
         views.forEach(function(view, i) {
             if (view.lookupReference('selectConditionForm') !== undefined && view.lookupReference('selectConditionForm') !== null){
                 var selectConditionType = view.lookupReference('selectConditionForm').lookupReference('selectConditionType');
                 var dataType = selectConditionType.getValue();
-                var conditionName = view.lookupReference('selectConditionForm').lookupReference('selectCondition').getValue();
-                if (conditionName !== null) {
-                    if(dataType==="Alias"){
-                        metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
-                    }
-
+                var condition = view.lookupReference('selectConditionForm').lookupReference('selectCondition').getValue();
+                if (condition !== null){
+                    var mappingName = condition.split(" / ")[0];
+                    var conditionName = condition.split(" / ")[1];
                     if(dataType==="Discrete"){
-                        metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
+                        console.log("ko");
+                        var value = view.getController().getValueMappingsSet("Discrete");
+                        value.forEach(function(valMapping){
+                            metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(view.target, view.attrType, view.attrName, view.biologicalType, conditionName, mappingName, valMapping.getName(), valMapping.getValue())
+                        });
                     }
-
+                    if(dataType==="Alias"){
+                        var value = view.getController().getValueMappingsSet("Discrete");
+                        value.forEach(function(valMapping){
+                            metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(view.target, view.attrType, view.attrName, view.biologicalType, conditionName, mappingName, valMapping.getName(), valMapping.getValue())
+                        });
+                    }
                     if(dataType==="As selection"){
-                        metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, view);
+                        var value = view.getController().getValueMappingsSet("As selection")[0].getValue();
+                        metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(view.target, view.attrType, view.attrName, view.biologicalType, conditionName, mappingName, "Identified", value);
                     }
-                    if(dataType==="Continuous") {
-                        metExploreD3.GraphMapping.graphMappingContinuousData(conditionName, view);
+                    if(dataType==="Continuous"){
+                        console.log("ok");
+                        rangeCaption = view.scaleRange
+                            .map(function (sr, i) {
+                                return sr.styleValue;
+                            });
+                        domainCaption = view.scaleRange
+                            .map(function (sr, i) {
+                                return sr.value;
+                            });
+                        var linearScale = d3.scaleLinear().range(rangeCaption).domain(domainCaption);
+                        metExploreD3.GraphStyleEdition.setCollectionStyleContinuousMapping(view.target, view.attrType, view.attrName, view.biologicalType, conditionName, mappingName, linearScale);
                     }
                 }
             }
