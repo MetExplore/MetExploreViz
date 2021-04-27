@@ -57,6 +57,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		view.lookupReference('selectCondition').on({
 			change : function(that, newVal, old){
 				this.map(newVal, old, me.getAStyleFormParent());
+                this.applyToLinkedStyles(me.getAStyleFormParent());
 			},
 			beforerender: function(c) {
 				var viewAStyleForm = me.getAStyleFormParent();
@@ -240,8 +241,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				});
 			linkedStyles.forEach(function(styleForm){
 				var dataTypeToPropagate = view.lookupReference('selectConditionType').getValue();
+                var mappingNameToPropagate = view.lookupReference('selectCondition').getValue();
 
 				styleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue(dataTypeToPropagate);
+                styleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingNameToPropagate);
 			});
 		}
 
