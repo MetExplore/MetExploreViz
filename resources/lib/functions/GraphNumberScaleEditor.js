@@ -747,15 +747,21 @@ metExploreD3.GraphNumberScaleEditor = {
 
     reset : function(){
         var me = this;
-        me.numberRange = me.numberRangeInit.slice(0);
-        me.numberPercent = me.numberPercentInit.slice(0);
-        me.numberDomain = me.numberDomainInit.slice(0);
+        // me.numberRange = me.numberRangeInit.slice(0);
+        // me.numberPercent = me.numberPercentInit.slice(0);
+        // me.numberDomain = me.numberDomainInit.slice(0);
 
-        me.numberMin = me.numberMinInit.slice(0);
-        me.numberMax = me.numberMaxInit.slice(0);
-        me.number.range(me.numberRange).domain(me.numberDomain);
+        // me.valueMin = me.numberMinInit;
+        // me.ValueMax = me.numberMaxInit;
+        // me.number.range(me.numberRange).domain(me.numberDomain);
 
-        me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
+        dataInit = [];
+        dataInit.push(me.begin);
+        dataInit.push({"id": 1, "value": me.begin.value, "styleValue": me.begin.styleValue});
+        dataInit.push({"id": 2, "value": me.end.value, "styleValue": me.end.styleValue});
+        dataInit.push(me.end);
+
+        me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, dataInit);
     },
 
     updateSizeNumber : function(id, size){
@@ -822,10 +828,10 @@ metExploreD3.GraphNumberScaleEditor = {
     },
     delNumber : function(){
         var me = this;
-
-        me.data.splice(me.selectedValue-1, 1);
-
-        me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
+        if(me.data.length>4){
+            me.data.splice(me.selectedValue, 1);
+            me.createNumberScaleEditor(me.svg, me.width, me.height, me.numberField, me.textfieldValue, me.delButton, me.data);
+        }
     },
     updateArea : function(){
         var me = this;

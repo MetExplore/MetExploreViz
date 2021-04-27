@@ -127,7 +127,7 @@ Ext.define('metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumb
                     margin: "5 15 5 5",
                     xtype: 'button',
                     reference: 'cancelButton',
-                    text : 'Cancel'
+                    text : 'Close'
                 }
             ]
         }
