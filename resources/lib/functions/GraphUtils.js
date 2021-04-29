@@ -633,7 +633,7 @@ metExploreD3.GraphUtils = {
                 d3Clone.selectAll(".hide").remove();
 
                 var nbNodes = d3Clone.select("#graphComponent").selectAll("g.node").data().length;
-                if(nbNodes<1000){
+                if(nbNodes){
                     d3Clone.select("#graphComponent").selectAll("g.node")
                         .select(".structure_metabolite")
                         .each(function(){
