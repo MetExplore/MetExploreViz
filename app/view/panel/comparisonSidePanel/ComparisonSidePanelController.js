@@ -14,6 +14,26 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
 			newMapping : me.drawCaption,
 			scope:me
 		});
+
+		view.on({
+			expand : function(){
+				var viz = Ext.getCmp('viz');
+				if(viz.lookupReference('handcursor').hasCls('focus')){
+					metExploreD3.GraphNetwork.moveGraph();
+					metExploreD3.GraphNetwork.moveGraph();
+				}
+			}
+		});
+
+		view.on({
+			collapse : function(){
+				var viz = Ext.getCmp('viz');
+				if(viz.lookupReference('handcursor').hasCls('focus')){
+					metExploreD3.GraphNetwork.moveGraph();
+					metExploreD3.GraphNetwork.moveGraph();
+				}
+			}
+		});
     },
 
     drawCaption : function(){
