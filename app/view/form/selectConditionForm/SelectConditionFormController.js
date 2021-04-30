@@ -56,6 +56,32 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 		view.lookupReference('selectCondition').on({
 			change : function(that, newVal, old){
+                var conditionType = view.lookupReference('selectConditionType').getValue();
+
+                if(conditionType === "Continuous"){
+                    var oldCondition = old+" "+conditionType;
+                    var newCondition = newVal+" "+conditionType;
+                    if(this.getAStyleFormParent().scaleRange !== undefined){
+                        this.getAStyleFormParent()[oldCondition] = this.getAStyleFormParent().scaleRange;
+                    }
+
+                    if(this.getAStyleFormParent()[newCondition] !== null){
+                        this.getAStyleFormParent().scaleRange = this.getAStyleFormParent()[newCondition]
+                    }
+                }
+
+                if(conditionType === "Discrete"){
+                    var oldCondition = old+" "+conditionType;
+                    var newCondition = newVal+" "+conditionType;
+                    if(this.getAStyleFormParent().valueDiscreteMappings !== undefined){
+                        this.getAStyleFormParent()[oldCondition] = this.getAStyleFormParent().valueDiscreteMappings;
+                    }
+
+                    if(this.getAStyleFormParent()[newCondition] !== null){
+                        this.getAStyleFormParent().valueDiscreteMappings = this.getAStyleFormParent()[newCondition]
+                    }
+                }
+
 				this.map(newVal, old, me.getAStyleFormParent());
                 this.applyToLinkedStyles(me.getAStyleFormParent());
 			},
