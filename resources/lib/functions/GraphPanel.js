@@ -348,7 +348,8 @@ metExploreD3.GraphPanel = {
 				if(jsonParsed.mappings)
 				{
 					jsonParsed.mappings.forEach(function(mapping){
-						var mapping = new Mapping(mapping.name, mapping.conditions, mapping.targetLabel);
+						var mapping = new Mapping(mapping.name, mapping.conditions, mapping.targetLabel, mapping.data);
+                        mapping.data = mapping.id;
 						_metExploreViz.addMapping(mapping);
 					});
 				}
