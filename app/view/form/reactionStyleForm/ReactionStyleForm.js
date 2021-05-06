@@ -8,6 +8,9 @@ Ext.define('metExploreViz.view.form.reactionStyleForm.ReactionStyleForm', {
     requires: [
         "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm"
     ],
+    style : {
+        padding:'0px 0px 0px 0px'
+    },
     store: {
         data: [{
             "type": "color",
