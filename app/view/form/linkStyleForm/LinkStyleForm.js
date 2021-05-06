@@ -8,7 +8,9 @@ Ext.define('metExploreViz.view.form.linkStyleForm.LinkStyleForm', {
     requires: [
         "metExploreViz.view.form.allStylesByTypeForm.AllStylesByTypeForm"
     ],
-
+    style : {
+        padding:'0px 0px 0px 0px'
+    },
     store: {
         data: [{
             "type": "color",
