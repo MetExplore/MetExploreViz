@@ -29,6 +29,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
         'metExploreViz.view.button.buttonImportToNetwork.ButtonImportToNetwork',
         'metExploreViz.view.button.buttonImportImage.ButtonImportImage',
         'metExploreViz.view.button.buttonImportCycle.ButtonImportCycle',
+        'metExploreViz.view.button.buttonImportFlux.ButtonImportFlux',
         'metExploreViz.view.panel.viz.Viz'
     ],
     /*requires: [
@@ -41,22 +42,22 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
     },
 
    height:'100%',
-   width:'100%', 
-   margins:'0 0 0 0', 
-   split:true, 
+   width:'100%',
+   margins:'0 0 0 0',
+   split:true,
    layout:{
        type:'vbox',
        align:'stretch'
    },
-   items: 
+   items:
    [
-           
+
            {
                tbar:{
                    id:'tbarGraph',
                    items: [
                           {
-                                text: 'Load network', 
+                                text: 'Load network',
                                 scale: 'large',
                                 menu:{xtype: 'vizLoadMenu'},
                                 tooltip:'You must create a network to use this menu',
@@ -68,7 +69,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 iconAlign: 'left'
                           },
                           {
-                                text: 'Mining', 
+                                text: 'Mining',
                                 scale: 'large',
                                 menu:{xtype: 'vizMiningMenu'},
                                 tooltip:'You must create a network to use this menu',
@@ -79,7 +80,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 padding:'0 0 0 0'
                             },
                            {
-                                text: 'Drawing', 
+                                text: 'Drawing',
                                 scale: 'large',
                                 menu:{id:'vizIdDrawing',xtype: 'vizDrawingMenu'},
                                 tooltip:'You must create a network to use this menu',
@@ -90,7 +91,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 padding:'0 0 0 0'
                             },
                            {
-                                text: 'Export', 
+                                text: 'Export',
                                 scale: 'large',
                                 menu:{xtype: 'vizExportMenu'},
                                 tooltip:'You must create a network to use this menu',
@@ -101,7 +102,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 padding:'0 0 0 0'
                           },
                           {
-                                text: 'Import', 
+                                text: 'Import',
                                 scale: 'large',
                                 menu:{xtype: 'vizImportMenu'},
                                 tooltip:'You must create a network to use this menu',
@@ -112,7 +113,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 padding:'0 0 0 0'
                           },
                           {
-                                text: 'Save', 
+                                text: 'Save',
                                 scale: 'large',
                                 menu:{xtype: 'vizSaveMenu'},
                                 tooltip:'You must create a network to use this menu',
@@ -128,7 +129,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 scale: 'large',
                                 reference:'documentation',
                                 tooltip:'Link to MetExploreViz website',
-                                iconCls:'documentation',                              
+                                iconCls:'documentation',
                                 border: false,
                                 padding:'0 0 0 0',
                                 listeners: {
@@ -145,8 +146,8 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 id:'buttonCopyNetwork',
                                 reference:'buttonCopyNetwork',
                                 tooltip:'You must create a network to copy the network',
-                                iconCls:'copyNetwork', 
-                                disabled:true,                               
+                                iconCls:'copyNetwork',
+                                disabled:true,
                                 border: false,
                                 padding:'0 0 0 0',
                                 listeners: {
@@ -161,7 +162,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                             '-',
                             {
                                 border:false,
-                                disabled:true,                               
+                                disabled:true,
                                 xtype:'panel',
                                 reference:'searchNode',
                                 layout:{
@@ -185,7 +186,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                               if(items[i].reference==='searchNodeButton')
                                                 theButton=items[i];
                                             };
-                                            
+
                                             if(newValue.length>0 && oldValue.length===0)
                                               theButton.setDisabled(false);
                                             else
@@ -204,7 +205,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                                     if(component){
                                                         component.fireEvent("click");
                                                     }
-                                            } 
+                                            }
                                         }
                                     }
                                   },
@@ -219,7 +220,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                       padding:'0 0 0 0'
                                   }
                                 ]
-    
+
                             },
                            {
                                xtype:'label',
@@ -259,7 +260,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                 }
 ]
            }
-           ,{   
+           ,{
               title: 'Comparative Network',
               closable: false,
               id:'comparePanel',

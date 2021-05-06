@@ -35,14 +35,19 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
             iconCls:'importData'
         },
         {
+            hidden:true,
+            id:'buttonSide',
+            xtype:'buttonImportSideCompounds'/*,text: 'Refresh/Build network'*/
+        },
+        {
             text: 'Import flux data from tab file',
             reference: 'importFlux',
             iconCls: 'importData'
         },
         {
             hidden:true,
-            id:'buttonSide',
-            xtype:'buttonImportSideCompounds'/*,text: 'Refresh/Build network'*/
+            id:'buttonFlux',
+            xtype:'buttonImportFlux'
         },
         {
             text: 'Import coordinates',
