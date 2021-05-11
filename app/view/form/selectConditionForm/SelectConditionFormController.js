@@ -57,15 +57,17 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		view.lookupReference('selectCondition').on({
 			change : function(that, newVal, old){
                 var conditionType = view.lookupReference('selectConditionType').getValue();
+                var session = _metExploreViz.getSessionById('viz');
+                var nbNodes = session.getD3Data().getNodes().length;
 
                 if(conditionType === "Continuous"){
                     var oldCondition = old+" "+conditionType;
                     var newCondition = newVal+" "+conditionType;
                     if(this.getAStyleFormParent().scaleRange !== undefined){
-                        this.getAStyleFormParent()[oldCondition] = this.getAStyleFormParent().scaleRange;
+                        this.getAStyleFormParent()[oldCondition+nbNodes] = this.getAStyleFormParent().scaleRange;
                     }
 
-                    if(this.getAStyleFormParent()[newCondition] !== null){
+                    if(this.getAStyleFormParent()[newCondition+nbNodes] !== null){
                         this.getAStyleFormParent().scaleRange = this.getAStyleFormParent()[newCondition]
                     }
                 }
@@ -74,10 +76,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
                     var oldCondition = old+" "+conditionType;
                     var newCondition = newVal+" "+conditionType;
                     if(this.getAStyleFormParent().valueDiscreteMappings !== undefined){
-                        this.getAStyleFormParent()[oldCondition] = this.getAStyleFormParent().valueDiscreteMappings;
+                        this.getAStyleFormParent()[oldCondition+nbNodes] = this.getAStyleFormParent().valueDiscreteMappings;
                     }
 
-                    if(this.getAStyleFormParent()[newCondition] !== null){
+                    if(this.getAStyleFormParent()[newCondition+nbNodes] !== null){
                         this.getAStyleFormParent().valueDiscreteMappings = this.getAStyleFormParent()[newCondition]
                     }
                 }
