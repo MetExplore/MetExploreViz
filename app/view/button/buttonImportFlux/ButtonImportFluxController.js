@@ -48,28 +48,29 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
 	    var targetName = firstLine.splice(0, 1);
 	    var array = [];
 
-		if(targetName[0]=="reactionDBIdentifier" || targetName[0]=="metaboliteDBIdentifier" || targetName[0]=="reactionId" || targetName[0]=="metaboliteId" || targetName[0]=="inchi")
-		{
-		    var mapping = new Mapping(title, firstLine, targetName[0], array);
-		    _metExploreViz.addMapping(mapping);
-
-		    for (var i = lines.length - 1; i >= 0; i--) {
-		    	lines[i] = lines[i].split('\t').map(function (val) {
-					return val.replace(",", ".");
-				});
-		    }
-
-		    // Launch mapping
-		    metExploreD3.GraphMapping.mapNodeData(mapping, lines);
-
-			metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
-			metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
-		}
-		else
-		{
-			// Warning for bad syntax file
-			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. See <a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#import">MetExploreViz documentation</a>.');
-		}
+		if(targetName[0]=="reactionDBIdentifier" || targetName[0]=="reactionId" || targetName[0]=="reactionName") {
+		    var flux = new Flux(title, firstLine, targetName[0], array);
+            console.log(flux);
+        }
+		//     _metExploreViz.addMapping(mapping);
+        //
+		//     for (var i = lines.length - 1; i >= 0; i--) {
+		//     	lines[i] = lines[i].split('\t').map(function (val) {
+		// 			return val.replace(",", ".");
+		// 		});
+		//     }
+        //
+		//     // Launch mapping
+		//     metExploreD3.GraphMapping.mapNodeData(mapping, lines);
+        //
+		// 	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
+		// 	metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
+		// }
+		// else
+		// {
+		// 	// Warning for bad syntax file
+		// 	metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. See <a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#import">MetExploreViz documentation</a>.');
+		// }
 	},
 
 	/*****************************************************

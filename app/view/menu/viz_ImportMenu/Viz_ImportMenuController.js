@@ -43,7 +43,6 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 
 		view.lookupReference('importFlux').on({
 			click : function(){
-				console.log(Ext.getCmp('IDimportFlux'));
 				var component = Ext.getCmp("IDimportFlux");
 				if(component != undefined){
 					component.fileInputEl.dom.click();

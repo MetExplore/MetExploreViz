@@ -8,6 +8,8 @@
 					"ColorComponent",
 					"ComparedPanel",
 					"Compartment",
+					"Flux",
+					"FluxData",
 					"GeneralStyle",
 					"LinkData",
 					"LinkStyle",

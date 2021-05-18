@@ -294,6 +294,14 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/model/Flux.js",
+            "bundle": true
+        },
+        {
+            "path": "resources/lib/model/FluxData.js",
+            "bundle": true
+        },
+        {
             "path": "resources/lib/model/Scale.js",
             "bundle": true
         },
