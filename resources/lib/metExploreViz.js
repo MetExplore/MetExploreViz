@@ -13,6 +13,7 @@ var metExploreD3 = {
     GraphStyleEdition:"",
     GraphColorScaleEditor:"",
     GraphNumberScaleEditor:"",
+    GraphFlux:"",
     Features:"",
     user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
