@@ -29,10 +29,13 @@ metExploreD3.GraphCaption = {
             .select("#D3viz")
             .selectAll(".textCaptionRev")
             .remove();
-
         d3.select("#viz")
             .select("#D3viz")
             .select(".logoViz")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".metaboliteCaption")
             .remove();
 
         // Load user's preferences
@@ -187,7 +190,7 @@ metExploreD3.GraphCaption = {
                 .attr('y', $("#viz").height() - 10);
 
         }
-        
+
         d3.select("#viz").select("#D3viz")
             .append("svg:rect")
             .attr('class', 'reactionCaption')
@@ -253,6 +256,10 @@ metExploreD3.GraphCaption = {
         d3.select("#viz")
             .select("#D3viz")
             .selectAll(".textCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".metaboliteCaption")
             .remove();
 
         // Load user's preferences
@@ -447,6 +454,304 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
+     * Draw caption for flux mode
+     */
+    drawCaptionFluxMode : function(){
+        d3.select("#viz")
+            .select("#D3viz")
+            .select(".logoViz")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".linkCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".reactionCaption")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".textCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".metaboliteCaption")
+            .remove();
+
+        // Load user's preferences
+        var reactionStyle = metExploreD3.getReactionStyle();
+        var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
+        var xRea = 15/maxDimRea;
+
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var maxDimMet = Math.max(metaboliteStyle.getWidth(),metaboliteStyle.getHeight());
+        var xMet = 15/maxDimMet;
+
+        // This part create the legend of the representation and
+        // add a mention to Metexplore in the right bottom
+        // corner
+        // Issue to be solved: when the window size change we
+        // loose the MetExplore text.
+        var sx = 15/2 - reactionStyle.getWidth()*xRea/2;
+        var sy = 15;
+        var linkStyle = metExploreD3.getLinkStyle();
+        var path1 = "M"+(50 + 15/2 - reactionStyle.getWidth()*xRea/2 - reactionStyle.getWidth()*xRea)+","+sy+
+            "L"+sx+","+sy;
+        var path2 = "M"+(50 + 15/2 - reactionStyle.getWidth()*xRea/2)+","+sy+
+            "L"+(sx+90)+","+sy;
+        var path3 = "M"+(50 + 15/2 - reactionStyle.getWidth()*xRea/2)+","+sy+
+            "L"+(sx+80)+","+sy+"L"+(sx+80)+","+(sy-5)+"L"+(sx+90)+","+sy+"L"+
+            (sx+80)+","+(sy+5)+"L"+(sx+80)+","+sy;
+
+        var path4 = "M"+(50 + 15/2 - reactionStyle.getWidth()*xRea/2 - reactionStyle.getWidth()*xRea)+","+sy+
+            "L"+(sx+10)+","+sy+
+            "L"+(sx+10)+","+(sy-5)+
+            "L"+sx+","+sy+
+            "L"+(sx+10)+","+(sy+5)+
+            "L"+(sx+10)+","+sy;
+
+        // Reaction without flux data
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr('class', 'reactionCaption')
+            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
+            .attr('y', 15)
+            .attr("width", reactionStyle.getWidth()*xRea)
+            .attr("height", reactionStyle.getHeight()*xRea)
+            .attr("rx", reactionStyle.getRX()*xRea)
+            .attr("ry", reactionStyle.getRY()*xRea)
+            .attr("fill", "white")
+            .attr("transform", "translate(50,"+(40-(reactionStyle.getHeight()*xRea /2))+")")
+            .style("stroke",reactionStyle.getStrokeColor())
+            .style("stroke-width", 2);
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path1)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke",linkStyle.getStrokeColor())
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,40)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path3)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke",linkStyle.getStrokeColor())
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,40)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text('Reaction without flux data')
+            .attr('class', 'textCaptionRev')
+            .attr('x', 20)
+            .attr('y', 15)
+            .attr("transform", "translate(0,65)");
+
+
+        // Reaction with positive value
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr('class', 'reactionCaption')
+            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
+            .attr('y', 15)
+            .attr("width", reactionStyle.getWidth()*xRea)
+            .attr("height", reactionStyle.getHeight()*xRea)
+            .attr("rx", reactionStyle.getRX()*xRea)
+            .attr("ry", reactionStyle.getRY()*xRea)
+            .attr("fill", "white")
+            .attr("transform", "translate(50,"+(85-(reactionStyle.getHeight()*xRea /2))+")")
+            .style("stroke",reactionStyle.getStrokeColor())
+            .style("stroke-width", 2);
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path1)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke","green")
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,85)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path3)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke","green")
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,85)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text('Reaction with positive value')
+            .attr('class', 'textCaptionRev')
+            .attr('x', 20)
+            .attr('y', 15)
+            .attr("transform", "translate(0,110)");
+
+        // Reaction with negative value
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr('class', 'reactionCaption')
+            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
+            .attr('y', 15)
+            .attr("width", reactionStyle.getWidth()*xRea)
+            .attr("height", reactionStyle.getHeight()*xRea)
+            .attr("rx", reactionStyle.getRX()*xRea)
+            .attr("ry", reactionStyle.getRY()*xRea)
+            .attr("fill", "white")
+            .attr("transform", "translate(50,"+(130-(reactionStyle.getHeight()*xRea /2))+")")
+            .style("stroke",reactionStyle.getStrokeColor())
+            .style("stroke-width", 2);
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path4)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke","red")
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,130)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path2)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke","red")
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .attr("transform","translate(15,130)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text('Reaction with negative value')
+            .attr('class', 'textCaptionRev')
+            .attr('x', 20)
+            .attr('y', 15)
+            .attr("transform", "translate(0,155)");
+
+
+        // Reaction with null value
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr('class', 'reactionCaption')
+            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
+            .attr('y', 15)
+            .attr("width", reactionStyle.getWidth()*xRea)
+            .attr("height", reactionStyle.getHeight()*xRea)
+            .attr("rx", reactionStyle.getRX()*xRea)
+            .attr("ry", reactionStyle.getRY()*xRea)
+            .attr("fill", "white")
+            .attr("transform", "translate(50,"+(175-(reactionStyle.getHeight()*xRea /2))+")")
+            .style("stroke",reactionStyle.getStrokeColor())
+            .style("stroke-width", 2);
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path1)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke",linkStyle.getStrokeColor())
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .style("stroke", "blue")
+            .style("stroke-dasharray",8)
+            .attr("transform","translate(15,175)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr("class", String)
+            .attr("d",path2)
+            .attr("class", 'linkCaptionRev')
+            .attr("fill-rule", "evenodd")
+            .attr("fill", 'white')
+            .style("stroke",linkStyle.getStrokeColor())
+            .style("stroke-width", 1.5)
+            .style("stroke-linejoin", "bevel")
+            .style("stroke", "blue")
+            .style("stroke-dasharray",8)
+            .attr("transform","translate(15,175)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .attr('class', 'textCaptionRev')
+            .text('Reaction KO')
+            .attr('x', 20)
+            .attr('y', 15)
+            .attr("transform", "translate(0,200)");
+
+        if(d3.select("#viz")
+                .select("#D3viz")
+                .select("#logoViz")){
+            var logo = d3.select("#viz")
+                .select("#D3viz")
+                .append("svg:g")
+                .attr("class","logoViz").attr("id","logoViz")
+
+            logo.append("image")
+                .attr("xlink:href", "resources/icons/metExploreViz_Logo.svg")
+                .attr("width", "75")
+                .attr("height", "75")
+                .attr('x', $("#viz").width() - 124)
+                .attr('y', $("#viz").height() - 100);
+
+            logo.append("svg:text")
+                .attr('id', 'metexplore')
+                .text('MetExploreViz v'+Ext.manifest.version)
+                .attr('x', $("#viz").width() - 150)
+                .attr('y', $("#viz").height() - 10);
+
+        }
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr('class', 'metaboliteCaption')
+            .attr('x', 15/2 - metaboliteStyle.getWidth()*xMet/2)
+            .attr('y', 15 + 15/2 - metaboliteStyle.getHeight()*xMet/2)
+            .attr("width", metaboliteStyle.getWidth()*xMet)
+            .attr("height", metaboliteStyle.getHeight()*xMet)
+            .attr("rx", metaboliteStyle.getRX()*xMet)
+            .attr("ry", metaboliteStyle.getRY()*xMet)
+            .attr("fill", "white")
+            .style("stroke", "#000000")
+            .style("stroke-width", 2)
+            .attr("transform","translate(15,230)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .attr('class', 'textCaptionRev')
+            .text('Metabolites')
+            .attr('x', 20)
+            .attr('y',15)
+            .attr("transform","translate(30,240)");
+
+    },
+
+    /*****************************************************
      * Maj caption for convex hulls
      * @param {String} panel Panel to update convex hull
      */
@@ -555,7 +860,7 @@ metExploreD3.GraphCaption = {
                         }
                     });
 
-                
+
                 d3.select("#"+panelLinked).select("#D3viz").selectAll(".linkGroup")
                     .each(function(linkGroup){
 
@@ -708,4 +1013,3 @@ metExploreD3.GraphCaption = {
         }
     }
 };
-    

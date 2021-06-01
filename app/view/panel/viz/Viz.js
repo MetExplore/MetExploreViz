@@ -1,9 +1,9 @@
 /**
  * @author MC
- * (a)description 
+ * (a)description
  */
  Ext.define('metExploreViz.view.panel.viz.Viz', {
-    extend: 'Ext.panel.Panel', 
+    extend: 'Ext.panel.Panel',
     alias: 'widget.viz',
     requires: [
         'metExploreViz.view.panel.viz.VizController',
@@ -18,7 +18,7 @@
 	closable: false,
 	region:'center',
 	height:'100%',
-	width:'100%', 
+	width:'100%',
 	flex:1,
     split:true,
     tbar: [

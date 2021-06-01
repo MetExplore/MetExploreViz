@@ -20,15 +20,11 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
 			scope:me
 		});
 
-		// view.on({
-		// 	reloadMapping:function(){
-		// 		me.resetCondition();
-		// 	},
-		// 	jsonmapping : function(mappingJSON){
-		// 		me.addConditions(mappingJSON);
-		// 	},
-		// 	scope:me
-		// });
+        view.on({
+            test:function(){
+                console.log("test");
+            }
+        })
 	},
 
 	/*****************************************************
@@ -50,84 +46,24 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
 
 		if(targetName[0]=="reactionDBIdentifier" || targetName[0]=="reactionId" || targetName[0]=="reactionName") {
 		    var flux = new Flux(title, firstLine, targetName[0], array);
-            console.log(flux);
+            for (var i = lines.length - 1; i >= 0; i--) {
+    	    	lines[i] = lines[i].split('\t').map(function (val) {
+    				return val.replace(",", ".");
+    			});
+                if (lines[i].length === 1){
+                    lines.pop(i);
+                }
+    	    }
+            flux.data = lines;
+
+            _metExploreViz.addFlux(flux);
+            metExploreD3.fireEvent("fluxMapping","fileParse");
+            metExploreD3.fireEvent("fluxMapping","fileLoad");
         }
-		//     _metExploreViz.addMapping(mapping);
-        //
-		//     for (var i = lines.length - 1; i >= 0; i--) {
-		//     	lines[i] = lines[i].split('\t').map(function (val) {
-		// 			return val.replace(",", ".");
-		// 		});
-		//     }
-        //
-		//     // Launch mapping
-		//     metExploreD3.GraphMapping.mapNodeData(mapping, lines);
-        //
-		// 	metExploreD3.fireEventArg('buttonMap', "jsonmapping", mapping);
-		// 	metExploreD3.fireEventArg('selectMapping', "jsonmapping", mapping);
-		// }
-		// else
-		// {
-		// 	// Warning for bad syntax file
-		// 	metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax. See <a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#import">MetExploreViz documentation</a>.');
-		// }
-	},
-
-	/*****************************************************
-	 * Fill condition store store
-	 * @param mapping : Mapping object
-	 */
-	addConditions : function(mapping) {
-		var biologicalType;
-		// Launch mapping
-		switch (mapping.getTargetLabel()) {
-			case "reactionDBIdentifier":
-				biologicalType="reaction";
-				break;
-			case "reactionId":
-				biologicalType="reaction";
-				break;
-			case "metaboliteId":
-				biologicalType="metabolite";
-				break;
-			case "metaboliteDBIdentifier":
-				biologicalType="metabolite";
-				break;
-			case "inchi":
-				biologicalType="metabolite";
-				break;
-			default:
-				metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
+        else {
+			// Warning for bad syntax file
+			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax.');
 		}
-
-		var conditions = mapping.getConditions();
-		var conditionStore = Ext.getStore("conditionStore");
-
-		var newConditions = [];
-		if(conditions[0]!==undefined){
-			mapping.getConditions().forEach(function (condition) {
-				newConditions.push(mapping.getName()+" / "+condition);
-			});
-		}
-		else
-			newConditions.push(mapping.getName());
-
-		newConditions
-			.filter(function(cond){
-				return !(cond.includes("PathwayEnrichment") || cond.includes("PathwayCoverage"))
-			})
-			.forEach(function (value) {
-				if(conditionStore.find("name", value)===-1)
-					conditionStore.add({name: value, type: 'int', biologicalType: biologicalType});
-			});
-	},
-
-	/*****************************************************
-	 * Fill condition store store
-	 * @param mapping : Mapping object
-	 */
-	resetCondition : function() {
-		var conditionStore = Ext.getStore("conditionStore");
-		conditionStore.loadData([], false);
 	}
+
 });
