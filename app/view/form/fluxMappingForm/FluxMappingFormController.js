@@ -68,7 +68,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     me.computeFlux(selectedFile, nbColSelect, condSelect);
 
                     metExploreD3.GraphStyleEdition.fluxPath = true;
-                    view.lookupReference('runFluxVizu').setText("STOP");
+                    view.lookupReference('runFluxVizu').setText("Remove display");
                 }
 
                 else{
@@ -76,8 +76,9 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     metExploreD3.GraphLink.tick('viz');
                     metExploreD3.GraphCaption.drawCaption();
                     metExploreD3.GraphFlux.restoreStyles(_metExploreViz.linkStyle);
+                    metExploreD3.GraphFlux.removeGraphDistrib();
 
-                    view.lookupReference('runFluxVizu').setText("RUN");
+                    view.lookupReference('runFluxVizu').setText("Display");
                 }
 
             }
@@ -181,6 +182,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
             }
         }
         metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol);
+        metExploreD3.GraphFlux.graphDistrib(conData);
     }
 
 });

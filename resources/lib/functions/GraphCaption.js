@@ -490,8 +490,6 @@ metExploreD3.GraphCaption = {
         // This part create the legend of the representation and
         // add a mention to Metexplore in the right bottom
         // corner
-        // Issue to be solved: when the window size change we
-        // loose the MetExplore text.
         var sx = 15/2 - reactionStyle.getWidth()*xRea/2;
         var sy = 15;
         var linkStyle = metExploreD3.getLinkStyle();
@@ -502,7 +500,6 @@ metExploreD3.GraphCaption = {
         var path3 = "M"+(50 + 15/2 - reactionStyle.getWidth()*xRea/2)+","+sy+
             "L"+(sx+80)+","+sy+"L"+(sx+80)+","+(sy-5)+"L"+(sx+90)+","+sy+"L"+
             (sx+80)+","+(sy+5)+"L"+(sx+80)+","+sy;
-
         var path4 = "M"+(50 + 15/2 - reactionStyle.getWidth()*xRea/2 - reactionStyle.getWidth()*xRea)+","+sy+
             "L"+(sx+10)+","+sy+
             "L"+(sx+10)+","+(sy-5)+
@@ -699,7 +696,7 @@ metExploreD3.GraphCaption = {
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
             .attr('class', 'textCaptionRev')
-            .text('Reaction KO')
+            .text('Reaction with 0 flux')
             .attr('x', 20)
             .attr('y', 15)
             .attr("transform", "translate(0,200)");
