@@ -410,7 +410,6 @@ metExploreD3.GraphLink = {
 
         if (metExploreD3.GraphStyleEdition.fluxPath === true){
             metExploreD3.GraphFlux.curveEdge();
-            metExploreD3.GraphCaption.drawCaptionFluxMode();
         }
 
         if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
@@ -672,7 +671,6 @@ metExploreD3.GraphLink = {
         }
         else if (metExploreD3.GraphStyleEdition.fluxPath === true){
             metExploreD3.GraphFlux.curveEdge();
-            metExploreD3.GraphCaption.drawCaptionFluxMode();
         }
         else {
             var scale = metExploreD3.getScaleById("viz");
