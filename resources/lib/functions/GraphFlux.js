@@ -26,6 +26,8 @@ metExploreD3.GraphFlux = {
     oneCompute: function(fluxData, networkData, targetLabel){
         var valuePos = {};
         var valueNeg = {};
+        var valPosDistri = [];
+        var valNegDistri = [];
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -46,15 +48,17 @@ metExploreD3.GraphFlux = {
                 }
                 if (value > 0){
                     valuePos[nodes.id] = value;
+                    valPosDistri.push(value);
                 }
                 if (value < 0){
                     valueNeg[nodes.id] = value;
+                    valNegDistri.push(value*(-1));
                 }
             }
         }
 
-        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valueNeg);
-        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valuePos);
+        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNegDistri);
+        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPosDistri);
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -85,6 +89,8 @@ metExploreD3.GraphFlux = {
     twoCompute: function(fluxData, networkData, targetLabel){
         var valuePos = {first:{}, second:{}};
         var valueNeg = {first:{}, second:{}};
+        var valPosDistri = [];
+        var valNegDistri = [];
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -106,27 +112,34 @@ metExploreD3.GraphFlux = {
                 }
                 if (value1 > 0){
                     valuePos["first"][nodes.id] = value1;
+                    valPosDistri.push(value1);
                 }
                 if (value1 < 0){
                     valueNeg["first"][nodes.id] = value1;
+                    valNegDistri.push(value1*(-1));
                 }
                 if (value2 === 0){
                     nodes.fluxDirection2 = value2;
                 }
                 if (value2 > 0){
                     valuePos["second"][nodes.id] = value2;
+                    valPosDistri.push(value2);
                 }
                 if (value2 < 0){
                     valueNeg["second"][nodes.id] = value2;
+                    valNegDistri.push(value2*(-1));
                 }
             }
         }
 
-        var negDistrib1 = metExploreD3.GraphFlux.fluxDistribution(valueNeg["first"]);
-        var posDistrib1 = metExploreD3.GraphFlux.fluxDistribution(valuePos["first"]);
+        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPosDistri);
+        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNegDistri);
 
-        var negDistrib2 = metExploreD3.GraphFlux.fluxDistribution(valueNeg["second"]);
-        var posDistrib2 = metExploreD3.GraphFlux.fluxDistribution(valuePos["second"]);
+        // var negDistrib1 = metExploreD3.GraphFlux.fluxDistribution(valueNeg["first"]);
+        // var posDistrib1 = metExploreD3.GraphFlux.fluxDistribution(valuePos["first"]);
+        //
+        // var negDistrib2 = metExploreD3.GraphFlux.fluxDistribution(valueNeg["second"]);
+        // var posDistrib2 = metExploreD3.GraphFlux.fluxDistribution(valuePos["second"]);
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -142,20 +155,20 @@ metExploreD3.GraphFlux = {
 
             if (nodes !== undefined){
                 if (Object.keys(valuePos["first"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib1, valuePos["first"][nodes.id]);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["first"][nodes.id]);
                     nodes.fluxDirection1 = edgeWidth;
                 }
                 if (Object.keys(valueNeg["first"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib1, valueNeg["first"][nodes.id]);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["first"][nodes.id]);
                     nodes.fluxDirection1 = edgeWidth*(-1);
                 }
 
                 if (Object.keys(valuePos["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib2, valuePos["second"][nodes.id]);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["second"][nodes.id]);
                     nodes.fluxDirection2 = edgeWidth;
                 }
                 if (Object.keys(valueNeg["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib2, valueNeg["second"][nodes.id]);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["second"][nodes.id]);
                     nodes.fluxDirection2 = edgeWidth*(-1);
                 }
             }
@@ -186,25 +199,25 @@ metExploreD3.GraphFlux = {
 
     fluxDistribution: function(fluxValues){
         var distrib = {};
-        var values = [];
-        var reactId = Object.keys(fluxValues);
-        reactId.forEach(function(id){
-            if (fluxValues[id] < 0){
-                values.push(fluxValues[id]*(-1));
-            }
-            else {
-                values.push(fluxValues[id]);
-            }
-        });
+        // var values = [];
+        // var reactId = Object.keys(fluxValues);
+        // reactId.forEach(function(id){
+        //     if (fluxValues[id] < 0){
+        //         values.push(fluxValues[id]*(-1));
+        //     }
+        //     else {
+        //         values.push(fluxValues[id]);
+        //     }
+        // });
 
-        var fluxQuantile = metExploreD3.GraphFlux.findQuantile(values, 0.5);
+        var fluxQuantile = metExploreD3.GraphFlux.findQuantile(fluxValues, 0.5);
 
         if (fluxQuantile[1] === fluxQuantile[2]){
-            fluxQuantile = metExploreD3.GraphFlux.findQuantile(values, 0.25);
+            fluxQuantile = metExploreD3.GraphFlux.findQuantile(fluxValues, 0.25);
         }
 
         else if (fluxQuantile[1] === fluxQuantile[0]){
-            fluxQuantile = metExploreD3.GraphFlux.findQuantile(values, 0.75);
+            fluxQuantile = metExploreD3.GraphFlux.findQuantile(fluxValues, 0.75);
         }
 
         distrib["min"] = fluxQuantile[0];
@@ -360,11 +373,11 @@ metExploreD3.GraphFlux = {
                         var endNode = link.getTarget();
                         var fluxValue = node.fluxDirection*(-1);
                         if (exitingY == node.y){
-                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, fluxValue);
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, fluxValue, 0);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, fluxValue);
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, fluxValue, 0);
                             axe="vertical";
                         }
 
@@ -385,11 +398,11 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getSource()
                         if (enteringY == node.y){
-                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection);
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection, 0);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection);
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection, 0);
                             axe="vertical";
                         }
                         d3.select(this).attr("d", path)
@@ -493,11 +506,11 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getSource();
                         if (enteringY == node.y){
-                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5);
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y);
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y, -5);
                             axe="vertical";
                         }
                         d3.select(this).attr("d", path)
@@ -515,11 +528,11 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getTarget();
                         if (exitingY == node.y){
-                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5);
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y);
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y, -5);
                             axe="vertical";
                         }
 
@@ -535,17 +548,17 @@ metExploreD3.GraphFlux = {
             }
             if (node.fluxDirection2 === 0){
                 var newEnter = enteringLinks.clone();
-                d3.select("#viz").select("D3viz").select("graphComponent").append(newEnter);
+                d3.select("#viz").select("#D3viz").select("graphComponent").append(newEnter);
                 newEnter
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
                         if (enteringY == node.y){
-                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5);
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.twoPathVertical(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y);
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y, 5);
                             axe="vertical";
                         }
                         d3.select(this).attr("d", path)
@@ -561,17 +574,17 @@ metExploreD3.GraphFlux = {
                             .style("stroke-width",2);
                     });
                 var newExit = exitingLinks.clone();
-                d3.select("#viz").select("D3viz").select("graphComponent").append(newExit);
+                d3.select("#viz").select("#D3viz").select("graphComponent").append(newExit);
                 newExit
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
                         if (exitingY == node.y){
-                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5);
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.twoPathVertical(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y);
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y, 5);
                             axe="vertical";
                         }
 
@@ -593,11 +606,11 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getSource();
                         if (enteringY == node.y){
-                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5);
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y);
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y, -5);
                             axe="vertical";
                         }
                         d3.select(this).attr("d", path)
@@ -616,11 +629,11 @@ metExploreD3.GraphFlux = {
                         var endNode = link.getTarget();
                         var fluxValue = node.fluxDirection1*(-1);
                         if (exitingY == node.y){
-                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, fluxValue);
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, fluxValue, -5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x-5, node.y, exitingX-5, exitingY, endNode.x-5, endNode.y, fluxValue);
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x-5, node.y, exitingX-5, exitingY, endNode.x-5, endNode.y, fluxValue, -5);
                             axe="vertical";
                         }
 
@@ -637,17 +650,17 @@ metExploreD3.GraphFlux = {
             }
             if (node.fluxDirection2 > 0){
                 var newEnter = enteringLinks.clone();
-                d3.select("#viz").select("D3viz").select("graphComponent").append(newEnter);
+                d3.select("#viz").select("#D3viz").select("graphComponent").append(newEnter);
                 newEnter
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
                         if (enteringY == node.y){
-                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5);
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.twoPathVertical(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y);
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y, 5);
                             axe="vertical";
                         }
                         d3.select(this).attr("d", path)
@@ -663,18 +676,18 @@ metExploreD3.GraphFlux = {
                             .style("stroke-width", node.fluxDirection2);
                     });
                 var newExit = exitingLinks.clone();
-                d3.select("#viz").select("D3viz").select("graphComponent").append(newExit);
+                d3.select("#viz").select("#D3viz").select("graphComponent").append(newExit);
                 newExit
                     .each(function (link) {
                         var path;
                         var fluxValue = node.fluxDirection2*(-1);
                         var endNode = link.getTarget();
                         if (exitingY == node.y){
-                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, fluxValue);
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, fluxValue, 5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y, fluxValue);
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y, fluxValue, 5);
                             axe="vertical";
                         }
 
@@ -684,6 +697,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .style("stroke-linejoin", "miter")
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
                             .style("stroke","red")
@@ -696,11 +710,11 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getSource();
                         if (enteringY == node.y){
-                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, node.fluxDirection1);
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, node.fluxDirection1, -5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y, node.fluxDirection1);
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y, node.fluxDirection1, -5);
                             axe="vertical";
                         }
                         d3.select(this).attr("d", path)
@@ -719,11 +733,11 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getTarget();
                         if (exitingY == node.y){
-                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5);
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, exitingX-5, exitingY, endNode.x-5, endNode.y);
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, exitingX-5, exitingY, endNode.x-5, endNode.y, -5);
                             axe="vertical";
                         }
 
@@ -739,17 +753,17 @@ metExploreD3.GraphFlux = {
             }
             if (node.fluxDirection2 < 0){
                 var newEnter = enteringLinks.clone();
-                d3.select("#viz").select("D3viz").select("graphComponent").append(newEnter);
+                d3.select("#viz").select("#D3viz").select("graphComponent").append(newEnter);
                 newEnter
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
                         if (enteringY == node.y){
-                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, node.fluxDirection2);
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, node.fluxDirection2, 5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y, node.fluxDirection2);
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y, node.fluxDirection2, 5);
                             axe="vertical";
                         }
                         d3.select(this).attr("d", path)
@@ -759,23 +773,24 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .classed("reaction",false)
+                            .style("stroke-linejoin", "miter")
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
                             .style("stroke","red")
                             .style("stroke-width",node.fluxDirection2*(-1));
                     });
                 var newExit = exitingLinks.clone();
-                d3.select("#viz").select("D3viz").select("graphComponent").append(newExit);
+                d3.select("#viz").select("#D3viz").select("graphComponent").append(newExit);
                 newExit
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
                         if (exitingY == node.y){
-                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5);
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.twoPathVertical(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y);
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x+5, node.y, enteringX+5, enteringY, endNode.x+5, endNode.y, 5);
                             axe="vertical";
                         }
 
@@ -797,7 +812,7 @@ metExploreD3.GraphFlux = {
 
     },
 
-    computePathHorizontalEnd : function (startX, startY, firstPointX, firstPointY, endX, endY, fluxValue) {
+    computePathHorizontalEnd : function (startX, startY, firstPointX, firstPointY, endX, endY, fluxValue, shiftValue) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         // Compute the coordinates of the control point used for drawing the path
@@ -856,10 +871,22 @@ metExploreD3.GraphFlux = {
             // 2nd case: The end node is on the correct side of the starting node, and is not close to the axe of the the reaction
             else {
                 if (endY < startY){
+                    if (endX > startX){
+                        beforeLastPointX = beforeLastPointX + shiftValue;
+                    }
+                    if (endX < startX){
+                        beforeLastPointX = beforeLastPointX - shiftValue;
+                    }
                     lastPointY = lastPointY + (metaboliteStyle.getHeight() / 2) - ((fluxValue * 0.01));
                     beforeLastPointY = lastPointY + 5;
                 }
                 else {
+                    if (endX > startX){
+                        beforeLastPointX = beforeLastPointX - shiftValue;
+                    }
+                    if (endX < startX){
+                        beforeLastPointX = beforeLastPointX + shiftValue;
+                    }
                     lastPointY = lastPointY - (metaboliteStyle.getHeight() / 2) + ((fluxValue * 0.01));
                     beforeLastPointY = lastPointY - 5;
                 }
@@ -904,7 +931,7 @@ metExploreD3.GraphFlux = {
         return path;
     },
 
-    computePathVerticalEnd : function (startX, startY, firstPointX, firstPointY, endX, endY, fluxValue) {
+    computePathVerticalEnd : function (startX, startY, firstPointX, firstPointY, endX, endY, fluxValue, shiftValue) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         // Compute the coordinates of the control point used for drawing the path
@@ -963,10 +990,22 @@ metExploreD3.GraphFlux = {
             // 2nd case: The end node is on the correct side of the starting node, and is not close to the axe of the the reaction
             else {
                 if (endX < startX){
+                    if (endY > startY){
+                        beforeLastPointY = beforeLastPointY + shiftValue;
+                    }
+                    if (endY < startY){
+                        beforeLastPointY = beforeLastPointY - shiftValue;
+                    }
                     lastPointX = lastPointX + (metaboliteStyle.getWidth() / 2) - ((fluxValue * 0.01));
                     beforeLastPointX = lastPointX + 5;
                 }
                 else {
+                    if (endY > startY){
+                        beforeLastPointY = beforeLastPointY - shiftValue;
+                    }
+                    if (endY < startY){
+                        beforeLastPointY = beforeLastPointY + shiftValue;
+                    }
                     lastPointX = lastPointX - (metaboliteStyle.getWidth() / 2) + ((fluxValue * 0.01));
                     beforeLastPointX = lastPointX - 5;
                 }
@@ -1241,7 +1280,7 @@ metExploreD3.GraphFlux = {
         d3.select("#graphDistrib").selectAll("#distrib").remove();
     },
 
-    twoPathVertical : function (startX, startY, firstPointX, firstPointY, endX, endY) {
+    twoPathVertical : function (startX, startY, firstPointX, firstPointY, endX, endY, shiftValue) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         // Compute the coordinates of the control point used for drawing the path
@@ -1293,10 +1332,26 @@ metExploreD3.GraphFlux = {
             // 2nd case: The end node is on the correct side of the starting node, and is not close to the axe of the the reaction
             else {
                 if (endX < startX){
+                    if (endY > startY){
+                        beforeLastPointY = beforeLastPointY + shiftValue;
+                        lastPointY = lastPointY + shiftValue;
+                    }
+                    if (endY < startY){
+                        beforeLastPointY = beforeLastPointY - shiftValue;
+                        lastPointY = lastPointY - shiftValue;
+                    }
                     lastPointX += metaboliteStyle.getWidth() / 2;
                     beforeLastPointX = lastPointX + 5;
                 }
                 else {
+                    if (endY > startY){
+                        beforeLastPointY = beforeLastPointY - shiftValue;
+                        lastPointY = lastPointY - shiftValue;
+                    }
+                    if (endY < startY){
+                        beforeLastPointY = beforeLastPointY + shiftValue;
+                        lastPointY = lastPointY + shiftValue;
+                    }
                     lastPointX -= metaboliteStyle.getWidth() / 2;
                     beforeLastPointX = lastPointX - 5;
                 }
@@ -1326,7 +1381,7 @@ metExploreD3.GraphFlux = {
         return path;
     },
 
-    twoPathHorizontal : function (startX, startY, firstPointX, firstPointY, endX, endY) {
+    twoPathHorizontal : function (startX, startY, firstPointX, firstPointY, endX, endY, shiftValue) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         // Compute the coordinates of the control point used for drawing the path
@@ -1378,10 +1433,26 @@ metExploreD3.GraphFlux = {
             // 2nd case: The end node is on the correct side of the starting node, and is not close to the axe of the the reaction
             else {
                 if (endY < startY){
+                    if (endX > startX){
+                        beforeLastPointX = beforeLastPointX + shiftValue;
+                        lastPointX = lastPointX + shiftValue;
+                    }
+                    if (endX < startX){
+                        beforeLastPointX = beforeLastPointX - shiftValue;
+                        lastPointX = lastPointX - shiftValue;
+                    }
                     lastPointY += metaboliteStyle.getHeight() / 2;
                     beforeLastPointY = lastPointY + 5;
                 }
                 else {
+                    if (endX > startX){
+                        beforeLastPointX = beforeLastPointX - shiftValue;
+                        lastPointX = lastPointX - shiftValue;
+                    }
+                    if (endX < startX){
+                        beforeLastPointX = beforeLastPointX + shiftValue;
+                        lastPointX = lastPointX + shiftValue;
+                    }
                     lastPointY -= metaboliteStyle.getHeight() / 2;
                     beforeLastPointY = lastPointY - 5;
                 }
