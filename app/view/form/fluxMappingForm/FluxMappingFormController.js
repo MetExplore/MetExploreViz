@@ -44,15 +44,17 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         view.lookupReference('selectColNumber').on({
             change: function(){
                 if (view.lookupReference('selectColNumber').getValue() === "one"){
-                    console.log("just one col please");
+                    view.lookupReference("secondConditionLabel").setHidden(true);
+                    view.lookupReference("firstConditionLabel").setHidden(true);
+                    view.lookupReference("secondConditionBox").setHidden(true);
                     var selectedFile = view.lookupReference("selectFile").getValue();
-                    console.log("this file",selectedFile);
                     me.colParse(1, selectedFile);
                 }
                 if (view.lookupReference('selectColNumber').getValue() === "two"){
-                    console.log("I take two col please");
+                    view.lookupReference("secondConditionLabel").setHidden(false);
+                    view.lookupReference("firstConditionLabel").setHidden(false);
+                    view.lookupReference("secondConditionBox").setHidden(false);
                     var selectedFile = view.lookupReference("selectFile").getValue();
-                    console.log("this file",selectedFile);
                     me.colParse(2, selectedFile);
                 }
             }
@@ -60,19 +62,26 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
 
         view.lookupReference('runFluxVizu').on({
             click: function(){
-                if (metExploreD3.GraphStyleEdition.fluxPath === false){
+                if (metExploreD3.GraphStyleEdition.fluxPath1 === false && metExploreD3.GraphStyleEdition.fluxPath2 === false){
                     var selectedFile = view.lookupReference('selectFile').getValue();
                     var nbColSelect = view.lookupReference('selectColNumber').getValue();
                     var condSelect = view.lookupReference('selectConditionFlux').getValue();
 
-                    me.computeFlux(selectedFile, nbColSelect, condSelect);
-
-                    metExploreD3.GraphStyleEdition.fluxPath = true;
+                    if (nbColSelect === "one"){
+                        metExploreD3.GraphStyleEdition.fluxPath1 = true;
+                        me.computeFlux(selectedFile, nbColSelect, condSelect,"null");
+                    }
+                    if (nbColSelect === "two"){
+                        metExploreD3.GraphStyleEdition.fluxPath2 = true;
+                        var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
+                        me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2);
+                    }
                     view.lookupReference('runFluxVizu').setText("Remove display");
                 }
 
                 else{
-                    metExploreD3.GraphStyleEdition.fluxPath = false;
+                    metExploreD3.GraphStyleEdition.fluxPath1 = false;
+                    metExploreD3.GraphStyleEdition.fluxPath2 = false;
                     metExploreD3.GraphLink.tick('viz');
                     metExploreD3.GraphCaption.drawCaption();
                     metExploreD3.GraphFlux.restoreStyles(_metExploreViz.linkStyle);
@@ -95,28 +104,29 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         });
         var fluxCondition = fluxList[fileIndex].conditions;
 
-        var comboComponent = this.getView().lookupReference('selectConditionFlux');
-        var condStore = comboComponent.getStore();
-
         var listCond = [];
 
-        if(nbCol === 1){
-            for (var i = 0; i < fluxCondition.length; i++){
-                var cond = fluxCondition[i];
-                var tmp = {fluxCond:cond};
-                listCond.push(tmp);
-            }
+        for (var i = 0; i < fluxCondition.length; i++){
+            var cond = fluxCondition[i];
+            var tmp = {fluxCond:cond};
+            listCond.push(tmp);
         }
 
-        if(nbCol === 2){
-            for (var i = 0; i < fluxCondition.length; i=i+2){
-                var cond = fluxCondition[i]+" / "+fluxCondition[i+1];
-                var tmp = {fluxCond:cond};
-                listCond.push(tmp);
-            }
-        }
+        if (nbCol === 1){
+            var comboComponent = this.getView().lookupReference('selectConditionFlux');
+            var condStore = comboComponent.getStore();
 
-        condStore.setData(listCond);
+            condStore.setData(listCond);
+        }
+        if (nbCol === 2){
+            var comboComponent = this.getView().lookupReference('selectConditionFlux');
+            var comboComponent2 = this.getView().lookupReference('selectConditionFlux2');
+            var condStore = comboComponent.getStore();
+            var condStore2 = comboComponent2.getStore();
+
+            condStore.setData(listCond);
+            condStore2.setData(listCond);
+        }
     },
 
     fileParse: function(){
@@ -133,7 +143,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         condStore.setData(fileName);
     },
 
-    computeFlux: function(selectedFile, nbCol, condSelect){
+    computeFlux: function(selectedFile, nbCol, condSelect, condSelect2){
         var fluxList = _metExploreViz.flux;
         var fileIndex = [];
         fluxList.forEach(function(list, i){
@@ -162,7 +172,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         }
 
         if (nbCol === "two"){
-            var condSplit = condSelect.split(" / ");
+            var condSplit = [condSelect, condSelect2];
             var indexCond = [];
 
             for (var i = 0; i < fluxCond.length; i++){
@@ -182,7 +192,12 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
             }
         }
         metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol);
-        metExploreD3.GraphFlux.graphDistrib(conData);
+        if (nbCol === "one"){
+            metExploreD3.GraphFlux.graphDistribOne(conData);
+        }
+        if (nbCol === "two"){
+            metExploreD3.GraphFlux.graphDistribTwo(conData);
+        }
     }
 
 });

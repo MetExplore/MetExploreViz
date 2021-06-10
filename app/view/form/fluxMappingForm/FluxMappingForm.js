@@ -31,7 +31,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
     items: [
         {
             xtype: 'label',
-            html: 'Select file',
+            html: 'Select file :',
             margin: '15 15 5 15'
         },
 
@@ -64,7 +64,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
 
         {
             xtype: 'label',
-            html: 'Select number of value to visualize',
+            html: 'Select number of value to visualize :',
             margin: '15 15 5 15'
         },
 
@@ -101,8 +101,16 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
 
         {
             xtype: 'label',
-            html: 'Select condition to visualize',
+            html: 'Select condition to visualize :',
             margin: '15 15 5 15'
+        },
+
+        {
+            xtype: 'label',
+            html: 'First condition',
+            margin: '5 15 5 15',
+            hidden: true,
+            reference: 'firstConditionLabel'
         },
 
         {
@@ -128,6 +136,43 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
                     width: '100%',
                     anyMatch: true,
                     reference: 'selectConditionFlux'
+                }
+            ]
+        },
+
+        {
+            xtype: 'label',
+            html: 'Second condition',
+            margin: '5 15 5 15',
+            hidden: true,
+            reference: 'secondConditionLabel'
+        },
+
+        {
+            border: false,
+            xtype: 'panel',
+            autoScroll: true,
+            hidden: true,
+            reference: 'secondConditionBox',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            items: [
+                {
+                    store: {
+                        fields: ['fluxCond']
+                    },
+                    xtype: 'combobox',
+                    displayField: 'fluxCond',
+                    valueField: 'fluxCond',
+                    queryMode: 'local',
+                    editable: false,
+                    emptyText: '-- Select Condition --',
+                    margin: '5 5 5 5',
+                    width: '100%',
+                    anyMatch: true,
+                    reference: 'selectConditionFlux2'
                 }
             ]
         },
