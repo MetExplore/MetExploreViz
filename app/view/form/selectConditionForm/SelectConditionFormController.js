@@ -7,8 +7,10 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 	extend: 'Ext.app.ViewController',
 	alias: 'controller.form-selectConditionForm-selectConditionForm',
 	requires: [
+        "metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor",
 		"metExploreViz.view.form.continuousColorMappingEditor.ContinuousColorMappingEditor",
-		"metExploreViz.view.form.linkStyles.LinkStyles"
+		"metExploreViz.view.form.linkStyles.LinkStyles",
+        "metExploreViz.view.form.MappingCaptionForm"
 	],
 	/**
 	 * Aplies event linsteners to the view
