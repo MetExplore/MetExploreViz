@@ -11,19 +11,19 @@
 
 metExploreD3.GraphFlux = {
 
-    displayChoice: function(fluxData, targetLabel, nbCol){
+    displayChoice: function(fluxData, targetLabel, nbCol, color){
         var session = _metExploreViz.getSessionById('viz');
         var networkData = session.getD3Data();
 
         if (nbCol === "one"){
-            this.oneCompute(fluxData, networkData, targetLabel);
+            this.oneCompute(fluxData, networkData, targetLabel, color);
         }
         if (nbCol === "two"){
-            this.twoCompute(fluxData, networkData, targetLabel);
+            this.twoCompute(fluxData, networkData, targetLabel, color);
         }
     },
 
-    oneCompute: function(fluxData, networkData, targetLabel){
+    oneCompute: function(fluxData, networkData, targetLabel, color){
         var valuePos = {};
         var valueNeg = {};
         var valPosDistri = [];
@@ -76,17 +76,19 @@ metExploreD3.GraphFlux = {
                 if (Object.keys(valuePos).includes(nodes.id)){
                     var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos[nodes.id]);
                     nodes.fluxDirection = edgeWidth;
+                    nodes.color = color;
                 }
                 if (Object.keys(valueNeg).includes(nodes.id)){
                     var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg[nodes.id]);
                     nodes.fluxDirection = edgeWidth*(-1);
+                    nodes.color = color;
                 }
             }
         }
         metExploreD3.GraphFlux.curveEdge();
     },
 
-    twoCompute: function(fluxData, networkData, targetLabel){
+    twoCompute: function(fluxData, networkData, targetLabel, color){
         var valuePos = {first:{}, second:{}};
         var valueNeg = {first:{}, second:{}};
         var valPosDistri = [];
@@ -109,6 +111,7 @@ metExploreD3.GraphFlux = {
                 var value2 = parseInt(fluxData[i][2], 10);
                 if (value1 === 0){
                     nodes.fluxDirection1 = value1;
+                    nodes.color1 = color[0];
                 }
                 if (value1 > 0){
                     valuePos["first"][nodes.id] = value1;
@@ -120,6 +123,7 @@ metExploreD3.GraphFlux = {
                 }
                 if (value2 === 0){
                     nodes.fluxDirection2 = value2;
+                    nodes.color2 = color[1];
                 }
                 if (value2 > 0){
                     valuePos["second"][nodes.id] = value2;
@@ -134,12 +138,6 @@ metExploreD3.GraphFlux = {
 
         var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPosDistri);
         var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNegDistri);
-
-        // var negDistrib1 = metExploreD3.GraphFlux.fluxDistribution(valueNeg["first"]);
-        // var posDistrib1 = metExploreD3.GraphFlux.fluxDistribution(valuePos["first"]);
-        //
-        // var negDistrib2 = metExploreD3.GraphFlux.fluxDistribution(valueNeg["second"]);
-        // var posDistrib2 = metExploreD3.GraphFlux.fluxDistribution(valuePos["second"]);
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -157,19 +155,23 @@ metExploreD3.GraphFlux = {
                 if (Object.keys(valuePos["first"]).includes(nodes.id)){
                     var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["first"][nodes.id]);
                     nodes.fluxDirection1 = edgeWidth;
+                    nodes.color1 = color[0];
                 }
                 if (Object.keys(valueNeg["first"]).includes(nodes.id)){
                     var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["first"][nodes.id]);
                     nodes.fluxDirection1 = edgeWidth*(-1);
+                    nodes.color1 = color[0];
                 }
 
                 if (Object.keys(valuePos["second"]).includes(nodes.id)){
                     var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["second"][nodes.id]);
                     nodes.fluxDirection2 = edgeWidth;
+                    nodes.color2 = color[1];
                 }
                 if (Object.keys(valueNeg["second"]).includes(nodes.id)){
                     var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["second"][nodes.id]);
                     nodes.fluxDirection2 = edgeWidth*(-1);
+                    nodes.color2 = color[1];
                 }
             }
         }
@@ -199,16 +201,6 @@ metExploreD3.GraphFlux = {
 
     fluxDistribution: function(fluxValues){
         var distrib = {};
-        // var values = [];
-        // var reactId = Object.keys(fluxValues);
-        // reactId.forEach(function(id){
-        //     if (fluxValues[id] < 0){
-        //         values.push(fluxValues[id]*(-1));
-        //     }
-        //     else {
-        //         values.push(fluxValues[id]);
-        //     }
-        // });
 
         var fluxQuantile = metExploreD3.GraphFlux.findQuantile(fluxValues, 0.5);
 
@@ -363,7 +355,7 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke","green")
+                            .style("stroke", node.color)
                             .style("stroke-width",node.fluxDirection);
                     });
 
@@ -388,7 +380,7 @@ metExploreD3.GraphFlux = {
                             .classed(axe, true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
-                            .style("stroke","green")
+                            .style("stroke", node.color)
                             .style("stroke-width",node.fluxDirection);
                     });
             }
@@ -412,7 +404,7 @@ metExploreD3.GraphFlux = {
                             .classed(axe, true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
-                            .style("stroke","red")
+                            .style("stroke", node.color)
                             .style("stroke-width",node.fluxDirection*(-1));
                     });
 
@@ -434,7 +426,7 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke","red")
+                            .style("stroke", node.color)
                             .style("stroke-width",node.fluxDirection*(-1));
                     });
             }
@@ -519,7 +511,7 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke","blue")
+                            .style("stroke", node.color1)
                             .style("stroke-dasharray",8);
                     });
 
@@ -542,7 +534,7 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke","blue")
+                            .style("stroke", node.color1)
                             .style("stroke-dasharray",8);
                     });
             }
@@ -569,7 +561,7 @@ metExploreD3.GraphFlux = {
                             .classed(axe, true)
                             .classed("reaction",false)
                             .style("opacity", 1)
-                            .style("stroke","red")
+                            .style("stroke", node.color2)
                             .style("stroke-dasharray",8)
                             .style("stroke-width",2);
                     });
@@ -595,7 +587,7 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke","red")
+                            .style("stroke", node.color2)
                             .style("stroke-dasharray",8)
                             .style("stroke-width", 2);
                     });
@@ -619,7 +611,7 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke","blue")
+                            .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1);
                     });
 
@@ -644,7 +636,7 @@ metExploreD3.GraphFlux = {
                             .classed(axe, true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
-                            .style("stroke","blue")
+                            .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1);
                     });
             }
@@ -672,7 +664,7 @@ metExploreD3.GraphFlux = {
                             .classed("reaction",false)
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
-                            .style("stroke","red")
+                            .style("stroke", node.color2)
                             .style("stroke-width", node.fluxDirection2);
                     });
                 var newExit = exitingLinks.clone();
@@ -700,7 +692,7 @@ metExploreD3.GraphFlux = {
                             .style("stroke-linejoin", "miter")
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
-                            .style("stroke","red")
+                            .style("stroke", node.color2)
                             .style("stroke-width", node.fluxDirection2);
                     });
             }
@@ -724,7 +716,7 @@ metExploreD3.GraphFlux = {
                             .classed(axe, true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
-                            .style("stroke","blue")
+                            .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1*(-1));
                     });
 
@@ -747,7 +739,7 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke","blue")
+                            .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1*(-1));
                     });
             }
@@ -776,7 +768,7 @@ metExploreD3.GraphFlux = {
                             .style("stroke-linejoin", "miter")
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
-                            .style("stroke","red")
+                            .style("stroke", node.color2)
                             .style("stroke-width",node.fluxDirection2*(-1));
                     });
                 var newExit = exitingLinks.clone();
@@ -802,7 +794,7 @@ metExploreD3.GraphFlux = {
                             .classed(axe, true)
                             .style("stroke-dasharray", null)
                             .style("opacity", 1)
-                            .style("stroke","red")
+                            .style("stroke", node.color2)
                             .style("stroke-width",node.fluxDirection2*(-1));
                     });
             }
@@ -1061,6 +1053,10 @@ metExploreD3.GraphFlux = {
             node.fluxDirection = "";
             node.fluxDirection1 = "";
             node.fluxDirection2 = "";
+
+            node.color = "";
+            node.color1 = "";
+            node.color2 = "";
         });
 
         // remove link clone
@@ -1089,10 +1085,14 @@ metExploreD3.GraphFlux = {
         }
     },
 
-    graphDistribOne: function(fluxData){
+    graphDistribOne: function(fluxData, color){
         var data = [];
+        var valNeg = [];
+        var valPos = [];
+
         var min = 0;
         var max = 0;
+
         fluxData.forEach(function(value) {
             var val = value[1]*1;
             data.push(val);
@@ -1102,7 +1102,19 @@ metExploreD3.GraphFlux = {
             if (max < val){
                 max = val;
             }
+            if (val < 0){
+                valNeg.push(val);
+            }
+            if (val > 0){
+                valPos.push(val);
+            }
         });
+
+        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
+        var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 0, y2: 340};
+
+        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPos);
+        var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 0, y2: 340};
 
         var margin = {top: 30, right: 30, bottom: 80, left: 50},
             width = 400 - margin.left - margin.right,
@@ -1138,7 +1150,7 @@ metExploreD3.GraphFlux = {
             .attr("class", "distribPath")
             .datum(density)
             .attr("opacity", "0.8")
-            // .attr("stroke", "red")
+            .attr("fill", color)
             .attr("stroke-linejoin", "round")
             .attr("d", d3.line()
                 .curve(d3.curveBasis)
@@ -1152,11 +1164,30 @@ metExploreD3.GraphFlux = {
             .style("font-size", "16px")
             .style("text-decoration", "underline")
             .text("Distribution Graph");
+
+        if (interLineNeg.x1 !== undefined){
+            svg.append("line")
+                .attr("x1", function(){ return x(interLineNeg.x1) })
+                .attr("x2", function(){ return x(interLineNeg.x2) })
+                .attr("y1", interLineNeg.y1)
+                .attr("y2", interLineNeg.y2)
+                .attr("stroke","red");
+        }
+        if (interLinePos.x1 !== undefined){
+            svg.append("line")
+                .attr("x1", function(){ return x(interLinePos.x1) })
+                .attr("x2", function(){ return x(interLinePos.x2) })
+                .attr("y1", interLinePos.y1)
+                .attr("y2", interLinePos.y2)
+                .attr("stroke","green");
+        }
     },
 
-    graphDistribTwo: function(fluxData){
+    graphDistribTwo: function(fluxData, color){
         var data1 = [];
         var data2 = [];
+        var valNeg = [];
+        var valPos = [];
 
         var min = 0;
         var max = 0;
@@ -1178,7 +1209,25 @@ metExploreD3.GraphFlux = {
             if (max < val2){
                 max = val2;
             }
+            if (val1 < 0){
+                valNeg.push(val1);
+            }
+            if (val1 > 0){
+                valPos.push(val1);
+            }
+            if (val2 < 0){
+                valNeg.push(val2);
+            }
+            if (val2 > 0){
+                valPos.push(val2);
+            }
         });
+
+        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
+        var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 100, y2: 340};
+
+        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPos);
+        var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 100, y2: 340};
 
         // set the dimensions and margins of the graph
         var margin = {top: 30, right: 30, bottom: 80, left: 50},
@@ -1221,7 +1270,7 @@ metExploreD3.GraphFlux = {
             svg.append("path")
                 .attr("class", "mypath")
                 .datum(density1)
-                .attr("fill", "#69b3a2")
+                .attr("fill", color[0])
                 .attr("opacity", ".6")
                 .attr("stroke", "#000")
                 .attr("stroke-width", 1)
@@ -1236,7 +1285,7 @@ metExploreD3.GraphFlux = {
             svg.append("path")
                 .attr("class", "mypath")
                 .datum(density2)
-                .attr("fill", "#404080")
+                .attr("fill", color[1])
                 .attr("opacity", ".6")
                 .attr("stroke", "#000")
                 .attr("stroke-width", 1)
@@ -1248,8 +1297,8 @@ metExploreD3.GraphFlux = {
                 );
 
         // Handmade legend
-        svg.append("circle").attr("cx",250).attr("cy",30).attr("r", 6).style("fill", "#69b3a2");
-        svg.append("circle").attr("cx",250).attr("cy",60).attr("r", 6).style("fill", "#404080");
+        svg.append("circle").attr("cx",250).attr("cy",30).attr("r", 6).style("fill", color[0]);
+        svg.append("circle").attr("cx",250).attr("cy",60).attr("r", 6).style("fill", color[1]);
         svg.append("text").attr("x", 270).attr("y", 30).text("First Condition").style("font-size", "15px").attr("alignment-baseline","middle");
         svg.append("text").attr("x", 270).attr("y", 60).text("Second Condition").style("font-size", "15px").attr("alignment-baseline","middle");
 
@@ -1260,6 +1309,23 @@ metExploreD3.GraphFlux = {
             .style("font-size", "16px")
             .style("text-decoration", "underline")
             .text("Distribution Graph");
+
+        if (interLineNeg.x1 !== undefined){
+            svg.append("line")
+                .attr("x1", function(){ return x(interLineNeg.x1) })
+                .attr("x2", function(){ return x(interLineNeg.x2) })
+                .attr("y1", interLineNeg.y1)
+                .attr("y2", interLineNeg.y2)
+                .attr("stroke","red");
+        }
+        if (interLinePos.x1 !== undefined){
+            svg.append("line")
+                .attr("x1", function(){ return x(interLinePos.x1) })
+                .attr("x2", function(){ return x(interLinePos.x2) })
+                .attr("y1", interLinePos.y1)
+                .attr("y2", interLinePos.y2)
+                .attr("stroke","green");
+        }
     },
 
     kernelDensityEstimator: function(kernel, X){

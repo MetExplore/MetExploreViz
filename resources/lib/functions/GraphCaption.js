@@ -479,6 +479,8 @@ metExploreD3.GraphCaption = {
             .remove();
 
         // Load user's preferences
+        var color = document.getElementById("html5colorpickerFlux1").value;
+
         var reactionStyle = metExploreD3.getReactionStyle();
         var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
         var xRea = 15/maxDimRea;
@@ -555,7 +557,7 @@ metExploreD3.GraphCaption = {
             .attr("transform", "translate(0,65)");
 
 
-        // Reaction with positive value
+        // Reaction with flux data
         d3.select("#viz").select("#D3viz")
             .append("svg:rect")
             .attr('class', 'reactionCaption')
@@ -577,7 +579,7 @@ metExploreD3.GraphCaption = {
             .attr("class", 'linkCaptionRev')
             .attr("fill-rule", "evenodd")
             .attr("fill", 'white')
-            .style("stroke","green")
+            .style("stroke",color)
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,85)");
@@ -589,20 +591,21 @@ metExploreD3.GraphCaption = {
             .attr("class", 'linkCaptionRev')
             .attr("fill-rule", "evenodd")
             .attr("fill", 'white')
-            .style("stroke","green")
+            .style("stroke",color)
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,85)");
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
-            .text('Reaction with positive value')
+            .text('Reaction with flux data')
             .attr('class', 'textCaptionRev')
             .attr('x', 20)
             .attr('y', 15)
             .attr("transform", "translate(0,110)");
 
-        // Reaction with negative value
+
+        // Reaction with null value
         d3.select("#viz").select("#D3viz")
             .append("svg:rect")
             .attr('class', 'reactionCaption')
@@ -620,54 +623,6 @@ metExploreD3.GraphCaption = {
         d3.select("#viz").select("#D3viz")
             .append("svg:path")
             .attr("class", String)
-            .attr("d",path4)
-            .attr("class", 'linkCaptionRev')
-            .attr("fill-rule", "evenodd")
-            .attr("fill", 'white')
-            .style("stroke","red")
-            .style("stroke-width", 1.5)
-            .style("stroke-linejoin", "bevel")
-            .attr("transform","translate(15,130)");
-
-        d3.select("#viz").select("#D3viz")
-            .append("svg:path")
-            .attr("class", String)
-            .attr("d",path2)
-            .attr("class", 'linkCaptionRev')
-            .attr("fill-rule", "evenodd")
-            .attr("fill", 'white')
-            .style("stroke","red")
-            .style("stroke-width", 1.5)
-            .style("stroke-linejoin", "bevel")
-            .attr("transform","translate(15,130)");
-
-        d3.select("#viz").select("#D3viz")
-            .append("svg:text")
-            .text('Reaction with negative value')
-            .attr('class', 'textCaptionRev')
-            .attr('x', 20)
-            .attr('y', 15)
-            .attr("transform", "translate(0,155)");
-
-
-        // Reaction with null value
-        d3.select("#viz").select("#D3viz")
-            .append("svg:rect")
-            .attr('class', 'reactionCaption')
-            .attr('x', 15/2 - reactionStyle.getWidth()*xRea/2)
-            .attr('y', 15)
-            .attr("width", reactionStyle.getWidth()*xRea)
-            .attr("height", reactionStyle.getHeight()*xRea)
-            .attr("rx", reactionStyle.getRX()*xRea)
-            .attr("ry", reactionStyle.getRY()*xRea)
-            .attr("fill", "white")
-            .attr("transform", "translate(50,"+(175-(reactionStyle.getHeight()*xRea /2))+")")
-            .style("stroke",reactionStyle.getStrokeColor())
-            .style("stroke-width", 2);
-
-        d3.select("#viz").select("#D3viz")
-            .append("svg:path")
-            .attr("class", String)
             .attr("d",path1)
             .attr("class", 'linkCaptionRev')
             .attr("fill-rule", "evenodd")
@@ -677,7 +632,7 @@ metExploreD3.GraphCaption = {
             .style("stroke-linejoin", "bevel")
             .style("stroke", "blue")
             .style("stroke-dasharray",8)
-            .attr("transform","translate(15,175)");
+            .attr("transform","translate(15,130)");
 
         d3.select("#viz").select("#D3viz")
             .append("svg:path")
@@ -691,7 +646,7 @@ metExploreD3.GraphCaption = {
             .style("stroke-linejoin", "bevel")
             .style("stroke", "blue")
             .style("stroke-dasharray",8)
-            .attr("transform","translate(15,175)");
+            .attr("transform","translate(15,130)");
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
@@ -699,7 +654,7 @@ metExploreD3.GraphCaption = {
             .text('Reaction with 0 flux')
             .attr('x', 20)
             .attr('y', 15)
-            .attr("transform", "translate(0,200)");
+            .attr("transform", "translate(0,155)");
 
         if(d3.select("#viz")
                 .select("#D3viz")
@@ -736,7 +691,7 @@ metExploreD3.GraphCaption = {
             .attr("fill", "white")
             .style("stroke", "#000000")
             .style("stroke-width", 2)
-            .attr("transform","translate(15,230)");
+            .attr("transform","translate(15,200)");
 
         d3.select("#viz").select("#D3viz")
             .append("svg:text")
@@ -744,7 +699,7 @@ metExploreD3.GraphCaption = {
             .text('Metabolites')
             .attr('x', 20)
             .attr('y',15)
-            .attr("transform","translate(30,240)");
+            .attr("transform","translate(30,210)");
 
     },
 
@@ -774,6 +729,9 @@ metExploreD3.GraphCaption = {
             .remove();
 
         // Load user's preferences
+        var color1 = document.getElementById('html5colorpickerFlux1').value;
+        var color2 = document.getElementById('html5colorpickerFlux2').value;
+
         var reactionStyle = metExploreD3.getReactionStyle();
         var maxDimRea = Math.max(reactionStyle.getWidth(),reactionStyle.getHeight());
         var xRea = 15/maxDimRea;
@@ -850,7 +808,7 @@ metExploreD3.GraphCaption = {
             .attr("transform", "translate(0,65)");
 
 
-        // Reaction with positive value
+        // Reaction first condition
         d3.select("#viz").select("#D3viz")
             .append("svg:rect")
             .attr('class', 'reactionCaption')
@@ -872,7 +830,7 @@ metExploreD3.GraphCaption = {
             .attr("class", 'linkCaptionRev')
             .attr("fill-rule", "evenodd")
             .attr("fill", 'white')
-            .style("stroke","blue")
+            .style("stroke",color1)
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,85)");
@@ -884,7 +842,7 @@ metExploreD3.GraphCaption = {
             .attr("class", 'linkCaptionRev')
             .attr("fill-rule", "evenodd")
             .attr("fill", 'white')
-            .style("stroke","blue")
+            .style("stroke",color1)
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,85)");
@@ -897,7 +855,7 @@ metExploreD3.GraphCaption = {
             .attr('y', 15)
             .attr("transform", "translate(0,110)");
 
-        // Reaction with negative value
+        // Reaction second condition
         d3.select("#viz").select("#D3viz")
             .append("svg:rect")
             .attr('class', 'reactionCaption')
@@ -919,7 +877,7 @@ metExploreD3.GraphCaption = {
             .attr("class", 'linkCaptionRev')
             .attr("fill-rule", "evenodd")
             .attr("fill", 'white')
-            .style("stroke","red")
+            .style("stroke",color2)
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,130)");
@@ -931,7 +889,7 @@ metExploreD3.GraphCaption = {
             .attr("class", 'linkCaptionRev')
             .attr("fill-rule", "evenodd")
             .attr("fill", 'white')
-            .style("stroke","red")
+            .style("stroke",color2)
             .style("stroke-width", 1.5)
             .style("stroke-linejoin", "bevel")
             .attr("transform","translate(15,130)");

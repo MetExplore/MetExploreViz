@@ -133,9 +133,23 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
                     editable: false,
                     emptyText: '-- Select Condition --',
                     margin: '5 5 5 5',
-                    width: '100%',
+                    width: '90%',
                     anyMatch: true,
                     reference: 'selectConditionFlux'
+                },
+                {
+                    xtype: 'panel',
+                    reference: "colorFirstCondition",
+                    border: false,
+                    margin: "5 5 5 5",
+                    cls: "aStyleFormColor",
+                    height:"30px",
+                    width:"30px",
+                    html: '<input ' +
+                        'type="color" ' +
+                        'id="html5colorpickerFlux1" ' +
+                        'value="#0000ff" ' +
+                        'style="width:30px; height:30px;">'
                 }
             ]
         },
@@ -170,9 +184,23 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
                     editable: false,
                     emptyText: '-- Select Condition --',
                     margin: '5 5 5 5',
-                    width: '100%',
+                    width: '90%',
                     anyMatch: true,
                     reference: 'selectConditionFlux2'
+                },
+                {
+                    xtype: 'panel',
+                    reference: "colorSecondCondition",
+                    margin: "5 5 5 5",
+                    border: false,
+                    cls: "aStyleFormColor",
+                    height:"30px",
+                    width:"30px",
+                    html: '<input ' +
+                        'type="color" ' +
+                        'id="html5colorpickerFlux2" ' +
+                        'value="#ff0000" ' +
+                        'style="width:30px; height:30px;">'
                 }
             ]
         },

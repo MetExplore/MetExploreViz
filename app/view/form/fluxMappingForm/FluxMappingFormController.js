@@ -68,13 +68,16 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     var condSelect = view.lookupReference('selectConditionFlux').getValue();
 
                     if (nbColSelect === "one"){
+                        var color = document.getElementById("html5colorpickerFlux1").value;
                         metExploreD3.GraphStyleEdition.fluxPath1 = true;
-                        me.computeFlux(selectedFile, nbColSelect, condSelect,"null");
+                        me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color);
                     }
                     if (nbColSelect === "two"){
+                        var color = [document.getElementById("html5colorpickerFlux1").value,
+                                    document.getElementById("html5colorpickerFlux2").value];
                         metExploreD3.GraphStyleEdition.fluxPath2 = true;
                         var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
-                        me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2);
+                        me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color);
                     }
                     view.lookupReference('runFluxVizu').setText("Remove display");
                 }
@@ -143,7 +146,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         condStore.setData(fileName);
     },
 
-    computeFlux: function(selectedFile, nbCol, condSelect, condSelect2){
+    computeFlux: function(selectedFile, nbCol, condSelect, condSelect2, color){
         var fluxList = _metExploreViz.flux;
         var fileIndex = [];
         fluxList.forEach(function(list, i){
@@ -191,12 +194,12 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                 conData.push(data);
             }
         }
-        metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol);
+        metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol, color);
         if (nbCol === "one"){
-            metExploreD3.GraphFlux.graphDistribOne(conData);
+            metExploreD3.GraphFlux.graphDistribOne(conData, color);
         }
         if (nbCol === "two"){
-            metExploreD3.GraphFlux.graphDistribTwo(conData);
+            metExploreD3.GraphFlux.graphDistribTwo(conData, color);
         }
     }
 
