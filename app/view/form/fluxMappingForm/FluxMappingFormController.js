@@ -43,19 +43,25 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
 
         view.lookupReference('selectColNumber').on({
             change: function(){
-                if (view.lookupReference('selectColNumber').getValue() === "one"){
-                    view.lookupReference("secondConditionLabel").setHidden(true);
-                    view.lookupReference("firstConditionLabel").setHidden(true);
-                    view.lookupReference("secondConditionBox").setHidden(true);
-                    var selectedFile = view.lookupReference("selectFile").getValue();
-                    me.colParse(1, selectedFile);
-                }
                 if (view.lookupReference('selectColNumber').getValue() === "two"){
                     view.lookupReference("secondConditionLabel").setHidden(false);
                     view.lookupReference("firstConditionLabel").setHidden(false);
                     view.lookupReference("secondConditionBox").setHidden(false);
-                    var selectedFile = view.lookupReference("selectFile").getValue();
-                    me.colParse(2, selectedFile);
+                }
+                if (view.lookupReference('selectColNumber').getValue() === "one"){
+                    view.lookupReference("secondConditionLabel").setHidden(true);
+                    view.lookupReference("firstConditionLabel").setHidden(true);
+                    view.lookupReference("secondConditionBox").setHidden(true);
+                }
+                if (view.lookupReference('selectFile').getValue() !== null){
+                    if (view.lookupReference('selectColNumber').getValue() === "one"){
+                        var selectedFile = view.lookupReference("selectFile").getValue();
+                        me.colParse(1, selectedFile);
+                    }
+                    if (view.lookupReference('selectColNumber').getValue() === "two"){
+                        var selectedFile = view.lookupReference("selectFile").getValue();
+                        me.colParse(2, selectedFile);
+                    }
                 }
             }
         });
