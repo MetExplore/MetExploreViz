@@ -905,13 +905,19 @@ metExploreD3.GraphFlux = {
             if (firstPointX < startX){
                 lastPointX = endX - (metaboliteStyle.getWidth() / 2) + ((fluxValue * 0.01));
                 beforeLastPointX = lastPointX - 5;
+                beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                lastPointY = lastPointY - (shiftValue*2);
             }
             else {
                 lastPointX = endX + (metaboliteStyle.getWidth() / 2) - ((fluxValue * 0.01));
                 beforeLastPointX = lastPointX + 5;
+                beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                lastPointY = lastPointY - (shiftValue*2);
             }
-            var control2X = controlX;
-            var control2Y = endY;
+            controlX = controlX + shiftValue;
+            var control2X = controlX + shiftValue;
+            var control2Y = endY - shiftValue;
+            controlY = controlY - shiftValue;
             var y1 = beforeLastPointY + 2;
             var y2 = beforeLastPointY - 2;
             var yMo = (lastPointY + beforeLastPointY)/2
@@ -1550,13 +1556,19 @@ metExploreD3.GraphFlux = {
             if (firstPointX < startX){
                 lastPointX = endX - (metaboliteStyle.getWidth() / 2);
                 beforeLastPointX = lastPointX - 5;
+                beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                lastPointY = lastPointY - (shiftValue*2);
             }
             else {
                 lastPointX = endX + (metaboliteStyle.getWidth() / 2);
                 beforeLastPointX = lastPointX + 5;
+                beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                lastPointY = lastPointY - (shiftValue*2);
             }
-            var control2X = controlX;
-            var control2Y = endY;
+            controlX = controlX + shiftValue;
+            var control2X = controlX + shiftValue;
+            var control2Y = endY - shiftValue;
+            controlY = controlY - shiftValue;
             path = "M" + startX + "," + startY +
                 "L" + firstPointX + "," + firstPointY +
                 "C" + controlX + "," + controlY + "," + control2X + "," + control2Y + "," + beforeLastPointX + "," + beforeLastPointY +
