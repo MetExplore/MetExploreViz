@@ -44,15 +44,19 @@ metExploreD3.GraphFlux = {
             if (nodes !== undefined){
                 var value = parseInt(fluxData[i][1], 10);
                 if (value === 0){
-                    nodes.fluxDirection = value;
+                    nodes.fluxDirection1 = value;
+                    nodes.valueCond1 = value;
+                    nodes.color1 = color;
                 }
                 if (value > 0){
                     valuePos[nodes.id] = value;
                     valPosDistri.push(value);
+                    nodes.valueCond1 = value;
                 }
                 if (value < 0){
                     valueNeg[nodes.id] = value;
                     valNegDistri.push(value*(-1));
+                    nodes.valueCond1 = value;
                 }
             }
         }
@@ -75,13 +79,13 @@ metExploreD3.GraphFlux = {
             if (nodes !== undefined){
                 if (Object.keys(valuePos).includes(nodes.id)){
                     var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos[nodes.id]);
-                    nodes.fluxDirection = edgeWidth;
-                    nodes.color = color;
+                    nodes.fluxDirection1 = edgeWidth;
+                    nodes.color1 = color;
                 }
                 if (Object.keys(valueNeg).includes(nodes.id)){
                     var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg[nodes.id]);
-                    nodes.fluxDirection = edgeWidth*(-1);
-                    nodes.color = color;
+                    nodes.fluxDirection1 = edgeWidth*(-1);
+                    nodes.color1 = color;
                 }
             }
         }
@@ -112,26 +116,32 @@ metExploreD3.GraphFlux = {
                 if (value1 === 0){
                     nodes.fluxDirection1 = value1;
                     nodes.color1 = color[0];
+                    nodes.valueCond1 = value1;
                 }
                 if (value1 > 0){
                     valuePos["first"][nodes.id] = value1;
                     valPosDistri.push(value1);
+                    nodes.valueCond1 = value1;
                 }
                 if (value1 < 0){
                     valueNeg["first"][nodes.id] = value1;
                     valNegDistri.push(value1*(-1));
+                    nodes.valueCond1 = value1;
                 }
                 if (value2 === 0){
                     nodes.fluxDirection2 = value2;
                     nodes.color2 = color[1];
+                    nodes.valueCond2 = value2;
                 }
                 if (value2 > 0){
                     valuePos["second"][nodes.id] = value2;
                     valPosDistri.push(value2);
+                    nodes.valueCond2 = value2;
                 }
                 if (value2 < 0){
                     valueNeg["second"][nodes.id] = value2;
                     valNegDistri.push(value2*(-1));
+                    nodes.valueCond2 = value2;
                 }
             }
         }
@@ -293,7 +303,7 @@ metExploreD3.GraphFlux = {
             var axe = "horizontal";
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
 
-            if (node.fluxDirection === 0){
+            if (node.fluxDirection1 === 0){
                 enteringLinks
                     .each(function (link) {
                         var path;
@@ -305,6 +315,7 @@ metExploreD3.GraphFlux = {
                             path = metExploreD3.GraphLink.computePathVertical(node, enteringX, enteringY, link.getSource());
                             axe="vertical";
                         }
+                        node.axe = axe;
                         d3.select(this).attr("d", path)
                             .attr("fill", "none")
                             .classed("horizontal", false)
@@ -339,7 +350,7 @@ metExploreD3.GraphFlux = {
                             .style("stroke-dasharray",8);
                     });
             }
-            if (node.fluxDirection > 0){
+            if (node.fluxDirection1 > 0){
                 enteringLinks
                     .each(function (link) {
                         var path;
@@ -351,21 +362,22 @@ metExploreD3.GraphFlux = {
                             path = metExploreD3.GraphLink.computePathVertical(node, enteringX, enteringY, link.getSource());
                             axe="vertical";
                         }
+                        node.axe = axe;
                         d3.select(this).attr("d", path)
                             .attr("fill", "none")
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke", node.color)
-                            .style("stroke-width",node.fluxDirection);
+                            .style("stroke", node.color1)
+                            .style("stroke-width",node.fluxDirection1);
                     });
 
                 exitingLinks
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        var fluxValue = node.fluxDirection*(-1);
+                        var fluxValue = node.fluxDirection1*(-1);
                         if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, fluxValue, 0);
                             axe="horizontal";
@@ -382,23 +394,24 @@ metExploreD3.GraphFlux = {
                             .classed(axe, true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
-                            .style("stroke", node.color)
-                            .style("stroke-width",node.fluxDirection);
+                            .style("stroke", node.color1)
+                            .style("stroke-width",node.fluxDirection1);
                     });
             }
-            if (node.fluxDirection < 0){
+            if (node.fluxDirection1 < 0){
                 enteringLinks
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource()
                         if (enteringY == node.y){
-                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection, 0);
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection1, 0);
                             axe="horizontal";
                         }
                         else {
-                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection, 0);
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection1, 0);
                             axe="vertical";
                         }
+                        node.axe = axe;
                         d3.select(this).attr("d", path)
                             .attr("fill", "none")
                             .classed("horizontal", false)
@@ -406,8 +419,8 @@ metExploreD3.GraphFlux = {
                             .classed(axe, true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
-                            .style("stroke", node.color)
-                            .style("stroke-width",node.fluxDirection*(-1));
+                            .style("stroke", node.color1)
+                            .style("stroke-width",node.fluxDirection1*(-1));
                     });
 
                 exitingLinks
@@ -428,8 +441,8 @@ metExploreD3.GraphFlux = {
                             .classed("vertical", false)
                             .classed(axe, true)
                             .style("opacity", 1)
-                            .style("stroke", node.color)
-                            .style("stroke-width",node.fluxDirection*(-1));
+                            .style("stroke", node.color1)
+                            .style("stroke-width",node.fluxDirection1*(-1));
                     });
             }
         });
@@ -445,7 +458,6 @@ metExploreD3.GraphFlux = {
                 return node.getBiologicalType()=="reaction";
             });
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.clone").remove();
-        // d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.clone.horizontal").remove();
 
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.reaction");
 
@@ -507,6 +519,7 @@ metExploreD3.GraphFlux = {
                             path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y, -5);
                             axe="vertical";
                         }
+                        node.axe = axe;
                         d3.select(this).attr("d", path)
                             .attr("fill", "none")
                             .classed("horizontal", false)
@@ -609,6 +622,7 @@ metExploreD3.GraphFlux = {
                             path = metExploreD3.GraphFlux.twoPathVertical(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y, -5);
                             axe="vertical";
                         }
+                        node.axe = axe;
                         d3.select(this).attr("d", path)
                             .attr("fill", "none")
                             .classed("horizontal", false)
@@ -713,6 +727,7 @@ metExploreD3.GraphFlux = {
                             path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x-5, node.y, enteringX-5, enteringY, endNode.x-5, endNode.y, node.fluxDirection1, -5);
                             axe="vertical";
                         }
+                        node.axe = axe;
                         d3.select(this).attr("d", path)
                             .attr("fill", "none")
                             .classed("horizontal", false)
@@ -1066,13 +1081,16 @@ metExploreD3.GraphFlux = {
                 return node.getBiologicalType()=="reaction";
             });
         reactions.each(function(node) {
-            node.fluxDirection = "";
-            node.fluxDirection1 = "";
-            node.fluxDirection2 = "";
+            node.fluxDirection1 = undefined;
+            node.fluxDirection2 = undefined;
 
-            node.color = "";
-            node.color1 = "";
-            node.color2 = "";
+            node.valueCond1 = undefined;
+            node.valueCond2 = undefined;
+
+            node.color1 = undefined;
+            node.color2 = undefined;
+
+            node.axe = undefined;
         });
 
         // remove link clone
@@ -1575,6 +1593,78 @@ metExploreD3.GraphFlux = {
                 "L" + lastPointX + "," + lastPointY;
         }
         return path;
+    },
+
+    addValueOnEdge: function(){
+        var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(node){
+                return node.getBiologicalType()=="reaction";
+            });
+
+        var labelDrag = d3.drag()
+            .on("drag", metExploreD3.GraphFlux.dragMove);
+
+        reactions.each(function(react){
+            if (react.axe === "horizontal"){
+                var posX = react.x-20;
+                var posY = react.y+15;
+            }
+            if (react.axe === "vertical"){
+                var posX = react.x+15;
+                var posY = react.y;
+            }
+            if (react.valueCond1 !== undefined && react.valueCond2 === undefined){
+                var target = d3.select("#viz").select("#D3viz").select("#graphComponent");
+                target.append("text")
+                    .attr("x", posX)
+                    .attr("y", posY)
+                    .attr("fill", react.color1)
+                    .attr("font-size", 10)
+                    .classed("valueLabel", true)
+                    .text(react.name+" : "+react.valueCond1)
+                    .call(labelDrag);
+            }
+            if (react.valueCond2 !== undefined && react.valueCond1 !== undefined){
+                var target = d3.select("#viz").select("#D3viz").select("#graphComponent");
+                var valueLabel = target.append("g")
+                                        .attr("class","label")
+                                        .attr("x", posX)
+                                        .attr("y", posY)
+                                        .call(labelDrag);
+                valueLabel.append("text")
+                        .attr("fill", react.color1)
+                        .attr("x", posX)
+                        .attr("y", posY)
+                        .attr("font-size", 10)
+                        .classed("valueLabel", true)
+                        .text(react.name+" : "+react.valueCond1);
+                valueLabel.append("text")
+                        .attr("fill", react.color2)
+                        .attr("x", posX)
+                        .attr("y", posY+15)
+                        .attr("font-size", 10)
+                        .classed("valueLabel", true)
+                        .text(react.name+" : "+react.valueCond2);
+            }
+        });
+    },
+
+    removeValueOnEdge: function(){
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("text.valueLabel").remove();
+    },
+
+    dragMove: function(d){
+        d3.select(this)
+            .attr("y", d3.event.y)
+            .attr("x", d3.event.x);
+        var labels = d3.select(this).selectAll("text.valueLabel");
+        var labelGroup = labels._groups;
+        labelGroup[0].forEach(function(label, i){
+            d3.select(label).attr("x", d3.event.x)
+                            .attr("y", d3.event.y+(i*15));
+
+        });
     }
 
 };

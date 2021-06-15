@@ -206,6 +206,13 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
         },
 
         {
+            xtype: 'checkboxfield',
+            boxLabel: 'Add flux values on network',
+            margin: '15 15 10 5',
+            reference: 'addValueNetwork'
+        },
+
+        {
             xtype: 'button',
             html: 'Display',
             width: '100%',

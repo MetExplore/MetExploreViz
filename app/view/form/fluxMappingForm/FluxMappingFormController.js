@@ -85,6 +85,9 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                         var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
                         me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color);
                     }
+                    if (view.lookupReference('addValueNetwork').getValue() === true){
+                        metExploreD3.GraphFlux.addValueOnEdge(color);
+                    }
                     view.lookupReference('runFluxVizu').setText("Remove display");
                 }
 
@@ -95,10 +98,24 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     metExploreD3.GraphCaption.drawCaption();
                     metExploreD3.GraphFlux.restoreStyles(_metExploreViz.linkStyle);
                     metExploreD3.GraphFlux.removeGraphDistrib();
+                    metExploreD3.GraphFlux.removeValueOnEdge();
 
                     view.lookupReference('runFluxVizu').setText("Display");
                 }
 
+            }
+        });
+
+        view.lookupReference('addValueNetwork').on({
+            change: function(){
+                if (metExploreD3.GraphStyleEdition.fluxPath1 === true || metExploreD3.GraphStyleEdition.fluxPath2 === true){
+                    if (view.lookupReference('addValueNetwork').getValue() === true){
+                        metExploreD3.GraphFlux.addValueOnEdge();
+                    }
+                    if (view.lookupReference('addValueNetwork').getValue() === false){
+                        metExploreD3.GraphFlux.removeValueOnEdge();
+                    }
+                }
             }
         });
     },
