@@ -189,25 +189,47 @@ metExploreD3.GraphFlux = {
     },
 
     computeWidth: function(fluxDistri, fluxValue){
+        var min = fluxDistri["min"];
+        var inter = fluxDistri["inter"];
+        var max = fluxDistri["max"];
+
         if (fluxValue < 0){
             fluxValue = fluxValue*(-1);
         }
-        if (fluxValue === fluxDistri["min"]){
+        if (fluxValue === min){
             return 1;
         }
-        if (fluxValue === fluxDistri["max"]){
+        if (fluxValue === max){
             return 5;
         }
-        if (fluxValue === fluxDistri["inter"]){
-            return 2.5;
+        if (fluxValue === inter){
+            return 3;
         }
-        if (fluxValue > fluxDistri["inter"]){
-            return 2.5+(fluxValue*0.005);
+        if (fluxValue > inter){
+            var coef = 2 / (max - inter);
+            var widthCompute = 3 + (fluxValue - inter) * coef;
+            return widthCompute;
         }
-        if (fluxValue < fluxDistri["inter"]){
-            return 2.5-(fluxValue*0.005);
+        if (fluxValue < inter){
+            var coef = 2 / (inter - min);
+            var widthCompute = 3 - (inter - fluxValue) * coef;
+            return widthCompute;
         }
     },
+
+// Pour value > inter
+// 2/(max-inter) === coef multiplicateur
+// (value-inter)*coef + 3 === width
+// ex : inter = 300, max = 540, value = 400 -> coef = 0,0083 => width = 3,83
+// value = 500 -> width = 4,66
+// value = 540 -> width = 4,992
+
+// Pour value < inter
+// 2/(inter-min) === coef
+// 3 - (inter-value)*coef === width
+// ex : inter = 300, min = 40, value = 100 -> coef = 0,0077 => width = 1,46
+// value = 250 -> width = 2,615
+// value = 50 -> width = 1,075
 
     fluxDistribution: function(fluxValues){
         var distrib = {};
@@ -1595,7 +1617,7 @@ metExploreD3.GraphFlux = {
         return path;
     },
 
-    addValueOnEdge: function(){
+    addValueOnEdge: function(size, label){
         var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
@@ -1606,6 +1628,16 @@ metExploreD3.GraphFlux = {
             .on("drag", metExploreD3.GraphFlux.dragMove);
 
         reactions.each(function(react){
+            if (label === "Reaction Name"){
+                var textLabel = react.name;
+            }
+            if (label === "Reaction ID"){
+                var textLabel = react.id;
+            }
+            if (label === "Reaction DB ID"){
+                var textLabel = react.dbIdentifier;
+            }
+
             if (react.axe === "horizontal"){
                 var posX = react.x-20;
                 var posY = react.y+15;
@@ -1620,9 +1652,9 @@ metExploreD3.GraphFlux = {
                     .attr("x", posX)
                     .attr("y", posY)
                     .attr("fill", react.color1)
-                    .attr("font-size", 10)
+                    .attr("font-size", size)
                     .classed("valueLabel", true)
-                    .text(react.name+" : "+react.valueCond1)
+                    .text(textLabel+" : "+react.valueCond1)
                     .call(labelDrag);
             }
             if (react.valueCond2 !== undefined && react.valueCond1 !== undefined){
@@ -1636,16 +1668,16 @@ metExploreD3.GraphFlux = {
                         .attr("fill", react.color1)
                         .attr("x", posX)
                         .attr("y", posY)
-                        .attr("font-size", 10)
+                        .attr("font-size", size)
                         .classed("valueLabel", true)
-                        .text(react.name+" : "+react.valueCond1);
+                        .text(textLabel+" : "+react.valueCond1);
                 valueLabel.append("text")
                         .attr("fill", react.color2)
                         .attr("x", posX)
                         .attr("y", posY+15)
-                        .attr("font-size", 10)
+                        .attr("font-size", size)
                         .classed("valueLabel", true)
-                        .text(react.name+" : "+react.valueCond2);
+                        .text(textLabel+" : "+react.valueCond2);
             }
         });
     },
@@ -1664,6 +1696,14 @@ metExploreD3.GraphFlux = {
             d3.select(label).attr("x", d3.event.x)
                             .attr("y", d3.event.y+(i*15));
 
+        });
+    },
+
+    setFontSize: function(size){
+        var labels = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("text.valueLabel");
+        var labelGroup = labels._groups;
+        labelGroup[0].forEach(function(label){
+            d3.select(label).attr("font-size", size);
         });
     }
 

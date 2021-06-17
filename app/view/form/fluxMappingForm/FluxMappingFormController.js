@@ -86,7 +86,9 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                         me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color);
                     }
                     if (view.lookupReference('addValueNetwork').getValue() === true){
-                        metExploreD3.GraphFlux.addValueOnEdge(color);
+                        var size = view.lookupReference('fontSize').getValue();
+                        var label = view.lookupReference('selectLabelDisplayed').getValue();
+                        metExploreD3.GraphFlux.addValueOnEdge(size, label);
                     }
                     view.lookupReference('runFluxVizu').setText("Remove display");
                 }
@@ -110,14 +112,46 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
             change: function(){
                 if (metExploreD3.GraphStyleEdition.fluxPath1 === true || metExploreD3.GraphStyleEdition.fluxPath2 === true){
                     if (view.lookupReference('addValueNetwork').getValue() === true){
-                        metExploreD3.GraphFlux.addValueOnEdge();
+                        var size = view.lookupReference('fontSize').getValue();
+                        var label = view.lookupReference('selectLabelDisplayed').getValue();
+                        metExploreD3.GraphFlux.addValueOnEdge(size, label);
                     }
                     if (view.lookupReference('addValueNetwork').getValue() === false){
                         metExploreD3.GraphFlux.removeValueOnEdge();
                     }
                 }
+                if (view.lookupReference('addValueNetwork').getValue() === true){
+                    view.lookupReference('fontSize').setHidden(false);
+                    view.lookupReference('selectLabel').setHidden(false);
+                }
+                if (view.lookupReference('addValueNetwork').getValue() === false){
+                    view.lookupReference('fontSize').setHidden(true);
+                    view.lookupReference('selectLabel').setHidden(true);
+                }
             }
         });
+
+        view.lookupReference('fontSize').on({
+            keypress: function(field, event){
+                if (event.getKey() === event.ENTER){
+                    var size = view.lookupReference('fontSize').getValue();
+                    metExploreD3.GraphFlux.setFontSize(size);
+                }
+            }
+        });
+
+        view.lookupReference('selectLabelDisplayed').on({
+            change: function(){
+                if (metExploreD3.GraphStyleEdition.fluxPath1 === true || metExploreD3.GraphStyleEdition.fluxPath2 === true){
+                    if (view.lookupReference('addValueNetwork').getValue() === true){
+                        metExploreD3.GraphFlux.removeValueOnEdge();
+                        var size = view.lookupReference('fontSize').getValue();
+                        var label = view.lookupReference('selectLabelDisplayed').getValue();
+                        metExploreD3.GraphFlux.addValueOnEdge(size, label);
+                    }
+                }
+            }
+        })
     },
 
     colParse: function(nbCol, selectedFile){

@@ -213,6 +213,52 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
         },
 
         {
+            xtype: 'textfield',
+            value: '10',
+            fieldLabel: 'Font size ',
+            scale: 'large',
+            hidden: true,
+            reference: 'fontSize',
+            margin: '5 5 5 5',
+            enableKeyEvents: true
+        },
+
+        {
+            border: false,
+            xtype: 'panel',
+            autoScroll: true,
+            hidden: true,
+            reference: 'selectLabel',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+                    },
+            items: [
+                {
+                    store: {
+                        fields: ['labels'],
+                        data: [
+                            {"labels":"Reaction Name"},
+                            {"labels":"Reaction ID"},
+                            {"labels":"Reaction DB ID"}
+                        ]
+                    },
+                    xtype: 'combobox',
+                    fieldLabel: 'Label ',
+                    displayField: 'labels',
+                    valueField: 'labels',
+                    queryMode: 'local',
+                    editable: false,
+                    emptyText: '-- Select Label --',
+                    value: 'Reaction Name',
+                    margin: '5 5 5 5',
+                    width: '100%',
+                    anyMatch: true,
+                    reference: 'selectLabelDisplayed'
+                }]
+        },
+
+        {
             xtype: 'button',
             html: 'Display',
             width: '100%',
