@@ -235,21 +235,22 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
 
         if (nbCol === "two"){
             var condSplit = [condSelect, condSelect2];
-            var indexCond = [];
+            var indexCond1;
+            var indexCond2;
 
             for (var i = 0; i < fluxCond.length; i++){
-                condSplit.forEach(function(cond){
-                    if (cond === fluxCond[i]){
-                        indexCond.push(i+1);
-                    }
-                });
+                if (condSplit[0] === fluxCond[i]){
+                    indexCond1 = i+1;
+                }
+                if (condSplit[1] === fluxCond[i]){
+                    indexCond2 = i+1;
+                }
             }
             for (var i = 0; i < fluxData.length; i++){
                 var data = [];
                 data.push(fluxData[i][0]);
-                indexCond.forEach(function(index){
-                    data.push(fluxData[i][index]);
-                });
+                data.push(fluxData[i][indexCond1]);
+                data.push(fluxData[i][indexCond2]);
                 conData.push(data);
             }
         }
