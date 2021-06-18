@@ -1629,13 +1629,16 @@ metExploreD3.GraphFlux = {
 
         reactions.each(function(react){
             if (label === "Reaction Name"){
-                var textLabel = react.name;
+                var textLabel = react.name+" : ";
             }
             if (label === "Reaction ID"){
-                var textLabel = react.id;
+                var textLabel = react.id+" : ";
             }
             if (label === "Reaction DB ID"){
-                var textLabel = react.dbIdentifier;
+                var textLabel = react.dbIdentifier+" : ";
+            }
+            if (label === "None"){
+                var textLabel = "";
             }
 
             if (react.axe === "horizontal"){
@@ -1654,7 +1657,7 @@ metExploreD3.GraphFlux = {
                     .attr("fill", react.color1)
                     .attr("font-size", size)
                     .classed("valueLabel", true)
-                    .text(textLabel+" : "+react.valueCond1)
+                    .text(textLabel+react.valueCond1)
                     .call(labelDrag);
             }
             if (react.valueCond2 !== undefined && react.valueCond1 !== undefined){
@@ -1670,14 +1673,14 @@ metExploreD3.GraphFlux = {
                         .attr("y", posY)
                         .attr("font-size", size)
                         .classed("valueLabel", true)
-                        .text(textLabel+" : "+react.valueCond1);
+                        .text(textLabel+react.valueCond1);
                 valueLabel.append("text")
                         .attr("fill", react.color2)
                         .attr("x", posX)
                         .attr("y", posY+15)
                         .attr("font-size", size)
                         .classed("valueLabel", true)
-                        .text(textLabel+" : "+react.valueCond2);
+                        .text(textLabel+react.valueCond2);
             }
         });
     },

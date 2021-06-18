@@ -240,7 +240,8 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
                         data: [
                             {"labels":"Reaction Name"},
                             {"labels":"Reaction ID"},
-                            {"labels":"Reaction DB ID"}
+                            {"labels":"Reaction DB ID"},
+                            {"labels":"None"}
                         ]
                     },
                     xtype: 'combobox',

@@ -73,24 +73,26 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     var nbColSelect = view.lookupReference('selectColNumber').getValue();
                     var condSelect = view.lookupReference('selectConditionFlux').getValue();
 
-                    if (nbColSelect === "one"){
-                        var color = document.getElementById("html5colorpickerFlux1").value;
-                        metExploreD3.GraphStyleEdition.fluxPath1 = true;
-                        me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color);
+                    if (selectedFile !== null && nbColSelect !== null && condSelect !== null){
+                        if (nbColSelect === "one"){
+                            var color = document.getElementById("html5colorpickerFlux1").value;
+                            metExploreD3.GraphStyleEdition.fluxPath1 = true;
+                            me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color);
+                        }
+                        if (nbColSelect === "two"){
+                            var color = [document.getElementById("html5colorpickerFlux1").value,
+                                        document.getElementById("html5colorpickerFlux2").value];
+                            metExploreD3.GraphStyleEdition.fluxPath2 = true;
+                            var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
+                            me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color);
+                        }
+                        if (view.lookupReference('addValueNetwork').getValue() === true){
+                            var size = view.lookupReference('fontSize').getValue();
+                            var label = view.lookupReference('selectLabelDisplayed').getValue();
+                            metExploreD3.GraphFlux.addValueOnEdge(size, label);
+                        }
+                        view.lookupReference('runFluxVizu').setText("Remove display");
                     }
-                    if (nbColSelect === "two"){
-                        var color = [document.getElementById("html5colorpickerFlux1").value,
-                                    document.getElementById("html5colorpickerFlux2").value];
-                        metExploreD3.GraphStyleEdition.fluxPath2 = true;
-                        var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
-                        me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color);
-                    }
-                    if (view.lookupReference('addValueNetwork').getValue() === true){
-                        var size = view.lookupReference('fontSize').getValue();
-                        var label = view.lookupReference('selectLabelDisplayed').getValue();
-                        metExploreD3.GraphFlux.addValueOnEdge(size, label);
-                    }
-                    view.lookupReference('runFluxVizu').setText("Remove display");
                 }
 
                 else{
@@ -151,7 +153,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     }
                 }
             }
-        })
+        });
     },
 
     colParse: function(nbCol, selectedFile){
