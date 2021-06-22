@@ -939,22 +939,54 @@ metExploreD3.GraphFlux = {
         }
         // 3rd case: The end node is not on the correct side of the reaction
         else {
-            if (firstPointX < startX){
-                lastPointX = endX - (metaboliteStyle.getWidth() / 2) + ((fluxValue * 0.01));
-                beforeLastPointX = lastPointX - 5;
-                beforeLastPointY = beforeLastPointY - (shiftValue*2);
-                lastPointY = lastPointY - (shiftValue*2);
+            if (endY < startY){
+                if (firstPointX < startX){
+                    lastPointX = endX - (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointX = lastPointX - 5;
+                    beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                    lastPointY = lastPointY - (shiftValue*2);
+
+                    controlX = controlX - shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = controlX - shiftValue;
+                    var control2Y = endY - shiftValue;
+                }
+                else {
+                    lastPointX = endX + (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointX = lastPointX + 5;
+                    beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                    lastPointY = lastPointY - (shiftValue*2);
+
+                    controlX = controlX + shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = controlX + shiftValue;
+                    var control2Y = endY - shiftValue;
+                }
             }
             else {
-                lastPointX = endX + (metaboliteStyle.getWidth() / 2) - ((fluxValue * 0.01));
-                beforeLastPointX = lastPointX + 5;
-                beforeLastPointY = beforeLastPointY - (shiftValue*2);
-                lastPointY = lastPointY - (shiftValue*2);
+                if (firstPointX < startX){
+                    lastPointX = endX - (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointX = lastPointX - 5;
+                    beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                    lastPointY = lastPointY - (shiftValue*2);
+
+                    controlX = controlX + shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = controlX + shiftValue;
+                    var control2Y = endY - shiftValue;
+                }
+                else {
+                    lastPointX = endX + (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointX = lastPointX + 5;
+                    beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                    lastPointY = lastPointY - (shiftValue*2);
+
+                    controlX = controlX - shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = controlX - shiftValue;
+                    var control2Y = endY - shiftValue;
+                }
             }
-            controlX = controlX + shiftValue;
-            var control2X = controlX + shiftValue;
-            var control2Y = endY - shiftValue;
-            controlY = controlY - shiftValue;
             var y1 = beforeLastPointY + 2;
             var y2 = beforeLastPointY - 2;
             var yMo = (lastPointY + beforeLastPointY)/2
@@ -1064,22 +1096,52 @@ metExploreD3.GraphFlux = {
         }
         // 3rd case: The end node is not on the correct side of the reaction
         else {
-            if (firstPointY < startY){
-                lastPointY = endY - (metaboliteStyle.getWidth() / 2) + ((fluxValue * 0.01));
-                beforeLastPointY = lastPointY - 5;
-                beforeLastPointX = beforeLastPointX - (shiftValue*2);
-                lastPointX = lastPointX - (shiftValue*2);
+            if (endX < startX){
+                if (firstPointY < startY){
+                    lastPointY = endY - (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointY = lastPointY + 5;
+                    beforeLastPointX = beforeLastPointX - (shiftValue*2);
+                    lastPointX = lastPointX - (shiftValue*2);
+
+                    controlX = controlX - shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = endX - shiftValue;
+                    var control2Y = controlY - shiftValue;
+                }
+                else {
+                    lastPointY = endY + (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointY = lastPointY + 5;
+                    beforeLastPointX = beforeLastPointX - (shiftValue*2);
+                    lastPointX = lastPointX - (shiftValue*2);
+                    controlX = controlX - shiftValue;
+                    controlY = controlY + shiftValue;
+                    var control2X = endX - shiftValue;
+                    var control2Y = controlY + shiftValue;
+                }
             }
-            else {
-                lastPointY = endY + (metaboliteStyle.getWidth() / 2) - ((fluxValue * 0.01));
-                beforeLastPointY = lastPointY + 5;
-                beforeLastPointX = beforeLastPointX - (shiftValue*2);
-                lastPointX = lastPointX - (shiftValue*2);
+            if (endX > startX){
+                if (firstPointY < startY){
+                    lastPointY = endY - (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointY = lastPointY - 5;
+                    beforeLastPointX = beforeLastPointX - (shiftValue*2);
+                    lastPointX = lastPointX - (shiftValue*2);
+                    controlX = controlX - shiftValue;
+                    controlY = controlY + shiftValue;
+                    var control2X = endX - shiftValue;
+                    var control2Y = controlY + shiftValue;
+                }
+                else {
+                    lastPointY = endY + (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointY = lastPointY - 5;
+                    beforeLastPointX = beforeLastPointX - (shiftValue*2);
+                    lastPointX = lastPointX - (shiftValue*2);
+
+                    controlX = controlX - shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = endX - shiftValue;
+                    var control2Y = controlY - shiftValue;
+                }
             }
-            controlX = controlX - shiftValue;
-            controlY = controlY + shiftValue;
-            var control2X = endX - shiftValue;
-            var control2Y = controlY + shiftValue;
             var x1 = beforeLastPointX - 2;
             var x2 = beforeLastPointX + 2;
             var xMo = (beforeLastPointX+lastPointX)/2;
@@ -1485,22 +1547,52 @@ metExploreD3.GraphFlux = {
         }
         // 3rd case: The end node is not on the correct side of the reaction
         else {
-            if (firstPointY < startY){
-                lastPointY = endY - (metaboliteStyle.getWidth() / 2);
-                beforeLastPointY = lastPointY - 5;
-                beforeLastPointX = beforeLastPointX - (shiftValue*2);
-                lastPointX = lastPointX - (shiftValue*2);
+            if (endX < startX){
+                if (firstPointY < startY){
+                    lastPointY = endY - (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointY = lastPointY + 5;
+                    beforeLastPointX = beforeLastPointX - (shiftValue*2);
+                    lastPointX = lastPointX - (shiftValue*2);
+
+                    controlX = controlX - shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = endX - shiftValue;
+                    var control2Y = controlY - shiftValue;
+                }
+                else {
+                    lastPointY = endY + (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointY = lastPointY + 5;
+                    beforeLastPointX = beforeLastPointX - (shiftValue*2);
+                    lastPointX = lastPointX - (shiftValue*2);
+                    controlX = controlX - shiftValue;
+                    controlY = controlY + shiftValue;
+                    var control2X = endX - shiftValue;
+                    var control2Y = controlY + shiftValue;
+                }
             }
-            else {
-                lastPointY = endY + (metaboliteStyle.getWidth() / 2);
-                beforeLastPointY = lastPointY + 5;
-                beforeLastPointX = beforeLastPointX - (shiftValue*2);
-                lastPointX = lastPointX - (shiftValue*2);
+            if (endX > startX){
+                if (firstPointY < startY){
+                    lastPointY = endY - (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointY = lastPointY - 5;
+                    beforeLastPointX = beforeLastPointX - (shiftValue*2);
+                    lastPointX = lastPointX - (shiftValue*2);
+                    controlX = controlX - shiftValue;
+                    controlY = controlY + shiftValue;
+                    var control2X = endX - shiftValue;
+                    var control2Y = controlY + shiftValue;
+                }
+                else {
+                    lastPointY = endY + (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointY = lastPointY - 5;
+                    beforeLastPointX = beforeLastPointX - (shiftValue*2);
+                    lastPointX = lastPointX - (shiftValue*2);
+
+                    controlX = controlX - shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = endX - shiftValue;
+                    var control2Y = controlY - shiftValue;
+                }
             }
-            controlX = controlX - shiftValue;
-            controlY = controlY + shiftValue;
-            var control2X = endX - shiftValue;
-            var control2Y = controlY + shiftValue;
 
             path = "M" + startX + "," + startY +
                 "L" + firstPointX + "," + firstPointY +
@@ -1593,22 +1685,54 @@ metExploreD3.GraphFlux = {
         }
         // 3rd case: The end node is not on the correct side of the reaction
         else {
-            if (firstPointX < startX){
-                lastPointX = endX - (metaboliteStyle.getWidth() / 2);
-                beforeLastPointX = lastPointX - 5;
-                beforeLastPointY = beforeLastPointY - (shiftValue*2);
-                lastPointY = lastPointY - (shiftValue*2);
+            if (endY < startY){
+                if (firstPointX < startX){
+                    lastPointX = endX - (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointX = lastPointX - 5;
+                    beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                    lastPointY = lastPointY - (shiftValue*2);
+
+                    controlX = controlX - shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = controlX - shiftValue;
+                    var control2Y = endY - shiftValue;
+                }
+                else {
+                    lastPointX = endX + (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointX = lastPointX + 5;
+                    beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                    lastPointY = lastPointY - (shiftValue*2);
+
+                    controlX = controlX + shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = controlX + shiftValue;
+                    var control2Y = endY - shiftValue;
+                }
             }
             else {
-                lastPointX = endX + (metaboliteStyle.getWidth() / 2);
-                beforeLastPointX = lastPointX + 5;
-                beforeLastPointY = beforeLastPointY - (shiftValue*2);
-                lastPointY = lastPointY - (shiftValue*2);
+                if (firstPointX < startX){
+                    lastPointX = endX - (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointX = lastPointX - 5;
+                    beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                    lastPointY = lastPointY - (shiftValue*2);
+
+                    controlX = controlX + shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = controlX + shiftValue;
+                    var control2Y = endY - shiftValue;
+                }
+                else {
+                    lastPointX = endX + (metaboliteStyle.getWidth() / 2);
+                    beforeLastPointX = lastPointX + 5;
+                    beforeLastPointY = beforeLastPointY - (shiftValue*2);
+                    lastPointY = lastPointY - (shiftValue*2);
+
+                    controlX = controlX - shiftValue;
+                    controlY = controlY - shiftValue;
+                    var control2X = controlX - shiftValue;
+                    var control2Y = endY - shiftValue;
+                }
             }
-            controlX = controlX + shiftValue;
-            var control2X = controlX + shiftValue;
-            var control2Y = endY - shiftValue;
-            controlY = controlY - shiftValue;
             path = "M" + startX + "," + startY +
                 "L" + firstPointX + "," + firstPointY +
                 "C" + controlX + "," + controlY + "," + control2X + "," + control2Y + "," + beforeLastPointX + "," + beforeLastPointY +
