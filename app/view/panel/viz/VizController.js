@@ -150,7 +150,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 				var session = _metExploreViz.getSessionById("viz");
 	    		// if visualisation is actived we add item to menu
 	    		if(session.isActive()){
-				
+
 					metExploreD3.GraphPanel.resizePanels('viz');
 
 				}
@@ -171,17 +171,17 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
     * @param {} vizEngine : library used to make the visualization
 	*/
 	initiateViz : function() {
-		
-		$("#viz").on('contextmenu', function(e) {		
+
+		$("#viz").on('contextmenu', function(e) {
 			// devalide le menu contextuel du navigateur
 			e.preventDefault();
 			var networkVizSessionStore = _metExploreViz.getSessionById("viz");
 			// Define the right click to remove elements and display information
 			var viz = Ext.getCmp('viz');
 			if(viz!= undefined){
-				if(e.target.id=="D3viz" 
-					|| e.target.parentNode.parentNode.id=="D3viz" 
-					|| e.target.parentNode.id=="graphComponent") 
+				if(e.target.id=="D3viz"
+					|| e.target.parentNode.parentNode.id=="D3viz"
+					|| e.target.parentNode.id=="graphComponent")
 				{
 
 					viz.CtxMenu = new Ext.menu.Menu({
@@ -260,6 +260,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							iconCls:"duplicate-sideCompounds",
 							handler : function(){
 								metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz");
+								metExploreD3.GraphLink.refreshLinkActivity("viz", _metExploreViz.getSessionById("viz"), metExploreD3.getLinkStyle());
 							}
 						}
 						,{
@@ -286,13 +287,13 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 				{
 
 					if(e.target.id=='')
-					{	
+					{
 						if(e.target.parentNode.textContent!=""){
-							if(e.target.previousSibling.previousSibling==null) 
+							if(e.target.previousSibling.previousSibling==null)
 								var target = e.target.previousSibling;
 							else
 								var target = e.target.previousSibling.previousSibling;
-								
+
 						}
 						else
 							var target = e.target.parentNode.parentNode.firstChild;
@@ -364,10 +365,16 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 if (metExploreD3.GraphFunction.checkIfPartOfCycle(theNode, "viz")){
                                     var text = "This node is part of a drawn cycle and duplicationg it will break the cycle. Do you want to proceed ?";
                                     metExploreD3.displayMessageYesNo("Warning", text, function (btn) {
-                                        if (btn === "yes") { metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz"); }
+                                        if (btn === "yes") {
+											metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz");
+											metExploreD3.GraphLink.refreshLinkActivity("viz", _metExploreViz.getSessionById("viz"), metExploreD3.getLinkStyle());
+										}
                                     });
                                 }
-                                else { metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz"); }
+                                else {
+									metExploreD3.GraphNetwork.duplicateASideCompoundSelected(theNode, "viz");
+									metExploreD3.GraphLink.refreshLinkActivity("viz", _metExploreViz.getSessionById("viz"), metExploreD3.getLinkStyle());
+								}
                             }
                         },{
                             text : 'All selected nodes',
@@ -377,10 +384,16 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 if (metExploreD3.GraphFunction.checkIfSelectionIsPartOfCycle("viz")){
                                     var text = "Some of the selected nodes are part of a drawn cycle and duplicationg them will break the cycle. Do you want to proceed ?";
                                     metExploreD3.displayMessageYesNo("Warning", text, function (btn) {
-                                        if (btn === "yes") { metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); }
+                                        if (btn === "yes") {
+											metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz");
+											metExploreD3.GraphLink.refreshLinkActivity("viz", _metExploreViz.getSessionById("viz"), metExploreD3.getLinkStyle());
+										}
                                     });
                                 }
-                                else { metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz"); }
+                                else {
+									metExploreD3.GraphNetwork.duplicateSideCompoundsSelected("viz");
+									metExploreD3.GraphLink.refreshLinkActivity("viz", _metExploreViz.getSessionById("viz"), metExploreD3.getLinkStyle());
+								}
                             }
                         }]
                     });
@@ -719,7 +732,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 			if(viz.CtxMenu!=undefined)
 				if(a.length>0)
 					viz.CtxMenu.showAt(e.clientX, e.clientY);
-		});	
+		});
 	},
 
     /*****************************************************
