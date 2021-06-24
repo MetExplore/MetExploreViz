@@ -1809,6 +1809,18 @@ metExploreD3.GraphNetwork = {
 
         var reactNode = networkData.getNodeById(reactionId);
 
+        if (reactNode.getMappingDatasLength()!=0){
+            var links = networkData.getLinkByDBIdReaction(reactNode.getDbIdentifier());
+            links.forEach(function(link){
+                if (newNode.name === link.target.name){
+                    link.target = newNode;
+                }
+                if (newNode.name === link.source.name){
+                    link.source = newNode;
+                }
+            });
+        }
+
         var dX =  reactNode.x - theNode.x;
         var dY =  reactNode.y - theNode.y;
 
