@@ -672,6 +672,10 @@ metExploreD3.GraphPanel = {
 					metExploreD3.displayMessageYesNo("Coordinates",'Do you want to keep nodes coordinates.',function(btn){
 		                if(btn=="yes")
 		                {
+                            metExploreD3.GraphNetwork.play();
+                            var vizComp = Ext.getCmp('viz');
+                            vizComp.lookupReference('animation').setIconCls('play');
+                            
 		                	var selected = [];
 				            oldCoodinates.forEach(function(coor){
 				            	var node = networkData.getNodeById(coor.id);
