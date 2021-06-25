@@ -19,12 +19,6 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
 			},
 			scope:me
 		});
-
-        view.on({
-            test:function(){
-                console.log("test");
-            }
-        })
 	},
 
 	/*****************************************************
@@ -44,7 +38,7 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
 	    var targetName = firstLine.splice(0, 1);
 	    var array = [];
 
-		if(targetName[0]=="reactionDBIdentifier" || targetName[0]=="reactionId" || targetName[0]=="reactionName") {
+		if(targetName[0]=="Identifier" || targetName[0]=="reactionId" || targetName[0]=="Name") {
 		    var flux = new Flux(title, firstLine, targetName[0], array);
             for (var i = lines.length - 1; i >= 0; i--) {
     	    	lines[i] = lines[i].split('\t').map(function (val) {

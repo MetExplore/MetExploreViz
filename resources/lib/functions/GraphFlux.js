@@ -31,13 +31,13 @@ metExploreD3.GraphFlux = {
 
         for (var i = 0; i < fluxData.length; i++){
 
-            if (targetLabel === "reactionName"){
+            if (targetLabel === "Name"){
                 var nodes = networkData.getNodeByName(fluxData[i][0]);
             }
             if (targetLabel === "reactionId"){
                 var nodes = networkData.getNodeById(fluxData[i][0]);
             }
-            if (targetLabel === "reactionDBIdentifier"){
+            if (targetLabel === "Identifier"){
                 var nodes = networkData.getNodeByDbIdentifier(fluxData[i][0]);
             }
 
@@ -66,13 +66,13 @@ metExploreD3.GraphFlux = {
 
         for (var i = 0; i < fluxData.length; i++){
 
-            if (targetLabel === "reactionName"){
+            if (targetLabel === "Name"){
                 var nodes = networkData.getNodeByName(fluxData[i][0]);
             }
             if (targetLabel === "reactionId"){
                 var nodes = networkData.getNodeById(fluxData[i][0]);
             }
-            if (targetLabel === "reactionDBIdentifier"){
+            if (targetLabel === "Identifier"){
                 var nodes = networkData.getNodeByDbIdentifier(fluxData[i][0]);
             }
 
@@ -100,13 +100,13 @@ metExploreD3.GraphFlux = {
 
         for (var i = 0; i < fluxData.length; i++){
 
-            if (targetLabel === "reactionName"){
+            if (targetLabel === "Name"){
                 var nodes = networkData.getNodeByName(fluxData[i][0]);
             }
             if (targetLabel === "reactionId"){
                 var nodes = networkData.getNodeById(fluxData[i][0]);
             }
-            if (targetLabel === "reactionDBIdentifier"){
+            if (targetLabel === "Identifier"){
                 var nodes = networkData.getNodeByDbIdentifier(fluxData[i][0]);
             }
 
@@ -151,13 +151,13 @@ metExploreD3.GraphFlux = {
 
         for (var i = 0; i < fluxData.length; i++){
 
-            if (targetLabel === "reactionName"){
+            if (targetLabel === "Name"){
                 var nodes = networkData.getNodeByName(fluxData[i][0]);
             }
             if (targetLabel === "reactionId"){
                 var nodes = networkData.getNodeById(fluxData[i][0]);
             }
-            if (targetLabel === "reactionDBIdentifier"){
+            if (targetLabel === "Identifier"){
                 var nodes = networkData.getNodeByDbIdentifier(fluxData[i][0]);
             }
 
