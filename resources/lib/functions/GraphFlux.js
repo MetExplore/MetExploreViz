@@ -1755,10 +1755,7 @@ metExploreD3.GraphFlux = {
             if (label === "Reaction Name"){
                 var textLabel = react.name+" : ";
             }
-            if (label === "Reaction ID"){
-                var textLabel = react.id+" : ";
-            }
-            if (label === "Reaction DB ID"){
+            if (label === "Reaction Identifier"){
                 var textLabel = react.dbIdentifier+" : ";
             }
             if (label === "None"){
