@@ -242,10 +242,36 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		view.lookupReference('delCondition').on({
 			click : function(){
 				me.closeMapping();
-				view.lookupReference('selectConditionType').setValue(null);
+                var viewAStyleForm = me.getAStyleFormParent();
+                var bioStyleForm = Ext.getCmp(viewAStyleForm.biologicalType+"StyleForm");
+                var removedStylesTitle = viewAStyleForm.linkedStyles;
+
+                var removedStyles = bioStyleForm.query("aStyleForm")
+    				.filter(function (aStyleForm) {
+    					return removedStylesTitle.includes(aStyleForm.title);
+    				});
+
+    			removedStyles.forEach(function(styleForm){
+    				styleForm.linkedStyles = styleForm.linkedStyles.filter(function (title) {
+    					return viewAStyleForm.title !== title
+    				});
+                    if(styleForm.linkedStyles.length>0){
+            			styleForm.lookupReference('selectConditionForm').lookupReference('linkStyles').addCls('focus');
+            			styleForm.lookupReference('selectConditionForm').lookupReference('linkStyles').setIconCls('link');
+            		}
+            		else
+            		{
+            			styleForm.lookupReference('selectConditionForm').lookupReference('linkStyles').setIconCls('unlink');
+            			styleForm.lookupReference('selectConditionForm').lookupReference('linkStyles').removeCls('focus');
+            		}
+    			});
+                viewAStyleForm.linkedStyles = [];
+                viewAStyleForm.lookupReference('selectConditionForm').lookupReference('linkStyles').setIconCls('unlink');
+                viewAStyleForm.lookupReference('selectConditionForm').lookupReference('linkStyles').removeCls('focus');
+
+                view.lookupReference('selectConditionType').setValue(null);
 				view.lookupReference('selectCondition').setValue(null);
-				var viewAStyleForm = me.getAStyleFormParent();
-				viewAStyleForm.collapse();
+                viewAStyleForm.collapse();
 			},
 			scope:me
 		});
