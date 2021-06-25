@@ -1235,7 +1235,7 @@ metExploreD3.GraphFlux = {
         var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 0, y2: 340};
 
         var margin = {top: 30, right: 30, bottom: 80, left: 50},
-            width = 400 - margin.left - margin.right,
+            width = 460 - margin.left - margin.right,
             height = 450 - margin.top - margin.bottom;
 
         var svg = d3.select("#graphDistrib")

@@ -260,11 +260,27 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
         },
 
         {
-            xtype: 'button',
-            html: 'Display',
-            width: '100%',
-            margin: '15 5 5 5',
-            reference: 'runFluxVizu'
+            xtype: 'panel',
+            layout: {
+                type: 'hbox'
+            },
+            items: [
+                {
+                    xtype: 'button',
+                    html: 'Display',
+                    width: '75%',
+                    margin: '5 5 5 5',
+                    reference: 'runFluxVizu'
+                },
+                {
+                    xtype: 'button',
+                    html: 'Refresh',
+                    width: '25%',
+                    margin: '5 5 5 5',
+                    reference: 'runNewParams',
+                    disabled: true
+                }
+            ]
         },
 
         {
