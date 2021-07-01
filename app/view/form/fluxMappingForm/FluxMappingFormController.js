@@ -72,19 +72,20 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     var selectedFile = view.lookupReference('selectFile').getValue();
                     var nbColSelect = view.lookupReference('selectColNumber').getValue();
                     var condSelect = view.lookupReference('selectConditionFlux').getValue();
+                    var switchGraph = view.lookupReference('displayGraphDistrib').getValue();
 
                     if (selectedFile !== null && nbColSelect !== null && condSelect !== null){
                         if (nbColSelect === "one"){
                             var color = document.getElementById("html5colorpickerFlux1").value;
                             metExploreD3.GraphStyleEdition.fluxPath1 = true;
-                            me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color);
+                            me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color, switchGraph);
                         }
                         if (nbColSelect === "two"){
                             var color = [document.getElementById("html5colorpickerFlux1").value,
                                         document.getElementById("html5colorpickerFlux2").value];
                             metExploreD3.GraphStyleEdition.fluxPath2 = true;
                             var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
-                            me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color);
+                            me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color, switchGraph);
                         }
                         if (view.lookupReference('addValueNetwork').getValue() === true){
                             var size = view.lookupReference('fontSize').getValue();
@@ -125,19 +126,20 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                 var selectedFile = view.lookupReference('selectFile').getValue();
                 var nbColSelect = view.lookupReference('selectColNumber').getValue();
                 var condSelect = view.lookupReference('selectConditionFlux').getValue();
+                var switchGraph = view.lookupReference('displayGraphDistrib').getValue();
 
                 if (selectedFile !== null && nbColSelect !== null && condSelect !== null){
                     if (nbColSelect === "one"){
                         var color = document.getElementById("html5colorpickerFlux1").value;
                         metExploreD3.GraphStyleEdition.fluxPath1 = true;
-                        me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color);
+                        me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color, switchGraph);
                     }
                     if (nbColSelect === "two"){
                         var color = [document.getElementById("html5colorpickerFlux1").value,
                                     document.getElementById("html5colorpickerFlux2").value];
                         metExploreD3.GraphStyleEdition.fluxPath2 = true;
                         var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
-                        me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color);
+                        me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color, switchGraph);
                     }
                     if (view.lookupReference('addValueNetwork').getValue() === true){
                         var size = view.lookupReference('fontSize').getValue();
@@ -243,7 +245,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         condStore.setData(fileName);
     },
 
-    computeFlux: function(selectedFile, nbCol, condSelect, condSelect2, color){
+    computeFlux: function(selectedFile, nbCol, condSelect, condSelect2, color, switchGraph){
         var fluxList = _metExploreViz.flux;
         var fileIndex = [];
         fluxList.forEach(function(list, i){
@@ -294,10 +296,10 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         }
         metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol, color);
         if (nbCol === "one"){
-            metExploreD3.GraphFlux.graphDistribOne(conData, color);
+            metExploreD3.GraphFlux.graphDistribOne(conData, color, switchGraph);
         }
         if (nbCol === "two"){
-            metExploreD3.GraphFlux.graphDistribTwo(conData, color);
+            metExploreD3.GraphFlux.graphDistribTwo(conData, color, switchGraph);
         }
     }
 

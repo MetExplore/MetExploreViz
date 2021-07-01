@@ -22,7 +22,7 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
 	},
 
 	/*****************************************************
-	 * Parse file and map data
+	 * Parse file and create flux object
      * @param tabTxt : file content
      * @param title : file title
      */

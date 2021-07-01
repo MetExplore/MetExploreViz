@@ -1203,7 +1203,8 @@ metExploreD3.GraphFlux = {
         }
     },
 
-    graphDistribOne: function(fluxData, color){
+    graphDistribOne: function(fluxData, color, switchGraph){
+        console.log(fluxData);
         var data = [];
         var valNeg = [];
         var valPos = [];
@@ -1211,22 +1212,49 @@ metExploreD3.GraphFlux = {
         var min = 0;
         var max = 0;
 
-        fluxData.forEach(function(value) {
-            var val = value[1]*1;
-            data.push(val);
-            if (min > val){
-                min = val;
-            }
-            if (max < val){
-                max = val;
-            }
-            if (val < 0){
-                valNeg.push(val);
-            }
-            if (val > 0){
-                valPos.push(val);
-            }
-        });
+        if (switchGraph === false){
+            fluxData.forEach(function(value) {
+                var val = value[1]*1;
+                data.push(val);
+                if (min > val){
+                    min = val;
+                }
+                if (max < val){
+                    max = val;
+                }
+                if (val < 0){
+                    valNeg.push(val);
+                }
+                if (val > 0){
+                    valPos.push(val);
+                }
+            });
+        }
+
+        if (switchGraph === true){
+            var session = _metExploreViz.getSessionById('viz');
+            var networkData = session.getD3Data();
+            fluxData.forEach(function(value) {
+                var nodeName = networkData.getNodeByName(value[0]);
+                var nodeId = networkData.getNodeByDbIdentifier(value[0]);
+                if (nodeName !== undefined || nodeId !== undefined){
+                    var val = value[1]*1;
+                    data.push(val);
+                    if (min > val){
+                        min = val;
+                    }
+                    if (max < val){
+                        max = val;
+                    }
+                    if (val < 0){
+                        valNeg.push(val);
+                    }
+                    if (val > 0){
+                        valPos.push(val);
+                    }
+                }
+            });
+        }
 
         var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
         var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 0, y2: 340};
@@ -1301,7 +1329,7 @@ metExploreD3.GraphFlux = {
         }
     },
 
-    graphDistribTwo: function(fluxData, color){
+    graphDistribTwo: function(fluxData, color, switchGraph){
         var data1 = [];
         var data2 = [];
         var valNeg = [];
@@ -1310,36 +1338,76 @@ metExploreD3.GraphFlux = {
         var min = 0;
         var max = 0;
 
-        fluxData.forEach(function(value) {
-            var val1 = value[1]*1;
-            var val2 = value[2]*1;
-            data1.push(val1);
-            data2.push(val2);
-            if (min > val1){
-                min = val1;
-            }
-            if (max < val1){
-                max = val1;
-            }
-            if (min > val2){
-                min = val2;
-            }
-            if (max < val2){
-                max = val2;
-            }
-            if (val1 < 0){
-                valNeg.push(val1);
-            }
-            if (val1 > 0){
-                valPos.push(val1);
-            }
-            if (val2 < 0){
-                valNeg.push(val2);
-            }
-            if (val2 > 0){
-                valPos.push(val2);
-            }
-        });
+        if (switchGraph === false){
+            fluxData.forEach(function(value) {
+                var val1 = value[1]*1;
+                var val2 = value[2]*1;
+                data1.push(val1);
+                data2.push(val2);
+                if (min > val1){
+                    min = val1;
+                }
+                if (max < val1){
+                    max = val1;
+                }
+                if (min > val2){
+                    min = val2;
+                }
+                if (max < val2){
+                    max = val2;
+                }
+                if (val1 < 0){
+                    valNeg.push(val1);
+                }
+                if (val1 > 0){
+                    valPos.push(val1);
+                }
+                if (val2 < 0){
+                    valNeg.push(val2);
+                }
+                if (val2 > 0){
+                    valPos.push(val2);
+                }
+            });
+        }
+        if (switchGraph === true){
+            var session = _metExploreViz.getSessionById('viz');
+            var networkData = session.getD3Data();
+            fluxData.forEach(function(value) {
+                var nodeName = networkData.getNodeByName(value[0]);
+                var nodeId = networkData.getNodeByDbIdentifier(value[0]);
+                if (nodeName !== undefined || nodeId !== undefined){
+                    var val1 = value[1]*1;
+                    var val2 = value[2]*1;
+                    data1.push(val1);
+                    data2.push(val2);
+                    if (min > val1){
+                        min = val1;
+                    }
+                    if (max < val1){
+                        max = val1;
+                    }
+                    if (min > val2){
+                        min = val2;
+                    }
+                    if (max < val2){
+                        max = val2;
+                    }
+                    if (val1 < 0){
+                        valNeg.push(val1);
+                    }
+                    if (val1 > 0){
+                        valPos.push(val1);
+                    }
+                    if (val2 < 0){
+                        valNeg.push(val2);
+                    }
+                    if (val2 > 0){
+                        valPos.push(val2);
+                    }
+                }
+            });
+        }
 
         var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
         var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 100, y2: 340};
