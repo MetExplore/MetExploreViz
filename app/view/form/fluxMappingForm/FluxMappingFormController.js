@@ -73,19 +73,20 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     var nbColSelect = view.lookupReference('selectColNumber').getValue();
                     var condSelect = view.lookupReference('selectConditionFlux').getValue();
                     var switchGraph = view.lookupReference('displayGraphDistrib').getValue();
+                    var scaleSelector = view.lookupReference('scaleSelector').getValue();
 
                     if (selectedFile !== null && nbColSelect !== null && condSelect !== null){
                         if (nbColSelect === "one"){
                             var color = document.getElementById("html5colorpickerFlux1").value;
                             metExploreD3.GraphStyleEdition.fluxPath1 = true;
-                            me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color, switchGraph);
+                            me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color, switchGraph, scaleSelector);
                         }
                         if (nbColSelect === "two"){
                             var color = [document.getElementById("html5colorpickerFlux1").value,
                                         document.getElementById("html5colorpickerFlux2").value];
                             metExploreD3.GraphStyleEdition.fluxPath2 = true;
                             var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
-                            me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color, switchGraph);
+                            me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color, switchGraph, scaleSelector);
                         }
                         if (view.lookupReference('addValueNetwork').getValue() === true){
                             var size = view.lookupReference('fontSize').getValue();
@@ -127,19 +128,20 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                 var nbColSelect = view.lookupReference('selectColNumber').getValue();
                 var condSelect = view.lookupReference('selectConditionFlux').getValue();
                 var switchGraph = view.lookupReference('displayGraphDistrib').getValue();
+                var scaleSelector = view.lookupReference('scaleSelector').getValue();
 
                 if (selectedFile !== null && nbColSelect !== null && condSelect !== null){
                     if (nbColSelect === "one"){
                         var color = document.getElementById("html5colorpickerFlux1").value;
                         metExploreD3.GraphStyleEdition.fluxPath1 = true;
-                        me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color, switchGraph);
+                        me.computeFlux(selectedFile, nbColSelect, condSelect, "null", color, switchGraph, scaleSelector);
                     }
                     if (nbColSelect === "two"){
                         var color = [document.getElementById("html5colorpickerFlux1").value,
                                     document.getElementById("html5colorpickerFlux2").value];
                         metExploreD3.GraphStyleEdition.fluxPath2 = true;
                         var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
-                        me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color, switchGraph);
+                        me.computeFlux(selectedFile, nbColSelect, condSelect, condSelect2, color, switchGraph, scaleSelector);
                     }
                     if (view.lookupReference('addValueNetwork').getValue() === true){
                         var size = view.lookupReference('fontSize').getValue();
@@ -194,6 +196,21 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                 }
             }
         });
+
+        view.lookupReference('scaleSelector').on({
+            change: function(){
+                if (this.getValue() === "Manual"){
+                    view.lookupReference('scaleEditor').setHidden(false);
+                    var condSelect = view.lookupReference('selectConditionFlux').getValue();
+                    if (condSelect !== null){
+                        me.drawScaleEditor();
+                    }
+                }
+                if (this.getValue() !== "Manual"){
+                    view.lookupReference('scaleEditor').setHidden(true);
+                }
+            }
+        });
     },
 
     colParse: function(nbCol, selectedFile){
@@ -245,7 +262,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         condStore.setData(fileName);
     },
 
-    computeFlux: function(selectedFile, nbCol, condSelect, condSelect2, color, switchGraph){
+    computeFlux: function(selectedFile, nbCol, condSelect, condSelect2, color, switchGraph, scaleSelector){
         var fluxList = _metExploreViz.flux;
         var fileIndex = [];
         fluxList.forEach(function(list, i){
@@ -294,13 +311,46 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                 conData.push(data);
             }
         }
-        metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol, color);
+
+        metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol, color, scaleSelector);
+
         if (nbCol === "one"){
-            metExploreD3.GraphFlux.graphDistribOne(conData, color, switchGraph);
+            metExploreD3.GraphFlux.graphDistribOne(conData, color, switchGraph, scaleSelector);
         }
         if (nbCol === "two"){
-            metExploreD3.GraphFlux.graphDistribTwo(conData, color, switchGraph);
+            metExploreD3.GraphFlux.graphDistribTwo(conData, color, switchGraph, scaleSelector);
         }
+    },
+
+    drawScaleEditor : function() {
+		var me = this;
+		var view = me.getView();
+
+		var margin = 0;
+		var width = 190;
+		var height = 50;
+
+        var scaleRange = [
+            {id:"start",value:-10,styleValue:1},
+            {id:1,value:-10,styleValue:1},
+            {id:2,value:1000,styleValue:5},
+            {id:"end",value:1000,styleValue:5}
+        ];
+
+		var svg = d3.select(view.lookupReference('scaleEditor').el.dom).select("#scaleEditor");
+        var test = d3.select("#viz");
+
+		metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg, width, height, margin, scaleRange);
+
+		svg.on("click", function(){
+			var win = Ext.create("metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor", {
+				height : 300,
+				aStyleFormParent : view
+			});
+
+			win.show();
+		});
+
     }
 
 });

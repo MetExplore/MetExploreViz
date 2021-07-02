@@ -7,7 +7,8 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
     alias: 'widget.fluxMappingForm',
     requires: [
         "metExploreViz.view.form.fluxMappingForm.FluxMappingFormController",
-        "metExploreViz.view.form.fluxMappingForm.FluxMappingFormModel"
+        "metExploreViz.view.form.fluxMappingForm.FluxMappingFormModel",
+        "metExploreViz.view.form.continuousNumberMappingEditor.ContinuousNumberMappingEditor"
     ],
     controller: "form-fluxMappingForm-fluxMappingForm",
     viewModel: {
@@ -203,6 +204,51 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
                         'style="width:30px; height:30px;">'
                 }
             ]
+        },
+
+        {
+            xtype: 'label',
+            html: 'Scale selector :',
+            margin: '15 15 5 15'
+        },
+
+        {
+            xtype: 'panel',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            items: [
+                {
+                    store: {
+                        fields: ['selectScale'],
+                        data: [
+                            {'selectScale' : 'Automatic'},
+                            {'selectScale' : 'Proportional'},
+                            {'selectScale' : 'Manual'}
+                        ]
+
+                    },
+                    xtype: 'combobox',
+                    displayField: 'selectScale',
+                    valueField: 'selectScale',
+                    queryMode: 'local',
+                    editable: false,
+                    value: 'Automatic',
+                    margin: '5 5 5 5',
+                    width: '100%',
+                    reference: 'scaleSelector'
+                }
+            ]
+        },
+
+        {
+            xtype: "panel",
+            reference: "scaleEditor",
+            height: 110,
+            hidden:true,
+            width: 550,
+            html: "<svg id='scaleEditor' height='110' width='250px'> </svg>"
         },
 
         {
