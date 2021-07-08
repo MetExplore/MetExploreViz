@@ -243,12 +243,64 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
         },
 
         {
-            xtype: "panel",
-            reference: "scaleEditor",
-            height: 110,
-            hidden:true,
-            width: 550,
-            html: "<svg id='scaleEditor' height='110' width='250px'> </svg>"
+            xtype: 'panel',
+            layout: {
+                type: 'hbox'
+            },
+            items: [
+                {
+                    xtype: "panel",
+                    reference: "scaleEditor",
+                    height: 110,
+                    hidden:true,
+                    width: '50%',
+                    style: {
+                        'text-align': 'center'
+                    },
+                    html: "<svg id='scaleEditor' height='110' width='250px'> </svg>"
+                },
+                {
+                    xtype: "panel",
+                    reference: "scaleEditor2",
+                    height: 110,
+                    hidden:true,
+                    width: '50%',
+                    style: {
+                        'text-align': 'center'
+                    },
+                    html: "<svg id='scaleEditor2' height='110' width='250px'> </svg>"
+                }
+            ]
+        },
+
+        {
+            xtype: 'panel',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            items: [
+                {
+                    xtype: 'label',
+                    html: 'First condition',
+                    reference: 'scaleEditorLabel1',
+                    hidden: true,
+                    style: {
+                        'text-align': 'center'
+                    },
+                    width: '50%'
+                },
+                {
+                    xtype: 'label',
+                    html: 'Second condition',
+                    reference: 'scaleEditorLabel2',
+                    hidden: true,
+                    style: {
+                        'text-align': 'center'
+                    },
+                    width: '50%'
+                }
+            ]
         },
 
         {

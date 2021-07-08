@@ -7,23 +7,86 @@
  * @author JCG
  * @uses metExploreD3.GraphLink
  * @uses metExploreD3.GraphStyleEdition
+ * @uses metExploreD3.GraphCaption
  */
 
 metExploreD3.GraphFlux = {
 
-    displayChoice: function(fluxData, targetLabel, nbCol, color, scaleSelector){
+    displayChoice: function(fluxData, targetLabel, nbCol, color, scaleSelector, scaleRange1, scaleRange2){
         var session = _metExploreViz.getSessionById('viz');
         var networkData = session.getD3Data();
 
         if (nbCol === "one"){
-            this.oneCompute(fluxData, networkData, targetLabel, color, scaleSelector);
+            this.oneCompute(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1);
         }
         if (nbCol === "two"){
-            this.twoCompute(fluxData, networkData, targetLabel, color, scaleSelector);
+            this.twoCompute(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1, scaleRange2);
         }
     },
 
-    oneCompute: function(fluxData, networkData, targetLabel, color, scaleSelector){
+    getScale: function(fluxData, targetLabel){
+        var valuesPos = [];
+        var valuesNeg = [];
+        var session = _metExploreViz.getSessionById('viz');
+        var networkData = session.getD3Data();
+
+        for (var i = 0; i < fluxData.length; i++){
+            if (targetLabel === "Name"){
+                var nodes = networkData.getNodeByName(fluxData[i][0]);
+            }
+            if (targetLabel === "reactionId"){
+                var nodes = networkData.getNodeById(fluxData[i][0]);
+            }
+            if (targetLabel === "Identifier"){
+                var nodes = networkData.getNodeByDbIdentifier(fluxData[i][0]);
+            }
+
+            if (nodes !== undefined){
+                var value = parseInt(fluxData[i][1], 10);
+                if (value > 0){
+                    valuesPos.push(value);
+                }
+                if (value < 0){
+                    valuesNeg.push(value);
+                }
+            }
+        }
+        var distribPos = metExploreD3.GraphFlux.fluxDistribution(valuesPos);
+        var distribNeg = metExploreD3.GraphFlux.fluxDistribution(valuesNeg);
+
+        if (distribPos["max"] !== undefined && distribNeg["max"] !== undefined){
+            var scaleRange = [
+                {id:"begin",value:distribNeg["max"],styleValue:5},
+                {id:1,value:distribNeg["min"],styleValue:5},
+                {id:2,value:distribNeg["max"],styleValue:1},
+                {id:3,value:distribPos["min"],styleValue:1},
+                {id:4,value:distribPos["max"],styleValue:5},
+                {id:"end",value:distribPos["max"],styleValue:5}
+            ]
+        }
+
+        if (distribPos["max"] !== undefined && distribNeg["max"] === undefined){
+            var scaleRange = [
+                {id:"begin",value:distribPos["min"],styleValue:1},
+                {id:1,value:distribPos["min"],styleValue:1},
+                {id:2,value:distribPos["max"],styleValue:5},
+                {id:"end",value:distribPos["max"],styleValue:5}
+            ]
+        }
+
+        if (distribPos["max"] === undefined && distribNeg["max"] !== undefined){
+            var scaleRange = [
+                {id:"begin",value:distribNeg["min"],styleValue:5},
+                {id:1,value:distribNeg["min"],styleValue:5},
+                {id:2,value:distribNeg["max"],styleValue:1},
+                {id:"end",value:distribNeg["max"],styleValue:1}
+            ]
+        }
+
+        return scaleRange;
+    },
+
+    oneCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange){
         var valuePos = {};
         var valueNeg = {};
         var valPosDistri = [];
@@ -78,12 +141,12 @@ metExploreD3.GraphFlux = {
 
             if (nodes !== undefined){
                 if (Object.keys(valuePos).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos[nodes.id], scaleSelector);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos[nodes.id], scaleSelector, scaleRange);
                     nodes.fluxDirection1 = edgeWidth;
                     nodes.color1 = color;
                 }
                 if (Object.keys(valueNeg).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg[nodes.id], scaleSelector);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg[nodes.id], scaleSelector, scaleRange);
                     nodes.fluxDirection1 = edgeWidth*(-1);
                     nodes.color1 = color;
                 }
@@ -92,7 +155,7 @@ metExploreD3.GraphFlux = {
         metExploreD3.GraphFlux.curveEdge();
     },
 
-    twoCompute: function(fluxData, networkData, targetLabel, color, scaleSelector){
+    twoCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1, scaleRange2){
         var valuePos = {first:{}, second:{}};
         var valueNeg = {first:{}, second:{}};
         var valPosDistri = [];
@@ -163,23 +226,23 @@ metExploreD3.GraphFlux = {
 
             if (nodes !== undefined){
                 if (Object.keys(valuePos["first"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["first"][nodes.id], scaleSelector);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["first"][nodes.id], scaleSelector, scaleRange1);
                     nodes.fluxDirection1 = edgeWidth;
                     nodes.color1 = color[0];
                 }
                 if (Object.keys(valueNeg["first"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["first"][nodes.id], scaleSelector);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["first"][nodes.id], scaleSelector, scaleRange1);
                     nodes.fluxDirection1 = edgeWidth*(-1);
                     nodes.color1 = color[0];
                 }
 
                 if (Object.keys(valuePos["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["second"][nodes.id], scaleSelector);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["second"][nodes.id], scaleSelector, scaleRange2);
                     nodes.fluxDirection2 = edgeWidth;
                     nodes.color2 = color[1];
                 }
                 if (Object.keys(valueNeg["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["second"][nodes.id], scaleSelector);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["second"][nodes.id], scaleSelector, scaleRange2);
                     nodes.fluxDirection2 = edgeWidth*(-1);
                     nodes.color2 = color[1];
                 }
@@ -188,7 +251,11 @@ metExploreD3.GraphFlux = {
         metExploreD3.GraphFlux.curveTwoEdge();
     },
 
-    computeWidth: function(fluxDistri, fluxValue, scaleSelector){
+    computeWidth: function(fluxDistri, fluxValue, scaleSelector, scaleRange){
+        if (scaleSelector === "Manual"){
+            return metExploreD3.GraphFlux.computeManualWidth(scaleRange, fluxValue);;
+        }
+
         var min = fluxDistri["min"];
         var inter = fluxDistri["inter"];
         var max = fluxDistri["max"];
@@ -223,6 +290,32 @@ metExploreD3.GraphFlux = {
             var coef = 4 / (max - min);
             var widthCompute = 1 + (fluxValue - min) * coef;
             return widthCompute;
+        }
+    },
+
+    computeManualWidth: function(scaleRange, fluxValue){
+        var data = [];
+        var rangeCaption = [];
+        var domainCaption = [];
+
+        rangeCaption = scaleRange
+            .map(function (sr, i) {
+                return sr.styleValue;
+            });
+        domainCaption = scaleRange
+            .map(function (sr, i) {
+                return sr.value;
+            });
+
+        var linearScale = d3.scaleLinear().range(rangeCaption).domain(domainCaption);
+        if (fluxValue === scaleRange[0].value){
+            return scaleRange[0].styleValue;
+        }
+        if (fluxValue === scaleRange[scaleRange.length - 1].value){
+            return scaleRange[scaleRange.length - 1].styleValue;
+        }
+        else{
+            return linearScale(fluxValue);
         }
     },
 
@@ -1217,7 +1310,7 @@ metExploreD3.GraphFlux = {
         }
     },
 
-    graphDistribOne: function(fluxData, color, switchGraph, scaleSelector){
+    graphDistribOne: function(fluxData, color, switchGraph, scaleSelector, scaleRange){
         var data = [];
         var valNeg = [];
         var valPos = [];
@@ -1269,12 +1362,6 @@ metExploreD3.GraphFlux = {
             });
         }
 
-        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
-        var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 0, y2: 340};
-
-        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPos);
-        var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 0, y2: 340};
-
         var margin = {top: 30, right: 30, bottom: 80, left: 50},
             width = 460 - margin.left - margin.right,
             height = 450 - margin.top - margin.bottom;
@@ -1324,7 +1411,13 @@ metExploreD3.GraphFlux = {
             .style("text-decoration", "underline")
             .text("Distribution Graph");
 
-        if (scaleSelector !== "Proportional"){
+        if (scaleSelector === "Automatic"){
+            var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
+            var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 0, y2: 340};
+
+            var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPos);
+            var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 0, y2: 340};
+
             if (interLineNeg.x1 !== undefined){
                 svg.append("line")
                     .attr("x1", function(){ return x(interLineNeg.x1) })
@@ -1342,9 +1435,23 @@ metExploreD3.GraphFlux = {
                     .attr("stroke","green");
             }
         }
+
+        if (scaleSelector === "Manual"){
+            for (var i = 2; i < scaleRange.length - 2; i++){
+                var stroke = scaleRange[i];
+                var interLine = {x1: stroke.value, x2: stroke.value, y1: 0, y2: 340};
+
+                svg.append("line")
+                    .attr("x1", function(){ return x(interLine.x1) })
+                    .attr("x2", function(){ return x(interLine.x2) })
+                    .attr("y1", interLine.y1)
+                    .attr("y2", interLine.y2)
+                    .attr("stroke","black");
+            }
+        }
     },
 
-    graphDistribTwo: function(fluxData, color, switchGraph, scaleSelector){
+    graphDistribTwo: function(fluxData, color, switchGraph, scaleSelector, scaleRange1, scaleRange2){
         var data1 = [];
         var data2 = [];
         var valNeg = [];
@@ -1423,12 +1530,6 @@ metExploreD3.GraphFlux = {
                 }
             });
         }
-
-        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
-        var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 100, y2: 340};
-
-        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPos);
-        var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 100, y2: 340};
 
         // set the dimensions and margins of the graph
         var margin = {top: 30, right: 30, bottom: 80, left: 50},
@@ -1511,7 +1612,13 @@ metExploreD3.GraphFlux = {
             .style("text-decoration", "underline")
             .text("Distribution Graph");
 
-        if (scaleSelector !== "Proportional"){
+        if (scaleSelector === "Automatic"){
+            var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
+            var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 100, y2: 340};
+
+            var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPos);
+            var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 100, y2: 340};
+
             if (interLineNeg.x1 !== undefined){
                 svg.append("line")
                     .attr("x1", function(){ return x(interLineNeg.x1) })
@@ -1527,6 +1634,31 @@ metExploreD3.GraphFlux = {
                     .attr("y1", interLinePos.y1)
                     .attr("y2", interLinePos.y2)
                     .attr("stroke","green");
+            }
+        }
+
+        if (scaleSelector === "Manual"){
+            for (var i = 2; i < scaleRange1.length - 2; i++){
+                var stroke = scaleRange1[i];
+                var interLine = {x1: stroke.value, x2: stroke.value, y1: 0, y2: 340};
+
+                svg.append("line")
+                    .attr("x1", function(){ return x(interLine.x1) })
+                    .attr("x2", function(){ return x(interLine.x2) })
+                    .attr("y1", interLine.y1)
+                    .attr("y2", interLine.y2)
+                    .attr("stroke", color[0]);
+            }
+            for (var i = 2; i < scaleRange2.length - 2; i++){
+                var stroke = scaleRange2[i];
+                var interLine = {x1: stroke.value, x2: stroke.value, y1: 0, y2: 340};
+
+                svg.append("line")
+                    .attr("x1", function(){ return x(interLine.x1) })
+                    .attr("x2", function(){ return x(interLine.x2) })
+                    .attr("y1", interLine.y1)
+                    .attr("y2", interLine.y2)
+                    .attr("stroke", color[1]);
             }
         }
     },
