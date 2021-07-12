@@ -431,6 +431,24 @@ metExploreD3.GraphFlux = {
 
             var axe = "horizontal";
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
+            if (node.fluxDirection1 === "" || node.fluxDirection1 === undefined){
+                enteringLinks
+                    .each(function(link){
+                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
+                        d3.select(this).attr("d", path)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false);
+                    });
+                exitingLinks
+                    .each(function(link){
+                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
+                        d3.select(this).attr("d", path)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false);
+                    });
+            }
 
             if (node.fluxDirection1 === 0){
                 enteringLinks
@@ -634,6 +652,51 @@ metExploreD3.GraphFlux = {
 
             var axe = "horizontal";
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
+            if (node.fluxDirection1 === "" || node.fluxDirection1 === undefined){
+                enteringLinks
+                    .each(function(link){
+                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
+                        d3.select(this).attr("d", path)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false);
+                    });
+
+                exitingLinks
+                    .each(function(link){
+                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
+                        d3.select(this).attr("d", path)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false);
+                    });
+            }
+
+            if (node.fluxDirection2 === "" || node.fluxDirection2 === undefined){
+                var newEnter = enteringLinks.clone();
+                d3.select("#viz").select("#D3viz").select("graphComponent").append(newEnter);
+                newEnter
+                    .each(function(link){
+                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
+                        d3.select(this).attr("d", path)
+                            .classed("clone", true)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false);
+                    });
+
+                var newExit = exitingLinks.clone();
+                d3.select("#viz").select("#D3viz").select("graphComponent").append(newExit);
+                newExit
+                    .each(function(link){
+                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
+                        d3.select(this).attr("d", path)
+                            .classed("clone", true)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false);
+                    });
+            }
 
             if (node.fluxDirection1 === 0){
                 enteringLinks

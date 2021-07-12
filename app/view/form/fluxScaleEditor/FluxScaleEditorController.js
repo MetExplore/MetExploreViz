@@ -115,7 +115,26 @@ Ext.define('metExploreViz.view.form.fluxScaleEditor.FluxScaleEditorController', 
 
         view.lookupReference('resetButton').on({
 			click : function(){
-                metExploreD3.GraphNumberScaleEditor.reset();
+                // metExploreD3.GraphNumberScaleEditor.reset();
+                metExploreD3.fireEvent2Arg("fluxMapping", "resetScale", view.cond, view);
+
+                var width = 450;
+                var height = 85;
+
+                var svg = d3.select(view.el.dom).select("#svgScaleEditor");
+
+                var numberButton = view.lookupReference('numberButton');
+				var delButton = view.lookupReference('delButton');
+				var textfieldValue = view.lookupReference('textfieldValue');
+
+                metExploreD3.GraphNumberScaleEditor.createNumberScaleEditor(
+					svg,
+					width,
+					height,
+					numberButton,
+					textfieldValue,
+					delButton,
+					view.scaleRange);
 			}
 		});
 
