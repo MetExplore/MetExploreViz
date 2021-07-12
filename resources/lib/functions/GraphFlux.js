@@ -319,25 +319,6 @@ metExploreD3.GraphFlux = {
         }
     },
 
-// Pour value > inter
-// 2/(max-inter) === coef multiplicateur
-// (value-inter)*coef + 3 === width
-// ex : inter = 300, max = 540, value = 400 -> coef = 0,0083 => width = 3,83
-// value = 500 -> width = 4,66
-// value = 540 -> width = 4,992
-
-// Pour value < inter
-// 2/(inter-min) === coef
-// 3 - (inter-value)*coef === width
-// ex : inter = 300, min = 40, value = 100 -> coef = 0,0077 => width = 1,46
-// value = 250 -> width = 2,615
-// value = 50 -> width = 1,075
-
-// Pour Proportional
-// coef = 4 / (max - min)
-// width = 1 + (fluxValue - min) * coef
-// exemple : min = 100, max = 460, value = 400 -> coef = 0.011 => width = 4.3
-
     fluxDistribution: function(fluxValues){
         var distrib = {};
 
@@ -362,15 +343,10 @@ metExploreD3.GraphFlux = {
         var sortedValues = values.slice().sort(function(a, b){
             return a - b;
         });
-        var pos = (sortedValues.length - 1) * q;
-        var base = Math.floor(pos);
-        var rest = pos - base;
-        if (sortedValues[base + 1] !== undefined){
-            var quantile = sortedValues[base] + rest * (sortedValues[base + 1] - sortedValues[base]);
-        }
-        else {
-            var quantile = sortedValues[base];
-        }
+        var pos = (sortedValues.length) * q;
+        var base = Math.ceil(pos) - 1;
+        
+        var quantile = sortedValues[base];
         var minValue = sortedValues[0];
         var maxValue = sortedValues[sortedValues.length - 1];
 
