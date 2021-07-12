@@ -345,7 +345,7 @@ metExploreD3.GraphFlux = {
         });
         var pos = (sortedValues.length) * q;
         var base = Math.ceil(pos) - 1;
-        
+
         var quantile = sortedValues[base];
         var minValue = sortedValues[0];
         var maxValue = sortedValues[sortedValues.length - 1];
@@ -633,7 +633,6 @@ metExploreD3.GraphFlux = {
                     .each(function(link){
                         var path = metExploreD3.GraphLink.funcPath3(link, "viz");
                         d3.select(this).attr("d", path)
-                            .attr("fill", "none")
                             .classed("horizontal", false)
                             .classed("vertical", false);
                     });
@@ -642,7 +641,6 @@ metExploreD3.GraphFlux = {
                     .each(function(link){
                         var path = metExploreD3.GraphLink.funcPath3(link, "viz");
                         d3.select(this).attr("d", path)
-                            .attr("fill", "none")
                             .classed("horizontal", false)
                             .classed("vertical", false);
                     });
@@ -656,7 +654,6 @@ metExploreD3.GraphFlux = {
                         var path = metExploreD3.GraphLink.funcPath3(link, "viz");
                         d3.select(this).attr("d", path)
                             .classed("clone", true)
-                            .attr("fill", "none")
                             .classed("horizontal", false)
                             .classed("vertical", false);
                     });
@@ -668,7 +665,6 @@ metExploreD3.GraphFlux = {
                         var path = metExploreD3.GraphLink.funcPath3(link, "viz");
                         d3.select(this).attr("d", path)
                             .classed("clone", true)
-                            .attr("fill", "none")
                             .classed("horizontal", false)
                             .classed("vertical", false);
                     });
@@ -1052,21 +1048,29 @@ metExploreD3.GraphFlux = {
                 if (endY < startY){
                     if (endX > startX){
                         beforeLastPointX = beforeLastPointX + shiftValue;
+                        lastPointX = lastPointX + shiftValue;
+                        controlX = controlX + shiftValue;
                     }
                     if (endX < startX){
                         beforeLastPointX = beforeLastPointX - shiftValue;
+                        lastPointX = lastPointX - shiftValue;
+                        controlX = controlX - shiftValue;
                     }
-                    lastPointY = lastPointY + (metaboliteStyle.getHeight() / 2) - ((fluxValue * 0.01));
+                    lastPointY = lastPointY + (metaboliteStyle.getHeight() / 2) - shiftValue;
                     beforeLastPointY = lastPointY + 5;
                 }
                 else {
                     if (endX > startX){
                         beforeLastPointX = beforeLastPointX - shiftValue;
+                        lastPointX = lastPointX - shiftValue;
+                        controlX = controlX - shiftValue;
                     }
                     if (endX < startX){
                         beforeLastPointX = beforeLastPointX + shiftValue;
+                        lastPointX = lastPointX + shiftValue;
+                        controlX = controlX + shiftValue;
                     }
-                    lastPointY = lastPointY - (metaboliteStyle.getHeight() / 2) + ((fluxValue * 0.01));
+                    lastPointY = lastPointY - (metaboliteStyle.getHeight() / 2) - shiftValue;
                     beforeLastPointY = lastPointY - 5;
                 }
                 var x1 = beforeLastPointX - 2;
@@ -1209,21 +1213,28 @@ metExploreD3.GraphFlux = {
                 if (endX < startX){
                     if (endY > startY){
                         beforeLastPointY = beforeLastPointY + shiftValue;
+                        lastPointY = lastPointY + shiftValue;
+                        controlY = controlY + shiftValue;
                     }
                     if (endY < startY){
                         beforeLastPointY = beforeLastPointY - shiftValue;
+                        lastPointY = lastPointY - shiftValue;
+                        controlY = controlY - shiftValue;
                     }
-                    lastPointX = lastPointX + (metaboliteStyle.getWidth() / 2) - ((fluxValue * 0.01));
+                    lastPointX = lastPointX + (metaboliteStyle.getWidth() / 2) - shiftValue;
                     beforeLastPointX = lastPointX + 5;
                 }
                 else {
                     if (endY > startY){
                         beforeLastPointY = beforeLastPointY - shiftValue;
+                        lastPointY = lastPointY - shiftValue;
+                        controlY = controlY - shiftValue;
                     }
                     if (endY < startY){
                         beforeLastPointY = beforeLastPointY + shiftValue;
+                        lastPointY = lastPointY + shiftValue;
                     }
-                    lastPointX = lastPointX - (metaboliteStyle.getWidth() / 2) + ((fluxValue * 0.01));
+                    lastPointX = lastPointX - (metaboliteStyle.getWidth() / 2) - shiftValue;
                     beforeLastPointX = lastPointX - 5;
                 }
                 var y1 = beforeLastPointY + 2;
@@ -1775,24 +1786,28 @@ metExploreD3.GraphFlux = {
                     if (endY > startY){
                         beforeLastPointY = beforeLastPointY + shiftValue;
                         lastPointY = lastPointY + shiftValue;
+                        controlY = controlY + shiftValue;
                     }
                     if (endY < startY){
                         beforeLastPointY = beforeLastPointY - shiftValue;
                         lastPointY = lastPointY - shiftValue;
+                        controlY = controlY - shiftValue;
                     }
-                    lastPointX += metaboliteStyle.getWidth() / 2;
+                    lastPointX = lastPointX + (metaboliteStyle.getWidth() / 2) - shiftValue;
                     beforeLastPointX = lastPointX + 5;
                 }
                 else {
                     if (endY > startY){
                         beforeLastPointY = beforeLastPointY - shiftValue;
                         lastPointY = lastPointY - shiftValue;
+                        controlY = controlY - shiftValue;
                     }
                     if (endY < startY){
                         beforeLastPointY = beforeLastPointY + shiftValue;
                         lastPointY = lastPointY + shiftValue;
+                        controlY = controlY + shiftValue;
                     }
-                    lastPointX -= metaboliteStyle.getWidth() / 2;
+                    lastPointX = lastPointX - (metaboliteStyle.getWidth() / 2) - shiftValue;
                     beforeLastPointX = lastPointX - 5;
                 }
                 path = "M" + startX + "," + startY +
@@ -1913,24 +1928,28 @@ metExploreD3.GraphFlux = {
                     if (endX > startX){
                         beforeLastPointX = beforeLastPointX + shiftValue;
                         lastPointX = lastPointX + shiftValue;
+                        controlX = controlX + shiftValue;
                     }
                     if (endX < startX){
                         beforeLastPointX = beforeLastPointX - shiftValue;
                         lastPointX = lastPointX - shiftValue;
+                        controlX = controlX - shiftValue;
                     }
-                    lastPointY += metaboliteStyle.getHeight() / 2;
+                    lastPointY = lastPointY + (metaboliteStyle.getHeight() / 2) - shiftValue;
                     beforeLastPointY = lastPointY + 5;
                 }
                 else {
                     if (endX > startX){
                         beforeLastPointX = beforeLastPointX - shiftValue;
                         lastPointX = lastPointX - shiftValue;
+                        controlX = controlX - shiftValue;
                     }
                     if (endX < startX){
                         beforeLastPointX = beforeLastPointX + shiftValue;
                         lastPointX = lastPointX + shiftValue;
+                        controlX = controlX + shiftValue;
                     }
-                    lastPointY -= metaboliteStyle.getHeight() / 2;
+                    lastPointY = lastPointY - (metaboliteStyle.getHeight() / 2) - shiftValue;
                     beforeLastPointY = lastPointY - 5;
                 }
                 path = "M" + startX + "," + startY +
