@@ -1096,6 +1096,7 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = beforeLastPointY - (shiftValue*2);
                     lastPointY = lastPointY - (shiftValue*2);
 
+                    firstPointX -= shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = controlX - shiftValue;
@@ -1107,6 +1108,7 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = beforeLastPointY - (shiftValue*2);
                     lastPointY = lastPointY - (shiftValue*2);
 
+                    firstPointX += shiftValue;
                     controlX = controlX + shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = controlX + shiftValue;
@@ -1120,6 +1122,7 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = beforeLastPointY - (shiftValue*2);
                     lastPointY = lastPointY - (shiftValue*2);
 
+                    firstPointX += shiftValue;
                     controlX = controlX + shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = controlX + shiftValue;
@@ -1131,6 +1134,7 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = beforeLastPointY - (shiftValue*2);
                     lastPointY = lastPointY - (shiftValue*2);
 
+                    firstPointX -= shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = controlX - shiftValue;
@@ -1233,6 +1237,7 @@ metExploreD3.GraphFlux = {
                     if (endY < startY){
                         beforeLastPointY = beforeLastPointY + shiftValue;
                         lastPointY = lastPointY + shiftValue;
+                        controlY = controlY + shiftValue;
                     }
                     lastPointX = lastPointX - (metaboliteStyle.getWidth() / 2) - shiftValue;
                     beforeLastPointX = lastPointX - 5;
@@ -1255,21 +1260,26 @@ metExploreD3.GraphFlux = {
         else {
             if (endX < startX){
                 if (firstPointY < startY){
+                    // 1
                     lastPointY = endY - (metaboliteStyle.getWidth() / 2);
-                    beforeLastPointY = lastPointY + 5;
+                    beforeLastPointY = lastPointY - 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
                     lastPointX = lastPointX - (shiftValue*2);
 
+                    firstPointY -= shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = endX - shiftValue;
                     var control2Y = controlY - shiftValue;
                 }
                 else {
+                    // 2
                     lastPointY = endY + (metaboliteStyle.getWidth() / 2);
                     beforeLastPointY = lastPointY + 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
                     lastPointX = lastPointX - (shiftValue*2);
+
+                    firstPointY += shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY + shiftValue;
                     var control2X = endX - shiftValue;
@@ -1278,21 +1288,26 @@ metExploreD3.GraphFlux = {
             }
             if (endX > startX){
                 if (firstPointY < startY){
+                    // 3
                     lastPointY = endY - (metaboliteStyle.getWidth() / 2);
                     beforeLastPointY = lastPointY - 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
                     lastPointX = lastPointX - (shiftValue*2);
+
+                    firstPointY += shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY + shiftValue;
                     var control2X = endX - shiftValue;
                     var control2Y = controlY + shiftValue;
                 }
                 else {
+                    // 4
                     lastPointY = endY + (metaboliteStyle.getWidth() / 2);
-                    beforeLastPointY = lastPointY - 5;
+                    beforeLastPointY = lastPointY + 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
                     lastPointX = lastPointX - (shiftValue*2);
 
+                    firstPointY -= shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = endX - shiftValue;
@@ -1821,10 +1836,11 @@ metExploreD3.GraphFlux = {
             if (endX < startX){
                 if (firstPointY < startY){
                     lastPointY = endY - (metaboliteStyle.getWidth() / 2);
-                    beforeLastPointY = lastPointY + 5;
+                    beforeLastPointY = lastPointY - 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
                     lastPointX = lastPointX - (shiftValue*2);
 
+                    firstPointY -= shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = endX - shiftValue;
@@ -1835,6 +1851,8 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = lastPointY + 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
                     lastPointX = lastPointX - (shiftValue*2);
+
+                    firstPointY += shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY + shiftValue;
                     var control2X = endX - shiftValue;
@@ -1847,6 +1865,8 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = lastPointY - 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
                     lastPointX = lastPointX - (shiftValue*2);
+
+                    firstPointY += shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY + shiftValue;
                     var control2X = endX - shiftValue;
@@ -1854,10 +1874,11 @@ metExploreD3.GraphFlux = {
                 }
                 else {
                     lastPointY = endY + (metaboliteStyle.getWidth() / 2);
-                    beforeLastPointY = lastPointY - 5;
+                    beforeLastPointY = lastPointY + 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
                     lastPointX = lastPointX - (shiftValue*2);
 
+                    firstPointY -= shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = endX - shiftValue;
@@ -1967,6 +1988,7 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = beforeLastPointY - (shiftValue*2);
                     lastPointY = lastPointY - (shiftValue*2);
 
+                    firstPointX -= shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = controlX - shiftValue;
@@ -1978,6 +2000,7 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = beforeLastPointY - (shiftValue*2);
                     lastPointY = lastPointY - (shiftValue*2);
 
+                    firstPointX += shiftValue;
                     controlX = controlX + shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = controlX + shiftValue;
@@ -1991,6 +2014,7 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = beforeLastPointY - (shiftValue*2);
                     lastPointY = lastPointY - (shiftValue*2);
 
+                    firstPointX += shiftValue;
                     controlX = controlX + shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = controlX + shiftValue;
@@ -2002,6 +2026,7 @@ metExploreD3.GraphFlux = {
                     beforeLastPointY = beforeLastPointY - (shiftValue*2);
                     lastPointY = lastPointY - (shiftValue*2);
 
+                    firstPointX -= shiftValue;
                     controlX = controlX - shiftValue;
                     controlY = controlY - shiftValue;
                     var control2X = controlX - shiftValue;
