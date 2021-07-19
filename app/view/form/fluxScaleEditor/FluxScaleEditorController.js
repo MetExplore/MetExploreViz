@@ -115,7 +115,6 @@ Ext.define('metExploreViz.view.form.fluxScaleEditor.FluxScaleEditorController', 
 
         view.lookupReference('resetButton').on({
 			click : function(){
-                // metExploreD3.GraphNumberScaleEditor.reset();
                 metExploreD3.fireEvent2Arg("fluxMapping", "resetScale", view.cond, view);
 
                 var width = 450;

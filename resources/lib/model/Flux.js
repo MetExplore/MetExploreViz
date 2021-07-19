@@ -1,4 +1,5 @@
 /**
+ * @author JCG
  * Model to handle List of Flux data
  */
 

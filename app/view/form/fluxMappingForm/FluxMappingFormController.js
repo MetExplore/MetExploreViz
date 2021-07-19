@@ -310,6 +310,11 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         });
     },
 
+    /**
+     * Parse selected file and fill one or two combobox with conditions
+     * @param {String} nbCol number of value to visualise
+     * @param {String} selectedFile file to parse
+     */
     colParse: function(nbCol, selectedFile){
         var fluxList = _metExploreViz.flux;
         var fileIndex = [];
@@ -345,6 +350,9 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         }
     },
 
+    /**
+     * Parse flux object and fill combobox to select file
+     */
     fileParse: function(){
         var fluxList = _metExploreViz.flux;
         var fileName = [];
@@ -359,6 +367,16 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         condStore.setData(fileName);
     },
 
+    /**
+     * Regroup params to launch display flux visualisation and ditribution graph functions
+     * @param {String} selectedFile file to parse
+     * @param {String} nbCol number of value to visualise
+     * @param {String} condSelect first condition name
+     * @param {String} condSelect2 second condition name
+     * @param {String} color hexadecimal to color condition
+     * @param {Boolean} switchGraph swtich between all value or display value for distribution graph
+     * @param {String} scaleSelector scale mod select
+     */
     computeFlux: function(selectedFile, nbCol, condSelect, condSelect2, color, switchGraph, scaleSelector){
         var me = this;
         var view = me.getView();
@@ -386,6 +404,14 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         }
     },
 
+    /**
+     * Get flux values from selected file and conditions
+     * @param {String} selectedFile file to parse
+     * @param {String} nbCol number of condition to display
+     * @param {String} condSelect first condition name
+     * @param {String} condSelect2 second condition name
+     * @returns {Array}
+     */
     getFluxData: function(selectedFile, nbCol, condSelect, condSelect2){
         var fluxList = _metExploreViz.flux;
         var fileIndex = [];
@@ -439,6 +465,13 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         return fluxData;
     },
 
+    /**
+     * Draw scale graph
+     * @param {String} selectedFile file to parse
+     * @param {String} selectedCond first condition name
+     * @param {String} selectedCond2 second condition name
+     * @param {String} nbCol number of condition to display
+     */
     drawScaleEditor: function(selectedFile, selectedCond, selectedCond2, nbCol) {
 		var me = this;
 		var view = me.getView();
@@ -545,6 +578,9 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
 
     },
 
+    /**
+     * Update scale graph
+     */
     updateScaleEditor: function(){
         var me = this;
         var view = me.getView();
@@ -621,6 +657,11 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
 
     },
 
+    /**
+     * Reset scale graph
+     * @param {String} cond select scale graph to reset
+     * @param {Object} svgView view where the scale data is store
+     */
     resetScale: function(cond, svgView){
         var me = this;
         var view = me.getView();

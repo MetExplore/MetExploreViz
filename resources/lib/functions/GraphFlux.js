@@ -12,6 +12,16 @@
 
 metExploreD3.GraphFlux = {
 
+    /**
+     * Get the parameters from flux panel and call display function
+     * @param {Array} fluxData flux values
+     * @param {String} targetLabel label use in dataset
+     * @param {String} nbCol number of condition to visualize
+     * @param {String} color color associated conditions
+     * @param {String} scaleSelector scale selected
+     * @param {Array} scaleRange1 scale range for the first condition
+     * @param {Array} scaleRange2 scale range for the second condition
+     */
     displayChoice: function(fluxData, targetLabel, nbCol, color, scaleSelector, scaleRange1, scaleRange2){
         var session = _metExploreViz.getSessionById('viz');
         var networkData = session.getD3Data();
@@ -24,6 +34,11 @@ metExploreD3.GraphFlux = {
         }
     },
 
+    /**
+     * Create scale range from flux data
+     * @param {Array} fluxData flux values
+     * @param {String} targetLabel label use in dataset
+     */
     getScale: function(fluxData, targetLabel){
         var valuesPos = [];
         var valuesNeg = [];
@@ -86,6 +101,15 @@ metExploreD3.GraphFlux = {
         return scaleRange;
     },
 
+    /**
+     * Display flux visualisation for one condition
+     * @param {Array} fluxData flux values
+     * @param {NetworkData} networkData
+     * @param {String} targetLabel label use in dataset
+     * @param {String} color color associated conditions
+     * @param {String} scaleSelector scale selected
+     * @param {Array} scaleRange scale range
+     */
     oneCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange){
         var valuePos = {};
         var valueNeg = {};
@@ -155,6 +179,16 @@ metExploreD3.GraphFlux = {
         metExploreD3.GraphFlux.curveEdge();
     },
 
+    /**
+     * Display flux visualisation for two condition
+     * @param {Array} fluxData flux values
+     * @param {NetworkData} networkData
+     * @param {String} targetLabel label use in dataset
+     * @param {String} color colors associated conditions
+     * @param {String} scaleSelector scale selected
+     * @param {Array} scaleRange1 scale range for the first condition
+     * @param {Array} scaleRange2 scale range for the second condition
+     */
     twoCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1, scaleRange2){
         var valuePos = {first:{}, second:{}};
         var valueNeg = {first:{}, second:{}};
@@ -251,6 +285,14 @@ metExploreD3.GraphFlux = {
         metExploreD3.GraphFlux.curveTwoEdge();
     },
 
+    /**
+     * Compute link width in function of his flux value
+     * @param {Dict} fluxDistri Object that contains min, max and intermediate values for the current dataset
+     * @param {Int} fluxValue flux value
+     * @param {String} scaleSelector scale mod selected
+     * @param {Array} scaleRange scale range for this condition
+     * @returns {Int}
+     */
     computeWidth: function(fluxDistri, fluxValue, scaleSelector, scaleRange){
         if (scaleSelector === "Manual"){
             return metExploreD3.GraphFlux.computeManualWidth(scaleRange, fluxValue);;
@@ -293,6 +335,12 @@ metExploreD3.GraphFlux = {
         }
     },
 
+    /**
+     * Compute link width in function of his flux value when manual scale is active
+     * @param {Array} scaleRange scale range for one condition
+     * @param {Int} fluxValue flux value
+     * @returns {Int}
+     */
     computeManualWidth: function(scaleRange, fluxValue){
         var data = [];
         var rangeCaption = [];
@@ -319,6 +367,11 @@ metExploreD3.GraphFlux = {
         }
     },
 
+    /**
+     * Create dict which contains min, max and intermediate value from dataset
+     * @param {Array} fluxValues flux values for one specific condition
+     * @returns {Dict}
+     */
     fluxDistribution: function(fluxValues){
         var distrib = {};
 
@@ -339,6 +392,12 @@ metExploreD3.GraphFlux = {
         return distrib;
     },
 
+    /**
+     * Find specific quantile from dataset
+     * @param {Array} values flux values for one specific condition
+     * @param {Int} q quantile to find in the dataset
+     * @returns {Array}
+     */
     findQuantile: function(values, q){
         var sortedValues = values.slice().sort(function(a, b){
             return a - b;
@@ -353,6 +412,9 @@ metExploreD3.GraphFlux = {
         return [minValue, quantile, maxValue];
     },
 
+    /**
+     * browse reactions nodes, assign width and color to their link for one condition and call caption function
+     */
     curveEdge: function(){
         var panel = "viz";
         var reactionStyle = metExploreD3.getReactionStyle();
@@ -573,6 +635,9 @@ metExploreD3.GraphFlux = {
 
     },
 
+    /**
+     * browse reactions nodes, assign width and color to their link for two conditions and call caption function
+     */
     curveTwoEdge: function(){
         var reactionStyle = metExploreD3.getReactionStyle();
         var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -983,10 +1048,20 @@ metExploreD3.GraphFlux = {
             }
         });
         metExploreD3.GraphCaption.drawCaptionTwoFluxMode();
-
-
     },
 
+    /**
+     * Compute link path with arrow head with horizontal start
+     * @param {Int} startX position X of the start node
+     * @param {Int} startY position Y of the start node
+     * @param {Int} firstPointX first X control point for the path
+     * @param {Int} firstPointY first Y control point for the path
+     * @param {Int} endX position X of the end node
+     * @param {Int} endY position Y of the end node
+     * @param {Int} fluxValue flux value assign to the start node to know the direction of the reaction
+     * @param {Int} shiftValue shift value for two edge compute
+     * @returns {String}
+     */
     computePathHorizontalEnd : function (startX, startY, firstPointX, firstPointY, endX, endY, fluxValue, shiftValue) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -1156,6 +1231,18 @@ metExploreD3.GraphFlux = {
         return path;
     },
 
+    /**
+     * Compute link path with arrow head with vertical start
+     * @param {Int} startX position X of the start node
+     * @param {Int} startY position Y of the start node
+     * @param {Int} firstPointX first X control point for the path
+     * @param {Int} firstPointY first Y control point for the path
+     * @param {Int} endX position X of the end node
+     * @param {Int} endY position Y of the end node
+     * @param {Int} fluxValue flux value assign to the start node to know the direction of the reaction
+     * @param {Int} shiftValue shift value for two edge compute
+     * @returns {String}
+     */
     computePathVerticalEnd : function (startX, startY, firstPointX, firstPointY, endX, endY, fluxValue, shiftValue) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -1260,7 +1347,6 @@ metExploreD3.GraphFlux = {
         else {
             if (endX < startX){
                 if (firstPointY < startY){
-                    // 1
                     lastPointY = endY - (metaboliteStyle.getWidth() / 2);
                     beforeLastPointY = lastPointY - 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
@@ -1273,7 +1359,6 @@ metExploreD3.GraphFlux = {
                     var control2Y = controlY - shiftValue;
                 }
                 else {
-                    // 2
                     lastPointY = endY + (metaboliteStyle.getWidth() / 2);
                     beforeLastPointY = lastPointY + 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
@@ -1288,7 +1373,6 @@ metExploreD3.GraphFlux = {
             }
             if (endX > startX){
                 if (firstPointY < startY){
-                    // 3
                     lastPointY = endY - (metaboliteStyle.getWidth() / 2);
                     beforeLastPointY = lastPointY - 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
@@ -1301,7 +1385,6 @@ metExploreD3.GraphFlux = {
                     var control2Y = controlY + shiftValue;
                 }
                 else {
-                    // 4
                     lastPointY = endY + (metaboliteStyle.getWidth() / 2);
                     beforeLastPointY = lastPointY + 5;
                     beforeLastPointX = beforeLastPointX - (shiftValue*2);
@@ -1329,6 +1412,10 @@ metExploreD3.GraphFlux = {
         return path;
     },
 
+    /**
+     * Remove flux display and restore link style
+     * @param {LinkStyle} linkStyle Store which contains links style
+     */
     restoreStyles: function(linkStyle){
         // remove all flux value from nodes
         var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
@@ -1375,6 +1462,14 @@ metExploreD3.GraphFlux = {
         }
     },
 
+    /**
+     * Create distribution graph for one condition
+     * @param {Array} fluxData flux data for the first condition
+     * @param {String} color hexadecimal to color graph first condition
+     * @param {Boolean} switchGraph switch between only data on network and all data in dataset
+     * @param {String} scaleSelector compute different graph in function of scale selector mod select
+     * @param {Array} scaleRange scale range for the first condition
+     */
     graphDistribOne: function(fluxData, color, switchGraph, scaleSelector, scaleRange){
         var data = [];
         var valNeg = [];
@@ -1516,6 +1611,15 @@ metExploreD3.GraphFlux = {
         }
     },
 
+    /**
+     * Create distribution graph for two condition
+     * @param {Array} fluxData flux data for the two conditions
+     * @param {String} color hexadecimal to color graph two conditions
+     * @param {Boolean} switchGraph switch between only data on network and all data in dataset
+     * @param {String} scaleSelector compute different graph in function of scale selector mod select
+     * @param {Array} scaleRange1 scale range for the first condition
+     * @param {Array} scaleRange2 scale range for the second condition
+     */
     graphDistribTwo: function(fluxData, color, switchGraph, scaleSelector, scaleRange1, scaleRange2){
         var data1 = [];
         var data2 = [];
@@ -1728,6 +1832,9 @@ metExploreD3.GraphFlux = {
         }
     },
 
+    /**
+     * Function to compute density estimator
+     */
     kernelDensityEstimator: function(kernel, X){
         return function(V) {
             return X.map(function(x) {
@@ -1736,16 +1843,33 @@ metExploreD3.GraphFlux = {
         };
     },
 
+    /**
+     * Function to compute kernel
+     */
     kernelEpanechnikov: function(k){
         return function(v) {
             return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
         };
     },
 
+    /**
+     * Remove distribution graph
+     */
     removeGraphDistrib: function(){
         d3.select("#graphDistrib").selectAll("#distrib").remove();
     },
 
+    /**
+     * Compute link path without arrow head for vertical start
+     * @param {Int} startX position X of the start node
+     * @param {Int} startY position Y of the start node
+     * @param {Int} firstPointX first X control point for the path
+     * @param {Int} firstPointY first Y control point for the path
+     * @param {Int} endX position X of the end node
+     * @param {Int} endY position Y of the end node
+     * @param {Int} shiftValue shift value for two edge compute
+     * @returns {String}
+     */
     twoPathVertical : function (startX, startY, firstPointX, firstPointY, endX, endY, shiftValue) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -1894,6 +2018,17 @@ metExploreD3.GraphFlux = {
         return path;
     },
 
+    /**
+     * Compute link path without arrow head for horizontal start
+     * @param {Int} startX position X of the start node
+     * @param {Int} startY position Y of the start node
+     * @param {Int} firstPointX first X control point for the path
+     * @param {Int} firstPointY first Y control point for the path
+     * @param {Int} endX position X of the end node
+     * @param {Int} endY position Y of the end node
+     * @param {Int} shiftValue shift value for two edge compute
+     * @returns {String}
+     */
     twoPathHorizontal : function (startX, startY, firstPointX, firstPointY, endX, endY, shiftValue) {
         // Compute the coordinates of the last point of the arc (the point in contact of the periphery of the target node)
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -2041,6 +2176,11 @@ metExploreD3.GraphFlux = {
         return path;
     },
 
+    /**
+     * Add label and flux value on network
+     * @param {Int} size font size
+     * @param {String} label label to display
+     */
     addValueOnEdge: function(size, label){
         var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
@@ -2106,10 +2246,17 @@ metExploreD3.GraphFlux = {
         });
     },
 
+    /**
+     * Remove label and flux value on network
+     */
     removeValueOnEdge: function(){
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("text.valueLabel").remove();
     },
 
+    /**
+     * Drag function for label and flux value on network
+     * @param {Object} d
+     */
     dragMove: function(d){
         d3.select(this)
             .attr("y", d3.event.y)
@@ -2123,6 +2270,10 @@ metExploreD3.GraphFlux = {
         });
     },
 
+    /**
+     * Set font size for label and flux value on network
+     * @param {Int} size font size
+     */
     setFontSize: function(size){
         var labels = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("text.valueLabel");
         var labelGroup = labels._groups;
