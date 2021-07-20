@@ -32,7 +32,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
     items: [
         {
             xtype: 'label',
-            html: 'Select file :',
+            html: 'Select file or mapping :',
             margin: '15 15 5 15'
         },
 
@@ -54,7 +54,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
                     valueField: 'file',
                     queryMode: 'local',
                     editable: false,
-                    emptyText: '-- Select file --',
+                    emptyText: '-- Select file or mapping --',
                     margin: '5 5 5 5',
                     width: '100%',
                     anyMatch: true,

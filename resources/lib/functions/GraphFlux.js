@@ -77,7 +77,53 @@ metExploreD3.GraphFlux = {
                 {id:3,value:distribPos["min"],styleValue:1},
                 {id:4,value:distribPos["max"],styleValue:5},
                 {id:"end",value:distribPos["max"],styleValue:5}
-            ]
+            ];
+            if (distribPos["max"] === distribPos["min"] && distribNeg["max"] !== distribNeg["min"]){
+                var shift = distribPos["max"] / 2;
+                var min = distribPos["max"] - shift;
+                var max = distribPos["max"] + shift;
+                var scaleRange = [
+                    {id:"begin",value:distribNeg["max"],styleValue:5},
+                    {id:1,value:distribNeg["min"],styleValue:5},
+                    {id:2,value:distribNeg["max"],styleValue:1},
+                    {id:3,value:min,styleValue:1},
+                    {id:4,value:distribPos["max"],styleValue:3},
+                    {id:5,value:max,styleValue:5},
+                    {id:"end",value:max,styleValue:5}
+                ];
+            }
+            if (distribPos["max"] !== distribPos["min"] && distribNeg["max"] === distribNeg["min"]){
+                var shift = distribNeg["max"] / 2;
+                var min = distribNeg["max"] + shift;
+                var max = distribNeg["max"] - shift;
+                var scaleRange = [
+                    {id:"begin",value:min,styleValue:5},
+                    {id:1,value:min,styleValue:5},
+                    {id:2,value:distribNeg["max"],styleValue:3},
+                    {id:2,value:max,styleValue:1},
+                    {id:3,value:distribPos["min"],styleValue:1},
+                    {id:4,value:distribPos["max"],styleValue:5},
+                    {id:"end",value:distribPos["max"],styleValue:5}
+                ];
+            }
+            if (distribPos["max"] === distribPos["min"] && distribNeg["max"] === distribNeg["min"]){
+                var shiftPos = distribPos["max"] / 2;
+                var minPos = distribPos["max"] - shiftPos;
+                var maxPos = distribPos["max"] + shiftPos;
+                var shiftNeg = distribNeg["max"] / 2;
+                var minNeg = distribNeg["max"] + shiftNeg;
+                var maxNeg = distribNeg["max"] - shiftNeg;
+                var scaleRange = [
+                    {id:"begin",value:minNeg,styleValue:5},
+                    {id:1,value:minNeg,styleValue:5},
+                    {id:2,value:distribNeg["max"],styleValue:3},
+                    {id:3,value:maxNeg,styleValue:1},
+                    {id:4,value:minPos,styleValue:1},
+                    {id:5,value:distribPos["max"],styleValue:3},
+                    {id:6,value:maxPos,styleValue:5},
+                    {id:"end",value:maxPos,styleValue:5}
+                ];
+            }
         }
 
         if (distribPos["max"] !== undefined && distribNeg["max"] === undefined){
@@ -86,7 +132,19 @@ metExploreD3.GraphFlux = {
                 {id:1,value:distribPos["min"],styleValue:1},
                 {id:2,value:distribPos["max"],styleValue:5},
                 {id:"end",value:distribPos["max"],styleValue:5}
-            ]
+            ];
+            if (distribPos["max"] === distribPos["min"]){
+                var shift = distribPos["max"] / 2;
+                var min = distribPos["max"] - shift;
+                var max = distribPos["max"] + shift;
+                var scaleRange = [
+                    {id:"begin",value:min,styleValue:1},
+                    {id:1,value:min,styleValue:1},
+                    {id:2,value:distribPos["max"],styleValue:3},
+                    {id:3,value:max,styleValue:5},
+                    {id:"end",value:max,styleValue:5}
+                ];
+            }
         }
 
         if (distribPos["max"] === undefined && distribNeg["max"] !== undefined){
@@ -95,7 +153,19 @@ metExploreD3.GraphFlux = {
                 {id:1,value:distribNeg["min"],styleValue:5},
                 {id:2,value:distribNeg["max"],styleValue:1},
                 {id:"end",value:distribNeg["max"],styleValue:1}
-            ]
+            ];
+            if (distribNeg["max"] === distribNeg["min"]){
+                var shift = distribNeg["max"] / 2;
+                var min = distribNeg["max"] + shift;
+                var max = distribNeg["max"] - shift;
+                var scaleRange = [
+                    {id:"begin",value:min,styleValue:5},
+                    {id:1,value:min,styleValue:5},
+                    {id:2,value:distribNeg["max"],styleValue:3},
+                    {id:3,value:max,styleValue:1},
+                    {id:"end",value:max,styleValue:1}
+                ];
+            }
         }
 
         return scaleRange;
@@ -469,25 +539,6 @@ metExploreD3.GraphFlux = {
 
             var axe = "horizontal";
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
-            if (node.fluxDirection1 === "" || node.fluxDirection1 === undefined){
-                enteringLinks
-                    .each(function(link){
-                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
-                        d3.select(this).attr("d", path)
-                            .attr("fill", "none")
-                            .classed("horizontal", false)
-                            .classed("vertical", false);
-                    });
-                exitingLinks
-                    .each(function(link){
-                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
-                        d3.select(this).attr("d", path)
-                            .attr("fill", "none")
-                            .classed("horizontal", false)
-                            .classed("vertical", false);
-                    });
-            }
-
             if (node.fluxDirection1 === 0){
                 enteringLinks
                     .each(function (link) {
@@ -630,6 +681,51 @@ metExploreD3.GraphFlux = {
                             .style("stroke-width",node.fluxDirection1*(-1));
                     });
             }
+            if (node.fluxDirection1 === undefined){
+                enteringLinks
+                    .each(function (link) {
+                        var path;
+                        var endNode = link.getSource();
+                        if (enteringY == node.y){
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, 0);
+                            axe="horizontal";
+                        }
+                        else {
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, 0);
+                            axe="vertical";
+                        }
+                        node.axe = axe;
+                        d3.select(this).attr("d", path)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false)
+                            .classed(axe, true)
+                            .style("opacity", 0.6)
+                            .style("stroke-width",1);
+                    });
+
+                exitingLinks
+                    .each(function (link) {
+                        var path;
+                        var endNode = link.getTarget();
+                        if (exitingY == node.y){
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, 0, 0);
+                            axe="horizontal";
+                        }
+                        else {
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, 0, 0);
+                            axe="vertical";
+                        }
+
+                        d3.select(this).attr("d", path)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false)
+                            .classed(axe, true)
+                            .style("opacity", 0.6)
+                            .style("stroke-width",1);
+                    });
+            }
         });
         metExploreD3.GraphCaption.drawCaptionFluxMode();
 
@@ -693,48 +789,6 @@ metExploreD3.GraphFlux = {
 
             var axe = "horizontal";
             // For each node, compute the path of the arcs exiting that node, and the path of the arcs exiting that node
-            if (node.fluxDirection1 === "" || node.fluxDirection1 === undefined){
-                enteringLinks
-                    .each(function(link){
-                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
-                        d3.select(this).attr("d", path)
-                            .classed("horizontal", false)
-                            .classed("vertical", false);
-                    });
-
-                exitingLinks
-                    .each(function(link){
-                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
-                        d3.select(this).attr("d", path)
-                            .classed("horizontal", false)
-                            .classed("vertical", false);
-                    });
-            }
-
-            if (node.fluxDirection2 === "" || node.fluxDirection2 === undefined){
-                var newEnter = enteringLinks.clone();
-                d3.select("#viz").select("#D3viz").select("graphComponent").append(newEnter);
-                newEnter
-                    .each(function(link){
-                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
-                        d3.select(this).attr("d", path)
-                            .classed("clone", true)
-                            .classed("horizontal", false)
-                            .classed("vertical", false);
-                    });
-
-                var newExit = exitingLinks.clone();
-                d3.select("#viz").select("#D3viz").select("graphComponent").append(newExit);
-                newExit
-                    .each(function(link){
-                        var path = metExploreD3.GraphLink.funcPath3(link, "viz");
-                        d3.select(this).attr("d", path)
-                            .classed("clone", true)
-                            .classed("horizontal", false)
-                            .classed("vertical", false);
-                    });
-            }
-
             if (node.fluxDirection1 === 0){
                 enteringLinks
                     .each(function (link) {
@@ -1044,6 +1098,51 @@ metExploreD3.GraphFlux = {
                             .style("opacity", 1)
                             .style("stroke", node.color2)
                             .style("stroke-width",node.fluxDirection2*(-1));
+                    });
+            }
+            if (node.fluxDirection1 === undefined || node.fluxDirection2 === undefined){
+                enteringLinks
+                    .each(function (link) {
+                        var path;
+                        var endNode = link.getSource();
+                        if (enteringY == node.y){
+                            path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, 0);
+                            axe="horizontal";
+                        }
+                        else {
+                            path = metExploreD3.GraphFlux.twoPathVertical(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, 0);
+                            axe="vertical";
+                        }
+                        node.axe = axe;
+                        d3.select(this).attr("d", path)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false)
+                            .classed(axe, true)
+                            .style("opacity", 0.6)
+                            .style("stroke-width",1);
+                    });
+
+                exitingLinks
+                    .each(function (link) {
+                        var path;
+                        var endNode = link.getTarget();
+                        if (exitingY == node.y){
+                            path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, 0, 0);
+                            axe="horizontal";
+                        }
+                        else {
+                            path = metExploreD3.GraphFlux.computePathVerticalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, 0, 0);
+                            axe="vertical";
+                        }
+
+                        d3.select(this).attr("d", path)
+                            .attr("fill", "none")
+                            .classed("horizontal", false)
+                            .classed("vertical", false)
+                            .classed(axe, true)
+                            .style("opacity", 0.6)
+                            .style("stroke-width",1);
                     });
             }
         });
