@@ -1159,6 +1159,22 @@ metExploreD3.GraphMapping = {
 				}, 1);
 			}
 		}
+        if(mappingJSON.flux !== {}){
+            var mappingFlux = mappingJSON.flux;
+            if (mappingJSON.targetLabel === "reactionDBIdentifier"){
+                var targetLabel = "Identifier";
+            }
+            if (mappingJSON.targetLabel === "reactionName"){
+                var targetLabel = "Name";
+            }
+            var flux = new Flux(mappingFlux.name, mappingFlux.conditions, targetLabel, []);
+            flux.data = mappingFlux.data;
+
+            _metExploreViz.addFlux(flux);
+
+            metExploreD3.fireEvent("fluxMapping","fileParse");
+            metExploreD3.fireEvent("fluxMapping","fileLoad");
+        }
 	},
 
 	/***********************************************

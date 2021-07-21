@@ -408,6 +408,13 @@ metExploreD3.GraphLink = {
             }
         }
 
+        if (metExploreD3.GraphStyleEdition.fluxPath1 === true){
+            metExploreD3.GraphFlux.curveEdge();
+        }
+        if (metExploreD3.GraphStyleEdition.fluxPath2 === true){
+            metExploreD3.GraphFlux.curveTwoEdge();
+        }
+
         if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
             metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 
@@ -664,6 +671,12 @@ metExploreD3.GraphLink = {
             else {
                 metExploreD3.GraphLink.bundleLinks(panel);
             }
+        }
+        else if (metExploreD3.GraphStyleEdition.fluxPath1 === true){
+            metExploreD3.GraphFlux.curveEdge();
+        }
+        else if (metExploreD3.GraphStyleEdition.fluxPath2 === true){
+            metExploreD3.GraphFlux.curveTwoEdge();
         }
         else {
             var scale = metExploreD3.getScaleById("viz");

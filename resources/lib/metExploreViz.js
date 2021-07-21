@@ -13,6 +13,7 @@ var metExploreD3 = {
     GraphStyleEdition:"",
     GraphColorScaleEditor:"",
     GraphNumberScaleEditor:"",
+    GraphFlux:"",
     Features:"",
     user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
@@ -585,7 +586,7 @@ var metExploreD3 = {
         return combBoxSelectMappingVisu.getValue();
     },
 
-    // Other function 
+    // Other function
 
     /******************************************
     * Display the mask with the loading GIF
@@ -974,9 +975,10 @@ var metExploreViz = function(panel, webSite){
     this.metaboliteStyle = new MetaboliteStyle('#FFFFFF',14, 14, 7, 7, 1, '#000000', 1, '#000000', 10, 500, 1, 'name',  false);
     this.generalStyle = new GeneralStyle("Website", "#FFFF00", "#0000ff", 500, false, false, false, false, false, false, false);
     this.initialData = undefined;
-    this.biosource = undefined; 
+    this.biosource = undefined;
     this.comparedPanels = [];
     this.mappings = [];
+    this.flux = [];
     this.components = [];
     this.bioSourceControl = false;
     this.newBioSource = false;
@@ -1008,8 +1010,8 @@ metExploreViz.prototype = {
     getBiosource:function()
     {
        return this.biosource;
-    }, 
-    
+    },
+
     setBiosource:function(biosource)
     {
        this.biosource = biosource;
@@ -1029,7 +1031,7 @@ metExploreViz.prototype = {
     },
     cloneNetworkData : function(networkData){
         var newData = new NetworkData();
-       
+
         var n, name, comp, dbId, ec, id, rev, sc, bt, sel, lv, svg, svgW, svgH;
 
         for (var j=0; j<networkData.nodes.length; j++) {
@@ -1038,22 +1040,22 @@ metExploreViz.prototype = {
                 name = n.getName().valueOf();
             else
                 name = undefined;
-            
+
             if(n.getCompartment()!=undefined)
                 comp = n.getCompartment().valueOf();
             else
                 comp = undefined;
-            
+
             if(n.getDbIdentifier()!=undefined)
                 dbId = n.getDbIdentifier().valueOf();
             else
                 dbId = undefined;
-            
+
             if(n.getEC()!=undefined)
                 ec = n.getEC().valueOf();
             else
                 ec = undefined;
-            
+
             if(n.getId()!=undefined)
                 id = n.getId().valueOf();
             else
@@ -1063,12 +1065,12 @@ metExploreViz.prototype = {
                 rev = n.getReactionReversibility().valueOf();
             else
                 rev = undefined;
-            
+
             if(n.getIsSideCompound()!=undefined)
                 sc = n.getIsSideCompound().valueOf();
             else
                 sc = undefined;
-            
+
             if(n.getBiologicalType()!=undefined)
                 bt = n.getBiologicalType().valueOf();
             else
@@ -1108,27 +1110,27 @@ metExploreViz.prototype = {
 
         for (var j=0; j<networkData.links.length; j++) {
 
-            var id = networkData.links[j].getId().valueOf(); 
+            var id = networkData.links[j].getId().valueOf();
             var src = networkData.links[j].getSource();
             var source = newData.nodes[src];
 
             var tgt = networkData.links[j].getTarget();
             var target = newData.nodes[tgt];
-       
-            var interaction = networkData.links[j].getInteraction().valueOf();    
-            var reversible = networkData.links[j].isReversible().valueOf();  
-            
+
+            var interaction = networkData.links[j].getInteraction().valueOf();
+            var reversible = networkData.links[j].isReversible().valueOf();
+
             newData.links[j] = new LinkData(id, source, target, interaction, reversible);
         }
 
         return newData;
     },
-    
+
     cloneSession : function(){
         var mainSession = this.getSessionById('viz');
         var newSession = new NetworkVizSession();
         newSession.reset();
-        
+
         var n, name, comp, pathw, dbId, ec, id, rev, sc, bt, sel, lv, svg, svgW, svgH, locked, alias, label, hidden;
 
         // for (var j=0; j<this.initialData.nodes.length; j++) {
@@ -1138,7 +1140,7 @@ metExploreViz.prototype = {
                 name = n.getName().valueOf();
             else
                 name = undefined;
-            
+
             if(n.getPathways()!=undefined)
                 pathw = n.getPathways().valueOf();
             else
@@ -1173,12 +1175,12 @@ metExploreViz.prototype = {
                 dbId = n.getDbIdentifier().valueOf();
             else
                 dbId = undefined;
-            
+
             if(n.getEC()!=undefined)
                 ec = n.getEC().valueOf();
             else
                 ec = undefined;
-            
+
             if(n.getId()!=undefined)
                 id = n.getId().valueOf();
             else
@@ -1188,12 +1190,12 @@ metExploreViz.prototype = {
                 rev = n.getReactionReversibility().valueOf();
             else
                 rev = undefined;
-            
+
             if(n.getIsSideCompound()!=undefined)
                 sc = n.getIsSideCompound().valueOf();
             else
                 sc = undefined;
-            
+
             if(n.getBiologicalType()!=undefined)
                 bt = n.getBiologicalType().valueOf();
             else
@@ -1246,23 +1248,23 @@ metExploreViz.prototype = {
 
         mainSession.getD3Data().getLinks().forEach(function(link){
 
-            var id = link.getId().valueOf(); 
+            var id = link.getId().valueOf();
 
             var src = link.getSource();
             var source = newSession.d3Data.nodes[mainSession.getD3Data().getNodes().indexOf(src)];
-            
+
             var tgt = link.getTarget();
             var target = newSession.d3Data.nodes[mainSession.getD3Data().getNodes().indexOf(tgt)];
-       
-            var interaction = link.getInteraction().valueOf();    
-            var reversible = link.isReversible().valueOf();  
-            
+
+            var interaction = link.getInteraction().valueOf();
+            var reversible = link.isReversible().valueOf();
+
             newSession.d3Data.addLink(id, source, target, interaction, reversible);
         });
 
         return newSession;
     },
-    
+
     getGeneralStyle : function(){
         return this.generalStyle;
     },
@@ -1286,7 +1288,7 @@ metExploreViz.prototype = {
     removeSession : function(panel){
         if(this.sessions[panel]!=undefined)
         {
-            delete this.sessions[panel];    
+            delete this.sessions[panel];
         }
     },
 
@@ -1294,12 +1296,12 @@ metExploreViz.prototype = {
     getInitialData:function()
     {
        return this.initialData;
-    },    
+    },
     setInitialData:function(initialData)
     {
        this.initialData = initialData;
     },
-    
+
     isLaunched :function(){
         return this.launched;
     },
@@ -1318,7 +1320,7 @@ metExploreViz.prototype = {
             if(this.comparedPanels[i].getPanel()==aComparedPanel.getPanel())
             {
                 this.comparedPanels.splice(i,1);
-                found=true;        
+                found=true;
             }
             i++;
         }
@@ -1328,11 +1330,28 @@ metExploreViz.prototype = {
     },
     getComparedPanelById : function(id){
         var theComparedPanel = null;
-        this.comparedPanels.forEach(function(aComparedPanel){            
+        this.comparedPanels.forEach(function(aComparedPanel){
             if(aComparedPanel.getPanel()==id)
                 theComparedPanel = aComparedPanel;
         });
         return theComparedPanel;
+    },
+    // Flux
+    addFlux : function(fluxData){
+        if(fluxData.getId()==undefined){
+            fluxData.setId("IdFluxMetExploreViz"+this.flux.length);
+        }
+        if(this.getFluxById(fluxData.getId())==null){
+            this.flux.push(fluxData);
+        }
+    },
+    getFluxById : function(id){
+        var theflux = null;
+        this.flux.forEach(function(fluxData){
+            if(fluxData.getId()==id)
+                theflux = fluxData;
+        });
+        return theflux;
     },
 
     // Mapping
@@ -1369,7 +1388,7 @@ metExploreViz.prototype = {
             if(this.mappings[i].getId()==aMapping)
             {
                 this.mappings.splice(i,1);
-                found=true;        
+                found=true;
             }
             i++;
         }
@@ -1379,7 +1398,7 @@ metExploreViz.prototype = {
     },
     getMappingById : function(id){
         var themapping = null;
-        this.mappings.forEach(function(aMapping){            
+        this.mappings.forEach(function(aMapping){
             if(aMapping.getId()==id)
                 themapping = aMapping;
         });
@@ -1387,7 +1406,7 @@ metExploreViz.prototype = {
     },
     getMappingByName : function(name){
         var themapping = null;
-        this.mappings.forEach(function(aMapping){            
+        this.mappings.forEach(function(aMapping){
             if(aMapping.getName()==name)
                 themapping = aMapping;
         });
