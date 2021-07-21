@@ -9,14 +9,14 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 		var me 		= this,
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
-		
+
 		view.on({
 			mouseleave: function( menu, e, eOpts){
 				menu.hide();
 			},
 	  		scope:me
      	});
-     	
+
 		view.lookupReference('importMapping').on({
 			click : function(){
 				// console.log(Ext.getCmp("IDimport"));
@@ -37,6 +37,16 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController', {
 		        if(component!= undefined){
 					component.fileInputEl.dom.click();
 		        }
+			},
+			scope : me
+		});
+
+		view.lookupReference('importFlux').on({
+			click : function(){
+				var component = Ext.getCmp("IDimportFlux");
+				if(component != undefined){
+					component.fileInputEl.dom.click();
+				}
 			},
 			scope : me
 		});

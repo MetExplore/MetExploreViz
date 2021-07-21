@@ -19,6 +19,8 @@ metExploreD3.GraphStyleEdition = {
     editMode: false,
     curvedPath: false,
     allDrawnCycles: [],
+    fluxPath1: false,
+    fluxPath2: false,
 
     /*******************************************
      * Apply respective styles to labels

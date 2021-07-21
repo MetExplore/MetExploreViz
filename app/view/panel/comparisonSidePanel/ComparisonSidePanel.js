@@ -1,6 +1,6 @@
 /**
  * @author MC
- * (a)description 
+ * (a)description
  */
 Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	extend: 'Ext.tab.Panel',
@@ -12,7 +12,8 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
         "metExploreViz.view.form.drawingStyleForm.DrawingStyleForm",
         "metExploreViz.view.form.cycleDetectionForm.CycleDetectionForm",
         "metExploreViz.view.form.captionForm.CaptionForm",
-        "metExploreViz.view.form.allStylesForm.AllStylesForm"
+        "metExploreViz.view.form.allStylesForm.AllStylesForm",
+        "metExploreViz.view.form.fluxMappingForm.FluxMappingForm"
     ],
  	controller: "panel-comparisonSidePanel-comparisonSidePanel",
 	/*requires: ['MetExplore.view.form.V_SelectConditionForm',
@@ -72,6 +73,11 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 		title:'Cycle',
 		id:'cycleDetection',
 		xtype:'cycleDetectionForm'
-	}
+	},
+    {
+        title:'Flux',
+        id:'fluxMapping',
+        xtype:'fluxMappingForm'
+    }
 	]
 });

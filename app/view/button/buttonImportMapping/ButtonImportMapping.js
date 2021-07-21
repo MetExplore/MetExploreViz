@@ -14,7 +14,7 @@ Ext.define('metExploreViz.view.button.buttonImportMapping.ButtonImportMapping', 
         // Allows opening file manager of client side
         xtype: 'filefield',
         name : 'fileData',
-        buttonOnly: true,   
+        buttonOnly: true,
         id : 'IDimport',
         reference : 'importMappingHidden',
         // Allows button GUI

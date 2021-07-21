@@ -4,9 +4,9 @@
  */
 
 Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
-    extend: 'Ext.menu.Menu', 
+    extend: 'Ext.menu.Menu',
     alias: 'widget.vizImportMenu',
-    
+
     requires: [
         'metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuController',
         'metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenuModel'
@@ -16,7 +16,7 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
     viewModel: {
         type: "menu-vizImportMenu-vizImportMenu"
     },
-   
+
     items:  [
         {
             text: 'Import mapping from tab file',
@@ -25,7 +25,7 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         },
         {
             hidden:true,
-            id:'buttonMap',   
+            id:'buttonMap',
             xtype:'buttonImportMapping'/*,text: 'Refresh/Build network'*/
         }
         ,
@@ -36,8 +36,18 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         },
         {
             hidden:true,
-            id:'buttonSide',   
+            id:'buttonSide',
             xtype:'buttonImportSideCompounds'/*,text: 'Refresh/Build network'*/
+        },
+        {
+            text: 'Import flux data from tab file',
+            reference: 'importFlux',
+            iconCls: 'importData'
+        },
+        {
+            hidden:true,
+            id:'buttonFlux',
+            xtype:'buttonImportFlux'
         },
         {
             text: 'Import coordinates',
@@ -99,9 +109,8 @@ Ext.define('metExploreViz.view.menu.viz_ImportMenu.Viz_ImportMenu', {
         // },
         // {
         //     hidden:true,
-        //     id:'buttonImportSavedNetwork',   
+        //     id:'buttonImportSavedNetwork',
         //     xtype:'buttonImportSavedNetwork'
         // }
     ]
 });
-
