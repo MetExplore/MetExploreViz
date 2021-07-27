@@ -52,11 +52,13 @@ Ext.define('metExploreViz.view.form.fluxScaleEditor.FluxScaleEditor', {
                     xtype: 'numberfield',
                     label: 'Position',
                     value: ''
-                },{
+                },
+                {
                     margin: "10 0 10 0",
                     xtype: 'label',
                     html: 'Number :'
-                },{
+                },
+                {
                     xtype: 'button',
                     margin: "5 40 5 10",
                     disabled: true,
@@ -79,7 +81,8 @@ Ext.define('metExploreViz.view.form.fluxScaleEditor.FluxScaleEditor', {
                             c.setTooltip("");
                         }
                     }
-                },{
+                },
+                {
                     xtype: 'numberfield',
                     html: 'Number :',
                     reference: "numberButton",
