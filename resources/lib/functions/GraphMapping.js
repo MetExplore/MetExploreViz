@@ -1161,9 +1161,8 @@ metExploreD3.GraphMapping = {
 		}
         if(mappingJSON.flux !== {}){
             var mappingFlux = mappingJSON.flux;
-            if (mappingJSON.targetLabel === "reactionDBIdentifier"){
-                var targetLabel = "Identifier";
-            }
+            var targetLabel = "Identifier";
+            
             if (mappingJSON.targetLabel === "reactionName"){
                 var targetLabel = "Name";
             }
