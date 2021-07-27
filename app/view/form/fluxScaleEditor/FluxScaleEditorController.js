@@ -71,7 +71,12 @@ Ext.define('metExploreViz.view.form.fluxScaleEditor.FluxScaleEditorController', 
 						metExploreD3.GraphNumberScaleEditor.updateValue(value);
 					}
 				}
-			}
+			},
+            change: function(that){
+                var value = parseFloat(that.getRawValue());
+                that.setMinValue(value);
+                that.setMaxValue(value);
+            }
 		});
 
         view.lookupReference('numberButton').on({
