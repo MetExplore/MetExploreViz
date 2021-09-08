@@ -577,7 +577,11 @@ metExploreD3.GraphStyleEdition = {
             if(biologicalType==="link")
                 selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup");
 
-            selection.selectAll(target+":not(.bypassed"+attrType+attrName+biologicalType+")"+":not(.mapped"+attrType+attrName+biologicalType+")")[attrType](attrName, value);
+            selection.selectAll(target
+                +":not(.bypassed"+attrType+attrName+biologicalType+")"
+                +":not(.mapped"+attrType+attrName+biologicalType+")"
+                +":not(.fluxstylelink)"
+                )[attrType](attrName, value);
         });
     },
 
@@ -877,9 +881,10 @@ metExploreD3.GraphStyleEdition = {
 
 
                 var targetSelection = selection.selectAll(target);
-
-                targetSelection[attrType](attrName, valueStyle);
                 targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
+
+                targetSelection = selection.selectAll(target+":not(.fluxstylelink)");
+                targetSelection[attrType](attrName, valueStyle);
             });
         }
     },
@@ -922,9 +927,10 @@ metExploreD3.GraphStyleEdition = {
                     });
 
                 var targetSelection = selection.selectAll(target);
-
-                targetSelection[attrType](attrName, valueStyle);
                 targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
+
+                targetSelection = selection.selectAll(target+":not(.fluxstylelink)");
+                targetSelection[attrType](attrName, valueStyle);
             });
         }
     },
@@ -969,14 +975,13 @@ metExploreD3.GraphStyleEdition = {
                     });
 
                 var targetSelection = selection.selectAll(target);
-
+                targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
                 function test(d){
                     var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
                     return linearScale(map.getMapValue());
                 }
+                targetSelection = selection.selectAll(target+":not(.fluxstylelink)");
                 targetSelection[attrType](attrName, test);
-
-                targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
             });
         }
     },

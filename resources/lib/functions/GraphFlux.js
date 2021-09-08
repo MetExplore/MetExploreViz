@@ -557,6 +557,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke","blue")
@@ -580,6 +581,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke","blue")
@@ -604,6 +606,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1);
@@ -628,6 +631,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
                             .style("stroke", node.color1)
@@ -653,6 +657,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
                             .style("stroke", node.color1)
@@ -676,6 +681,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1*(-1));
@@ -808,6 +814,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke", node.color1)
@@ -832,6 +839,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke", node.color1)
@@ -859,6 +867,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .classed("reaction",false)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
@@ -886,6 +895,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke", node.color2)
@@ -911,6 +921,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1);
@@ -935,6 +946,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
                             .style("stroke", node.color1)
@@ -962,6 +974,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .classed("reaction",false)
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
@@ -990,6 +1003,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("stroke-linejoin", "miter")
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
@@ -1016,6 +1030,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
                             .style("stroke", node.color1)
@@ -1040,6 +1055,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1*(-1));
@@ -1066,6 +1082,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .classed("reaction",false)
                             .style("stroke-linejoin", "miter")
                             .style("opacity", 1)
@@ -1094,6 +1111,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("stroke-dasharray", null)
                             .style("opacity", 1)
                             .style("stroke", node.color2)
@@ -1551,6 +1569,7 @@ metExploreD3.GraphFlux = {
                             else
                                 return linkStyle.getMarkerInColor();
                         })
+                        .classed("fluxstylelink", false)
                         .style("stroke", linkStyle.getStrokeColor())
                         .style("stroke-width", linkStyle.getLineWidth())
                         .style("opacity", linkStyle.getOpacity())
@@ -1558,6 +1577,9 @@ metExploreD3.GraphFlux = {
         });
         if (metExploreD3.GraphStyleEdition.curvedPath === true){
             metExploreD3.GraphLink.bundleLinks("viz");
+        }
+        if(_metExploreViz.getMappingsLength()>0){
+    		metExploreD3.GraphLink.majMapping(Ext.ComponentQuery.query('aStyleForm'));
         }
     },
 

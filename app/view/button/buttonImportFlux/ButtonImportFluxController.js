@@ -64,7 +64,9 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
         }
         else {
 			// Warning for bad syntax file
-			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax.');
+			metExploreD3.displayWarning("Syntaxe error",
+                'File have bad syntax. See <a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#fluxImport">MetExploreViz documentation</a>.'
+            );
 		}
 	}
 
