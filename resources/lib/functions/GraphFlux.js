@@ -183,8 +183,7 @@ metExploreD3.GraphFlux = {
     oneCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange){
         var valuePos = {};
         var valueNeg = {};
-        var valPosDistri = [];
-        var valNegDistri = [];
+        var valDistri = [];
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -207,19 +206,18 @@ metExploreD3.GraphFlux = {
                 }
                 if (value > 0){
                     valuePos[nodes.id] = value;
-                    valPosDistri.push(value);
+                    valDistri.push(value);
                     nodes.valueCond1 = value;
                 }
                 if (value < 0){
                     valueNeg[nodes.id] = value;
-                    valNegDistri.push(value*(-1));
+                    valDistri.push(value*(-1));
                     nodes.valueCond1 = value;
                 }
             }
         }
 
-        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNegDistri);
-        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPosDistri);
+        var distrib = metExploreD3.GraphFlux.fluxDistribution(valDistri);
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -235,12 +233,12 @@ metExploreD3.GraphFlux = {
 
             if (nodes !== undefined){
                 if (Object.keys(valuePos).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos[nodes.id], scaleSelector, scaleRange);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valuePos[nodes.id], scaleSelector, scaleRange);
                     nodes.fluxDirection1 = edgeWidth;
                     nodes.color1 = color;
                 }
                 if (Object.keys(valueNeg).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg[nodes.id], scaleSelector, scaleRange);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valueNeg[nodes.id], scaleSelector, scaleRange);
                     nodes.fluxDirection1 = edgeWidth*(-1);
                     nodes.color1 = color;
                 }
@@ -262,8 +260,7 @@ metExploreD3.GraphFlux = {
     twoCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1, scaleRange2){
         var valuePos = {first:{}, second:{}};
         var valueNeg = {first:{}, second:{}};
-        var valPosDistri = [];
-        var valNegDistri = [];
+        var valDistri = [];
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -287,12 +284,12 @@ metExploreD3.GraphFlux = {
                 }
                 if (value1 > 0){
                     valuePos["first"][nodes.id] = value1;
-                    valPosDistri.push(value1);
+                    valDistri.push(value1);
                     nodes.valueCond1 = value1;
                 }
                 if (value1 < 0){
                     valueNeg["first"][nodes.id] = value1;
-                    valNegDistri.push(value1*(-1));
+                    valDistri.push(value1*(-1));
                     nodes.valueCond1 = value1;
                 }
                 if (value2 === 0){
@@ -302,19 +299,18 @@ metExploreD3.GraphFlux = {
                 }
                 if (value2 > 0){
                     valuePos["second"][nodes.id] = value2;
-                    valPosDistri.push(value2);
+                    valDistri.push(value2);
                     nodes.valueCond2 = value2;
                 }
                 if (value2 < 0){
                     valueNeg["second"][nodes.id] = value2;
-                    valNegDistri.push(value2*(-1));
+                    valDistri.push(value2*(-1));
                     nodes.valueCond2 = value2;
                 }
             }
         }
 
-        var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPosDistri);
-        var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNegDistri);
+        var distrib = metExploreD3.GraphFlux.fluxDistribution(valDistri);
 
         for (var i = 0; i < fluxData.length; i++){
 
@@ -330,23 +326,23 @@ metExploreD3.GraphFlux = {
 
             if (nodes !== undefined){
                 if (Object.keys(valuePos["first"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["first"][nodes.id], scaleSelector, scaleRange1);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valuePos["first"][nodes.id], scaleSelector, scaleRange1);
                     nodes.fluxDirection1 = edgeWidth;
                     nodes.color1 = color[0];
                 }
                 if (Object.keys(valueNeg["first"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["first"][nodes.id], scaleSelector, scaleRange1);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valueNeg["first"][nodes.id], scaleSelector, scaleRange1);
                     nodes.fluxDirection1 = edgeWidth*(-1);
                     nodes.color1 = color[0];
                 }
 
                 if (Object.keys(valuePos["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(posDistrib, valuePos["second"][nodes.id], scaleSelector, scaleRange2);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valuePos["second"][nodes.id], scaleSelector, scaleRange2);
                     nodes.fluxDirection2 = edgeWidth;
                     nodes.color2 = color[1];
                 }
                 if (Object.keys(valueNeg["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(negDistrib, valueNeg["second"][nodes.id], scaleSelector, scaleRange2);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valueNeg["second"][nodes.id], scaleSelector, scaleRange2);
                     nodes.fluxDirection2 = edgeWidth*(-1);
                     nodes.color2 = color[1];
                 }
@@ -557,6 +553,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke","blue")
@@ -580,6 +577,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke","blue")
@@ -604,6 +602,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1);
@@ -628,6 +627,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
                             .style("stroke", node.color1)
@@ -653,6 +653,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
                             .style("stroke", node.color1)
@@ -676,6 +677,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1*(-1));
@@ -808,6 +810,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke", node.color1)
@@ -832,6 +835,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke", node.color1)
@@ -859,6 +863,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .classed("reaction",false)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
@@ -886,6 +891,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1)
                             .style("stroke", node.color2)
@@ -911,6 +917,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1);
@@ -935,6 +942,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
                             .style("stroke", node.color1)
@@ -962,6 +970,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .classed("reaction",false)
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
@@ -990,6 +999,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("stroke-linejoin", "miter")
                             .style("opacity", 1)
                             .style("stroke-dasharray", null)
@@ -1016,6 +1026,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke-linejoin", "miter")
                             .style("stroke", node.color1)
@@ -1040,6 +1051,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 1)
                             .style("stroke", node.color1)
                             .style("stroke-width",node.fluxDirection1*(-1));
@@ -1066,6 +1078,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .classed("reaction",false)
                             .style("stroke-linejoin", "miter")
                             .style("opacity", 1)
@@ -1094,6 +1107,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("stroke-dasharray", null)
                             .style("opacity", 1)
                             .style("stroke", node.color2)
@@ -1551,6 +1565,7 @@ metExploreD3.GraphFlux = {
                             else
                                 return linkStyle.getMarkerInColor();
                         })
+                        .classed("fluxstylelink", false)
                         .style("stroke", linkStyle.getStrokeColor())
                         .style("stroke-width", linkStyle.getLineWidth())
                         .style("opacity", linkStyle.getOpacity())
@@ -1558,6 +1573,9 @@ metExploreD3.GraphFlux = {
         });
         if (metExploreD3.GraphStyleEdition.curvedPath === true){
             metExploreD3.GraphLink.bundleLinks("viz");
+        }
+        if(_metExploreViz.getMappingsLength()>0){
+    		metExploreD3.GraphLink.majMapping(Ext.ComponentQuery.query('aStyleForm'));
         }
     },
 
@@ -1573,6 +1591,7 @@ metExploreD3.GraphFlux = {
         var data = [];
         var valNeg = [];
         var valPos = [];
+        var valDistrib = [];
 
         var min = 0;
         var max = 0;
@@ -1589,9 +1608,11 @@ metExploreD3.GraphFlux = {
                 }
                 if (val < 0){
                     valNeg.push(val);
+                    valDistrib.push(val*(-1));
                 }
                 if (val > 0){
                     valPos.push(val);
+                    valDistrib.push(val);
                 }
             });
         }
@@ -1613,9 +1634,11 @@ metExploreD3.GraphFlux = {
                     }
                     if (val < 0){
                         valNeg.push(val);
+                        valDistrib.push(val*(-1));
                     }
                     if (val > 0){
                         valPos.push(val);
+                        valDistrib.push(val);
                     }
                 }
             });
@@ -1671,27 +1694,30 @@ metExploreD3.GraphFlux = {
             .text("Distribution Graph");
 
         if (scaleSelector === "Automatic"){
-            var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
-            var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 0, y2: 340};
+            var distrib = metExploreD3.GraphFlux.fluxDistribution(valDistrib);
+            var interLineNeg = {x1: distrib["inter"]*(-1), x2: distrib["inter"]*(-1), y1: 0, y2: 340};
+            var interLinePos = {x1: distrib["inter"], x2: distrib["inter"], y1: 0, y2: 340};
 
-            var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPos);
-            var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 0, y2: 340};
-
-            if (interLineNeg.x1 !== undefined){
-                svg.append("line")
-                    .attr("x1", function(){ return x(interLineNeg.x1) })
-                    .attr("x2", function(){ return x(interLineNeg.x2) })
-                    .attr("y1", interLineNeg.y1)
-                    .attr("y2", interLineNeg.y2)
-                    .attr("stroke","red");
+            if (min < 0) {
+                if (interLineNeg.x1 !== undefined){
+                    svg.append("line")
+                        .attr("x1", function(){ return x(interLineNeg.x1) })
+                        .attr("x2", function(){ return x(interLineNeg.x2) })
+                        .attr("y1", interLineNeg.y1)
+                        .attr("y2", interLineNeg.y2)
+                        .attr("stroke","black");
+                }
             }
-            if (interLinePos.x1 !== undefined){
-                svg.append("line")
-                    .attr("x1", function(){ return x(interLinePos.x1) })
-                    .attr("x2", function(){ return x(interLinePos.x2) })
-                    .attr("y1", interLinePos.y1)
-                    .attr("y2", interLinePos.y2)
-                    .attr("stroke","green");
+
+            if (max > 0) {
+                if (interLinePos.x1 !== undefined){
+                    svg.append("line")
+                        .attr("x1", function(){ return x(interLinePos.x1) })
+                        .attr("x2", function(){ return x(interLinePos.x2) })
+                        .attr("y1", interLinePos.y1)
+                        .attr("y2", interLinePos.y2)
+                        .attr("stroke","black");
+                }
             }
         }
 
@@ -1724,6 +1750,7 @@ metExploreD3.GraphFlux = {
         var data2 = [];
         var valNeg = [];
         var valPos = [];
+        var valDistrib = [];
 
         var min = 0;
         var max = 0;
@@ -1748,15 +1775,19 @@ metExploreD3.GraphFlux = {
                 }
                 if (val1 < 0){
                     valNeg.push(val1);
+                    valDistrib.push(val1*(-1));
                 }
                 if (val1 > 0){
                     valPos.push(val1);
+                    valDistrib.push(val1);
                 }
                 if (val2 < 0){
                     valNeg.push(val2);
+                    valDistrib.push(val2*(-1));
                 }
                 if (val2 > 0){
                     valPos.push(val2);
+                    valDistrib.push(val2);
                 }
             });
         }
@@ -1785,15 +1816,19 @@ metExploreD3.GraphFlux = {
                     }
                     if (val1 < 0){
                         valNeg.push(val1);
+                        valDistrib.push(val1*(-1));
                     }
                     if (val1 > 0){
                         valPos.push(val1);
+                        valDistrib.push(val1);
                     }
                     if (val2 < 0){
                         valNeg.push(val2);
+                        valDistrib.push(val2*(-1));
                     }
                     if (val2 > 0){
                         valPos.push(val2);
+                        valDistrib.push(val2);
                     }
                 }
             });
@@ -1881,27 +1916,30 @@ metExploreD3.GraphFlux = {
             .text("Distribution Graph");
 
         if (scaleSelector === "Automatic"){
-            var negDistrib = metExploreD3.GraphFlux.fluxDistribution(valNeg);
-            var interLineNeg = {x1: negDistrib["inter"], x2: negDistrib["inter"], y1: 100, y2: 340};
-
-            var posDistrib = metExploreD3.GraphFlux.fluxDistribution(valPos);
-            var interLinePos = {x1: posDistrib["inter"], x2: posDistrib["inter"], y1: 100, y2: 340};
+            var distrib = metExploreD3.GraphFlux.fluxDistribution(valDistrib);
+            var interLineNeg = {x1: distrib["inter"]*(-1), x2: distrib["inter"]*(-1), y1: 100, y2: 340};
+            var interLinePos = {x1: distrib["inter"], x2: distrib["inter"], y1: 100, y2: 340};
 
             if (interLineNeg.x1 !== undefined){
-                svg.append("line")
-                    .attr("x1", function(){ return x(interLineNeg.x1) })
-                    .attr("x2", function(){ return x(interLineNeg.x2) })
-                    .attr("y1", interLineNeg.y1)
-                    .attr("y2", interLineNeg.y2)
-                    .attr("stroke","red");
+                if (min < 0) {
+                    svg.append("line")
+                        .attr("x1", function(){ return x(interLineNeg.x1) })
+                        .attr("x2", function(){ return x(interLineNeg.x2) })
+                        .attr("y1", interLineNeg.y1)
+                        .attr("y2", interLineNeg.y2)
+                        .attr("stroke","black");
+                }
             }
+
             if (interLinePos.x1 !== undefined){
-                svg.append("line")
-                    .attr("x1", function(){ return x(interLinePos.x1) })
-                    .attr("x2", function(){ return x(interLinePos.x2) })
-                    .attr("y1", interLinePos.y1)
-                    .attr("y2", interLinePos.y2)
-                    .attr("stroke","green");
+                if (max > 0) {
+                    svg.append("line")
+                        .attr("x1", function(){ return x(interLinePos.x1) })
+                        .attr("x2", function(){ return x(interLinePos.x2) })
+                        .attr("y1", interLinePos.y1)
+                        .attr("y2", interLinePos.y2)
+                        .attr("stroke","black");
+                }
             }
         }
 

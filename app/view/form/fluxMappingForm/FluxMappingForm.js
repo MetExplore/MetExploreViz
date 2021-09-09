@@ -32,7 +32,8 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
     items: [
         {
             xtype: 'label',
-            html: 'Select file or mapping :',
+            html: 'Select file or mapping'+
+            '<a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#flux"><sup>?</sup></a> :',
             margin: '15 15 5 15'
         },
 
@@ -208,7 +209,8 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
 
         {
             xtype: 'label',
-            html: 'Scale selector :',
+            html: 'Scale selector'+
+            '<a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#fluxScaleSelector"><sup>?</sup></a> :',
             margin: '15 15 5 15'
         },
 
@@ -305,7 +307,8 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
 
         {
             xtype: 'checkboxfield',
-            boxLabel: 'Distribution graph : only display data',
+            boxLabel: 'Distribution graph : only displayed data' +
+            '<a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#fluxDistribGraph"><sup>?</sup></a>',
             reference: 'displayGraphDistrib',
             margin: '5 5 5 5'
         },
