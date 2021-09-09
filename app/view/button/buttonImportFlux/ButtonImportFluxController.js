@@ -61,6 +61,7 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
             _metExploreViz.addFlux(flux);
             metExploreD3.fireEvent("fluxMapping","fileParse");
             metExploreD3.fireEvent("fluxMapping","fileLoad");
+            metExploreD3.fireEvent("comparisonSidePanel","newFlux");
         }
         else {
 			// Warning for bad syntax file
