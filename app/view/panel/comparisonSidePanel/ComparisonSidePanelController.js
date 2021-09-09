@@ -12,6 +12,9 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
 
 		view.on({
 			newMapping : me.drawCaption,
+			newFlux: function(){
+				view.setCollapsed(false);
+			},
 			scope:me
 		});
 

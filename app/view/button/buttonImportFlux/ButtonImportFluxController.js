@@ -61,10 +61,13 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
             _metExploreViz.addFlux(flux);
             metExploreD3.fireEvent("fluxMapping","fileParse");
             metExploreD3.fireEvent("fluxMapping","fileLoad");
+            metExploreD3.fireEvent("comparisonSidePanel","newFlux");
         }
         else {
 			// Warning for bad syntax file
-			metExploreD3.displayWarning("Syntaxe error", 'File have bad syntax.');
+			metExploreD3.displayWarning("Syntaxe error",
+                'File have bad syntax. See <a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#fluxImport">MetExploreViz documentation</a>.'
+            );
 		}
 	}
 

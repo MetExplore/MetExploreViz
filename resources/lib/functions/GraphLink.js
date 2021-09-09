@@ -1355,7 +1355,6 @@ metExploreD3.GraphLink = {
                     var mappingName = condition.split(" / ")[0];
                     var conditionName = condition.split(" / ")[1];
                     if(dataType==="Discrete"){
-                        console.log("ko");
                         var value = view.getController().getValueMappingsSet("Discrete");
                         value.forEach(function(valMapping){
                             metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(view.target, view.attrType, view.attrName, view.biologicalType, conditionName, mappingName, valMapping.getName(), valMapping.getValue())
@@ -1372,7 +1371,6 @@ metExploreD3.GraphLink = {
                         metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(view.target, view.attrType, view.attrName, view.biologicalType, conditionName, mappingName, "Identified", value);
                     }
                     if(dataType==="Continuous"){
-                        console.log("ok");
                         rangeCaption = view.scaleRange
                             .map(function (sr, i) {
                                 return sr.styleValue;
