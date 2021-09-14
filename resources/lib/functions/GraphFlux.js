@@ -484,6 +484,7 @@ metExploreD3.GraphFlux = {
     curveEdge: function(){
         var panel = "viz";
         var reactionStyle = metExploreD3.getReactionStyle();
+        var linkStyle = metExploreD3.getLinkStyle();
         var reactions = d3.select("#"+panel).select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
@@ -684,6 +685,7 @@ metExploreD3.GraphFlux = {
                     });
             }
             if (node.fluxDirection1 === undefined){
+                var color = linkStyle.getStrokeColor();
                 enteringLinks
                     .each(function (link) {
                         var path;
@@ -699,9 +701,11 @@ metExploreD3.GraphFlux = {
                         node.axe = axe;
                         d3.select(this).attr("d", path)
                             .attr("fill", "none")
+                            .attr("stroke", color)
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1);
                     });
@@ -721,9 +725,11 @@ metExploreD3.GraphFlux = {
 
                         d3.select(this).attr("d", path)
                             .attr("fill", "none")
+                            .attr("stroke", color)
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1);
                     });
@@ -738,6 +744,7 @@ metExploreD3.GraphFlux = {
      */
     curveTwoEdge: function(){
         var reactionStyle = metExploreD3.getReactionStyle();
+        var linkStyle = metExploreD3.getLinkStyle();
         var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
             .selectAll("g.node")
             .filter(function(node){
@@ -1115,6 +1122,7 @@ metExploreD3.GraphFlux = {
                     });
             }
             if (node.fluxDirection1 === undefined || node.fluxDirection2 === undefined){
+                var color = linkStyle.getStrokeColor();
                 enteringLinks
                     .each(function (link) {
                         var path;
@@ -1133,6 +1141,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1);
                     });
@@ -1155,6 +1164,7 @@ metExploreD3.GraphFlux = {
                             .classed("horizontal", false)
                             .classed("vertical", false)
                             .classed(axe, true)
+                            .classed("fluxstylelink", true)
                             .style("opacity", 0.6)
                             .style("stroke-width",1);
                     });
