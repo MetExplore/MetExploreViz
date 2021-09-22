@@ -302,6 +302,10 @@
             "bundle": true
         },
         {
+            "path": "resources/lib/model/Rank.js",
+            "bundle": true
+        },
+        {
             "path": "resources/lib/model/Scale.js",
             "bundle": true
         },
@@ -375,6 +379,10 @@
         },
         {
             "path": "resources/lib/functions/GraphFlux.js",
+            "bundle": true
+        },
+        {
+            "path": "resources/lib/functions/GraphRank.js",
             "bundle": true
         }
     ],

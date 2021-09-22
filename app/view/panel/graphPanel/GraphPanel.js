@@ -6,6 +6,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
         "metExploreViz.view.panel.graphPanel.GraphPanelController",
         "metExploreViz.view.panel.graphPanel.GraphPanelModel",
         "metExploreViz.view.panel.comparePanel.ComparePanel",
+        "metExploreViz.view.panel.metaboRankSidePanel.MetaboRankSidePanel",
 
         'metExploreViz.view.menu.viz_MiningMenu.Viz_MiningMenu',
         'metExploreViz.view.menu.viz_SaveMenu.Viz_SaveMenu',
@@ -123,6 +124,16 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 hidden:false,
                                 padding:'0 0 0 0'
                           },
+                          {
+                                text: 'Enter MetaboRank mode',
+                                scale: 'large',
+                                tooltip: 'Active / inactive metaboRank mode',
+                                id: 'enterMetaboRankMode',
+                                reference: 'enterMetaboRankMode',
+                                hidden: false,
+                                padding: '0 0 0 0'
+                          },
+                          '-',
                           {
                                 xtype:'button'/*,text: 'Copy network'*/,
                                 overflowText: 'MetExploreViz documentation',
@@ -247,6 +258,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                 items: [{
                     title: 'Network Manager',
                     id:'comparisonSidePanel',
+                    reference: 'comparisonSidePanel',
                     xtype : 'comparisonSidePanel'
                 },
                 {
@@ -257,6 +269,12 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                     title: 'Style Edition',
                     id:'editModePanel',
                     xtype : 'editModePanel'
+                },
+                {
+                    title: 'MetaboRank mode',
+                    id: 'metaboRankPanel',
+                    reference: 'metaboRankPanel',
+                    xtype: 'metaboRankSidePanel'
                 }
 ]
            }

@@ -398,332 +398,379 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                         }]
                     });
 
-                    viz.CtxMenu = new Ext.menu.Menu({
-                        items: [{
-                            text: 'Expand pathway',
-                            hidden: !isPathway,
-                            iconCls: "duplicate-sideCompounds",
-                            handler: function () {
-                                metExploreD3.GraphNetwork.expandPathwayNode(theNode.getName(), "viz");
-                            }
-                        }, {
-                            text: 'Remove nodes',
-                            hidden: false,
-                            iconCls: "removeNode",
-                            menu: viz.removeMenu
-                        }, {
-                            text: 'Duplicate nodes as side compounds',
-                            hidden: false,
-                            iconCls: "duplicate-sideCompounds",
-                            menu: viz.duplicateMenu
-                        }, {
-                            text: 'Change name',
-                            hidden: false,
-                            iconCls: "edit",
-                            handler: function () {
-                                metExploreD3.GraphNode.changeName(theNode);
-                            }
-                        }, {
-                            text: 'Select neighbours (N+select)',
-                            hidden: false,
-                            iconCls: "neighbours",
-                            handler: function () {
-                                metExploreD3.GraphNode.selectNeighbours(theNode, "viz");
-                            }
-                        }, {
-                            text: 'See more information',
-                            hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-                            iconCls: "info",
-                            handler: function () {
-                                metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
-                            }
-                        }, {
-                            text: 'Select node in table',
-                            hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
-                            iconCls: "search",
-                            menu: viz.selectMenu
-                        }, {
-                            text: 'Fix selected nodes',
-                            hidden: false,
-                            iconCls: "lock_font_awesome",
-                            handler: function () {
-                                metExploreD3.GraphNode.fixSelectedNode("viz")
-                            }
-                        },{
-                            text : 'Unfix selected nodes',
-                            hidden : false,
-                            iconCls: "unlock_font_awesome",
-                            handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
-                        }, {
-                            text: 'Detect longest cycles',
-                            iconCls: "longCycle",
-                            menu: [{
-                                text: 'Going through this node',
-                                handler: function () {
-                                    var longestCycles = metExploreD3.GraphFunction.findLongestCycles([theNode]);
-                                    if (longestCycles.length >= 1) {
-                                        metExploreD3.GraphFunction.highlightCycle(longestCycles[0]);
-                                    }
-                                    if (longestCycles.length === 0){
-                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
-                                    }
-                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", longestCycles);
-                                }
-                            },{
-                                text: 'Going through all selected nodes',
-                                handler: function () {
-                                    var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
-                                    var selectedNodes = [];
-                                    var networkData = networkVizSessionStore.getD3Data();
-                                    selectedNodesIds.forEach(function(id){
-                                        var node = networkData.getNodeById(id);
-                                        if (node) {
-                                            selectedNodes.push(node);
-                                        }
-                                    });
-                                    var longestCycles = metExploreD3.GraphFunction.findLongestCycles(selectedNodes);
-                                    if (longestCycles.length >= 1) {
-                                        metExploreD3.GraphFunction.highlightCycle(longestCycles[0]);
-                                    }
-                                    if (longestCycles.length === 0){
-                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
-                                    }
-                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", longestCycles);
-                                }
-                            }]
-                        },{
-                            text: 'Detect shortest cycles',
-                            iconCls: "shortCycle",
-                            menu: [{
-                                text: 'Going through this node',
-                                handler: function () {
-                                    var shortestCycles = metExploreD3.GraphFunction.findShortestCycles([theNode]);
-                                    if (shortestCycles.length >= 1) {
-                                        metExploreD3.GraphFunction.highlightCycle(shortestCycles[0]);
-                                    }
-                                    if (shortestCycles.length === 0){
-                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
-                                    }
-                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", shortestCycles);
-                                }
-                            },{
-                                text: 'Going through all selected nodes',
-                                handler: function () {
-                                    var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
-                                    var selectedNodes = [];
-                                    networkData = networkVizSessionStore.getD3Data();
-                                    selectedNodesIds.forEach(function(id){
-                                        var node = networkData.getNodeById(id);
-                                        if (node) {
-                                            selectedNodes.push(node);
-                                        }
-                                    });
-                                    var shortestCycles = metExploreD3.GraphFunction.findShortestCycles(selectedNodes);
-                                    if (shortestCycles.length >= 1) {
-                                        metExploreD3.GraphFunction.highlightCycle(shortestCycles[0]);
-                                    }
-                                    if (shortestCycles.length === 0){
-                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
-                                    }
-                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", shortestCycles);
-                                }
-                            }]
-                        },{
-                            text: 'Change font',
-                            iconCls: "font",
-                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
-                            menu: [{
-                                text: 'This node',
-                                handler: function () {
-                                    Ext.create('Ext.window.Window', {
-                                        title: 'Choose font',
-                                        width: 400,
-                                        layout: 'fit',
-                                        items: [{
-                                            xtype: 'combo',
-                                            id : 'fontStyleWindow',
-                                            fieldLabel: 'Font type:',
-                                            width:'95%',
-                                            margin:'5 5 5 5',
-                                            emptyText:'-- Choose a font --',
-                                            store: [
-                                                ['Open Sans', 'Open Sans'],
-                                                ['Arial', 'Arial'],
-                                                ['Helvetica', 'Helvetica'],
-                                                ['Times', 'Times'],
-                                                ['Verdana', 'Verdana']
-                                            ],
-                                            editable: false
-                                        }],
-                                        buttons: [
-                                            {
-                                                text: 'Ok',
-                                                handler: function () {
-                                                    metExploreD3.applyTolinkedNetwork(
-                                                        _MyThisGraphNode.activePanel,
-                                                        function(panelLinked, sessionLinked) {
-                                                            var fontType = Ext.getCmp('fontStyleWindow').getValue();
-                                                            metExploreD3.GraphStyleEdition.changeFontType(theNode, fontType, panelLinked);
-                                                        });
-                                                }
-                                            }
-                                        ]
-                                    }).show();
-                                }
-                            },{
-                                text: 'All selected nodes',
-                                handler: function () {
-                                    Ext.create('Ext.window.Window', {
-                                        title: 'Choose font',
-                                        width: 400,
-                                        layout: 'fit',
-                                        items: [{
-                                            xtype: 'combo',
-                                            id : 'fontStyleSelectedWindow',
-                                            fieldLabel: 'Font type:',
-                                            width:'95%',
-                                            margin:'5 5 5 5',
-                                            emptyText:'-- Choose a font --',
-                                            store: [
-                                                ['Open Sans', 'Open Sans'],
-                                                ['Arial', 'Arial'],
-                                                ['Helvetica', 'Helvetica'],
-                                                ['Times', 'Times'],
-                                                ['Verdana', 'Verdana']
-                                            ],
-                                            editable: false
-                                        }],
-                                        buttons: [
-                                            {
-                                                text: 'Ok',
-                                                handler: function () {
-                                                    metExploreD3.applyTolinkedNetwork(
-                                                        _MyThisGraphNode.activePanel,
-                                                        function(panelLinked, sessionLinked) {
-                                                            var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
-                                                            metExploreD3.GraphStyleEdition.changeAllFontType(fontType ,"selection", panelLinked);
-                                                        });
-                                                }
-                                            }
-                                        ]
-                                    }).show();
-                                }
-                            }]
-                        },{
-                            text: 'Change font size',
-                            iconCls: "fontSize",
-                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
-                            fontSizemenu: [{
-                                text: 'This node',
-                                handler: function () {
-                                    metExploreD3.applyTolinkedNetwork(
-                                        _MyThisGraphNode.activePanel,
-                                        function(panelLinked, sessionLinked) {
-                                            metExploreD3.GraphStyleEdition.changeFontSize(theNode, panelLinked);
-                                        });
-                                }
-                            },{
-                                text: 'All selected nodes',
-                                handler: function () {
-                                    metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
-                                        if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
-                                            metExploreD3.applyTolinkedNetwork(
-                                                _MyThisGraphNode.activePanel,
-                                                function(panelLinked, sessionLinked) {
-                                                    metExploreD3.GraphStyleEdition.changeAllFontSize(text, "selection", panelLinked);
-                                                });
-                                        }
-                                    })
-                                }
-                            }]
-                        },{
-                            text: 'Change font style',
-                            iconCls: "fontStyle",
-                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
-                            menu: [{
-                                text: 'This node',
-                                menu: [{
-                                    text: 'Bold',
-                                    iconCls: "bold",
-                                    handler: function () {
-                                        metExploreD3.applyTolinkedNetwork(
-                                            _MyThisGraphNode.activePanel,
-                                            function(panelLinked, sessionLinked) {
-                                                metExploreD3.GraphStyleEdition.changeFontBold(theNode, panelLinked);
-                                            });
-                                    }
-                                },{
-                                    text: 'Italic',
-                                    iconCls: "italic",
-                                    handler: function () {
-                                        metExploreD3.applyTolinkedNetwork(
-                                            _MyThisGraphNode.activePanel,
-                                            function(panelLinked, sessionLinked) {
-                                                metExploreD3.GraphStyleEdition.changeFontItalic(theNode, panelLinked);
-                                            });
-                                    }
-                                },{
-                                    text: 'Underline',
-                                    iconCls: "underline",
-                                    handler: function () {
-                                        metExploreD3.applyTolinkedNetwork(
-                                            _MyThisGraphNode.activePanel,
-                                            function(panelLinked, sessionLinked) {
-                                                metExploreD3.GraphStyleEdition.changeFontUnderline(theNode, panelLinked);
-                                            });
-                                    }
-                                }]
-                            },{
-                                text: 'All selected nodes',
-                                menu: [{
-                                    text: 'Bold',
-                                    iconCls: "bold",
-                                    handler: function () {
-                                        metExploreD3.applyTolinkedNetwork(
-                                            _MyThisGraphNode.activePanel,
-                                            function(panelLinked, sessionLinked) {
-                                                metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection", panelLinked);
-                                            });
-                                    }
-                                },{
-                                    text: 'Italic',
-                                    iconCls: "italic",
-                                    handler: function () {
-                                        metExploreD3.applyTolinkedNetwork(
-                                            _MyThisGraphNode.activePanel,
-                                            function(panelLinked, sessionLinked) {
-                                                metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection", panelLinked);
-                                            });
-                                    }
-                                },{
-                                    text: 'Underline',
-                                    iconCls: "underline",
-                                    handler: function () {
-                                        metExploreD3.applyTolinkedNetwork(
-                                            _MyThisGraphNode.activePanel,
-                                            function(panelLinked, sessionLinked) {
-                                                metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection", panelLinked);
-                                            });
-                                    }
-                                }]
-                            }]
-                        },{
-                            text: 'Display/hide mappedImage',
-                            reference: 'displayMappedImage',
-                            hidden: (mappedImage.empty()) ? true : false,
-                            handler: function () {
-                                metExploreD3.GraphMapping.displayMappedImage(theNode);
-                            }
-                        },{
-                            text: 'Remove cycle drawing',
-                            iconCls: "removeCycle",
-                            reference: 'unfixCycle',
-                            hidden: (!isPartOfCycle),
-                            handler: function () {
-                                metExploreD3.GraphFunction.removeCycleContainingNode(theNode);
-                            }
-                        }]
-                    });
+                    if (metExploreD3.GraphRank.metaboRankMode === false){
+						viz.CtxMenu = new Ext.menu.Menu({
+	                        items: [{
+	                            text: 'Expand pathway',
+	                            hidden: !isPathway,
+	                            iconCls: "duplicate-sideCompounds",
+	                            handler: function () {
+	                                metExploreD3.GraphNetwork.expandPathwayNode(theNode.getName(), "viz");
+	                            }
+	                        }, {
+	                            text: 'Remove nodes',
+	                            hidden: false,
+	                            iconCls: "removeNode",
+	                            menu: viz.removeMenu
+	                        }, {
+	                            text: 'Duplicate nodes as side compounds',
+	                            hidden: false,
+	                            iconCls: "duplicate-sideCompounds",
+	                            menu: viz.duplicateMenu
+	                        }, {
+	                            text: 'Change name',
+	                            hidden: false,
+	                            iconCls: "edit",
+	                            handler: function () {
+	                                metExploreD3.GraphNode.changeName(theNode);
+	                            }
+	                        }, {
+	                            text: 'Select neighbours (N+select)',
+	                            hidden: false,
+	                            iconCls: "neighbours",
+	                            handler: function () {
+	                                metExploreD3.GraphNode.selectNeighbours(theNode, "viz");
+	                            }
+	                        }, {
+	                            text: 'See more information',
+	                            hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+	                            iconCls: "info",
+	                            handler: function () {
+	                                metExploreD3.fireEventParentWebSite("seeMoreInformation", theNode);
+	                            }
+	                        }, {
+	                            text: 'Select node in table',
+	                            hidden: !metExploreD3.getGeneralStyle().hasEventForNodeInfo(),
+	                            iconCls: "search",
+	                            menu: viz.selectMenu
+	                        }, {
+	                            text: 'Fix selected nodes',
+	                            hidden: false,
+	                            iconCls: "lock_font_awesome",
+	                            handler: function () {
+	                                metExploreD3.GraphNode.fixSelectedNode("viz")
+	                            }
+	                        },{
+	                            text : 'Unfix selected nodes',
+	                            hidden : false,
+	                            iconCls: "unlock_font_awesome",
+	                            handler :function(){ metExploreD3.GraphNode.unfixSelectedNode("viz") }
+	                        }, {
+	                            text: 'Detect longest cycles',
+	                            iconCls: "longCycle",
+	                            menu: [{
+	                                text: 'Going through this node',
+	                                handler: function () {
+	                                    var longestCycles = metExploreD3.GraphFunction.findLongestCycles([theNode]);
+	                                    if (longestCycles.length >= 1) {
+	                                        metExploreD3.GraphFunction.highlightCycle(longestCycles[0]);
+	                                    }
+	                                    if (longestCycles.length === 0){
+	                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
+	                                    }
+	                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", longestCycles);
+	                                }
+	                            },{
+	                                text: 'Going through all selected nodes',
+	                                handler: function () {
+	                                    var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
+	                                    var selectedNodes = [];
+	                                    var networkData = networkVizSessionStore.getD3Data();
+	                                    selectedNodesIds.forEach(function(id){
+	                                        var node = networkData.getNodeById(id);
+	                                        if (node) {
+	                                            selectedNodes.push(node);
+	                                        }
+	                                    });
+	                                    var longestCycles = metExploreD3.GraphFunction.findLongestCycles(selectedNodes);
+	                                    if (longestCycles.length >= 1) {
+	                                        metExploreD3.GraphFunction.highlightCycle(longestCycles[0]);
+	                                    }
+	                                    if (longestCycles.length === 0){
+	                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
+	                                    }
+	                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", longestCycles);
+	                                }
+	                            }]
+	                        },{
+	                            text: 'Detect shortest cycles',
+	                            iconCls: "shortCycle",
+	                            menu: [{
+	                                text: 'Going through this node',
+	                                handler: function () {
+	                                    var shortestCycles = metExploreD3.GraphFunction.findShortestCycles([theNode]);
+	                                    if (shortestCycles.length >= 1) {
+	                                        metExploreD3.GraphFunction.highlightCycle(shortestCycles[0]);
+	                                    }
+	                                    if (shortestCycles.length === 0){
+	                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
+	                                    }
+	                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", shortestCycles);
+	                                }
+	                            },{
+	                                text: 'Going through all selected nodes',
+	                                handler: function () {
+	                                    var selectedNodesIds = networkVizSessionStore.getSelectedNodes();
+	                                    var selectedNodes = [];
+	                                    networkData = networkVizSessionStore.getD3Data();
+	                                    selectedNodesIds.forEach(function(id){
+	                                        var node = networkData.getNodeById(id);
+	                                        if (node) {
+	                                            selectedNodes.push(node);
+	                                        }
+	                                    });
+	                                    var shortestCycles = metExploreD3.GraphFunction.findShortestCycles(selectedNodes);
+	                                    if (shortestCycles.length >= 1) {
+	                                        metExploreD3.GraphFunction.highlightCycle(shortestCycles[0]);
+	                                    }
+	                                    if (shortestCycles.length === 0){
+	                                        metExploreD3.displayWarning('No cycles found', 'There is no cycles of more than 2 reactions going through the selected nodes');
+	                                    }
+	                                    metExploreD3.fireEventArg('cycleDetection', "listCycles", shortestCycles);
+	                                }
+	                            }]
+	                        },{
+	                            text: 'Change font',
+	                            iconCls: "font",
+	                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
+	                            menu: [{
+	                                text: 'This node',
+	                                handler: function () {
+	                                    Ext.create('Ext.window.Window', {
+	                                        title: 'Choose font',
+	                                        width: 400,
+	                                        layout: 'fit',
+	                                        items: [{
+	                                            xtype: 'combo',
+	                                            id : 'fontStyleWindow',
+	                                            fieldLabel: 'Font type:',
+	                                            width:'95%',
+	                                            margin:'5 5 5 5',
+	                                            emptyText:'-- Choose a font --',
+	                                            store: [
+	                                                ['Open Sans', 'Open Sans'],
+	                                                ['Arial', 'Arial'],
+	                                                ['Helvetica', 'Helvetica'],
+	                                                ['Times', 'Times'],
+	                                                ['Verdana', 'Verdana']
+	                                            ],
+	                                            editable: false
+	                                        }],
+	                                        buttons: [
+	                                            {
+	                                                text: 'Ok',
+	                                                handler: function () {
+	                                                    metExploreD3.applyTolinkedNetwork(
+	                                                        _MyThisGraphNode.activePanel,
+	                                                        function(panelLinked, sessionLinked) {
+	                                                            var fontType = Ext.getCmp('fontStyleWindow').getValue();
+	                                                            metExploreD3.GraphStyleEdition.changeFontType(theNode, fontType, panelLinked);
+	                                                        });
+	                                                }
+	                                            }
+	                                        ]
+	                                    }).show();
+	                                }
+	                            },{
+	                                text: 'All selected nodes',
+	                                handler: function () {
+	                                    Ext.create('Ext.window.Window', {
+	                                        title: 'Choose font',
+	                                        width: 400,
+	                                        layout: 'fit',
+	                                        items: [{
+	                                            xtype: 'combo',
+	                                            id : 'fontStyleSelectedWindow',
+	                                            fieldLabel: 'Font type:',
+	                                            width:'95%',
+	                                            margin:'5 5 5 5',
+	                                            emptyText:'-- Choose a font --',
+	                                            store: [
+	                                                ['Open Sans', 'Open Sans'],
+	                                                ['Arial', 'Arial'],
+	                                                ['Helvetica', 'Helvetica'],
+	                                                ['Times', 'Times'],
+	                                                ['Verdana', 'Verdana']
+	                                            ],
+	                                            editable: false
+	                                        }],
+	                                        buttons: [
+	                                            {
+	                                                text: 'Ok',
+	                                                handler: function () {
+	                                                    metExploreD3.applyTolinkedNetwork(
+	                                                        _MyThisGraphNode.activePanel,
+	                                                        function(panelLinked, sessionLinked) {
+	                                                            var fontType = Ext.getCmp('fontStyleSelectedWindow').getValue();
+	                                                            metExploreD3.GraphStyleEdition.changeAllFontType(fontType ,"selection", panelLinked);
+	                                                        });
+	                                                }
+	                                            }
+	                                        ]
+	                                    }).show();
+	                                }
+	                            }]
+	                        },{
+	                            text: 'Change font size',
+	                            iconCls: "fontSize",
+	                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
+	                            fontSizemenu: [{
+	                                text: 'This node',
+	                                handler: function () {
+	                                    metExploreD3.applyTolinkedNetwork(
+	                                        _MyThisGraphNode.activePanel,
+	                                        function(panelLinked, sessionLinked) {
+	                                            metExploreD3.GraphStyleEdition.changeFontSize(theNode, panelLinked);
+	                                        });
+	                                }
+	                            },{
+	                                text: 'All selected nodes',
+	                                handler: function () {
+	                                    metExploreD3.displayPrompt("Font Size", "Enter a font size", function(btn, text) {
+	                                        if (text!=null && text!="" && !isNaN(text) && btn=="ok") {
+	                                            metExploreD3.applyTolinkedNetwork(
+	                                                _MyThisGraphNode.activePanel,
+	                                                function(panelLinked, sessionLinked) {
+	                                                    metExploreD3.GraphStyleEdition.changeAllFontSize(text, "selection", panelLinked);
+	                                                });
+	                                        }
+	                                    })
+	                                }
+	                            }]
+	                        },{
+	                            text: 'Change font style',
+	                            iconCls: "fontStyle",
+	                            hidden: (!metExploreD3.GraphStyleEdition.editMode),
+	                            menu: [{
+	                                text: 'This node',
+	                                menu: [{
+	                                    text: 'Bold',
+	                                    iconCls: "bold",
+	                                    handler: function () {
+	                                        metExploreD3.applyTolinkedNetwork(
+	                                            _MyThisGraphNode.activePanel,
+	                                            function(panelLinked, sessionLinked) {
+	                                                metExploreD3.GraphStyleEdition.changeFontBold(theNode, panelLinked);
+	                                            });
+	                                    }
+	                                },{
+	                                    text: 'Italic',
+	                                    iconCls: "italic",
+	                                    handler: function () {
+	                                        metExploreD3.applyTolinkedNetwork(
+	                                            _MyThisGraphNode.activePanel,
+	                                            function(panelLinked, sessionLinked) {
+	                                                metExploreD3.GraphStyleEdition.changeFontItalic(theNode, panelLinked);
+	                                            });
+	                                    }
+	                                },{
+	                                    text: 'Underline',
+	                                    iconCls: "underline",
+	                                    handler: function () {
+	                                        metExploreD3.applyTolinkedNetwork(
+	                                            _MyThisGraphNode.activePanel,
+	                                            function(panelLinked, sessionLinked) {
+	                                                metExploreD3.GraphStyleEdition.changeFontUnderline(theNode, panelLinked);
+	                                            });
+	                                    }
+	                                }]
+	                            },{
+	                                text: 'All selected nodes',
+	                                menu: [{
+	                                    text: 'Bold',
+	                                    iconCls: "bold",
+	                                    handler: function () {
+	                                        metExploreD3.applyTolinkedNetwork(
+	                                            _MyThisGraphNode.activePanel,
+	                                            function(panelLinked, sessionLinked) {
+	                                                metExploreD3.GraphStyleEdition.changeAllFontBold(true, "selection", panelLinked);
+	                                            });
+	                                    }
+	                                },{
+	                                    text: 'Italic',
+	                                    iconCls: "italic",
+	                                    handler: function () {
+	                                        metExploreD3.applyTolinkedNetwork(
+	                                            _MyThisGraphNode.activePanel,
+	                                            function(panelLinked, sessionLinked) {
+	                                                metExploreD3.GraphStyleEdition.changeAllFontItalic(true, "selection", panelLinked);
+	                                            });
+	                                    }
+	                                },{
+	                                    text: 'Underline',
+	                                    iconCls: "underline",
+	                                    handler: function () {
+	                                        metExploreD3.applyTolinkedNetwork(
+	                                            _MyThisGraphNode.activePanel,
+	                                            function(panelLinked, sessionLinked) {
+	                                                metExploreD3.GraphStyleEdition.changeAllFontUnderline(true, "selection", panelLinked);
+	                                            });
+	                                    }
+	                                }]
+	                            }]
+	                        },{
+	                            text: 'Display/hide mappedImage',
+	                            reference: 'displayMappedImage',
+	                            hidden: (mappedImage.empty()) ? true : false,
+	                            handler: function () {
+	                                metExploreD3.GraphMapping.displayMappedImage(theNode);
+	                            }
+	                        },{
+	                            text: 'Remove cycle drawing',
+	                            iconCls: "removeCycle",
+	                            reference: 'unfixCycle',
+	                            hidden: (!isPartOfCycle),
+	                            handler: function () {
+	                                metExploreD3.GraphFunction.removeCycleContainingNode(theNode);
+	                            }
+	                        }]
+	                    });
+					}
+					// metaboRank mode activated
+					if (metExploreD3.GraphRank.metaboRankMode === true) {
+						viz.CtxMenu = new Ext.menu.Menu({
+							items: [
+								{
+									text: 'Expand',
+									iconCls: 'neighbours',
+									handler: function() {
+										metExploreD3.GraphRank.showNeighbours(theNode);
+									}
+								},
+								{
+									text: 'Expand',
+									iconCls: 'neighbours',
+									menu: viz.expandMenu
+								},
+								{
+									text: 'Collapse',
+									iconCls: 'removeNode',
+									handler: function() {
+										metExploreD3.GraphRank.hideNeighbours(theNode);
+									}
+								}
+							]
+						});
+
+						viz.expandMenu = new Ext.menu.Menu({
+							items: [
+								{
+									text: 'Sucessors',
+									iconCls: 'expandOut',
+									handler: function() {
+										metExploreD3.GraphRank.showNeighbours(theNode);
+									}
+								},
+								{
+									text: 'Predecessors',
+									iconCls: 'expandIn',
+									handler: function() {
+										metExploreD3.GraphRank.showPredecessors(theNode);
+									}
+								}
+							]
+						})
+					}
 				}
 			}
 			var a=viz.CtxMenu.items.items.filter(function (menu) { return !menu.hidden; });

@@ -2111,12 +2111,12 @@ metExploreD3.GraphNode = {
                 d.fixed = true;
                 metExploreD3.GraphNode.fixNode(d);
                 if (parent == "viz") {
-                    d3.select("#" + parent)
+                    var overNode = d3.select("#" + parent)
                         .selectAll('g.node')
                         .filter(function (node) {
                             return node == d
-                        })
-                        .select('.locker')
+                        });
+                    overNode.select('.locker')
                         .classed('hide', false)
                         .select('.iconlocker')
                         .attr(
@@ -2127,17 +2127,25 @@ metExploreD3.GraphNode = {
                                 else
                                     return "resources/icons/unlock_font_awesome.svg";
                             });
+                    overNode.select('.expand')
+                        .classed('hide', false);
+                    overNode.select('.collapse')
+                        .classed('hide', false);
                 }
             })
             .on("mouseleave", function (d) {
                 var tooltip =  d3.select("#"+parent).select('#tooltipPathways');
                 tooltip.style("visibility", "hidden");
 
-                metExploreD3.GraphNode.node
+                var leaveNode = metExploreD3.GraphNode.node
                     .filter(function (node) {
                         return node === d;
-                    })
-                    .select('.locker')
+                    });
+                leaveNode.select('.locker')
+                    .classed('hide', true);
+                leaveNode.select('.expand')
+                    .classed('hide', true);
+                leaveNode.select('.collapse')
                     .classed('hide', true);
 
 

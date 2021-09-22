@@ -28,6 +28,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanel', {
 	margins:'0 0 2 0',
 	split:true,
 	closable: false,
+    hidden: false,
 	region: 'west',
 	tabBar:{
 		cls:"vizTBar"
