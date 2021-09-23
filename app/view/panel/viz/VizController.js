@@ -398,6 +398,25 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                         }]
                     });
 
+					viz.expandMenu = new Ext.menu.Menu({
+						items: [
+							{
+								text: 'Sucessors',
+								iconCls: 'expandOut',
+								handler: function() {
+									metExploreD3.GraphRank.showNeighbours(theNode);
+								}
+							},
+							{
+								text: 'Predecessors',
+								iconCls: 'expandIn',
+								handler: function() {
+									metExploreD3.GraphRank.showPredecessors(theNode);
+								}
+							}
+						]
+					});
+
                     if (metExploreD3.GraphRank.metaboRankMode === false){
 						viz.CtxMenu = new Ext.menu.Menu({
 	                        items: [{
@@ -752,24 +771,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							]
 						});
 
-						viz.expandMenu = new Ext.menu.Menu({
-							items: [
-								{
-									text: 'Sucessors',
-									iconCls: 'expandOut',
-									handler: function() {
-										metExploreD3.GraphRank.showNeighbours(theNode);
-									}
-								},
-								{
-									text: 'Predecessors',
-									iconCls: 'expandIn',
-									handler: function() {
-										metExploreD3.GraphRank.showPredecessors(theNode);
-									}
-								}
-							]
-						})
 					}
 				}
 			}

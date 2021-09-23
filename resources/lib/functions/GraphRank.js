@@ -172,6 +172,7 @@ metExploreD3.GraphRank = {
                 metExploreD3.GraphRank.showElement(d3.select(this));
                 if (thisNode.getBiologicalType() === "reaction"){
                     metExploreD3.GraphRank.showNeighbours(thisNode);
+                    metExploreD3.GraphRank.fillNeighboursArrays(thisNode);
                 }
             }
         });
@@ -193,6 +194,7 @@ metExploreD3.GraphRank = {
                 metExploreD3.GraphRank.showElement(d3.select(this));
                 if (thisNode.getBiologicalType() === "reaction"){
                     metExploreD3.GraphRank.showPredecessors(thisNode);
+                    metExploreD3.GraphRank.fillNeighboursArrays(thisNode);
                 }
             }
         });
@@ -201,16 +203,34 @@ metExploreD3.GraphRank = {
     hideNeighbours: function(node) {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+
         var nextNodes = [];
+        var previousNodes = [];
 
         links.each(function(link){
             if (link.target === node || link.source === node){
+                if (node === link.source){
+                    nextNodes.push(link.target);
+                }
+                if (node === link.target){
+                    previousNodes.push(link.source);
+                }
                 metExploreD3.GraphRank.hideElement(d3.select(this));
             }
         });
         nodes.each(function(thisNode){
-            if (thisNode === node){
-                metExploreD3.GraphRank.hideElement(d3.select(this));
+            if (thisNode === node || nextNodes.includes(thisNode) || previousNodes.includes(thisNode)){
+                if (thisNode.getBiologicalType()==="metabolite" && thisNode.isProducts.length < 2 && thisNode.isSubstrates.length < 2){
+                    metExploreD3.GraphRank.hideElement(d3.select(this));
+                    metExploreD3.GraphRank.removeNeighboursArrays(thisNode);
+                }
+                if (thisNode === node){
+                    metExploreD3.GraphRank.hideElement(d3.select(this));
+                    metExploreD3.GraphRank.removeNeighboursArrays(thisNode);
+                }
+                if (thisNode.getBiologicalType()==="reaction" && (nextNodes.includes(thisNode) || previousNodes.includes(thisNode))){
+                    metExploreD3.GraphRank.hideNeighbours(thisNode);
+                }
             }
         });
     },
@@ -222,5 +242,105 @@ metExploreD3.GraphRank = {
 
     hideElement: function(elmt) {
         elmt.style("display", "none").classed("hide", true);
+    },
+
+    // fill / remove neighbours info function
+    fillNeighboursArrays: function(node) {
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+        links.each(function(link){
+            if (link.getSource().getBiologicalType()==="reaction" && link.getSource()===node){
+                metabolite = link.getTarget();
+                reaction= link.getSource();
+
+                if(!reaction.substrates){
+                    reaction.substrates=[];
+                }
+                if(!reaction.products){
+                    reaction.products=[];
+                }
+                if(!metabolite.isSubstrates){
+                    metabolite.isSubstrates=[];
+                }
+                if(!metabolite.isProducts){
+                    metabolite.isProducts=[];
+                }
+
+                if (!(reaction.products.includes(metabolite))){
+                    reaction.products.push(metabolite);
+                    if(reaction.getReactionReversibility()){
+                        reaction.substrates.push(metabolite);
+                    }
+                }
+                if (!(metabolite.isProducts.includes(reaction))){
+                    metabolite.isProducts.push(reaction);
+                    if(reaction.getReactionReversibility()){
+                        metabolite.isSubstrates.push(reaction);
+                    }
+                }
+            }
+            if (link.getTarget().getBiologicalType()==="reaction" && link.getTarget()===node){
+                reaction = link.getTarget();
+                metabolite = link.getSource();
+
+                if(!reaction.substrates){
+                    reaction.substrates=[];
+                }
+                if(!reaction.products){
+                    reaction.products=[];
+                }
+                if(!metabolite.isSubstrates){
+                    metabolite.isSubstrates=[];
+                }
+                if(!metabolite.isProducts){
+                    metabolite.isProducts=[];
+                }
+
+                if (!(reaction.substrates.includes(metabolite))){
+                    reaction.substrates.push(metabolite);
+
+                    if(reaction.getReactionReversibility()){
+                        reaction.products.push(metabolite);
+                    }
+                }
+                if (!(metabolite.isSubstrates.includes(reaction))){
+                    metabolite.isSubstrates.push(reaction);
+                    if(reaction.getReactionReversibility()){
+                        metabolite.isProducts.push(reaction);
+                    }
+                }
+            }
+        });
+    },
+
+    removeNeighboursArrays: function(node) {
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+        links.each(function(link){
+            if (link.getSource().getBiologicalType()==="reaction" && link.getSource()===node){
+                metabolite = link.getTarget();
+                reaction= link.getSource();
+
+                reaction.products.pop(metabolite);
+                metabolite.isProducts.pop(reaction);
+
+                if(reaction.getReactionReversibility()){
+                    reaction.substrates.pop(metabolite);
+                    metabolite.isSubstrates.pop(reaction);
+                }
+            }
+            if (link.getTarget().getBiologicalType()==="reaction" && link.getTarget()===node){
+                reaction = link.getTarget();
+                metabolite = link.getSource();
+
+                reaction.substrates.pop(metabolite);
+                metabolite.isSubstrates.pop(reaction);
+
+                if(reaction.getReactionReversibility()){
+                    reaction.products.pop(metabolite);
+                    metabolite.isProducts.pop(reaction);
+                }
+            }
+        });
     }
 };
