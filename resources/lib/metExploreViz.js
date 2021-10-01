@@ -1341,19 +1341,17 @@ metExploreViz.prototype = {
 
     // Rank
     addRank : function(rankData){
-        if(rankData.getId()==undefined){
-            rankData.setId("IdRankMetExploreViz"+this.rank.length);
-        }
-        if(this.getRankById(rankData.getId())==null){
-            this.rank.push(rankData);
-        }
+        this.rank = rankData;
     },
     getRankById : function(id){
         var therank = null;
-        this.rank.forEach(function(rankData){
-            if(rankData.getId()==id)
-                therank = rankData;
-        });
+        if (this.rank.id === id){
+            therank = this.rank;
+        }
+        // this.rank.forEach(function(rankData){
+        //     if(rankData.getId()==id)
+        //         therank = rankData;
+        // });
         return therank;
     },
 

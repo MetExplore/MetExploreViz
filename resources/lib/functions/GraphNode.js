@@ -1315,7 +1315,9 @@ metExploreD3.GraphNode = {
                 return color;
             });
 
-        metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+        if (metExploreD3.GraphRank.metaboRankMode === false){
+            metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+        }
     },
 
     /*******************************************
@@ -2131,6 +2133,8 @@ metExploreD3.GraphNode = {
                         .classed('hide', false);
                     overNode.select('.collapse')
                         .classed('hide', false);
+                    // overNode.selectAll('.nbHidden')
+                    //     .classed('hide', false);
                 }
             })
             .on("mouseleave", function (d) {
@@ -2147,6 +2151,8 @@ metExploreD3.GraphNode = {
                     .classed('hide', true);
                 leaveNode.select('.collapse')
                     .classed('hide', true);
+                // leaveNode.selectAll('.nbHidden')
+                //     .classed('hide', true);
 
 
                 if (!metExploreD3.GraphStyleEdition.editMode) {

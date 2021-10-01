@@ -405,6 +405,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								iconCls: 'expandOut',
 								handler: function() {
 									metExploreD3.GraphRank.showNeighbours(theNode);
+									metExploreD3.GraphRank.visit(theNode);
 								}
 							},
 							{
@@ -412,6 +413,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								iconCls: 'expandIn',
 								handler: function() {
 									metExploreD3.GraphRank.showPredecessors(theNode);
+									metExploreD3.GraphRank.visit(theNode);
 								}
 							}
 						]
@@ -754,6 +756,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 									iconCls: 'neighbours',
 									handler: function() {
 										metExploreD3.GraphRank.showNeighbours(theNode);
+										metExploreD3.GraphRank.visit(theNode);
 									}
 								},
 								{
@@ -766,6 +769,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 									iconCls: 'removeNode',
 									handler: function() {
 										metExploreD3.GraphRank.hideNeighbours(theNode);
+										metExploreD3.GraphRank.unvisit(theNode);
 									}
 								}
 							]

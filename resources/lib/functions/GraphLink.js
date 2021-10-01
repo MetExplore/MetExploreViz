@@ -368,27 +368,28 @@ metExploreD3.GraphLink = {
 
         metExploreD3.GraphLink.link.remove();
 
-        metExploreD3.GraphLink.link.enter()
-            .insert("svg:g", ":first-child")
-            .attr("class", "linkGroup")
-            .append("svg:path")
-            .attr("class", String)
-            .attr("d", function (link) {
-                return metExploreD3.GraphLink.funcPath3(link, parent, this.id, 3);
-            })
-            .attr("class", "link").classed("reaction", true)
-            .attr("fill-rule", "evenodd")
-            .attr("fill", function (d) {
-                if (d.interaction == "out")
-                    return linkStyle.getMarkerOutColor();
-                else
-                    return linkStyle.getMarkerInColor();
-            })
-            .style("stroke", linkStyle.getStrokeColor())
-            .style("stroke-width", linkStyle.getLineWidth())
-            .style("opacity", linkStyle.getOpacity())
-            .style("stroke-dasharray", null);
-
+        if (metExploreD3.GraphRank.metaboRankMode === false){
+            metExploreD3.GraphLink.link.enter()
+                .insert("svg:g", ":first-child")
+                .attr("class", "linkGroup")
+                .append("svg:path")
+                .attr("class", String)
+                .attr("d", function (link) {
+                    return metExploreD3.GraphLink.funcPath3(link, parent, this.id, 3);
+                })
+                .attr("class", "link").classed("reaction", true)
+                .attr("fill-rule", "evenodd")
+                .attr("fill", function (d) {
+                    if (d.interaction == "out")
+                        return linkStyle.getMarkerOutColor();
+                    else
+                        return linkStyle.getMarkerInColor();
+                })
+                .style("stroke", linkStyle.getStrokeColor())
+                .style("stroke-width", linkStyle.getLineWidth())
+                .style("opacity", linkStyle.getOpacity())
+                .style("stroke-dasharray", null);
+        }
 
         if(_metExploreViz.getMappingsLength()>0){
     		metExploreD3.GraphLink.majMapping(Ext.ComponentQuery.query('aStyleForm'));
@@ -406,6 +407,10 @@ metExploreD3.GraphLink = {
             else {
                 metExploreD3.GraphLink.bundleLinks(parent);
             }
+        }
+
+        if(metExploreD3.GraphRank.metaboRankMode === true) {
+            metExploreD3.GraphRank.visitLink();
         }
 
         if (metExploreD3.GraphStyleEdition.fluxPath1 === true){

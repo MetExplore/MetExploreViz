@@ -23,11 +23,10 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
 
         view.on({
             fileLoad: function() {
-                var index = _metExploreViz.rank.length - 1;
-                var lastFile = _metExploreViz.rank[index];
-                view.lookupReference('selectFile').setValue(lastFile.name);
+                var name = _metExploreViz.rank.name;
+                view.lookupReference('selectFile').setValue(name);
 
-                me.parseFile(_metExploreViz.rank[index]);
+                me.parseFile(_metExploreViz.rank);
             }
         });
 
@@ -87,7 +86,6 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
         }
 
 		if(targetName[0]=="Identifier" || targetName[0]=="reactionId" || targetName[0]=="Name") {
-		    var rank = new Rank(title, firstLine, targetName[0], array);
             for (var i = lines.length - 1; i >= 0; i--) {
     	    	lines[i] = lines[i].split('\t').map(function (val) {
     				return val.replace(",", ".");
@@ -96,7 +94,14 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                     lines.pop(i);
                 }
     	    }
-            rank.data = lines;
+
+            var rankScore = {};
+            lines.map(function(line, i){
+                rankScore[line[0]] = [line[1],line[2]];
+            });
+
+            var data = metExploreD3.GraphRank.saveNetwork();
+            var rank = new Rank(title, data, "rankData", rankScore);
 
             _metExploreViz.addRank(rank);
             metExploreD3.fireEvent("girParams","fileLoad");
@@ -110,13 +115,14 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
 	},
 
     parseFile: function(rankData) {
-        var allData = rankData.data;
+        var rankScore = rankData.rank;
+        var allMetabolite = Object.keys(rankScore);
         var listMi = [];
-        allData.forEach(function(data){
-            var rankIn = parseInt(data[1]);
-            var rankOut = parseInt(data[2]);
+        allMetabolite.forEach(function(data){
+            var rankIn = parseInt(rankScore[data][0]);
+            var rankOut = parseInt(rankScore[data][1]);
             if (rankIn < 26 || rankOut < 26) {
-                var mi = {metabolites:data[0]}
+                var mi = {metabolites:data}
                 listMi.push(mi);
             }
         });
