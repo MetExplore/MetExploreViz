@@ -104,15 +104,19 @@ metExploreD3.GraphRank = {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
 
         var connexion = {};
+        var linkIn;
+        var linkOut;
 
         nodes.map(function(node, i){
             var identifier = node.dbIdentifier;
             connexion[identifier] = {linkIn: [], linkOut: []};
             links.each(function(link){
-                if (link.source === node){
+                linkIn = connexion[identifier]["linkIn"];
+                linkOut = connexion[identifier]["linkOut"];
+                if (link.source === node && !(linkOut.includes(link))){
                     connexion[identifier]["linkOut"].push(link);
                 }
-                if (link.target === node){
+                if (link.target === node && !(linkIn.includes(link))){
                     connexion[identifier]["linkIn"].push(link);
                 }
             });
