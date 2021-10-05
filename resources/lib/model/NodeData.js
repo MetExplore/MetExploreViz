@@ -65,6 +65,7 @@ var NodeData = function(
             this.hidden=false;
         this.visited = false;
         this.nbHidden = 0;
+        this.asSideCompounds = false;
 };
 
 
@@ -80,12 +81,6 @@ NodeData.prototype = {
     },
     setNbHidden: function(x){
         this.nbHidden = x;
-    },
-    moreNbHidden: function(){
-        this.nbHidden++;
-    },
-    lessNbHidden: function(){
-        this.nbHidden--;
     },
     equals : function(x){
     	var equal=true;

@@ -754,14 +754,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								{
 									text: 'Expand',
 									iconCls: 'neighbours',
-									handler: function() {
-										metExploreD3.GraphRank.showNeighbours(theNode);
-										metExploreD3.GraphRank.visit(theNode);
-									}
-								},
-								{
-									text: 'Expand',
-									iconCls: 'neighbours',
 									menu: viz.expandMenu
 								},
 								{
@@ -770,6 +762,19 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 									handler: function() {
 										metExploreD3.GraphRank.hideNeighbours(theNode);
 										metExploreD3.GraphRank.unvisit(theNode);
+									}
+								},
+								{
+									text: (theNode.sideCompoundsHidden ? 'Show side compounds' : 'Hide side compounds'),
+									iconCls: (theNode.sideCompoundsHidden ? 'neighbours' : 'removeNode'),
+									hidden: (theNode.getBiologicalType()==="metabolite" || theNode.asSideCompounds === false),
+									handler: function() {
+										if (theNode.sideCompoundsHidden === false){
+											metExploreD3.GraphRank.hideSideCompounds(theNode);
+										}
+										else {
+											metExploreD3.GraphRank.showSideCompounds(theNode);
+										}
 									}
 								}
 							]

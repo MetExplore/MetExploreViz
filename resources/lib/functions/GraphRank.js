@@ -50,9 +50,17 @@ metExploreD3.GraphRank = {
 
     quitGir: function() {
         var session = _metExploreViz.getSessionById("viz");
-        var netWorkData = session.getD3Data();
-        var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").remove();
-        var nodes = netWorkData.getNodes();
+        var networkData = session.getD3Data();
+        var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var nodes = networkData.getNodes();
+
+        allNodes.each(function(node){
+            if (node.duplicated === true){
+                networkData.removeNode(node);
+            }
+        });
+
+        allNodes.remove();
 
         nodes.map(function(node, i){
             node.show();
@@ -147,6 +155,10 @@ metExploreD3.GraphRank = {
                     that.target.show();
                     addRingNodes.push(that.target);
                 }
+                if (isSide === true){
+                    that.source.asSideCompounds = true;
+                    that.source.sideCompoundsHidden = true;
+                }
             });
         });
 
@@ -158,6 +170,28 @@ metExploreD3.GraphRank = {
                 metExploreD3.GraphRank.nodeStyleByRank(thisNode);
             }
         });
+    },
+
+    showSideCompounds: function(react) {
+        var rankData = _metExploreViz.getRankById("rankData");
+        var connexion = rankData.getData();
+
+        var identifier = react.dbIdentifier;
+
+        var linkOut = connexion[identifier]["linkOut"];
+
+        linkOut.map(function(link){
+            var isSide = link.target.getIsSideCompound();
+            if (isSide === true){
+                var newID = link.target.getId()+"-"+link.source.getId();
+                var newNode = metExploreD3.GraphNetwork.addMetaboliteInDrawing(link.target,link.target.getId(),link.source.getId(),"viz");
+                metExploreD3.GraphNetwork.addLinkInDrawing(link.source.getId()+"-"+newID,link.source,newNode,"out",link.source.getReactionReversibility(),"viz");
+            }
+        });
+
+        react.sideCompoundsHidden = false;
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+        metExploreD3.GraphRank.visitLink();
     },
 
     showPredecessors: function(node) {
@@ -238,6 +272,22 @@ metExploreD3.GraphRank = {
 
         node.hide();
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+    },
+
+    hideSideCompounds: function(react) {
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+
+        links.each(function(link){
+            if (link.source === react && link.target.duplicated === true){
+                networkData.removeNode(link.target);
+            }
+        });
+
+        react.sideCompoundsHidden = true;
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+        metExploreD3.GraphRank.visitLink();
     },
 
     // rank style functions
