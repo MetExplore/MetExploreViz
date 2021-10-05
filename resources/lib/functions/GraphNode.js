@@ -2133,8 +2133,8 @@ metExploreD3.GraphNode = {
                         .classed('hide', false);
                     overNode.select('.collapse')
                         .classed('hide', false);
-                    // overNode.selectAll('.nbHidden')
-                    //     .classed('hide', false);
+                    overNode.selectAll('.nbHidden')
+                        .classed('hide', false);
                 }
             })
             .on("mouseleave", function (d) {
@@ -2151,8 +2151,10 @@ metExploreD3.GraphNode = {
                     .classed('hide', true);
                 leaveNode.select('.collapse')
                     .classed('hide', true);
-                // leaveNode.selectAll('.nbHidden')
-                //     .classed('hide', true);
+                if (d.isVisited() === false || d.nbHidden === 0){
+                    leaveNode.selectAll('.nbHidden')
+                        .classed('hide', true);
+                }
 
 
                 if (!metExploreD3.GraphStyleEdition.editMode) {
