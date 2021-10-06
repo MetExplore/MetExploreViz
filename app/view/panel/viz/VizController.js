@@ -406,6 +406,9 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								handler: function() {
 									metExploreD3.GraphRank.showNeighbours(theNode);
 									metExploreD3.GraphRank.visit(theNode);
+									theNode.setLocked(true);
+			                        metExploreD3.GraphNode.fixNode(theNode);
+			                        metExploreD3.GraphRank.updateNbHidden();
 								}
 							},
 							{
@@ -414,12 +417,15 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								handler: function() {
 									metExploreD3.GraphRank.showPredecessors(theNode);
 									metExploreD3.GraphRank.visit(theNode);
+									theNode.setLocked(true);
+			                        metExploreD3.GraphNode.fixNode(theNode);
+			                        metExploreD3.GraphRank.updateNbHidden();
 								}
 							}
 						]
 					});
 
-                    if (metExploreD3.GraphRank.metaboRankMode === false){
+                    if (metExploreD3.GraphRank.launchGIR === false){
 						viz.CtxMenu = new Ext.menu.Menu({
 	                        items: [{
 	                            text: 'Expand pathway',
@@ -748,7 +754,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 	                    });
 					}
 					// metaboRank mode activated
-					if (metExploreD3.GraphRank.metaboRankMode === true) {
+					if (metExploreD3.GraphRank.launchGIR === true) {
 						viz.CtxMenu = new Ext.menu.Menu({
 							items: [
 								{

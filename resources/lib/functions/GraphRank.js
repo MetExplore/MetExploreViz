@@ -49,25 +49,37 @@ metExploreD3.GraphRank = {
     },
 
     quitGir: function() {
+        var mask = metExploreD3.createLoadMask("Reconstruct network","viz");
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
         var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var nodes = networkData.getNodes();
 
-        allNodes.each(function(node){
-            if (node.duplicated === true){
-                networkData.removeNode(node);
-            }
-        });
+        if (mask !== undefined){
+            metExploreD3.showMask(mask);
 
-        allNodes.remove();
+            metExploreD3.deferFunction(
+                function () {
+                    allNodes.each(function(node){
+                        if (node.duplicated === true){
+                            networkData.removeNode(node);
+                        }
+                    });
 
-        nodes.map(function(node, i){
-            node.show();
-        });
+                    allNodes.remove();
 
-        metExploreD3.GraphRank.removeGirStyle();
-        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+                    nodes.map(function(node, i){
+                        if (node.getBiologicalType() !== "pathway"){
+                            node.show();
+                            node.unvisit();
+                        }
+                    });
+
+                    metExploreD3.GraphRank.removeGirStyle();
+                    metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+                    metExploreD3.hideMask(mask);
+                },100);
+        }
     },
 
     removeGirStyle: function() {
@@ -99,8 +111,20 @@ metExploreD3.GraphRank = {
     },
 
     quitAndExtract: function() {
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node.hide").remove();
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link.hide").remove();
+        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+
+        nodes.each(function(node){
+            if (node.isVisited() === false){
+                node.hide();
+            }
+            if (node.isVisited() === true){
+                node.unvisit();
+            }
+        });
+
+        metExploreD3.GraphRank.removeGirStyle();
+        metExploreD3.GraphRank.delRing();
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
     },
 
     // save network function
@@ -497,6 +521,8 @@ metExploreD3.GraphRank = {
                     .on('click', function(node, v) {
                         metExploreD3.GraphRank.showNeighbours(node);
                         metExploreD3.GraphRank.visit(node);
+                        node.setLocked(true);
+                        metExploreD3.GraphNode.fixNode(node);
                         metExploreD3.GraphRank.updateNbHidden();
                     })
                     .on('mouseenter', function (e, v) {
@@ -697,5 +723,6 @@ metExploreD3.GraphRank = {
     delRing: function() {
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".expand").remove();
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".collapse").remove();
+        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".nbHidden").remove();
     }
 };

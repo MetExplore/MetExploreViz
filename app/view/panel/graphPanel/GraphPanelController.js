@@ -125,9 +125,9 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			metaboRankPanel.setHidden(false);
 			enterBtn.setText("Exit MetaboRank mode");
 
-			metExploreD3.GraphNetwork.animationButtonOff('viz');
-            var force = _metExploreViz.getSessionById("viz").getForce();
-            force.stop();
+			// metExploreD3.GraphNetwork.animationButtonOff('viz');
+            // var force = _metExploreViz.getSessionById("viz").getForce();
+            // force.stop();
 
 			metaboRankPanel.open = true;
 			metExploreD3.GraphRank.metaboRankMode = true;
@@ -138,7 +138,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			enterBtn.setText("Enter MetaboRank mode");
 
 			metExploreD3.GraphRank.delRing();
-			metExploreD3.GraphNetwork.animationButtonOn('viz');
+			// metExploreD3.GraphNetwork.animationButtonOn('viz');
 
 			metaboRankPanel.open = false;
 			metExploreD3.GraphRank.metaboRankMode = false;

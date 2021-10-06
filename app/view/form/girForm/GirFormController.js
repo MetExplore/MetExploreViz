@@ -61,12 +61,18 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
         view.lookupReference('extractNQuit').on({
             click: function() {
                 metExploreD3.GraphRank.quitAndExtract();
+
+                view.lookupReference('launchGIR').setText("launch GIR");
+                view.lookupReference('extractNQuit').disable();
+
+                metExploreD3.GraphRank.launchGIR = false;
             }
         });
     },
 
     loadData : function(tabTxt, title) {
 		var me=this;
+        var mask = metExploreD3.createLoadMask("Loading data","viz");
 
 		var data = tabTxt;
 		tabTxt = tabTxt.replace(/\r/g, "");
@@ -86,25 +92,31 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
         }
 
 		if(targetName[0]=="Identifier" || targetName[0]=="reactionId" || targetName[0]=="Name") {
-            for (var i = lines.length - 1; i >= 0; i--) {
-    	    	lines[i] = lines[i].split('\t').map(function (val) {
-    				return val.replace(",", ".");
-    			});
-                if (lines[i].length === 1){
-                    lines.pop(i);
-                }
-    	    }
+            metExploreD3.showMask(mask);
+            metExploreD3.deferFunction(
+                function(){
+                    for (var i = lines.length - 1; i >= 0; i--) {
+            	    	lines[i] = lines[i].split('\t').map(function (val) {
+            				return val.replace(",", ".");
+            			});
+                        if (lines[i].length === 1){
+                            lines.pop(i);
+                        }
+            	    }
 
-            var rankScore = {};
-            lines.map(function(line, i){
-                rankScore[line[0]] = [line[1],line[2]];
-            });
+                    var rankScore = {};
+                    lines.map(function(line, i){
+                        rankScore[line[0]] = [line[1],line[2]];
+                    });
 
-            var data = metExploreD3.GraphRank.saveNetwork();
-            var rank = new Rank(title, data, "rankData", rankScore);
+                    var data = metExploreD3.GraphRank.saveNetwork();
+                    var rank = new Rank(title, data, "rankData", rankScore);
 
-            _metExploreViz.addRank(rank);
-            metExploreD3.fireEvent("girParams","fileLoad");
+                    _metExploreViz.addRank(rank);
+                    metExploreD3.fireEvent("girParams","fileLoad");
+
+                    metExploreD3.hideMask(mask);
+                }, 100);
         }
         else {
 			// Warning for bad syntax file
