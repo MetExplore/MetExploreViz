@@ -36,7 +36,13 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                     view.lookupReference('launchGIR').setText("quit GIR");
                     view.lookupReference('extractNQuit').enable();
 
-                    var listMi = view.lookupReference('selectStart').value;
+                    // var listMi = view.lookupReference('selectStart').value;
+                    var listMi = []
+                    var nbMi = view.lookupReference('miBox').items.items.length;
+                    for (var i = 1; i < nbMi+1; i++){
+                        listMi.push(view.lookupReference('selectStart'+i).value);
+                    }
+
 
                     metExploreD3.GraphRank.launchGIR = true;
                     metExploreD3.GraphRank.startGir(listMi);
@@ -66,6 +72,53 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 view.lookupReference('extractNQuit').disable();
 
                 metExploreD3.GraphRank.launchGIR = false;
+            }
+        });
+
+        view.lookupReference('addMi').on({
+            click: function() {
+                var nbMi = view.lookupReference('miBox').items.items.length + 1;
+                var boxRef = "box"+nbMi;
+                var storeRef = "selectStart"+nbMi;
+
+                var newBox = new Ext.panel.Panel({
+                    layout: {
+                        type: 'hbox'
+                    },
+                    reference: boxRef,
+                    items: [
+                        {
+                            store: {
+                                fields: ['metabolites']
+                            },
+                            xtype: 'combobox',
+                            displayField: 'metabolites',
+                            valueField: 'metabolites',
+                            queryMode: 'local',
+                            editable: false,
+                            emptyText: '-- Select metabolite --',
+                            margin: '5 5 5 5',
+                            width: '90%',
+                            anyMatch: true,
+                            reference: storeRef
+                        }
+                    ]
+                });
+                view.lookupReference('miBox').add(newBox);
+                if (_metExploreViz.rank.data !== undefined){
+                    me.parseFile(_metExploreViz.rank);
+                }
+            }
+        });
+
+        view.lookupReference('delMi').on({
+            click: function() {
+                var nbMi = view.lookupReference('miBox').items.items.length;
+                if (nbMi > 1){
+                    var boxRef = "box"+nbMi;
+                    var box = view.lookupReference(boxRef)
+                    view.lookupReference('miBox').remove(box);
+                }
             }
         });
     },
@@ -127,6 +180,8 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
 	},
 
     parseFile: function(rankData) {
+        var view = this.getView();
+        var nbMi = view.lookupReference('miBox').items.items.length;
         var rankScore = rankData.rank;
         var allMetabolite = Object.keys(rankScore);
         var listMi = [];
@@ -138,9 +193,11 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 listMi.push(mi);
             }
         });
-        var comboComponent = this.getView().lookupReference('selectStart');
-        var metaStore = comboComponent.getStore();
-        metaStore.setData(listMi);
+        for (var i = 1; i < nbMi+1; i++){
+            var comboComponent = this.getView().lookupReference('selectStart'+i);
+            var metaStore = comboComponent.getStore();
+            metaStore.setData(listMi);
+        }
     }
 
 });

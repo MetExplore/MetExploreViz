@@ -629,6 +629,15 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.plus {
+    background-image: url(../icons/plus.svg);
+    background-repeat: no-repeat;
+}
+.minus {
+    background-size: 100% 100%;
+    background-image: url(../icons/minus.svg);
+    background-repeat: no-repeat;
+}
 .pause {
     background-image: url(../icons/pause.svg);
     background-size: 100% 100%;

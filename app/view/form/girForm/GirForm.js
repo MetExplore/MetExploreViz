@@ -71,20 +71,81 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
             ]
         },
 
+        // {
+        //     xtype: 'panel',
+        //     layout: {
+        //         type: 'hbox'
+        //     },
+        //     reference: 'miBox',
+        //     items: [
+        //         {
+        //             store: {
+        //                 fields: ['metabolites']
+        //             },
+        //             xtype: 'combobox',
+        //             displayField: 'metabolites',
+        //             valueField: 'metabolites',
+        //             queryMode: 'local',
+        //             editable: false,
+        //             emptyText: '-- Select metabolite --',
+        //             margin: '5 5 5 5',
+        //             width: '75%',
+        //             anyMatch: true,
+        //             reference: 'selectStart'
+        //         },
+        //         {
+        //             xtype: 'button',
+        //             width: '35px',
+        //             margin: '5 5 5 5',
+        //             iconCls: 'plus',
+        //             reference: 'addMi'
+        //         }
+        //     ]
+        // },
         {
-            store: {
-                fields: ['metabolites']
-            },
-            xtype: 'combobox',
-            displayField: 'metabolites',
-            valueField: 'metabolites',
-            queryMode: 'local',
-            editable: false,
-            emptyText: '-- Select metabolite --',
-            margin: '5 5 5 5',
-            width: '75%',
-            anyMatch: true,
-            reference: 'selectStart'
+            xtype: 'panel',
+            reference: 'miBox',
+            width: '50%',
+            items: [
+                {
+                    xtype: 'panel',
+                    layout: {
+                        type: 'hbox'
+                    },
+                    reference: 'box1',
+                    items: [
+                        {
+                            store: {
+                                fields: ['metabolites']
+                            },
+                            xtype: 'combobox',
+                            displayField: 'metabolites',
+                            valueField: 'metabolites',
+                            queryMode: 'local',
+                            editable: false,
+                            emptyText: '-- Select metabolite --',
+                            margin: '5 5 5 5',
+                            width: '75%',
+                            anyMatch: true,
+                            reference: 'selectStart1'
+                        },
+                        {
+                            xtype: 'button',
+                            width: '35px',
+                            margin: '5 5 5 5',
+                            iconCls: 'plus',
+                            reference: 'addMi'
+                        },
+                        {
+                            xtype: 'button',
+                            width: '35px',
+                            margin: '5 5 5 5',
+                            iconCls: 'minus',
+                            reference: 'delMi'
+                        }
+                    ]
+                }
+            ]
         },
 
         {

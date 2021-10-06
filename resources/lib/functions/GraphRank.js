@@ -21,7 +21,7 @@ metExploreD3.GraphRank = {
         var networkData = session.getD3Data();
 
         nodes.each(function(node){
-            if (node.dbIdentifier.includes(listMi)){
+            if (listMi.includes(node.dbIdentifier)){
                 metExploreD3.GraphRank.startNode(node);
             }
             if (!(listMi.includes(node.dbIdentifier))) {
@@ -31,9 +31,11 @@ metExploreD3.GraphRank = {
 
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
 
-        var mi = networkData.getNodeByDbIdentifier(listMi);
-        metExploreD3.GraphRank.getNbHidden(mi);
-        metExploreD3.GraphRank.createNodeRing(mi);
+        listMi.forEach(function(mi){
+            var node = networkData.getNodeByDbIdentifier(mi);
+            metExploreD3.GraphRank.getNbHidden(node);
+            metExploreD3.GraphRank.createNodeRing(node);
+        });
         metExploreD3.GraphRank.updateNbHidden();
         metExploreD3.GraphRank.setSideCompound();
     },
