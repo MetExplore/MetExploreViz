@@ -318,7 +318,6 @@ metExploreD3.GraphLink = {
      * @param {LinkStyle} linkStyle Store which contains links style
      */
     refreshLink: function (parent, linkStyle) {
-
         var size = 20;
         // The y-axis coordinate of the reference point which is to be aligned exactly at the marker position.
         var refY = linkStyle.getMarkerWidth() / 2;
@@ -362,13 +361,13 @@ metExploreD3.GraphLink = {
         metExploreD3.GraphLink.panelParent = "#" + parent;
         var networkData = session.getD3Data();
 
-        d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-            .selectAll(".linkGroup")
-            .remove();
+        if (metExploreD3.GraphRank.launchGIR === false) {
+            d3.select("#" + parent).select("#D3viz").select("#graphComponent")
+                .selectAll(".linkGroup")
+                .remove();
 
-        metExploreD3.GraphLink.link.remove();
+            metExploreD3.GraphLink.link.remove();
 
-        if (metExploreD3.GraphRank.metaboRankMode === false){
             metExploreD3.GraphLink.link.enter()
                 .insert("svg:g", ":first-child")
                 .attr("class", "linkGroup")
@@ -409,7 +408,8 @@ metExploreD3.GraphLink = {
             }
         }
 
-        if(metExploreD3.GraphRank.metaboRankMode === true) {
+        if(metExploreD3.GraphRank.launchGIR === true) {
+            metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
             metExploreD3.GraphRank.visitLink();
         }
 

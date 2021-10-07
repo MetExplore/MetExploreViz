@@ -38,6 +38,9 @@ metExploreD3.GraphRank = {
         });
         metExploreD3.GraphRank.updateNbHidden();
         metExploreD3.GraphRank.setSideCompound();
+
+        // metExploreD3.GraphCaption.drawCaptionGirMode();
+        metExploreD3.GraphCaption.delCaption();
     },
 
     startNode: function(node) {
@@ -82,6 +85,7 @@ metExploreD3.GraphRank = {
                     metExploreD3.hideMask(mask);
                 },100);
         }
+        metExploreD3.GraphCaption.drawCaption();
     },
 
     removeGirStyle: function() {
@@ -113,13 +117,19 @@ metExploreD3.GraphRank = {
     },
 
     quitAndExtract: function() {
-        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var nodes = networkData.getNodes();
 
-        nodes.each(function(node){
+        allNodes.remove();
+
+        nodes.map(function(node){
             if (node.isVisited() === false){
                 node.hide();
             }
             if (node.isVisited() === true){
+                node.show();
                 node.unvisit();
             }
         });
@@ -127,6 +137,7 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.removeGirStyle();
         metExploreD3.GraphRank.delRing();
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+        metExploreD3.GraphCaption.drawCaption();
     },
 
     // save network function
@@ -316,6 +327,85 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.visitLink();
     },
 
+    // threshold functions
+    sortReactionFromMetaboRank: function(node) {
+        var rankData = _metExploreViz.getRankById("rankData");
+        var connexion = rankData.getData();
+        var identifier = node.dbIdentifier;
+
+        var linksIn = connexion[identifier]["linkIn"];
+        var linksOut = connexion[identifier]["linkOut"];
+
+        var reactList = [];
+        var score = {};
+
+        if ((linksIn.length + linksOut.length) < 6){
+            linksIn.map(function(link){
+                reactList.push(link.source);
+            });
+            linksOut.map(function(link){
+                reactList.push(link.target);
+            });
+            return reactList;
+        }
+
+        if ((linksIn.length + linksOut.length) > 5){
+            linksIn.map(function(link){
+                if (link.source.isHidden() === true){
+                    score[link.source.dbIdentifier] = metExploreD3.GraphRank.getMetaboRankScore(link.source.dbIdentifier);
+                }
+            });
+            linksOut.map(function(link){
+                if (link.target.isHidden() === true){
+                    score[link.target.dbIdentifier] = metExploreD3.GraphRank.getMetaboRankScore(link.target.dbIdentifier);
+                }
+            });
+        }
+        console.log(score);
+    },
+
+    getMetaboRankScore: function(identifier) {
+        var rankData = _metExploreViz.getRankById("rankData");
+        var connexion = rankData.getData();
+        var rankScore = rankData.getScore();
+
+        var linksOut = connexion[identifier]["linkOut"];
+        var linksIn = connexion[identifier]["linkIn"];
+
+        var score = 0;
+        var nbNode = 0;
+        var nodeScore;
+
+        linksOut.map(function(link){
+            if (link.target.getBiologicalType() === "metabolite"){
+                var nodeIdentifier = metExploreD3.GraphRank.getMetaIdentifier(link.target.dbIdentifier);
+            }
+            else {
+                var nodeIdentifier = link.target.dbIdentifier;
+            }
+            nodeScore = rankScore[nodeIdentifier];
+            score+=Math.min(nodeScore[0],nodeScore[1]);
+            nbNode++;
+        });
+        linksIn.map(function(link){
+            if (link.source.getBiologicalType() === "metabolite"){
+                var nodeIdentifier = metExploreD3.GraphRank.getMetaIdentifier(link.source.dbIdentifier);
+            }
+            else {
+                var nodeIdentifier = link.source.dbIdentifier;
+            }
+            nodeScore = rankScore[link.source.dbIdentifier.replace("_c","")];
+            score+=Math.min(nodeScore[0],nodeScore[1]);
+            nbNode++;
+        });
+
+        return score / nbNode;
+    },
+
+    getMetaIdentifier: function(identifier) {
+        return identifier.slice(0,-2);
+    },
+
     // rank style functions
     nodeStyleByRank: function(node) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
@@ -330,22 +420,22 @@ metExploreD3.GraphRank = {
 
             nodes.each(function(thisNode){
                 if (thisNode === node) {
-                    if (rankIn < 26 && rankOut < 26) {
+                    if (rankIn < 25 && rankOut < 25) {
                         d3.select(this).selectAll("rect")
                             .style("stroke-width",3)
                             .style("stroke","purple");
                     }
-                    if (rankIn > 26 && rankOut < 26) {
+                    if (rankIn > 25 && rankOut < 25) {
                         d3.select(this).selectAll("rect")
                             .style("stroke-width",3)
                             .style("stroke","red");
                     }
-                    if (rankIn < 26 && rankOut > 26) {
+                    if (rankIn < 25 && rankOut > 25) {
                         d3.select(this).selectAll("rect")
                             .style("stroke-width",3)
                             .style("stroke","green");
                     }
-                    if (rankIn > 26 && rankOut > 26) {
+                    if (rankIn > 25 && rankOut > 25) {
                         d3.select(this).selectAll("rect")
                             .style("stroke","black");
                     }
@@ -526,6 +616,7 @@ metExploreD3.GraphRank = {
                         node.setLocked(true);
                         metExploreD3.GraphNode.fixNode(node);
                         metExploreD3.GraphRank.updateNbHidden();
+                        metExploreD3.GraphRank.sortReactionFromMetaboRank(node);
                     })
                     .on('mouseenter', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));

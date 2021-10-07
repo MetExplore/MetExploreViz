@@ -71,41 +71,9 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
             ]
         },
 
-        // {
-        //     xtype: 'panel',
-        //     layout: {
-        //         type: 'hbox'
-        //     },
-        //     reference: 'miBox',
-        //     items: [
-        //         {
-        //             store: {
-        //                 fields: ['metabolites']
-        //             },
-        //             xtype: 'combobox',
-        //             displayField: 'metabolites',
-        //             valueField: 'metabolites',
-        //             queryMode: 'local',
-        //             editable: false,
-        //             emptyText: '-- Select metabolite --',
-        //             margin: '5 5 5 5',
-        //             width: '75%',
-        //             anyMatch: true,
-        //             reference: 'selectStart'
-        //         },
-        //         {
-        //             xtype: 'button',
-        //             width: '35px',
-        //             margin: '5 5 5 5',
-        //             iconCls: 'plus',
-        //             reference: 'addMi'
-        //         }
-        //     ]
-        // },
         {
             xtype: 'panel',
             reference: 'miBox',
-            width: '50%',
             items: [
                 {
                     xtype: 'panel',
@@ -130,18 +98,28 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                             reference: 'selectStart1'
                         },
                         {
-                            xtype: 'button',
-                            width: '35px',
+                            xtype: 'panel',
+                            layout: {
+                                type: 'hbox'
+                            },
+                            width: '25%',
                             margin: '5 5 5 5',
-                            iconCls: 'plus',
-                            reference: 'addMi'
-                        },
-                        {
-                            xtype: 'button',
-                            width: '35px',
-                            margin: '5 5 5 5',
-                            iconCls: 'minus',
-                            reference: 'delMi'
+                            items: [
+                                {
+                                    xtype: 'button',
+                                    width: '50%',
+                                    margin: '0 5 0 5',
+                                    iconCls: 'plus',
+                                    reference: 'addMi'
+                                },
+                                {
+                                    xtype: 'button',
+                                    width: '50%',
+                                    margin: '0 5 0 5',
+                                    iconCls: 'minus',
+                                    reference: 'delMi'
+                                }
+                            ]
                         }
                     ]
                 }
@@ -170,6 +148,102 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                     reference: 'extractNQuit'
                 }
             ]
+        },
+
+        {
+            xtype: 'label',
+            html: 'Legend :',
+            margin: '5 5 5 5'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: red"></circle>'+
+                        '<text x="50" y="25"'+
+                              'font-size="15">'+
+                            'MetaboRank out < 25'+
+                        '</text>'+
+                    '</svg>'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: green"></circle>'+
+                        '<text x="50" y="25"'+
+                              'font-size="15">'+
+                            'MetaboRank in < 25'+
+                        '</text>'+
+                    '</svg>'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: purple"></circle>'+
+                        '<text x="50" y="25"'+
+                              'font-size="15">'+
+                            'MetaboRank Out < 25 & MetaboRank In < 25'+
+                        '</text>'+
+                    '</svg>'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="17px" style="fill: #00aa00; opacity: 0.5"></circle>'+
+                        '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 5px; stroke: #00aa00"></circle>'+
+                        '<text x="50" y="25"'+
+                              'font-size="15">'+
+                            'Starting node'+
+                        '</text>'+
+                    '</svg>'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 2px; stroke: black"></circle>'+
+                        '<text x="50" y="25"'+
+                              'font-size="15">'+
+                            'MetaboRank Out > 25 & MetaboRank In > 25'+
+                        '</text>'+
+                    '</svg>'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="5px" style="fill: white; stroke-width: 3px; stroke: grey"></circle>'+
+                        '<text x="50" y="25"'+
+                              'font-size="15">'+
+                            'Side compounds'+
+                        '</text>'+
+                    '</svg>'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="10px" style="fill: black; stroke-width: 4px; stroke: green"></circle>'+
+                        '<text x="50" y="25"'+
+                              'font-size="15">'+
+                            'Black background when you visited the node'+
+                        '</text>'+
+                    '</svg>'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="10px" style="fill: rgb(255, 73, 73); "></circle>'+
+                        '<rect height="10px" width="10px" x="30" y="20" style="fill: rgb(255, 73, 73); "></rect>'+
+                        '<text x="50" y="25"'+
+                              'font-size="15">'+
+                            'Number of reactions not expanded from this metabolite'+
+                        '</text>'+
+                    '</svg>'
         }
 
     ]

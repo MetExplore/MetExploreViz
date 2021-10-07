@@ -98,7 +98,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                             editable: false,
                             emptyText: '-- Select metabolite --',
                             margin: '5 5 5 5',
-                            width: '90%',
+                            width: '100%',
                             anyMatch: true,
                             reference: storeRef
                         }

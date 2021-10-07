@@ -1002,6 +1002,234 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
+     * Draw caption for GIR
+     */
+    drawCaptionGirMode: function(){
+        d3.select("#viz")
+            .select("#D3viz")
+            .select(".logoViz")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".linkCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".reactionCaption")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".textCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".metaboliteCaption")
+            .remove();
+
+        // MetaboRank out < 25
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr("class", "metaboliteCaption")
+            .attr("width", 14)
+            .attr("height", 14)
+            .attr("rx", 7)
+            .attr("ry", 7)
+            .attr("fill","white")
+            .attr("stroke-width", 3)
+            .attr("stroke", "red")
+            .attr("transform","translate(20,45)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text("MetaboRank out < 25")
+            .attr("class","textCaptionRev")
+            .attr("transform","translate(40,60)");
+
+        // MetaboRank in < 25
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr("class", "metaboliteCaption")
+            .attr("width", 14)
+            .attr("height", 14)
+            .attr("rx", 7)
+            .attr("ry", 7)
+            .attr("fill","white")
+            .attr("stroke-width", 3)
+            .attr("stroke", "green")
+            .attr("transform","translate(20,70)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text("MetaboRank in < 25")
+            .attr("class","textCaptionRev")
+            .attr("transform","translate(40,85)");
+
+        // MetaboRank in && out < 25
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr("class", "metaboliteCaption")
+            .attr("width", 14)
+            .attr("height", 14)
+            .attr("rx", 7)
+            .attr("ry", 7)
+            .attr("fill","white")
+            .attr("stroke-width", 3)
+            .attr("stroke", "purple")
+            .attr("transform","translate(20,95)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text("MetaboRank in < 25 & MetaboRank out < 25")
+            .attr("class","textCaptionRev")
+            .attr("transform","translate(40,110)");
+
+        // starting node
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr("class", "metaboliteCaption")
+            .attr("width", 14)
+            .attr("height", 14)
+            .attr("rx", 7)
+            .attr("ry", 7)
+            .attr("fill","white")
+            .attr("stroke-width", 5)
+            .attr("stroke", "#00aa00")
+            .attr("stroke-opacity",0.4)
+            .attr("transform","translate(20,120)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text("Starting node")
+            .attr("class","textCaptionRev")
+            .attr("transform","translate(40,135)");
+
+        // MetaboRank in & out > 25
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr("class", "metaboliteCaption")
+            .attr("width", 14)
+            .attr("height", 14)
+            .attr("rx", 7)
+            .attr("ry", 7)
+            .attr("fill","white")
+            .attr("stroke-width", 2)
+            .attr("stroke", "black")
+            .attr("transform","translate(20,145)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text("MetaboRank in > 25 & MetaboRank out > 25")
+            .attr("class","textCaptionRev")
+            .attr("transform","translate(40,160)");
+
+        // side compounds
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr("class", "metaboliteCaption")
+            .attr("width", 7)
+            .attr("height", 7)
+            .attr("rx", 3.5)
+            .attr("ry", 3.5)
+            .attr("fill","white")
+            .attr("stroke-width", "3px")
+            .attr("stroke", "grey")
+            .attr("transform","translate(20,170)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text("Side compounds")
+            .attr("class","textCaptionRev")
+            .attr("transform","translate(40,185)");
+
+        // Visited node
+        d3.select("#viz").select("#D3viz")
+            .append("svg:rect")
+            .attr("class", "metaboliteCaption")
+            .attr("width", 14)
+            .attr("height", 14)
+            .attr("rx", 7)
+            .attr("ry", 7)
+            .attr("fill","black")
+            .attr("stroke-width", 3)
+            .attr("stroke", "green")
+            .attr("transform","translate(20,195)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text("Visited nodes")
+            .attr("class","textCaptionRev")
+            .attr("transform","translate(40,210)");
+
+        // Number of reaction hidden
+        d3.select("#viz").select("#D3viz")
+            .append("svg:path")
+            .attr('class', 'textCaptionRev')
+            .style("fill", "rgb(255, 73, 73)")
+            .style("opacity", "1")
+            .style("stroke", "black")
+            .attr("d", "M 7, 0" +
+                "       L7, 0" +
+                "       a 7,7 0 0,1 0,14        " +
+                "       L 7, 14       " +
+                "       L0,14       " +
+                "       L0,7 " +
+                "       a 7,7 0 0,1 7,-7")
+            .attr("transform", "translate(20,220)");
+
+        d3.select("#viz").select("#D3viz")
+            .append("svg:text")
+            .text("Number of reactions not expanded from this metabolite")
+            .attr("class","textCaptionRev")
+            .attr("transform","translate(40,235)");
+
+        if(d3.select("#viz")
+                .select("#D3viz")
+                .select("#logoViz")){
+            var logo = d3.select("#viz")
+                .select("#D3viz")
+                .append("svg:g")
+                .attr("class","logoViz").attr("id","logoViz")
+
+            logo.append("image")
+                .attr("xlink:href", "resources/icons/metExploreViz_Logo.svg")
+                .attr("width", "75")
+                .attr("height", "75")
+                .attr('x', $("#viz").width() - 124)
+                .attr('y', $("#viz").height() - 100);
+
+            logo.append("svg:text")
+                .attr('id', 'metexplore')
+                .text('MetExploreViz v'+Ext.manifest.version)
+                .attr('x', $("#viz").width() - 150)
+                .attr('y', $("#viz").height() - 10);
+
+        }
+    },
+
+    /*****************************************************
+     * remove caption for gir
+     */
+
+    delCaption: function(){
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".linkCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".reactionCaption")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".textCaptionRev")
+            .remove();
+        d3.select("#viz")
+            .select("#D3viz")
+            .selectAll(".metaboliteCaption")
+            .remove();
+    },
+
+    /*****************************************************
      * Maj caption for convex hulls
      * @param {String} panel Panel to update convex hull
      */
