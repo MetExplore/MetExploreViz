@@ -20,18 +20,27 @@ metExploreD3.GraphRank = {
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
 
+        var listMiCmpt = [];
+
+        listMi.map(function(mi){
+            var miCmpt = metExploreD3.GraphRank.nodeForAll(mi);
+            miCmpt.map(function(identifier){
+                listMiCmpt.push(identifier);
+            });
+        });
+
         nodes.each(function(node){
-            if (listMi.includes(node.dbIdentifier)){
+            if (listMiCmpt.includes(node.dbIdentifier)){
                 metExploreD3.GraphRank.startNode(node);
             }
-            if (!(listMi.includes(node.dbIdentifier))) {
+            if (!(listMiCmpt.includes(node.dbIdentifier))) {
                 node.hide()
             }
         });
 
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
 
-        listMi.forEach(function(mi){
+        listMiCmpt.forEach(function(mi){
             var node = networkData.getNodeByDbIdentifier(mi);
             metExploreD3.GraphRank.getNbHidden(node);
             metExploreD3.GraphRank.createNodeRing(node);
@@ -179,24 +188,86 @@ metExploreD3.GraphRank = {
         var identifier = node.dbIdentifier;
 
         var linkOut = connexion[identifier]["linkOut"];
+        var linkIn = connexion[identifier]["linkIn"];
 
         var addRingNodes = [];
 
+        var reactList = metExploreD3.GraphRank.sortReactFromScore(node);
+
+        linkIn.map(function(link, i){
+            if (reactList.includes(link.source.dbIdentifier)){
+                link.source.show();
+                addRingNodes.push(link.source);
+                identifier = link.source.dbIdentifier;
+                connexion[identifier]["linkIn"].map(function(that, i){
+                    var isSide = that.source.getIsSideCompound();
+                    if (isSide === false){
+                        that.source.show();
+                        addRingNodes.push(that.source);
+                    }
+                });
+            }
+        });
+
         linkOut.map(function(link, i){
-            link.target.show();
-            addRingNodes.push(link.target);
-            identifier = link.target.dbIdentifier;
-            connexion[identifier]["linkOut"].map(function(that, i){
-                var isSide = that.target.getIsSideCompound();
-                if (isSide === false){
-                    that.target.show();
-                    addRingNodes.push(that.target);
-                }
-                if (isSide === true){
-                    that.source.asSideCompounds = true;
-                    that.source.sideCompoundsHidden = true;
-                }
-            });
+            if (reactList.includes(link.target.dbIdentifier)){
+                link.target.show();
+                addRingNodes.push(link.target);
+                identifier = link.target.dbIdentifier;
+                connexion[identifier]["linkOut"].map(function(that, i){
+                    var isSide = that.target.getIsSideCompound();
+                    if (isSide === false){
+                        that.target.show();
+                        addRingNodes.push(that.target);
+                    }
+                    if (isSide === true){
+                        that.source.asSideCompounds = true;
+                        that.source.sideCompoundsHidden = true;
+                    }
+                });
+            }
+        });
+
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+
+        addRingNodes.map(function(thisNode){
+            metExploreD3.GraphRank.createNodeRing(thisNode);
+            if (thisNode.getBiologicalType() === "metabolite"){
+                metExploreD3.GraphRank.nodeStyleByRank(thisNode);
+            }
+        });
+    },
+
+    showSucessors: function(node) {
+        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var rankData = _metExploreViz.getRankById("rankData");
+        var connexion = rankData.getData();
+
+        var identifier = node.dbIdentifier;
+
+        var linkOut = connexion[identifier]["linkOut"];
+
+        var addRingNodes = [];
+
+        var reactList = metExploreD3.GraphRank.sortReactFromScore(node);
+
+        linkOut.map(function(link, i){
+            if (reactList.includes(link.target.dbIdentifier)){
+                link.target.show();
+                addRingNodes.push(link.target);
+                identifier = link.target.dbIdentifier;
+                connexion[identifier]["linkOut"].map(function(that, i){
+                    var isSide = that.target.getIsSideCompound();
+                    if (isSide === false){
+                        that.target.show();
+                        addRingNodes.push(that.target);
+                    }
+                    if (isSide === true){
+                        that.source.asSideCompounds = true;
+                        that.source.sideCompoundsHidden = true;
+                    }
+                });
+            }
         });
 
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
@@ -241,17 +312,21 @@ metExploreD3.GraphRank = {
 
         var addRingNodes = [];
 
+        var reactList = metExploreD3.GraphRank.sortReactFromScore(node);
+
         linkIn.map(function(link, i){
-            link.source.show();
-            addRingNodes.push(link.source);
-            identifier = link.source.dbIdentifier;
-            connexion[identifier]["linkIn"].map(function(that, i){
-                var isSide = that.source.getIsSideCompound();
-                if (isSide === false){
-                    that.source.show();
-                    addRingNodes.push(that.source);
-                }
-            });
+            if (reactList.includes(link.source.dbIdentifier)){
+                link.source.show();
+                addRingNodes.push(link.source);
+                identifier = link.source.dbIdentifier;
+                connexion[identifier]["linkIn"].map(function(that, i){
+                    var isSide = that.source.getIsSideCompound();
+                    if (isSide === false){
+                        that.source.show();
+                        addRingNodes.push(that.source);
+                    }
+                });
+            }
         });
 
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
@@ -328,7 +403,7 @@ metExploreD3.GraphRank = {
     },
 
     // threshold functions
-    sortReactionFromMetaboRank: function(node) {
+    sortReactFromScore: function(node) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
         var identifier = node.dbIdentifier;
@@ -337,14 +412,13 @@ metExploreD3.GraphRank = {
         var linksOut = connexion[identifier]["linkOut"];
 
         var reactList = [];
-        var score = {};
 
         if ((linksIn.length + linksOut.length) < 6){
             linksIn.map(function(link){
-                reactList.push(link.source);
+                reactList.push(link.source.dbIdentifier);
             });
             linksOut.map(function(link){
-                reactList.push(link.target);
+                reactList.push(link.target.dbIdentifier);
             });
             return reactList;
         }
@@ -352,58 +426,89 @@ metExploreD3.GraphRank = {
         if ((linksIn.length + linksOut.length) > 5){
             linksIn.map(function(link){
                 if (link.source.isHidden() === true){
-                    score[link.source.dbIdentifier] = metExploreD3.GraphRank.getMetaboRankScore(link.source.dbIdentifier);
+                    reactList.push(link.source.dbIdentifier);
                 }
             });
             linksOut.map(function(link){
                 if (link.target.isHidden() === true){
-                    score[link.target.dbIdentifier] = metExploreD3.GraphRank.getMetaboRankScore(link.target.dbIdentifier);
+                    reactList.push(link.target.dbIdentifier);
                 }
             });
+            var score = metExploreD3.GraphRank.getScore(reactList);
+            return score;
         }
-        console.log(score);
     },
 
-    getMetaboRankScore: function(identifier) {
+    getScore: function(reactList) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
         var rankScore = rankData.getScore();
 
-        var linksOut = connexion[identifier]["linkOut"];
-        var linksIn = connexion[identifier]["linkIn"];
+        var bestReact = [];
+        var scoreList = [];
+        var scoreDict = {};
 
-        var score = 0;
-        var nbNode = 0;
-        var nodeScore;
+        reactList.forEach(function(identifier){
+            var linksIn = connexion[identifier]["linkIn"];
+            var linksOut = connexion[identifier]["linkOut"];
+            var score = 0;
+            var nbNode = 0;
 
-        linksOut.map(function(link){
-            if (link.target.getBiologicalType() === "metabolite"){
-                var nodeIdentifier = metExploreD3.GraphRank.getMetaIdentifier(link.target.dbIdentifier);
-            }
-            else {
-                var nodeIdentifier = link.target.dbIdentifier;
-            }
-            nodeScore = rankScore[nodeIdentifier];
-            score+=Math.min(nodeScore[0],nodeScore[1]);
-            nbNode++;
+            linksIn.map(function(link){
+                if (link.source.isHidden() === true && link.source.getIsSideCompound() === false){
+                    var sourceId = metExploreD3.GraphRank.getIdentifier(link.source.dbIdentifier);
+                    var nodeScore = rankScore[sourceId];
+                    score = score+Math.min(nodeScore[0],nodeScore[1]);
+                    nbNode++;
+                }
+            });
+            linksOut.map(function(link){
+                if (link.target.isHidden() === true && link.target.getIsSideCompound() === false){
+                    var targetId = metExploreD3.GraphRank.getIdentifier(link.target.dbIdentifier);
+                    var nodeScore = rankScore[targetId];
+                    score = score+Math.min(nodeScore[0],nodeScore[1]);
+                    nbNode++;
+                }
+            });
+            var score = score / nbNode;
+
+            scoreList.push(score);
+            scoreDict[identifier] = score;
         });
-        linksIn.map(function(link){
-            if (link.source.getBiologicalType() === "metabolite"){
-                var nodeIdentifier = metExploreD3.GraphRank.getMetaIdentifier(link.source.dbIdentifier);
-            }
-            else {
-                var nodeIdentifier = link.source.dbIdentifier;
-            }
-            nodeScore = rankScore[link.source.dbIdentifier.replace("_c","")];
-            score+=Math.min(nodeScore[0],nodeScore[1]);
-            nbNode++;
-        });
 
-        return score / nbNode;
+        scoreList.sort(function(a,b){return a-b});
+        for (var i = 0; i < 5; i++){
+            var identifier = Object.keys(scoreDict);
+            identifier.forEach(function(id){
+                if (scoreDict[id] === scoreList[i]){
+                    bestReact.push(id);
+                }
+            });
+        }
+        return bestReact;
     },
 
-    getMetaIdentifier: function(identifier) {
+
+    // Identifier functions
+    getIdentifier: function(identifier) {
         return identifier.slice(0,-2);
+    },
+
+    nodeForAll: function(dbID){
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+
+        var listCompartments = ["_c","_x","_m","_r","_l","_e","_b","_g","_n"];
+        var listIdentifier = [];
+
+        listCompartments.forEach(function(compartment){
+            var node = networkData.getNodeByDbIdentifier(dbID+compartment);
+            if (node !== undefined){
+                var identifier = dbID+compartment;
+                listIdentifier.push(identifier);
+            }
+        });
+        return listIdentifier;
     },
 
     // rank style functions
@@ -411,7 +516,7 @@ metExploreD3.GraphRank = {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var rankData = _metExploreViz.getRankById("rankData");
         var rankScore = rankData.getScore();
-        var identifier = node.dbIdentifier.replace("_c","");
+        var identifier = metExploreD3.GraphRank.getIdentifier(node.dbIdentifier);
         var nodeScore = rankScore[identifier];
 
         if (nodeScore !== undefined){
@@ -524,6 +629,8 @@ metExploreD3.GraphRank = {
 
     // side compounds functions
     setSideCompound: function(){
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
         var sideCompounds = ["M_h", "M_h2o", "M_atp", "M_pi", "M_adp", "M_nadp", "M_ppi", "M_nad", "M_nadph", "M_nadh",
                                                     "M_co2", "M_ACP", "M_amp", "M_glyc3p", "M_PGPm1", "M_apoACP", "M_biomass", "M_malACP", "M_nh4", "M_hco3",
                                                     "M_fe3", "M_o2", "M_cu2", "M_so4", "M_fe2", "M_mg2", "M_k", "M_mn2", "M_so3", "M_PGP", "M_zn2", "M_palmACP",
@@ -531,30 +638,14 @@ metExploreD3.GraphRank = {
                                                     "M_pb", "M_hg2", "M_cd2", "M_seln", "M_aso4", "M_o2s", "M_aso3"];
 
         sideCompounds.forEach(function(sideNode){
-            var listNode = metExploreD3.GraphRank.nodeForAll(sideNode);
-            if (listNode !== []){
-                listNode.map(function(node){
+            var listIdentifier = metExploreD3.GraphRank.nodeForAll(sideNode);
+            if (listIdentifier !== []){
+                listIdentifier.map(function(identifier){
+                    var node = networkData.getNodeByDbIdentifier(identifier);
                     node.setIsSideCompound(true);
                 });
             }
         });
-    },
-
-    // get node for all compartments function
-    nodeForAll: function(dbID){
-        var session = _metExploreViz.getSessionById("viz");
-        var networkData = session.getD3Data();
-
-        var listCompartments = ["_c","_x","_m","_r","_l","_e","_b","_g","_n"];
-        var listNode = [];
-
-        listCompartments.forEach(function(compartment){
-            var node = networkData.getNodeByDbIdentifier(dbID+compartment);
-            if (node !== undefined){
-                listNode.push(node);
-            }
-        });
-        return listNode;
     },
 
     // get nb hidden link
@@ -616,7 +707,6 @@ metExploreD3.GraphRank = {
                         node.setLocked(true);
                         metExploreD3.GraphNode.fixNode(node);
                         metExploreD3.GraphRank.updateNbHidden();
-                        metExploreD3.GraphRank.sortReactionFromMetaboRank(node);
                     })
                     .on('mouseenter', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));

@@ -404,7 +404,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								text: 'Sucessors',
 								iconCls: 'expandOut',
 								handler: function() {
-									metExploreD3.GraphRank.showNeighbours(theNode);
+									metExploreD3.GraphRank.showSucessors(theNode);
 									metExploreD3.GraphRank.visit(theNode);
 									theNode.setLocked(true);
 			                        metExploreD3.GraphNode.fixNode(theNode);
