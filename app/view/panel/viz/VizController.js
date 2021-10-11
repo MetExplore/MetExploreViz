@@ -404,7 +404,8 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								text: 'Sucessors',
 								iconCls: 'expandOut',
 								handler: function() {
-									metExploreD3.GraphRank.showSucessors(theNode);
+									// metExploreD3.GraphRank.showSucessors(theNode);
+									metExploreD3.GraphRank.showNeighbours(theNode, "next");
 									metExploreD3.GraphRank.visit(theNode);
 									theNode.setLocked(true);
 			                        metExploreD3.GraphNode.fixNode(theNode);
@@ -415,7 +416,8 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								text: 'Predecessors',
 								iconCls: 'expandIn',
 								handler: function() {
-									metExploreD3.GraphRank.showPredecessors(theNode);
+									// metExploreD3.GraphRank.showPredecessors(theNode);
+									metExploreD3.GraphRank.showNeighbours(theNode, "previous");
 									metExploreD3.GraphRank.visit(theNode);
 									theNode.setLocked(true);
 			                        metExploreD3.GraphNode.fixNode(theNode);
@@ -753,7 +755,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 	                        }]
 	                    });
 					}
-					// metaboRank mode activated
+					// GIR activated
 					if (metExploreD3.GraphRank.launchGIR === true) {
 						viz.CtxMenu = new Ext.menu.Menu({
 							items: [
@@ -761,6 +763,23 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 									text: 'Expand',
 									iconCls: 'neighbours',
 									menu: viz.expandMenu
+								},
+								{
+									text: (theNode.isVisited() ? 'Unvisit' : 'Visit'),
+									iconCls: 'neighbours',
+									hidden: (theNode.getBiologicalType()==="reaction"),
+									handler: function() {
+										if (theNode.isVisited() === true){
+											metExploreD3.GraphRank.unvisit(theNode);
+				                            theNode.setLocked(false);
+				                            metExploreD3.GraphNode.unfixNode(theNode);
+										}
+										else {
+											metExploreD3.GraphRank.visit(theNode);
+											theNode.setLocked(true);
+					                        metExploreD3.GraphNode.fixNode(theNode);
+										}
+									}
 								},
 								{
 									text: 'Collapse',
