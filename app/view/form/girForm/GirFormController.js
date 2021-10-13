@@ -182,17 +182,31 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
     parseFile: function(rankData) {
         var view = this.getView();
         var nbMi = view.lookupReference('miBox').items.items.length;
+
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+
         var rankScore = rankData.rank;
         var allMetabolite = Object.keys(rankScore);
         var listMi = [];
+
         allMetabolite.forEach(function(data){
             var rankIn = parseInt(rankScore[data][0]);
             var rankOut = parseInt(rankScore[data][1]);
             if (rankIn < 26 || rankOut < 26) {
-                var mi = {metabolites:data}
-                listMi.push(mi);
+                var nodeName = metExploreD3.GraphRank.transformId(data, "name");
+
+                if (nodeName !== undefined){
+                    var mi = {metabolites:nodeName};
+                    listMi.push(mi);
+                }
+                // if (node === undefined){
+                //     var mi = {metabolites:data};
+                // }
+                // listMi.push(mi);
             }
         });
+
         for (var i = 1; i < nbMi+1; i++){
             var comboComponent = this.getView().lookupReference('selectStart'+i);
             var metaStore = comboComponent.getStore();

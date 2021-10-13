@@ -125,23 +125,25 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			metaboRankPanel.setHidden(false);
 			enterBtn.setText("Exit MetaboRank mode");
 
-			// metExploreD3.GraphNetwork.animationButtonOff('viz');
-            // var force = _metExploreViz.getSessionById("viz").getForce();
-            // force.stop();
-
 			metaboRankPanel.open = true;
 			metExploreD3.GraphRank.metaboRankMode = true;
 		}
 		else {
-			sidePanel.setHidden(false);
-			metaboRankPanel.setHidden(true);
-			enterBtn.setText("Enter MetaboRank mode");
+			if (metExploreD3.GraphRank.launchGIR === false){
+				sidePanel.setHidden(false);
+				metaboRankPanel.setHidden(true);
+				enterBtn.setText("Enter MetaboRank mode");
 
-			metExploreD3.GraphRank.delRing();
-			// metExploreD3.GraphNetwork.animationButtonOn('viz');
+				metExploreD3.GraphRank.delRing();
 
-			metaboRankPanel.open = false;
-			metExploreD3.GraphRank.metaboRankMode = false;
+				metaboRankPanel.open = false;
+				metExploreD3.GraphRank.metaboRankMode = false;
+			}
+			else {
+				metExploreD3.displayWarning("Work in progress",
+	                'GIR is still in use'
+	            );
+			}
 		}
 	},
 

@@ -1,6 +1,6 @@
 /**
  * @class metExploreD3.GraphRank
- * Function to manage metaboRank vizu
+ * Function to manage GIR
  *
  * Guided Interaction Reconstruction
  *
@@ -23,7 +23,8 @@ metExploreD3.GraphRank = {
         var listMiCmpt = [];
 
         listMi.map(function(mi){
-            var miCmpt = metExploreD3.GraphRank.nodeForAll(mi);
+            var meta = metExploreD3.GraphRank.transformId(mi, "id");
+            var miCmpt = metExploreD3.GraphRank.nodeForAll(metExploreD3.GraphRank.getIdentifier(meta));
             miCmpt.map(function(identifier){
                 listMiCmpt.push(identifier);
             });
@@ -180,64 +181,6 @@ metExploreD3.GraphRank = {
     },
 
     // Show and collapse nodes functions
-    // showNeighbours: function(node) {
-    //     var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
-    //     var rankData = _metExploreViz.getRankById("rankData");
-    //     var connexion = rankData.getData();
-    //
-    //     var identifier = node.dbIdentifier;
-    //
-    //     var linkOut = connexion[identifier]["linkOut"];
-    //     var linkIn = connexion[identifier]["linkIn"];
-    //
-    //     var addRingNodes = [];
-    //
-    //     var reactList = metExploreD3.GraphRank.sortReactFromScore(node);
-    //
-    //     linkIn.map(function(link, i){
-    //         if (reactList.includes(link.source.dbIdentifier)){
-    //             link.source.show();
-    //             addRingNodes.push(link.source);
-    //             identifier = link.source.dbIdentifier;
-    //             connexion[identifier]["linkIn"].map(function(that, i){
-    //                 var isSide = that.source.getIsSideCompound();
-    //                 if (isSide === false){
-    //                     that.source.show();
-    //                     addRingNodes.push(that.source);
-    //                 }
-    //             });
-    //         }
-    //     });
-    //
-    //     linkOut.map(function(link, i){
-    //         if (reactList.includes(link.target.dbIdentifier)){
-    //             link.target.show();
-    //             addRingNodes.push(link.target);
-    //             identifier = link.target.dbIdentifier;
-    //             connexion[identifier]["linkOut"].map(function(that, i){
-    //                 var isSide = that.target.getIsSideCompound();
-    //                 if (isSide === false){
-    //                     that.target.show();
-    //                     addRingNodes.push(that.target);
-    //                 }
-    //                 if (isSide === true){
-    //                     that.source.asSideCompounds = true;
-    //                     that.source.sideCompoundsHidden = true;
-    //                 }
-    //             });
-    //         }
-    //     });
-    //
-    //     metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
-    //
-    //     addRingNodes.map(function(thisNode){
-    //         metExploreD3.GraphRank.createNodeRing(thisNode);
-    //         if (thisNode.getBiologicalType() === "metabolite"){
-    //             metExploreD3.GraphRank.nodeStyleByRank(thisNode);
-    //         }
-    //     });
-    // },
-
     showNeighbours: function(node, direction) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var rankData = _metExploreViz.getRankById("rankData");
@@ -308,48 +251,6 @@ metExploreD3.GraphRank = {
         });
     },
 
-    // showSucessors: function(node) {
-    //     var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
-    //     var rankData = _metExploreViz.getRankById("rankData");
-    //     var connexion = rankData.getData();
-    //
-    //     var identifier = node.dbIdentifier;
-    //
-    //     var linkOut = connexion[identifier]["linkOut"];
-    //
-    //     var addRingNodes = [];
-    //
-    //     var reactList = metExploreD3.GraphRank.sortReactFromScore(node);
-    //
-    //     linkOut.map(function(link, i){
-    //         if (reactList.includes(link.target.dbIdentifier)){
-    //             link.target.show();
-    //             addRingNodes.push(link.target);
-    //             identifier = link.target.dbIdentifier;
-    //             connexion[identifier]["linkOut"].map(function(that, i){
-    //                 var isSide = that.target.getIsSideCompound();
-    //                 if (isSide === false){
-    //                     that.target.show();
-    //                     addRingNodes.push(that.target);
-    //                 }
-    //                 if (isSide === true){
-    //                     that.source.asSideCompounds = true;
-    //                     that.source.sideCompoundsHidden = true;
-    //                 }
-    //             });
-    //         }
-    //     });
-    //
-    //     metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
-    //
-    //     addRingNodes.map(function(thisNode){
-    //         metExploreD3.GraphRank.createNodeRing(thisNode);
-    //         if (thisNode.getBiologicalType() === "metabolite"){
-    //             metExploreD3.GraphRank.nodeStyleByRank(thisNode);
-    //         }
-    //     });
-    // },
-
     showSideCompounds: function(react) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -372,43 +273,6 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.visitLink();
     },
 
-    // showPredecessors: function(node) {
-    //     var rankData = _metExploreViz.getRankById("rankData");
-    //     var connexion = rankData.getData();
-    //
-    //     var identifier = node.dbIdentifier;
-    //
-    //     var linkIn = connexion[identifier]["linkIn"];
-    //
-    //     var addRingNodes = [];
-    //
-    //     var reactList = metExploreD3.GraphRank.sortReactFromScore(node);
-    //
-    //     linkIn.map(function(link, i){
-    //         if (reactList.includes(link.source.dbIdentifier)){
-    //             link.source.show();
-    //             addRingNodes.push(link.source);
-    //             identifier = link.source.dbIdentifier;
-    //             connexion[identifier]["linkIn"].map(function(that, i){
-    //                 var isSide = that.source.getIsSideCompound();
-    //                 if (isSide === false){
-    //                     that.source.show();
-    //                     addRingNodes.push(that.source);
-    //                 }
-    //             });
-    //         }
-    //     });
-    //
-    //     metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
-    //
-    //     addRingNodes.map(function(thisNode){
-    //         metExploreD3.GraphRank.createNodeRing(thisNode);
-    //         if (node.getBiologicalType() === "metabolite"){
-    //             metExploreD3.GraphRank.nodeStyleByRank(thisNode);
-    //         }
-    //     });
-    // },
-
     hideNeighbours: function(node) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -425,12 +289,12 @@ metExploreD3.GraphRank = {
 
         linkIn.map(function(link, i){
             links.each(function(thisLink){
-                if (thisLink.source === link.source || thisLink.target === link.source){
+                if ((thisLink.source === link.source || thisLink.target === link.source) && link.source.isHidden() === false){
                     nbLinkIn++;
                 }
             });
             if (nbLinkIn < 3 && bioType === "metabolite"){
-                link.source.hide();
+                metExploreD3.GraphRank.hideNeighbours(link.source);
             }
             if (nbLinkIn < 2 && bioType === "reaction"){
                 link.source.hide();
@@ -439,12 +303,12 @@ metExploreD3.GraphRank = {
         });
         linkOut.map(function(link, i){
             links.each(function(thisLink){
-                if (thisLink.source === link.target || thisLink.target === link.target){
+                if ((thisLink.source === link.target || thisLink.target === link.target) && link.target.isHidden() === false){
                     nbLinkOut++;
                 }
             });
             if (nbLinkOut < 3 && bioType === "metabolite"){
-                link.target.hide();
+                metExploreD3.GraphRank.hideNeighbours(link.target);
             }
             if (nbLinkOut < 2 && bioType === "reaction"){
                 link.target.hide();
@@ -633,6 +497,28 @@ metExploreD3.GraphRank = {
             }
         });
         return listIdentifier;
+    },
+
+    transformId: function(id, direction) {
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+
+        if (direction === "name"){
+            var listNode = metExploreD3.GraphRank.nodeForAll(id);
+            var node = networkData.getNodeByDbIdentifier(listNode[0]);
+
+            if (node !== undefined){
+                return node.name;
+            }
+        }
+
+        if (direction === "id"){
+            var node = networkData.getNodeByName(id);
+
+            if (node !== undefined){
+                return node.dbIdentifier;
+            }
+        }
     },
 
     // rank style functions
