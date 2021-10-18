@@ -4,15 +4,26 @@
  *
  * Guided Interaction Reconstruction
  *
+ * @uses metExploreD3.GraphNode
+ * @uses metExploreD3.GraphCaption
+ * @uses metExploreD3.GraphNetwork
+ *
  * @author JCG
  */
 
 metExploreD3.GraphRank = {
-
+    /**
+     * @property {Boolean} [launchGIR=false]
+     * @property {Boolean} [metaboRankMode=false]
+     */
     launchGIR: false,
     metaboRankMode: false,
 
     // Start and quit GIR methods
+    /*******************************************
+    * Initialization of Gir style and function
+    * @param {Array} listMi Array of nodes name
+    */
     startGir: function(listMi) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
@@ -53,6 +64,10 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphCaption.delCaption();
     },
 
+    /*******************************************
+     * Define starting node style
+     * @param {Object} node node object
+     */
     startNode: function(node) {
         var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("rect");
         allNodes.filter(function(thisNode){
@@ -63,6 +78,9 @@ metExploreD3.GraphRank = {
         .style("stroke-opacity",0.4);
     },
 
+    /*******************************************
+     * Remove Gir style and reconstruct entire network from networkData
+     */
     quitGir: function() {
         var mask = metExploreD3.createLoadMask("Reconstruct network","viz");
         var session = _metExploreViz.getSessionById("viz");
@@ -98,6 +116,9 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphCaption.drawCaption();
     },
 
+    /*******************************************
+     * Remove Gir style and apply style from panel selection
+     */
     removeGirStyle: function() {
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         var reactionStyle = metExploreD3.getReactionStyle();
@@ -126,6 +147,9 @@ metExploreD3.GraphRank = {
         });
     },
 
+    /*******************************************
+     * Remove Gir style and extract network from visited node and link
+     */
     quitAndExtract: function() {
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
@@ -148,9 +172,16 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.delRing();
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
         metExploreD3.GraphCaption.drawCaption();
+
+        console.log(d3.select("#viz").select("#D3viz").selectAll("path.convexhull")); // contient convexhull quand display
+        console.log(_metExploreViz.getSessionById("viz").groupPath);
+        metExploreD3.GraphNode.loadPath("viz","Compartments");
     },
 
     // save network function
+    /*******************************************
+    * Create a numeric map of the network
+    */
     saveNetwork: function() {
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
@@ -181,6 +212,12 @@ metExploreD3.GraphRank = {
     },
 
     // Show and collapse nodes functions
+    /*******************************************
+    * According to the direction, show previous, next or both neighbours from the node.
+    * Sort reactions according to their metaborank score and show them 5 by 5
+    * @param {Object} node node object
+    * @param {String} direction previous, next or all
+    */
     showNeighbours: function(node, direction) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var rankData = _metExploreViz.getRankById("rankData");
@@ -251,6 +288,10 @@ metExploreD3.GraphRank = {
         });
     },
 
+    /*******************************************
+     * show side compounds from a reaction node
+     * @param {Object} react node object
+     */
     showSideCompounds: function(react) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -273,6 +314,11 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.visitLink();
     },
 
+    /*******************************************
+     * Hide neighbours from a node and the node.
+     * Recursivity if the neighbours have 0 neighbours.
+     * @param {Object} node node object
+     */
     hideNeighbours: function(node) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -320,6 +366,10 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
     },
 
+    /*******************************************
+     * Hide side compounds from a reaction node
+     * @param {Object} react node object
+     */
     hideSideCompounds: function(react) {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
         var session = _metExploreViz.getSessionById("viz");
@@ -337,6 +387,10 @@ metExploreD3.GraphRank = {
     },
 
     // threshold functions
+    /*******************************************
+    * Sort reactions according to previous and next neighbours rank score
+    * @param {Object} node node object
+    */
     sortAllReactFromScore: function(node) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -373,6 +427,10 @@ metExploreD3.GraphRank = {
         }
     },
 
+    /*******************************************
+     * Sort reactions according to previous neighbours rank score
+     * @param {Object} node node object
+     */
     sortInReactFromScore: function(node){
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -400,6 +458,10 @@ metExploreD3.GraphRank = {
         }
     },
 
+    /*******************************************
+     * Sort reactions according to next neighbours rank score
+     * @param {Object} node node object
+     */
     sortOutReactFromScore: function(node){
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -427,6 +489,10 @@ metExploreD3.GraphRank = {
         }
     },
 
+    /*******************************************
+     * Calcul mean score for reaction list
+     * @param {Array} reactList list of reaction identifier
+     */
     getScore: function(reactList) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -476,12 +542,19 @@ metExploreD3.GraphRank = {
         return bestReact;
     },
 
-
     // Identifier functions
+    /*******************************************
+    * Get node identifier without compartment letter
+    * @param {String} identifier node identifier
+    */
     getIdentifier: function(identifier) {
         return identifier.slice(0,-2);
     },
 
+    /*******************************************
+     * According to node identifier, get nodes from all compartments
+     * @param {String} dbID node identifier
+     */
     nodeForAll: function(dbID){
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
@@ -499,6 +572,12 @@ metExploreD3.GraphRank = {
         return listIdentifier;
     },
 
+    /*******************************************
+     * Transform node identifier to node name
+     * Or node name to node identifier
+     * @param {String} id node identifier
+     * @param {String} direction name or id
+     */
     transformId: function(id, direction) {
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
@@ -522,6 +601,10 @@ metExploreD3.GraphRank = {
     },
 
     // rank style functions
+    /*******************************************
+    * Display style according to rank score of the node
+    * @param {Object} node node object
+    */
     nodeStyleByRank: function(node) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var rankData = _metExploreViz.getRankById("rankData");
@@ -560,6 +643,10 @@ metExploreD3.GraphRank = {
     },
 
     // visit and unvisit functions
+    /*******************************************
+    * Mark as visit the node and check if some links connect two visited nodes
+    * @param {Object} node node object
+    */
     visit: function(node) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 
@@ -573,7 +660,10 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.visitLink();
     },
 
-
+    /*******************************************
+     * Mark as unvisit the node and check changement on links
+     * @param {Object} node node object
+     */
     unvisit: function(node) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
@@ -589,6 +679,9 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.visitLink();
     },
 
+    /*******************************************
+     * Change link style if it connect two visited nodes
+     */
     visitLink: function() {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
         var rankData = _metExploreViz.getRankById("rankData");
@@ -615,6 +708,9 @@ metExploreD3.GraphRank = {
         });
     },
 
+    /*******************************************
+     * Change link style if it doesn't connect two visited nodes
+     */
     unvisitLink: function() {
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
         var rankData = _metExploreViz.getRankById("rankData");
@@ -638,6 +734,9 @@ metExploreD3.GraphRank = {
     },
 
     // side compounds functions
+    /*******************************************
+    * Set as side compounds nodes in the list
+    */
     setSideCompound: function(){
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
@@ -659,6 +758,10 @@ metExploreD3.GraphRank = {
     },
 
     // get nb hidden link
+    /*******************************************
+    * Check how many reaction is hidden from the node
+    * @param {Object} node node object
+    */
     getNbHidden: function(node) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
@@ -685,6 +788,10 @@ metExploreD3.GraphRank = {
     },
 
     // Create and delete ring functions
+    /*******************************************
+    * Create radial menu
+    * @param {Object} target node object
+    */
     createNodeRing: function(target) {
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
         var reactionStyle = metExploreD3.getReactionStyle();
@@ -850,6 +957,9 @@ metExploreD3.GraphRank = {
         });
     },
 
+    /*******************************************
+     * update number of hidden reaction
+     */
     updateNbHidden: function() {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         nodes.each(function(node){
@@ -915,6 +1025,9 @@ metExploreD3.GraphRank = {
         });
     },
 
+    /*******************************************
+     * Remove radial menu
+     */
     delRing: function() {
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".expand").remove();
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".collapse").remove();

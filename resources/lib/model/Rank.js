@@ -1,6 +1,6 @@
 /**
  * @author JCG
- * Model to handle List of Rank data for GIR
+ * Model to handle List of Rank data and numeric save of network for GIR
  */
 
 var Rank = function(name, data, id, rank){

@@ -1,14 +1,11 @@
 /**
  * @author JCG
- * (a)description metaboRankFormController : Control GIR parameters
+ * (a)description GirFormController : Control GIR parameters
  */
 
 Ext.define('metExploreViz.view.form.girForm.GirFormController', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.form-girForm-girForm',
-    requires: [
-
-    ],
 
     /**
      * Aplies event linsteners to the view

@@ -1,6 +1,6 @@
 /**
  * @author JCG
- * (a)description MetaboRankForm : Manage GIR
+ * (a)description GirForm : Manage GIR
  */
 Ext.define('metExploreViz.view.form.girForm.GirForm', {
     extend: 'Ext.panel.Panel',
