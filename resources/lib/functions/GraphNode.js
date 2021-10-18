@@ -1750,17 +1750,33 @@ metExploreD3.GraphNode = {
         }
         session.groupPath = function (d) {
 
+            var nodeNotHidden = [];
+            d.values.map(function(i){
+                if (i.isHidden() === false){
+                    nodeNotHidden.push([i.x, i.y]);
+                }
+            });
 
+            // var scale = metExploreD3.getScaleById(parent);
+            // if (d.values != undefined) {
+            //     if (d.values.length > 0) {
+            //         if (d.values.length > 2) {
+            //
+            //             return "M" +
+            //                 d3.polygonHull(d.values.map(function (i) {
+            //
+            //                         return [i.x, i.y];
+            //                 }))
+            //                     .join("L")
+            //                 + "Z";
+            //         }
             var scale = metExploreD3.getScaleById(parent);
-            if (d.values != undefined) {
-                if (d.values.length > 0) {
-                    if (d.values.length > 2) {
+            if (nodeNotHidden != undefined) {
+                if (nodeNotHidden.length > 0) {
+                    if (nodeNotHidden.length > 2) {
 
                         return "M" +
-                            d3.polygonHull(d.values.map(function (i) {
-
-                                    return [i.x, i.y];
-                            }))
+                            d3.polygonHull(nodeNotHidden)
                                 .join("L")
                             + "Z";
                     }

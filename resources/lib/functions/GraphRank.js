@@ -172,10 +172,6 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.delRing();
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
         metExploreD3.GraphCaption.drawCaption();
-
-        console.log(d3.select("#viz").select("#D3viz").selectAll("path.convexhull")); // contient convexhull quand display
-        console.log(_metExploreViz.getSessionById("viz").groupPath);
-        metExploreD3.GraphNode.loadPath("viz","Compartments");
     },
 
     // save network function
