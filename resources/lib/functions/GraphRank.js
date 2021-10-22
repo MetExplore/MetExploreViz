@@ -15,9 +15,11 @@ metExploreD3.GraphRank = {
     /**
      * @property {Boolean} [launchGIR=false]
      * @property {Boolean} [metaboRankMode=false]
+     * @property {String} [girMode="classic"]
      */
     launchGIR: false,
     metaboRankMode: false,
+    girMode: "classic",
 
     // Start and quit GIR methods
     /*******************************************
@@ -796,161 +798,392 @@ metExploreD3.GraphRank = {
 
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 
-        nodes.each(function(node){
-            // metabolite ring
-            if (node === target && node.getBiologicalType() !== "reaction"){
-                var boxExpand = d3.select(this)
-                    .insert("svg", ":first-child")
-                    .attr(
-                        "viewBox",
-                        function (d) {
-                            +" " + minDim*2;
-                        }
-                    )
-                    .attr("width", 5+metaboliteStyle.getWidth())
-                    .attr("height", 5+metaboliteStyle.getHeight())
-                    .attr("preserveAspectRatio", "xMinYMin")
-                    .attr("y",  -metaboliteStyle.getHeight())
-                    .attr("x", 0)
-                    .attr("class", "expand")
-                    .classed('hide', true)
-                    .on('click', function(node, v) {
-                        metExploreD3.GraphRank.showNeighbours(node, "all");
-                        metExploreD3.GraphRank.visit(node);
-                        node.setLocked(true);
-                        metExploreD3.GraphNode.fixNode(node);
-                        metExploreD3.GraphRank.updateNbHidden();
-                    })
-                    .on('mouseenter', function (e, v) {
-                        var oldX = parseFloat(d3.select(this).attr("x"));
-                        d3.select(this).attr("x", oldX+0.5);
-
-                        var oldY = parseFloat(d3.select(this).attr("y"));
-                        d3.select(this).attr("y", oldY-0.5);
-                    })
-                    .on('mouseleave', function (e, v) {
-                        var oldX = parseFloat(d3.select(this).attr("x"));
-                        d3.select(this).attr("x", oldX-0.5);
-
-                        var oldY = parseFloat(d3.select(this).attr("y"));
-                        d3.select(this).attr("y", oldY+0.5);
-                    });
-
-                boxExpand.append("svg:path")
-                    .attr("class", "backgroundExpand")
-                    .attr("d", "M0" + "," + metaboliteStyle.getHeight() +
-                    " L"+ metaboliteStyle.getWidth() +","+ metaboliteStyle.getHeight() +
-                    " L"+ metaboliteStyle.getRX() * 2 +"," + metaboliteStyle.getRY() * 2 +
-                    " A"+ metaboliteStyle.getRX() * 2 +","+ metaboliteStyle.getRY() * 2 + ",0 0 0 " + "0,0" +
-                    " L0,"+ metaboliteStyle.getHeight())
-                    .attr("fill", "#00aa00");
-
-                boxExpand.append("image")
-                    .attr("class", "iconExpand")
-                    .attr("y", 1)
-                    .attr("x", 0)
-                    .attr("width", "80%")
-                    .attr("height", "80%")
-                    .attr("xlink:href",  "resources/icons/plus.svg");
-
-                var boxCollaspe = d3.select(this)
-                    .insert("svg", ":first-child")
-                    .attr(
-                        "viewBox",
-                        function (d) {
-                            +" " + minDim*2;
-                        }
-                    )
-                    .attr("width",  5+metaboliteStyle.getWidth())
-                    .attr("height", 5+metaboliteStyle.getHeight())
-                    .attr("preserveAspectRatio", "xMinYMin")
-                    .attr("y", 0)
-                    .attr("x", 0)
-                    .attr("class", "collapse")
-                    .classed('hide', true)
-                    .on('click', function(node, v) {
-                        if (node.isVisited() === false){
-                            metExploreD3.GraphRank.hideNeighbours(node);
+        if (metExploreD3.GraphRank.girMode === "classic"){
+            nodes.each(function(node){
+                // metabolite ring
+                if (node === target && node.getBiologicalType() !== "reaction"){
+                    var boxExpand = d3.select(this)
+                        .insert("svg", ":first-child")
+                        .attr(
+                            "viewBox",
+                            function (d) {
+                                +" " + minDim*2;
+                            }
+                        )
+                        .attr("width", 5+metaboliteStyle.getWidth())
+                        .attr("height", 5+metaboliteStyle.getHeight())
+                        .attr("preserveAspectRatio", "xMinYMin")
+                        .attr("y",  -metaboliteStyle.getHeight())
+                        .attr("x", 0)
+                        .attr("class", "expand")
+                        .classed('hide', true)
+                        .on('click', function(node, v) {
+                            metExploreD3.GraphRank.showNeighbours(node, "all");
+                            metExploreD3.GraphRank.visit(node);
+                            node.setLocked(true);
+                            metExploreD3.GraphNode.fixNode(node);
                             metExploreD3.GraphRank.updateNbHidden();
-                            metExploreD3.GraphRank.visitLink();
-                        }
-                        if (node.isVisited() === true){
+                        })
+                        .on('mouseenter', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX+0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY-0.5);
+                        })
+                        .on('mouseleave', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX-0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY+0.5);
+                        });
+
+                    boxExpand.append("svg:path")
+                        .attr("class", "backgroundExpand")
+                        .attr("d", "M0" + "," + metaboliteStyle.getHeight() +
+                        " L"+ metaboliteStyle.getWidth() +","+ metaboliteStyle.getHeight() +
+                        " L"+ metaboliteStyle.getRX() * 2 +"," + metaboliteStyle.getRY() * 2 +
+                        " A"+ metaboliteStyle.getRX() * 2 +","+ metaboliteStyle.getRY() * 2 + ",0 0 0 " + "0,0" +
+                        " L0,"+ metaboliteStyle.getHeight())
+                        .attr("fill", "#00aa00");
+
+                    boxExpand.append("image")
+                        .attr("class", "iconExpand")
+                        .attr("y", 1)
+                        .attr("x", 0)
+                        .attr("width", "80%")
+                        .attr("height", "80%")
+                        .attr("xlink:href",  "resources/icons/plus.svg");
+
+                    var boxCollaspe = d3.select(this)
+                        .insert("svg", ":first-child")
+                        .attr(
+                            "viewBox",
+                            function (d) {
+                                +" " + minDim*2;
+                            }
+                        )
+                        .attr("width",  5+metaboliteStyle.getWidth())
+                        .attr("height", 5+metaboliteStyle.getHeight())
+                        .attr("preserveAspectRatio", "xMinYMin")
+                        .attr("y", 0)
+                        .attr("x", 0)
+                        .attr("class", "collapse")
+                        .classed('hide', true)
+                        .on('click', function(node, v) {
+                            if (node.isVisited() === false){
+                                metExploreD3.GraphRank.hideNeighbours(node);
+                                metExploreD3.GraphRank.updateNbHidden();
+                                metExploreD3.GraphRank.visitLink();
+                            }
+                            if (node.isVisited() === true){
+                                metExploreD3.GraphRank.unvisit(node);
+                                node.setLocked(false);
+                                metExploreD3.GraphNode.unfixNode(node);
+                            }
+                        })
+                        .on('mouseenter', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX+0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY+0.5);
+                        })
+                        .on('mouseleave', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX-0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY-0.5);
+                        });
+
+                    boxCollaspe.append("svg:path")
+                        .attr("class", "backgroundCollapse")
+                        .attr("d", "M" + (-metaboliteStyle.getWidth()) +"," + 0 +
+                        " a1,1 0 0,0 " + (metaboliteStyle.getWidth() *2) +",0")
+                        .attr("fill", "#dd0000");
+
+                    boxCollaspe.append("image")
+                        .attr("class", "iconCollapse")
+                        .attr("y", 1)
+                        .attr("x", 5)
+                        .attr("width", "40%")
+                        .attr("height", "40%")
+                        .attr("xlink:href",  "resources/icons/minus.svg");
+                }
+
+                // reaction ring
+                if (node === target && node.getBiologicalType() === "reaction"){
+                    var boxCollapse = d3.select(this)
+                        .insert("svg", ":first-child")
+                        .attr(
+                            "viewBox",
+                            function (d) {
+                                +" " + minDim*2;
+                            }
+                        )
+                        .attr("width", 5+reactionStyle.getWidth())
+                        .attr("height", 5+reactionStyle.getHeight())
+                        .attr("preserveAspectRatio", "xMinYMin")
+                        .attr("y",  -reactionStyle.getHeight())
+                        .attr("x", 0)
+                        .attr("class", "collapse")
+                        .classed('hide', true)
+                        .on('click', function(node, v) {
+                            metExploreD3.GraphRank.hideNeighbours(node);
                             metExploreD3.GraphRank.unvisit(node);
-                            node.setLocked(false);
-                            metExploreD3.GraphNode.unfixNode(node);
-                        }
-                    })
-                    .on('mouseenter', function (e, v) {
-                        var oldX = parseFloat(d3.select(this).attr("x"));
-                        d3.select(this).attr("x", oldX+0.5);
+                            metExploreD3.GraphRank.updateNbHidden();
+                        })
 
-                        var oldY = parseFloat(d3.select(this).attr("y"));
-                        d3.select(this).attr("y", oldY+0.5);
-                    })
-                    .on('mouseleave', function (e, v) {
-                        var oldX = parseFloat(d3.select(this).attr("x"));
-                        d3.select(this).attr("x", oldX-0.5);
+                    boxCollapse.append("svg:path")
+                        .attr("class", "backgroundCollapse")
+                        .attr("d", "M" + reactionStyle.getWidth() + "," + reactionStyle.getHeight() +
+                            " L0," + reactionStyle.getHeight() +
+                            " L0," + reactionStyle.getRY() * 2 +
+                            " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
+                            " L" + reactionStyle.getWidth() + ",0")
+                        .attr("fill", "#dd0000");
 
-                        var oldY = parseFloat(d3.select(this).attr("y"));
-                        d3.select(this).attr("y", oldY-0.5);
-                    });
+                    boxCollapse.append("image")
+                        .attr("class", "iconCollapse")
+                        .attr("y", reactionStyle.getHeight() / 4 - (reactionStyle.getHeight() - reactionStyle.getRY() * 2) / 4)
+                        .attr("x", reactionStyle.getWidth() / 4 - (reactionStyle.getWidth() - reactionStyle.getRX() * 2) / 8)
+                        .attr("width", "40%")
+                        .attr("height", "40%")
+                        .attr("xlink:href",  "resources/icons/minus.svg");
+                }
+            });
+        }
 
-                boxCollaspe.append("svg:path")
-                    .attr("class", "backgroundCollapse")
-                    .attr("d", "M" + (-metaboliteStyle.getWidth()) +"," + 0 +
-                    " a1,1 0 0,0 " + (metaboliteStyle.getWidth() *2) +",0")
-                    .attr("fill", "#dd0000");
 
-                boxCollaspe.append("image")
-                    .attr("class", "iconCollapse")
-                    .attr("y", 1)
-                    .attr("x", 5)
-                    .attr("width", "40%")
-                    .attr("height", "40%")
-                    .attr("xlink:href",  "resources/icons/minus.svg");
-            }
 
-            // reaction ring
-            if (node === target && node.getBiologicalType() === "reaction"){
-                var boxCollapse = d3.select(this)
-                    .insert("svg", ":first-child")
-                    .attr(
-                        "viewBox",
-                        function (d) {
-                            +" " + minDim*2;
-                        }
-                    )
-                    .attr("width", 5+reactionStyle.getWidth())
-                    .attr("height", 5+reactionStyle.getHeight())
-                    .attr("preserveAspectRatio", "xMinYMin")
-                    .attr("y",  -reactionStyle.getHeight())
-                    .attr("x", 0)
-                    .attr("class", "expand")
-                    .classed('hide', true)
-                    .on('click', function(node, v) {
-                        metExploreD3.GraphRank.hideNeighbours(node);
-                        metExploreD3.GraphRank.unvisit(node);
-                        metExploreD3.GraphRank.updateNbHidden();
-                    })
 
-                boxCollapse.append("svg:path")
-                    .attr("class", "backgroundExpand")
-                    .attr("d", "M" + reactionStyle.getWidth() + "," + reactionStyle.getHeight() +
-                        " L0," + reactionStyle.getHeight() +
-                        " L0," + reactionStyle.getRY() * 2 +
-                        " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
-                        " L" + reactionStyle.getWidth() + ",0")
-                    .attr("fill", "#dd0000");
 
-                boxCollapse.append("image")
-                    .attr("class", "iconExpand")
-                    .attr("y", reactionStyle.getHeight() / 4 - (reactionStyle.getHeight() - reactionStyle.getRY() * 2) / 4)
-                    .attr("x", reactionStyle.getWidth() / 4 - (reactionStyle.getWidth() - reactionStyle.getRX() * 2) / 8)
-                    .attr("width", "40%")
-                    .attr("height", "40%")
-                    .attr("xlink:href",  "resources/icons/minus.svg");
-            }
-        });
+
+
+
+
+
+        if (metExploreD3.GraphRank.girMode === "advance"){
+            nodes.each(function(node){
+                // metabolite ring
+                if (node === target && node.getBiologicalType() !== "reaction"){
+                    var boxExpand = d3.select(this)
+                        .insert("svg", ":first-child")
+                        .attr(
+                            "viewBox",
+                            function (d) {
+                                +" " + minDim*2;
+                            }
+                        )
+                        .attr("width", 5+metaboliteStyle.getWidth())
+                        .attr("height", 5+metaboliteStyle.getHeight())
+                        .attr("preserveAspectRatio", "xMinYMin")
+                        .attr("y",  -metaboliteStyle.getHeight())
+                        .attr("x", 0)
+                        .attr("class", "expand")
+                        .classed('hide', true)
+                        .on('click', function(node, v) {
+                            metExploreD3.GraphRank.showNeighbours(node, "all");
+                            metExploreD3.GraphRank.visit(node);
+                            node.setLocked(true);
+                            metExploreD3.GraphNode.fixNode(node);
+                            metExploreD3.GraphRank.updateNbHidden();
+                        })
+                        .on('mouseenter', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX+0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY-0.5);
+                        })
+                        .on('mouseleave', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX-0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY+0.5);
+                        });
+
+                    boxExpand.append("svg:path")
+                        .attr("class", "backgroundExpand")
+                        .attr("d", "M0" + "," + metaboliteStyle.getHeight() +
+                        " L"+ metaboliteStyle.getWidth() +","+ metaboliteStyle.getHeight() +
+                        " L"+ metaboliteStyle.getRX() * 2 +"," + metaboliteStyle.getRY() * 2 +
+                        " A"+ metaboliteStyle.getRX() * 2 +","+ metaboliteStyle.getRY() * 2 + ",0 0 0 " + "0,0" +
+                        " L0,"+ metaboliteStyle.getHeight())
+                        .attr("fill", "#00aa00");
+
+                    boxExpand.append("image")
+                        .attr("class", "iconExpand")
+                        .attr("y", 1)
+                        .attr("x", 0)
+                        .attr("width", "80%")
+                        .attr("height", "80%")
+                        .attr("xlink:href",  "resources/icons/plus.svg");
+
+                    var boxCollaspe = d3.select(this)
+                        .insert("svg", ":first-child")
+                        .attr(
+                            "viewBox",
+                            function (d) {
+                                +" " + minDim*2;
+                            }
+                        )
+                        .attr("width",  5+metaboliteStyle.getWidth())
+                        .attr("height", 5+metaboliteStyle.getHeight())
+                        .attr("preserveAspectRatio", "xMinYMin")
+                        .attr("y", 0)
+                        .attr("x", 0)
+                        .attr("class", "collapse")
+                        .classed('hide', true)
+                        .on('click', function(node, v) {
+                            if (node.isVisited() === false){
+                                metExploreD3.GraphRank.hideNeighbours(node);
+                                metExploreD3.GraphRank.updateNbHidden();
+                                metExploreD3.GraphRank.visitLink();
+                            }
+                            if (node.isVisited() === true){
+                                metExploreD3.GraphRank.unvisit(node);
+                                node.setLocked(false);
+                                metExploreD3.GraphNode.unfixNode(node);
+                            }
+                        })
+                        .on('mouseenter', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX+0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY+0.5);
+                        })
+                        .on('mouseleave', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX-0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY-0.5);
+                        });
+
+                    boxCollaspe.append("svg:path")
+                        .attr("class", "backgroundCollapse")
+                        .attr("d", "M" + (-metaboliteStyle.getWidth()) +"," + 0 +
+                        " a1,1 0 0,0 " + (metaboliteStyle.getWidth() *2) +",0")
+                        .attr("fill", "#dd0000");
+
+                    boxCollaspe.append("image")
+                        .attr("class", "iconCollapse")
+                        .attr("y", 1)
+                        .attr("x", 5)
+                        .attr("width", "40%")
+                        .attr("height", "40%")
+                        .attr("xlink:href",  "resources/icons/minus.svg");
+                }
+
+                // reaction ring
+                if (node === target && node.getBiologicalType() === "reaction"){
+                    var boxExpand = d3.select(this)
+                        .insert("svg", ":first-child")
+                        .attr(
+                            "viewBox",
+                            function (d) {
+                                +" " + minDim*2;
+                            }
+                        )
+                        .attr("width", 5+reactionStyle.getWidth())
+                        .attr("height", 5+reactionStyle.getHeight())
+                        .attr("preserveAspectRatio", "xMinYMin")
+                        .attr("y",  -reactionStyle.getHeight())
+                        .attr("x", 0)
+                        .attr("class", "expand")
+                        .classed('hide', true)
+                        .on('click', function(node, v) {
+
+                        })
+                        .on('mouseenter', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX+0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY-0.5);
+                        })
+                        .on('mouseleave', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX-0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY+0.5);
+                        });
+
+                    boxExpand.append("svg:path")
+                        .attr("class", "backgroundExpand")
+                        .attr("d", "M" + reactionStyle.getWidth() + "," + reactionStyle.getHeight() +
+                            " L0," + reactionStyle.getHeight() +
+                            " L0," + reactionStyle.getRY() * 2 +
+                            " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
+                            " L" + reactionStyle.getWidth() + ",0")
+                        .attr("fill", "#00aa00");
+
+                    boxExpand.append("image")
+                        .attr("class", "iconExpand")
+                        .attr("y", -2)
+                        .attr("x", -1)
+                        .attr("width", "80%")
+                        .attr("height", "80%")
+                        .attr("xlink:href",  "resources/icons/plus.svg");
+
+                    var boxCollaspe = d3.select(this)
+                        .insert("svg", ":first-child")
+                        .attr(
+                            "viewBox",
+                            function (d) {
+                                +" " + minDim*2;
+                            }
+                        )
+                        .attr("width",  5+reactionStyle.getWidth())
+                        .attr("height", 5+reactionStyle.getHeight())
+                        .attr("preserveAspectRatio", "xMinYMin")
+                        .attr("y", 0)
+                        .attr("x", 0)
+                        .attr("class", "collapse")
+                        .classed('hide', true)
+                        .on('click', function(node, v) {
+
+                        })
+                        .on('mouseenter', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX+0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY+0.5);
+                        })
+                        .on('mouseleave', function (e, v) {
+                            var oldX = parseFloat(d3.select(this).attr("x"));
+                            d3.select(this).attr("x", oldX-0.5);
+
+                            var oldY = parseFloat(d3.select(this).attr("y"));
+                            d3.select(this).attr("y", oldY-0.5);
+                        });
+
+                    boxCollaspe.append("svg:path")
+                        .attr("class", "backgroundCollapse")
+                        .attr("d", "M" + reactionStyle.getWidth() + "," + reactionStyle.getHeight() +
+                            " L0," + reactionStyle.getHeight() +
+                            " L0," + reactionStyle.getRY() * 2 +
+                            " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
+                            " L" + reactionStyle.getWidth() + ",0")
+                        .attr("fill", "#dd0000");
+
+                    boxCollaspe.append("image")
+                        .attr("class", "iconCollapse")
+                        .attr("y", 2)
+                        .attr("x", 2)
+                        .attr("width", "40%")
+                        .attr("height", "40%")
+                        .attr("xlink:href",  "resources/icons/minus.svg");
+                }
+            });
+        }
     },
 
     /*******************************************
@@ -1028,5 +1261,17 @@ metExploreD3.GraphRank = {
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".expand").remove();
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".collapse").remove();
         d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".nbHidden").remove();
+    },
+
+    /*******************************************
+     * refresh radial menu after mode change
+     */
+    refreshRadial: function() {
+        metExploreD3.GraphRank.delRing();
+        metExploreD3.GraphRank.updateNbHidden();
+        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        nodes.each(function(node){
+            metExploreD3.GraphRank.createNodeRing(node);
+        });
     }
 };

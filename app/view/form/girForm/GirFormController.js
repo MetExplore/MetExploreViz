@@ -118,6 +118,21 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 }
             }
         });
+
+        view.lookupReference('changeMode').on({
+            click: function() {
+                if (metExploreD3.GraphRank.girMode === "classic"){
+                    view.lookupReference('changeMode').setText("change gir mode : classic");
+                    metExploreD3.GraphRank.girMode = "advance";
+                    metExploreD3.GraphRank.refreshRadial();
+                }
+                else {
+                    view.lookupReference('changeMode').setText("change gir mode : advance");
+                    metExploreD3.GraphRank.girMode = "classic";
+                    metExploreD3.GraphRank.refreshRadial();
+                }
+            }
+        });
     },
 
     loadData : function(tabTxt, title) {
