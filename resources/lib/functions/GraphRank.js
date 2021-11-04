@@ -988,7 +988,11 @@ metExploreD3.GraphRank = {
                     .attr("class", "expand")
                     .classed('hide', true)
                     .on('click', function(node, v) {
-
+                        if (node.asSideCompounds === true && node.sideCompoundsHidden === true) {
+                            metExploreD3.GraphRank.showSideCompounds(node);
+                            node.setLocked(true);
+                            metExploreD3.GraphNode.fixNode(node);
+                        }
                     })
                     .on('mouseenter', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1012,7 +1016,15 @@ metExploreD3.GraphRank = {
                         " L0," + reactionStyle.getRY() * 2 +
                         " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
                         " L" + reactionStyle.getWidth() + ",0")
-                    .attr("fill", "#00aa00");
+                    .attr("fill", "#00aa00")
+                    .attr("opacity", function(node){
+                        if (node.asSideCompounds === false){
+                            return 0.4;
+                        }
+                        else {
+                            return 1;
+                        }
+                    });
 
                 boxExpand.append("image")
                     .attr("class", "iconExpand")
@@ -1038,7 +1050,18 @@ metExploreD3.GraphRank = {
                     .attr("class", "collapse")
                     .classed('hide', true)
                     .on('click', function(node, v) {
-
+                        if (node.sideCompoundsHidden === false){
+                            metExploreD3.GraphRank.hideSideCompounds(node);
+                            node.setLocked(false);
+                            metExploreD3.GraphNode.unfixNode(node);
+                        }
+                        else {
+                            metExploreD3.GraphRank.hideNeighbours(node);
+                            metExploreD3.GraphRank.updateNbHidden();
+                            metExploreD3.GraphRank.visitLink();
+                            node.setLocked(false);
+                            metExploreD3.GraphNode.unfixNode(node);
+                        }
                     })
                     .on('mouseenter', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
