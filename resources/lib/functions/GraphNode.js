@@ -2149,6 +2149,8 @@ metExploreD3.GraphNode = {
                         .classed('hide', false);
                     overNode.select('.collapse')
                         .classed('hide', false);
+                    overNode.select('.visit')
+                        .classed('hide', false);
                     overNode.selectAll('.nbHidden')
                         .classed('hide', false);
                 }
@@ -2166,6 +2168,8 @@ metExploreD3.GraphNode = {
                 leaveNode.select('.expand')
                     .classed('hide', true);
                 leaveNode.select('.collapse')
+                    .classed('hide', true);
+                leaveNode.select('.visit')
                     .classed('hide', true);
                 if (d.isVisited() === false || d.nbHidden === 0){
                     leaveNode.selectAll('.nbHidden')

@@ -151,13 +151,6 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
         },
 
         {
-            xtype: 'button',
-            html: 'change gir mode : advance',
-            margin: '5 5 5 5',
-            reference: 'changeMode'
-        },
-
-        {
             xtype: 'label',
             html: 'Legend :',
             margin: '5 5 5 5'
