@@ -170,7 +170,6 @@ metExploreD3.GraphRank = {
         });
 
         metExploreD3.GraphRank.removeGirStyle();
-        metExploreD3.GraphRank.delRing();
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
         metExploreD3.GraphCaption.drawCaption();
     },
@@ -1163,27 +1162,6 @@ metExploreD3.GraphRank = {
                     d3.select(this).selectAll(".nbHidden").classed('hide', true);
                 }
             }
-        });
-    },
-
-    /*******************************************
-     * Remove radial menu
-     */
-    delRing: function() {
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".expand").remove();
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".collapse").remove();
-        d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll(".nbHidden").remove();
-    },
-
-    /*******************************************
-     * refresh radial menu after mode change
-     */
-    refreshRadial: function() {
-        metExploreD3.GraphRank.delRing();
-        metExploreD3.GraphRank.updateNbHidden();
-        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
-        nodes.each(function(node){
-            metExploreD3.GraphRank.createNodeRing(node);
         });
     }
 };
