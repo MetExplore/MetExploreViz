@@ -42,9 +42,11 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 		if(_metExploreViz.getMappingsLength()!==0 ){
 			var component = Ext.getCmp('comparisonSidePanel');
 	        if(component){
-	        	if(component.isHidden())
+	        	if(component.isHidden() && metaboRankPanel.open === false)
 	           		component.setHidden(false);
-				component.expand();
+				if (metaboRankPanel.open === false){
+					component.expand();
+				}
 
 				var store = Ext.getStore("mappingStore");
 
