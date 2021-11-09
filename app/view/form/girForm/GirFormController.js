@@ -32,15 +32,13 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 if (metExploreD3.GraphRank.launchGIR === false) {
                     view.lookupReference('launchGIR').setText("quit GIR");
                     view.lookupReference('extractNQuit').enable();
-
-                    // var listMi = view.lookupReference('selectStart').value;
                     var listMi = []
                     var nbMi = view.lookupReference('miBox').items.items.length;
                     for (var i = 1; i < nbMi+1; i++){
-                        listMi.push(view.lookupReference('selectStart'+i).value);
+                        if (view.lookupReference('selectStart'+i).value !== null){
+                            listMi.push(view.lookupReference('selectStart'+i).value);
+                        }
                     }
-
-
                     metExploreD3.GraphRank.launchGIR = true;
                     metExploreD3.GraphRank.startGir(listMi);
                 }
@@ -75,35 +73,37 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
         view.lookupReference('addMi').on({
             click: function() {
                 var nbMi = view.lookupReference('miBox').items.items.length + 1;
-                var boxRef = "box"+nbMi;
-                var storeRef = "selectStart"+nbMi;
+                if (nbMi < 6){
+                    var boxRef = "box"+nbMi;
+                    var storeRef = "selectStart"+nbMi;
 
-                var newBox = new Ext.panel.Panel({
-                    layout: {
-                        type: 'hbox'
-                    },
-                    reference: boxRef,
-                    items: [
-                        {
-                            store: {
-                                fields: ['metabolites']
-                            },
-                            xtype: 'combobox',
-                            displayField: 'metabolites',
-                            valueField: 'metabolites',
-                            queryMode: 'local',
-                            editable: false,
-                            emptyText: '-- Select metabolite --',
-                            margin: '5 5 5 5',
-                            width: '100%',
-                            anyMatch: true,
-                            reference: storeRef
-                        }
-                    ]
-                });
-                view.lookupReference('miBox').add(newBox);
-                if (_metExploreViz.rank.data !== undefined){
-                    me.parseFile(_metExploreViz.rank);
+                    var newBox = new Ext.panel.Panel({
+                        layout: {
+                            type: 'hbox'
+                        },
+                        reference: boxRef,
+                        items: [
+                            {
+                                store: {
+                                    fields: ['metabolites']
+                                },
+                                xtype: 'combobox',
+                                displayField: 'metabolites',
+                                valueField: 'metabolites',
+                                queryMode: 'local',
+                                editable: false,
+                                emptyText: '-- Select metabolite --',
+                                margin: '5 5 5 5',
+                                width: '100%',
+                                anyMatch: true,
+                                reference: storeRef
+                            }
+                        ]
+                    });
+                    view.lookupReference('miBox').add(newBox);
+                    if (_metExploreViz.rank.data !== undefined){
+                        me.parseFile(_metExploreViz.rank);
+                    }
                 }
             }
         });

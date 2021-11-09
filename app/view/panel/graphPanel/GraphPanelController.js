@@ -134,8 +134,6 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				metaboRankPanel.setHidden(true);
 				enterBtn.setText("Enter MetaboRank mode");
 
-				metExploreD3.GraphRank.delRing();
-
 				metaboRankPanel.open = false;
 				metExploreD3.GraphRank.metaboRankMode = false;
 			}

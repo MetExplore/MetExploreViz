@@ -157,6 +157,12 @@ metExploreD3.GraphRank = {
         var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var nodes = networkData.getNodes();
 
+        allNodes.each(function(node){
+            if (node.duplicated === true){
+                networkData.removeNode(node);
+            }
+        });
+
         allNodes.remove();
 
         nodes.map(function(node){
@@ -249,6 +255,15 @@ metExploreD3.GraphRank = {
                             addRingNodes.push(that.source);
                         }
                     });
+                    connexion[identifier]["linkOut"].map(function(that, i){
+                        if (that.target.isHidden() === true){
+                            var isSide = that.target.getIsSideCompound();
+                            if (isSide === false){
+                                that.target.show();
+                                addRingNodes.push(that.target);
+                            }
+                        }
+                    });
                 }
             });
         }
@@ -268,6 +283,19 @@ metExploreD3.GraphRank = {
                         if (isSide === true){
                             that.source.asSideCompounds = true;
                             that.source.sideCompoundsHidden = true;
+                        }
+                    });
+                    connexion[identifier]["linkIn"].map(function(that, i){
+                        if (that.source.isHidden() === true){
+                            var isSide = that.source.getIsSideCompound();
+                            if (isSide === false){
+                                that.source.show();
+                                addRingNodes.push(that.source);
+                            }
+                            if (isSide === true){
+                                that.target.asSideCompounds = true;
+                                that.target.sideCompoundsHidden = true;
+                            }
                         }
                     });
                 }
@@ -744,10 +772,10 @@ metExploreD3.GraphRank = {
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
         var sideCompounds = ["M_h", "M_h2o", "M_atp", "M_pi", "M_adp", "M_nadp", "M_ppi", "M_nad", "M_nadph", "M_nadh",
-                                                    "M_co2", "M_ACP", "M_amp", "M_glyc3p", "M_PGPm1", "M_apoACP", "M_biomass", "M_malACP", "M_nh4", "M_hco3",
-                                                    "M_fe3", "M_o2", "M_cu2", "M_so4", "M_fe2", "M_mg2", "M_k", "M_mn2", "M_so3", "M_PGP", "M_zn2", "M_palmACP",
-                                                    "M_ca2", "M_h2o2", "M_cobalt2", "M_cl", "M_h2s", "M_pppi", "M_rnatrans", "M_proteinsynth", "M_dnarep", "M_na1",
-                                                    "M_pb", "M_hg2", "M_cd2", "M_seln", "M_aso4", "M_o2s", "M_aso3"];
+                            "M_co2", "M_ACP", "M_amp", "M_glyc3p", "M_PGPm1", "M_apoACP", "M_biomass", "M_malACP", "M_nh4", "M_hco3",
+                            "M_fe3", "M_o2", "M_cu2", "M_so4", "M_fe2", "M_mg2", "M_k", "M_mn2", "M_so3", "M_PGP", "M_zn2", "M_palmACP",
+                            "M_ca2", "M_h2o2", "M_cobalt2", "M_cl", "M_h2s", "M_pppi", "M_rnatrans", "M_proteinsynth", "M_dnarep", "M_na1",
+                            "M_pb", "M_hg2", "M_cd2", "M_seln", "M_aso4", "M_o2s", "M_aso3"];
 
         sideCompounds.forEach(function(sideNode){
             var listIdentifier = metExploreD3.GraphRank.nodeForAll(sideNode);
@@ -790,7 +818,7 @@ metExploreD3.GraphRank = {
         node.setNbHidden(nbHidden);
     },
 
-    // Create and delete ring functions
+    // Create ring functions
     /*******************************************
     * Create radial menu
     * @param {Object} target node object
@@ -1017,11 +1045,11 @@ metExploreD3.GraphRank = {
                         " L" + reactionStyle.getWidth() + ",0")
                     .attr("fill", "#00aa00")
                     .attr("opacity", function(node){
-                        if (node.asSideCompounds === false){
-                            return 0.4;
+                        if (node.asSideCompounds === true){
+                            return 1;
                         }
                         else {
-                            return 1;
+                            return 0.4;
                         }
                     });
 
