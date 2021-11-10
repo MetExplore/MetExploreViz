@@ -24,6 +24,13 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 view.lookupReference('selectFile').setValue(name);
 
                 me.parseFile(_metExploreViz.rank);
+            },
+            changeOnNetwork: function() {
+                if (_metExploreViz.rank.data !== undefined){
+                    metExploreD3.deferFunction(function(){
+                        me.parseFile(_metExploreViz.rank);
+                    },100);
+                }
             }
         });
 
@@ -181,9 +188,6 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
         var view = this.getView();
         var nbMi = view.lookupReference('miBox').items.items.length;
 
-        var session = _metExploreViz.getSessionById("viz");
-        var networkData = session.getD3Data();
-
         var rankScore = rankData.rank;
         var allMetabolite = Object.keys(rankScore);
         var listMi = [];
@@ -198,10 +202,6 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                     var mi = {metabolites:nodeName};
                     listMi.push(mi);
                 }
-                // if (node === undefined){
-                //     var mi = {metabolites:data};
-                // }
-                // listMi.push(mi);
             }
         });
 
@@ -211,5 +211,4 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
             metaStore.setData(listMi);
         }
     }
-
 });

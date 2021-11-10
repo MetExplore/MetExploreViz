@@ -243,7 +243,10 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							text : 'Remove selected nodes',
 							hidden : networkVizSessionStore.getSelectedNodes().length===0,
 							iconCls:"removeNode",
-							handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
+							handler :function(){ 
+								metExploreD3.GraphNetwork.removeSelectedNode("viz");
+								metExploreD3.fireEvent("girParams","changeOnNetwork");
+							}
 						},{
 							text : 'Fix selected nodes',
 							hidden : networkVizSessionStore.getSelectedNodes().length===0,
@@ -347,12 +350,16 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             iconCls:"removeNode",
                             handler : function(){
                                 metExploreD3.GraphNetwork.removeOnlyClickedNode(theNode, "viz");
+								metExploreD3.fireEvent("girParams","changeOnNetwork");
                             }
                         },{
                             text : 'All selected nodes',
                             hidden : false,
                             iconCls:"removeNode",
-                            handler :function(){ metExploreD3.GraphNetwork.removeSelectedNode("viz") }
+                            handler :function(){ 
+								metExploreD3.GraphNetwork.removeSelectedNode("viz");
+								metExploreD3.fireEvent("girParams","changeOnNetwork");
+							}
                         }]
                     });
 
