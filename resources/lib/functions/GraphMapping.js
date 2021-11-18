@@ -1453,75 +1453,112 @@ metExploreD3.GraphMapping = {
      * @param {Object} fileList A list of image files.
      * @param {"Name"/"Id"} arg A flag to determine which node property to use for the mapping. "Name" will map the images using the label of the node currently displayed, "Id" use the identifier of the node. Default to "Id".
      */
-    mapImageToNode : function(fileList, arg){
-        var listNames = [];
-        for (var i=0; i<fileList.length; i++){
-            if (fileList[i].type === "image/png" || fileList[i].type === "image/jpeg" || fileList[i].type === "image/svg+xml"){
-                var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
-                if (listNames.includes(nodeName)){
-                    continue;
-                }
-                listNames.push(nodeName);
-                var urlImage = URL.createObjectURL(fileList[i]);
-                var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
-                    .selectAll("g.node")
-                    .filter(function (d) {
-                        var style = (d.getBiologicalType() === "metabolite") ? metExploreD3.getMetaboliteStyle() : metExploreD3.getReactionStyle();
-						var label = style.getDisplayLabel(d, style.getLabel(), style.isUseAlias());
+	mapImageToNode : function(fileList, arg){
+		var listNames = [];
+		for (var i = 0; i < fileList.length; i++){
 
-                        //var target = (arg === "Name") ? d.name : d.dbIdentifier;
-                        var target = (arg === "Name") ? label : d.dbIdentifier;
-                        return (nodeName === target);
-                    });
-                if (!node.select(".imageNode").empty()){
-                    node.select(".imageNode").remove();
-                }
+			var typeFile = fileList[i].type;
 
-                metExploreD3.GraphUtils.getDataUri(urlImage, function(dataUri) {
-                    // Do whatever you'd like with the Data URI!
-                    var img = new Image();
-                    img.src = dataUri;
-                    img.node = node;
-                    img.onload = function () {
-                        var imgWidth = this.width;
-                        var imgHeight = this.height;
+			var nodeName = fileList[i].name.replace(/\.[^/.]+$/, "");
+			if (listNames.includes(nodeName)){
+				continue;
+			}
+			listNames.push(nodeName);
+			var urlImage = URL.createObjectURL(fileList[i]);
+			var node = d3.select("#viz").select("#D3viz").select("#graphComponent")
+				.selectAll("g.node")
+				.filter(function (d) {
+					var style = (d.getBiologicalType() === "metabolite") ? metExploreD3.getMetaboliteStyle() : metExploreD3.getReactionStyle();
+					var label = style.getDisplayLabel(d, style.getLabel(), style.isUseAlias());
 
-                        if (imgWidth > 150){
-                            imgHeight = imgHeight * (150/imgWidth);
-                            imgWidth = 150;
-                        }
-                        var offsetX = -imgWidth/2;
-                        this.node.append("g")
-                            .attr("class", "imageNode")
-                            .attr("x", 0)
-                            .attr("y", 0)
-                            .attr("width", imgWidth)
-                            .attr("height", imgHeight)
-                            .attr("opacity", 1)
-                            .attr("x", offsetX)
-                            .attr("y", 20)
-                            .attr("transform", "translate(" + offsetX + ",20)");
-                        this.node.selectAll(".imageNode")
-                            .append("image")
-                            .attr("class", "mappingImage")
-                            .attr("href", this.src)
-                            .attr("width", imgWidth)
-                            .attr("height", imgHeight)
-                            .attr("opacity", 1);
+					var target = (arg === "Name") ? label : d.dbIdentifier;
+					return (nodeName === target);
+				});
+			if (!node.select(".imageNode").empty()){
+				node.select(".imageNode").remove();
+			}
+
+			if (typeFile === "image/png" || typeFile === "image/jpeg"){
+
+				var image = new Image();
+				image.onload = function () {
+					var canvas = document.createElement('canvas');
+					canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+					canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+					canvas.getContext('2d').drawImage(this, 0, 0);
+
+					metExploreD3.GraphMapping.onLoadImg(this, this.node);
+				};
+				image.node = node;
+				image.src = urlImage;
+			}
+
+			if (typeFile === "image/svg+xml"){
+
+				var XMLrequest = new XMLHttpRequest(); // new XML request
+				XMLrequest.open("GET", urlImage, false); // URL of the SVG file on server
+				XMLrequest.send(null); // get the SVG file
+				var res = XMLrequest.responseXML;
+
+				var mySVG = res.getElementsByTagName("svg")[0];
+
+				var svg = new XMLSerializer().serializeToString(mySVG);
+				var base64 = window.btoa(svg);
+
+				var urlSvg = 'data:image/svg+xml;base64,' + base64
+
+				var image = new Image();
+
+				image.onload = function () {
+					metExploreD3.GraphMapping.onLoadImg(this, this.node);
+				};
+				image.node = node;
+				image.src = urlSvg;
+			}
+		}
+	},
+
+	/*****************************************************
+     * Initiate params for image on load
+     * @param {Object} that Image object
+     * @param {Object} node Node object
+     */
+	onLoadImg: function(that, node){
+		var imgWidth = that.width;
+		var imgHeight = that.height;
+
+		if (imgWidth > 150){
+			imgHeight = imgHeight * (150/imgWidth);
+			imgWidth = 150;
+		}
+		var offsetX = -imgWidth/2;
+		node.append("g")
+			.attr("class", "imageNode")
+			.attr("x", 0)
+			.attr("y", 0)
+			.attr("width", imgWidth)
+			.attr("height", imgHeight)
+			.attr("opacity", 1)
+			.attr("x", offsetX)
+			.attr("y", 20)
+			.attr("transform", "translate(" + offsetX + ",20)");
+		node.selectAll(".imageNode")
+			.append("image")
+			.attr("class", "mappingImage")
+			.attr("href", that.src)
+			.attr("width", imgWidth)
+			.attr("height", imgHeight)
+			.attr("opacity", 1);
 
 
-                        metExploreD3.GraphMapping.applyEventOnImage(this.node.select(".imageNode"));
-                        this.node.selectAll(".imageNode")
-                            .each(function(d){
-                                metExploreD3.GraphMapping.setStartingImageStyle(d);
-                                this.parentNode.parentNode.appendChild(this.parentNode);
-                            });
-                    };
-                });
-
-            }
-        }
-    },
+		metExploreD3.GraphMapping.applyEventOnImage(node.select(".imageNode"));
+		node.selectAll(".imageNode")
+			.each(function(d){
+				metExploreD3.GraphMapping.setStartingImageStyle(d);
+				this.parentNode.parentNode.appendChild(this.parentNode);
+			});
+	},
 
     /*****************************************************
      * Select an image element mapped to a node.
