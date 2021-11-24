@@ -538,7 +538,12 @@ metExploreD3.GraphRank = {
                 if (link.source.isHidden() === true && link.source.getIsSideCompound() === false){
                     var sourceId = metExploreD3.GraphRank.getIdentifier(link.source.dbIdentifier);
                     var nodeScore = rankScore[sourceId];
-                    score = score+Math.min(nodeScore[0],nodeScore[1]);
+                    if (nodeScore === undefined){
+                        score = 10000;
+                    }
+                    else {
+                        score = score+Math.min(nodeScore[0],nodeScore[1]);
+                    }
                     nbNode++;
                 }
             });
@@ -546,7 +551,12 @@ metExploreD3.GraphRank = {
                 if (link.target.isHidden() === true && link.target.getIsSideCompound() === false){
                     var targetId = metExploreD3.GraphRank.getIdentifier(link.target.dbIdentifier);
                     var nodeScore = rankScore[targetId];
-                    score = score+Math.min(nodeScore[0],nodeScore[1]);
+                    if (nodeScore === undefined){
+                        score = 10000;
+                    }
+                    else {
+                        score = score+Math.min(nodeScore[0],nodeScore[1]);
+                    }
                     nbNode++;
                 }
             });
@@ -984,7 +994,7 @@ metExploreD3.GraphRank = {
 
                 boxVisit.append("svg:path")
                     .attr("class", "backgroundVisit")
-                    .attr("d", "M 0 0, Q 0 " + (metaboliteStyle.getHeight()) + ", " + 
+                    .attr("d", "M 0 0, Q 0 " + (metaboliteStyle.getHeight()) + ", " +
                     (metaboliteStyle.getWidth()) + " " + (metaboliteStyle.getHeight()) +
                     "L" + (metaboliteStyle.getWidth()) + " 0" +
                     "L 0 0")
