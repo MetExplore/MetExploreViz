@@ -271,7 +271,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                     xtype : 'editModePanel'
                 },
                 {
-                    title: 'MetaboRank mode',
+                    title: 'MetaboRank Manager',
                     id: 'metaboRankPanel',
                     reference: 'metaboRankPanel',
                     xtype: 'metaboRankSidePanel'

@@ -54,7 +54,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                 // },
                 {
                     xtype: 'textfield',
-                    emptyText: '-- Import file --',
+                    emptyText: '-- Import metaborank score file --',
                     margin: '5 5 5 5',
                     width: '75%',
                     reference: 'selectFile',

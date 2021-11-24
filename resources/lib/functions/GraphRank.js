@@ -106,6 +106,8 @@ metExploreD3.GraphRank = {
                         if (node.getBiologicalType() !== "pathway"){
                             node.show();
                             node.unvisit();
+                            node.setLocked(false);
+                            metExploreD3.GraphNode.unfixNode(node);
                         }
                     });
 
@@ -731,32 +733,7 @@ metExploreD3.GraphRank = {
 
         links.each(function(link){
             if (link.source.isVisited() === true && link.target.isVisited() === true){
-
-                var gradientId = link.source.dbIdentifier + link.target.dbIdentifier;
-                var gradientUrl = "url(#"+gradientId+")";
-
-                var defs = d3.select("#viz").select("#D3viz").select("#graphComponent").append("defs");
-                var gradient = defs.append("linearGradient")
-                    .attr("id", gradientId);
-
-                gradient.append("stop")
-                    .attr("offset", 0+"%")
-                    .attr("stop-color", "red");
-
-                gradient.append("stop")
-                    .attr("offset", 25+"%")
-                    .attr("stop-color", "red");
-
-                gradient.append("stop")
-                    .attr("offset", 26+"%")
-                    .attr("stop-color", "green");
-
-                gradient.append("stop")
-                    .attr("offset", 100+"%")
-                    .attr("stop-color", "green");
-
-                d3.select(this).style("stroke-width",5).style("stroke",gradientUrl);
-                // d3.select(this).style("stroke-width",5);
+                d3.select(this).style("stroke-width",5);
             }
             if (link.source.isVisited() === false || link.target.isVisited() === false){
                 d3.select(this).style("stroke-width",1);
