@@ -1354,6 +1354,11 @@ metExploreViz.prototype = {
         // });
         return therank;
     },
+    removeRankById: function(id) {
+        if (this.rank.id === id){
+            this.rank = [];
+        }
+    },
 
     // Flux
     addFlux : function(fluxData){

@@ -120,6 +120,33 @@ metExploreD3.GraphRank = {
     },
 
     /*******************************************
+     * Remove all GIR actions on load new network
+     */
+    resetGIR: function(){
+        var girPanel = Ext.getCmp('girParams');
+        if (metExploreD3.GraphRank.launchGIR === true) {
+            girPanel.lookupReference('launchGIR').setText("launch GIR");
+            girPanel.lookupReference('extractNQuit').disable();
+
+            metExploreD3.GraphRank.launchGIR = false;
+            metExploreD3.GraphRank.quitGir();
+        }
+        if (metExploreD3.GraphRank.metaboRankMode === true) {
+            var metaboRankCmp = Ext.getCmp('graphPanel');
+            metaboRankCmp.controller.metaboRankMode();
+        }
+        _metExploreViz.removeRankById("rankData");
+        girPanel.lookupReference('selectFile').setValue("");
+        var nbMi = girPanel.lookupReference('miBox').items.items.length;
+        for (var i = 1; i < nbMi+1; i++){
+            var comboComponent = girPanel.lookupReference('selectStart'+i);
+            var metaStore = comboComponent.getStore();
+            metaStore.setData([]);
+            comboComponent.setValue("");
+        }
+    },
+
+    /*******************************************
      * Remove Gir style and apply style from panel selection
      */
     removeGirStyle: function() {
@@ -325,6 +352,7 @@ metExploreD3.GraphRank = {
         var identifier = react.dbIdentifier;
 
         var linkOut = connexion[identifier]["linkOut"];
+        var linkIn = connexion[identifier]["linkIn"];
 
         linkOut.map(function(link){
             var isSide = link.target.getIsSideCompound();
@@ -332,6 +360,15 @@ metExploreD3.GraphRank = {
                 var newID = link.target.getId()+"-"+link.source.getId();
                 var newNode = metExploreD3.GraphNetwork.addMetaboliteInDrawing(link.target,link.target.getId(),link.source.getId(),"viz");
                 metExploreD3.GraphNetwork.addLinkInDrawing(link.source.getId()+"-"+newID,link.source,newNode,"out",link.source.getReactionReversibility(),"viz");
+            }
+        });
+
+        linkIn.map(function(link){
+            var isSide = link.source.getIsSideCompound();
+            if (isSide === true){
+                var newID = link.target.getId()+"-"+link.source.getId();
+                var newNode = metExploreD3.GraphNetwork.addMetaboliteInDrawing(link.source,link.source.getId(),link.target.getId(),"viz");
+                metExploreD3.GraphNetwork.addLinkInDrawing(link.target.getId()+"-"+newID,newNode,link.target,"in",link.target.getReactionReversibility(),"viz");
             }
         });
 
@@ -738,6 +775,18 @@ metExploreD3.GraphRank = {
                         thisLink.source.visit();
                     }
                 });
+            }
+            if (link.target.getBiologicalType() === "reaction") {
+                var linkIn = connexion[link.target.dbIdentifier]["linkIn"];
+                var nbIn = 0;
+                linkIn.map(function(thisLink){
+                    if (thisLink.source.isVisited() === true){
+                        nbIn++;
+                    }
+                });
+                if (nbIn >= 2){
+                    link.target.visit();
+                }
             }
         });
 

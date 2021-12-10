@@ -125,7 +125,6 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 }
             }
         });
-        
     },
 
     loadData : function(tabTxt, title) {

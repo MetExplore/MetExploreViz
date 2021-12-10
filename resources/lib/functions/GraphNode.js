@@ -1550,6 +1550,9 @@ metExploreD3.GraphNode = {
             obj.value = sideCompound;
             metExploreD3.fireEventParentWebSite("sideCompoundFromFile", obj);
             var node = _metExploreViz.getSessionById("viz").getD3Data().getNodeByDbIdentifier(sideCompound);
+            if (node === undefined) {
+                node = _metExploreViz.getSessionById("viz").getD3Data().getNodeByName(sideCompound);
+            }
 
             if (node != null) {
                 if (metExploreD3.getMetabolitesSet() != undefined) {
