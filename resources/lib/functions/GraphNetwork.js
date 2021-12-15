@@ -1355,8 +1355,9 @@ metExploreD3.GraphNetwork = {
 
                     // Sort compartiments store
                     metExploreD3.sortCompartmentInBiosource();
-
-                    metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+                    if (metExploreD3.GraphRank.launchGIR === false){
+                        metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+                    }
 
                     metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 
