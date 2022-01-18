@@ -66,6 +66,7 @@ var NodeData = function(
         this.visited = false;
         this.nbHidden = 0;
         this.asSideCompounds = false;
+        this.starter = false;
 };
 
 
@@ -81,6 +82,15 @@ NodeData.prototype = {
     },
     setNbHidden: function(x){
         this.nbHidden = x;
+    },
+    markAsStarter: function(){
+        this.starter = true;
+    },
+    removeAsStarter: function(){
+        this.starter = false;
+    },
+    getAsStarter: function(){
+        return this.starter;
     },
     equals : function(x){
     	var equal=true;

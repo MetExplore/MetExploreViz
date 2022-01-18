@@ -15,7 +15,6 @@ metExploreD3.GraphRank = {
     /**
      * @property {Boolean} [launchGIR=false]
      * @property {Boolean} [metaboRankMode=false]
-     * @property {String} [girMode="classic"]
      */
     launchGIR: false,
     metaboRankMode: false,
@@ -45,6 +44,7 @@ metExploreD3.GraphRank = {
         nodes.each(function(node){
             if (listMiCmpt.includes(node.dbIdentifier)){
                 metExploreD3.GraphRank.startNode(node);
+                node.markAsStarter();
             }
             if (!(listMiCmpt.includes(node.dbIdentifier))) {
                 node.hide()
@@ -109,6 +109,9 @@ metExploreD3.GraphRank = {
                             node.setLocked(false);
                             metExploreD3.GraphNode.unfixNode(node);
                         }
+                        if (node.getAsStarter() === true){
+                            node.removeAsStarter();
+                        }
                     });
 
                     metExploreD3.GraphRank.removeGirStyle();
@@ -117,6 +120,7 @@ metExploreD3.GraphRank = {
                 },100);
         }
         metExploreD3.GraphCaption.drawCaption();
+        networkData.updateNbVisited(-(networkData.getNbVisited()));
     },
 
     /*******************************************
@@ -185,28 +189,42 @@ metExploreD3.GraphRank = {
         var networkData = session.getD3Data();
         var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var nodes = networkData.getNodes();
+        var nbVisited = networkData.getNbVisited();
 
-        allNodes.each(function(node){
-            if (node.duplicated === true){
-                networkData.removeNode(node);
-            }
-        });
+        if (nbVisited > 0){
+            allNodes.each(function(node){
+                if (node.duplicated === true){
+                    networkData.removeNode(node);
+                }
+            });
 
-        allNodes.remove();
+            allNodes.remove();
 
-        nodes.map(function(node){
-            if (node.isVisited() === false){
-                node.hide();
-            }
-            if (node.isVisited() === true){
-                node.show();
-                node.unvisit();
-            }
-        });
+            nodes.map(function(node){
+                if (node.isVisited() === false){
+                    node.hide();
+                }
+                if (node.isVisited() === true){
+                    node.show();
+                    node.unvisit();
+                }
+                if (node.getAsStarter() === true){
+                    node.removeAsStarter();
+                }
+            });
 
-        metExploreD3.GraphRank.removeGirStyle();
-        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
-        metExploreD3.GraphCaption.drawCaption();
+            metExploreD3.GraphRank.removeGirStyle();
+            metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+            metExploreD3.GraphCaption.drawCaption();
+            networkData.updateNbVisited(-(networkData.getNbVisited()));
+            return true;
+        }
+
+        else {
+            metExploreD3.displayWarning("Warning",
+                'You try to extract empty subnetwork'
+            );
+        }
     },
 
     // save network function
@@ -697,7 +715,7 @@ metExploreD3.GraphRank = {
             var rankOut = parseInt(nodeScore[1]);
 
             nodes.each(function(thisNode){
-                if (thisNode === node) {
+                if (thisNode === node && thisNode.getAsStarter() !== true) {
                     if (rankIn < 25 && rankOut < 25) {
                         d3.select(this).selectAll("rect")
                             .style("stroke-width",3)
@@ -728,6 +746,8 @@ metExploreD3.GraphRank = {
     * @param {Object} node node object
     */
     visit: function(node) {
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 
         nodes.each(function(thisNode){
@@ -737,6 +757,7 @@ metExploreD3.GraphRank = {
             }
         });
 
+        networkData.updateNbVisited(1);
         metExploreD3.GraphRank.visitLink();
     },
 
@@ -745,6 +766,8 @@ metExploreD3.GraphRank = {
      * @param {Object} node node object
      */
     unvisit: function(node) {
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var metaboliteStyle = metExploreD3.getMetaboliteStyle();
 
@@ -755,6 +778,7 @@ metExploreD3.GraphRank = {
             }
         });
 
+        networkData.updateNbVisited(-1);
         metExploreD3.GraphRank.unvisitLink();
         metExploreD3.GraphRank.visitLink();
     },
@@ -934,10 +958,9 @@ metExploreD3.GraphRank = {
 
                 boxExpand.append("svg:path")
                     .attr("class", "backgroundExpand")
-                    .attr("d", "M 0 0, L 0 " + (metaboliteStyle.getHeight()) +
-                    "L " + (metaboliteStyle.getWidth()) + " " + (metaboliteStyle.getHeight()) +
-                    " Q " + (metaboliteStyle.getWidth()) + " 0, " +
-                    "0 0")
+                    .attr("d", "M 0 0 L 0 " + metaboliteStyle.getHeight() +
+                        "L " + metaboliteStyle.getWidth() + " " + metaboliteStyle.getHeight() +
+                        "Q " + metaboliteStyle.getWidth() + " 0, 0 0")
                     .attr("fill", "#00aa00");
 
                 boxExpand.append("image")
@@ -992,7 +1015,7 @@ metExploreD3.GraphRank = {
 
                 boxCollaspe.append("svg:path")
                     .attr("class", "backgroundCollapse")
-                    .attr("d", "M 0 0, L " + (metaboliteStyle.getWidth()) + " 0" +
+                    .attr("d", "M 0 0 L " + (metaboliteStyle.getWidth()) + " 0" +
                     "Q " + (metaboliteStyle.getWidth()) + " " + (metaboliteStyle.getHeight()) +
                     " ,0 " + (metaboliteStyle.getHeight()) +
                     "L 0 0")
@@ -1043,7 +1066,7 @@ metExploreD3.GraphRank = {
 
                 boxVisit.append("svg:path")
                     .attr("class", "backgroundVisit")
-                    .attr("d", "M 0 0, Q 0 " + (metaboliteStyle.getHeight()) + ", " +
+                    .attr("d", "M 0 0 Q 0 " + (metaboliteStyle.getHeight()) + ", " +
                     (metaboliteStyle.getWidth()) + " " + (metaboliteStyle.getHeight()) +
                     "L" + (metaboliteStyle.getWidth()) + " 0" +
                     "L 0 0")

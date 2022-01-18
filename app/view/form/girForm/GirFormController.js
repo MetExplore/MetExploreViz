@@ -39,6 +39,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 if (metExploreD3.GraphRank.launchGIR === false) {
                     view.lookupReference('launchGIR').setText("quit GIR");
                     view.lookupReference('extractNQuit').enable();
+                    view.lookupReference('loadRankFile').disable();
                     var listMi = []
                     var nbMi = view.lookupReference('miBox').items.items.length;
                     for (var i = 1; i < nbMi+1; i++){
@@ -52,6 +53,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 else {
                     view.lookupReference('launchGIR').setText("launch GIR");
                     view.lookupReference('extractNQuit').disable();
+                    view.lookupReference('loadRankFile').enable();
 
                     metExploreD3.GraphRank.launchGIR = false;
                     metExploreD3.GraphRank.quitGir();
@@ -68,12 +70,14 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
 
         view.lookupReference('extractNQuit').on({
             click: function() {
-                metExploreD3.GraphRank.quitAndExtract();
+                var extract = metExploreD3.GraphRank.quitAndExtract();
 
-                view.lookupReference('launchGIR').setText("launch GIR");
-                view.lookupReference('extractNQuit').disable();
+                if (extract){
+                    view.lookupReference('launchGIR').setText("launch GIR");
+                    view.lookupReference('extractNQuit').disable();
 
-                metExploreD3.GraphRank.launchGIR = false;
+                    metExploreD3.GraphRank.launchGIR = false;
+                }
             }
         });
 

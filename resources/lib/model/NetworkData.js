@@ -14,9 +14,18 @@ var NetworkData = function(id){
     this.links = [];
     this.compartments = [];
     this.pathways = [];
+    this.nbVisited = 0;
 };
 
 NetworkData.prototype = {
+    updateNbVisited : function(value){
+        this.nbVisited += value;
+    },
+
+    getNbVisited : function(){
+        return this.nbVisited;
+    },
+
     resetMapping : function(){
         this.nodes.forEach(function(node){
             node.resetMapping();
@@ -41,16 +50,16 @@ NetworkData.prototype = {
     {
       return this.nodes;
     },
-    
+
     setId:function(newId)
     {
        this.id = newId;
-    },      
+    },
 
     getId:function()
     {
        return this.id;
-    }, 
+    },
 
     copyData:function(aData)
     {
@@ -76,7 +85,7 @@ NetworkData.prototype = {
     {
       return this.compartments.length;
     },
-    
+
     getCompartmentByName: function(name){
         var allCompartments=[];
         allCompartments=this.compartments;
@@ -91,7 +100,7 @@ NetworkData.prototype = {
             }
         }
         return null;
-        
+
     },
 
     getCompartmentById: function(id){
@@ -108,7 +117,7 @@ NetworkData.prototype = {
             }
         }
         return null;
-        
+
     },
 
     sortCompartments:function()
@@ -140,7 +149,7 @@ NetworkData.prototype = {
     {
       return this.pathways.length;
     },
-    
+
     getPathwayByName: function(name){
         var allPathways=[];
         allPathways=this.pathways;
@@ -171,7 +180,7 @@ NetworkData.prototype = {
             }
         }
         return null;
-        
+
     },
     removePathway : function (path){
         for(k=0;k<this.pathways.length;k++)
@@ -291,7 +300,7 @@ NetworkData.prototype = {
         var nodes = allNodes.filter(function(node){
             return node.mappedInchi==(inchi);
         });
-        
+
         if(nodes.length==0)
             nodes = undefined;
 
@@ -372,11 +381,11 @@ NetworkData.prototype = {
             svgHeight,
             isSideCompound,
             ec,
-            isDuplicated, 
-            identifier, 
-            pathway, 
-            locked, 
-            alias, 
+            isDuplicated,
+            identifier,
+            pathway,
+            locked,
+            alias,
             label,
             labelFont,
             hidden
@@ -385,25 +394,25 @@ NetworkData.prototype = {
             this.nodes = [];
 
         var object = new NodeData(
-            name, 
-            compartment, 
-            dbIdentifier, 
-            ec, 
-            id, 
-            reactionReversibility, 
-            isSideCompound, 
-            biologicalType, 
-            selected, 
-            labelVisible, 
-            svg, 
-            svgWidth, 
-            svgHeight, 
-            undefined, 
-            isDuplicated, 
-            identifier, 
-            pathway, 
-            locked, 
-            alias, 
+            name,
+            compartment,
+            dbIdentifier,
+            ec,
+            id,
+            reactionReversibility,
+            isSideCompound,
+            biologicalType,
+            selected,
+            labelVisible,
+            svg,
+            svgWidth,
+            svgHeight,
+            undefined,
+            isDuplicated,
+            identifier,
+            pathway,
+            locked,
+            alias,
             label,
             labelFont,
             hidden);
@@ -412,7 +421,7 @@ NetworkData.prototype = {
         this.nodes.push(object);
         return object;
     },
-    
+
     //get the array of link adjacent to a node
     getAdjLink : function (node)
     {
@@ -432,12 +441,12 @@ NetworkData.prototype = {
     		    if(node.id==target.id)
     			{
     				adjLink.push(link);
-    			} 
-    		} 
+    			}
+    		}
     	}
-    	return adjLink;	
+    	return adjLink;
     },
-    
+
     //remove link function
      removeLink : function (link){
 			for(k=0;k<this.links.length;k++)
