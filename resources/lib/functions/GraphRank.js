@@ -460,6 +460,9 @@ metExploreD3.GraphRank = {
             if (link.source === react && link.target.duplicated === true){
                 networkData.removeNode(link.target);
             }
+            if (link.source.duplicated === true && link.target === react){
+                networkData.removeNode(link.source);
+            }
         });
 
         react.sideCompoundsHidden = true;
@@ -639,16 +642,23 @@ metExploreD3.GraphRank = {
     * @param {String} identifier node identifier
     */
     getIdentifier: function(identifier) {
-        if (identifier.slice(-2, -1) === "_"){
-            return identifier.slice(0,-2);
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var node = networkData.getNodeByDbIdentifier(identifier);
+
+
+        if (node.getCompartment() !== "metaComp") {
+            if (identifier.slice(-2, -1) === "_"){
+                return identifier.slice(0,-2);
+            }
         }
-        else {
-            return identifier.slice(0, -1);
+        if (node.getCompartment() === "metaComp") {
+            return identifier;
         }
     },
 
     /*******************************************
-     * According to node identifier, get nodes from all compartments
+     * According to node identifier, get nodes from all compartments if they exist
      * @param {String} dbID node identifier
      */
     nodeForAll: function(dbID){
@@ -665,7 +675,13 @@ metExploreD3.GraphRank = {
                 listIdentifier.push(identifier);
             }
         });
-        return listIdentifier;
+        if (listIdentifier.length === 0){
+            listIdentifier.push(dbID);
+            return listIdentifier;
+        }
+        else {
+            return listIdentifier;
+        }
     },
 
     /*******************************************
@@ -694,6 +710,32 @@ metExploreD3.GraphRank = {
                 return node.dbIdentifier;
             }
         }
+    },
+
+    // side compounds functions
+    /*******************************************
+    * Set as side compounds nodes in the list
+    */
+    setSideCompound: function(){
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+        var sideCompounds = ["M_h", "M_h2o", "M_atp", "M_pi", "M_adp", "M_nadp", "M_ppi", "M_nad", "M_nadph", "M_nadh",
+                            "M_co2", "M_ACP", "M_amp", "M_glyc3p", "M_PGPm1", "M_apoACP", "M_biomass", "M_malACP", "M_nh4", "M_hco3",
+                            "M_fe3", "M_o2", "M_cu2", "M_so4", "M_fe2", "M_mg2", "M_k", "M_mn2", "M_so3", "M_PGP", "M_zn2", "M_palmACP",
+                            "M_ca2", "M_h2o2", "M_cobalt2", "M_cl", "M_h2s", "M_pppi", "M_rnatrans", "M_proteinsynth", "M_dnarep", "M_na1",
+                            "M_pb", "M_hg2", "M_cd2", "M_seln", "M_aso4", "M_o2s", "M_aso3"];
+
+        sideCompounds.forEach(function(sideNode){
+            var listIdentifier = metExploreD3.GraphRank.nodeForAll(sideNode);
+            if (listIdentifier !== []){
+                listIdentifier.map(function(identifier){
+                    var node = networkData.getNodeByDbIdentifier(identifier);
+                    if (node !== undefined){
+                        node.setIsSideCompound(true);
+                    }
+                });
+            }
+        });
     },
 
     // rank style functions
@@ -845,30 +887,6 @@ metExploreD3.GraphRank = {
             }
             if (link.source.isVisited() === true && link.target.isVisited() !== true){
                 d3.select(this).style("stroke-width", 1);
-            }
-        });
-    },
-
-    // side compounds functions
-    /*******************************************
-    * Set as side compounds nodes in the list
-    */
-    setSideCompound: function(){
-        var session = _metExploreViz.getSessionById("viz");
-        var networkData = session.getD3Data();
-        var sideCompounds = ["M_h", "M_h2o", "M_atp", "M_pi", "M_adp", "M_nadp", "M_ppi", "M_nad", "M_nadph", "M_nadh",
-                            "M_co2", "M_ACP", "M_amp", "M_glyc3p", "M_PGPm1", "M_apoACP", "M_biomass", "M_malACP", "M_nh4", "M_hco3",
-                            "M_fe3", "M_o2", "M_cu2", "M_so4", "M_fe2", "M_mg2", "M_k", "M_mn2", "M_so3", "M_PGP", "M_zn2", "M_palmACP",
-                            "M_ca2", "M_h2o2", "M_cobalt2", "M_cl", "M_h2s", "M_pppi", "M_rnatrans", "M_proteinsynth", "M_dnarep", "M_na1",
-                            "M_pb", "M_hg2", "M_cd2", "M_seln", "M_aso4", "M_o2s", "M_aso3"];
-
-        sideCompounds.forEach(function(sideNode){
-            var listIdentifier = metExploreD3.GraphRank.nodeForAll(sideNode);
-            if (listIdentifier !== []){
-                listIdentifier.map(function(identifier){
-                    var node = networkData.getNodeByDbIdentifier(identifier);
-                    node.setIsSideCompound(true);
-                });
             }
         });
     },
