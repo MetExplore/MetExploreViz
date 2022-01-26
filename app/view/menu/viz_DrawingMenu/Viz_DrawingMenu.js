@@ -4,14 +4,14 @@
  */
 
 Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
-        extend: 'Ext.menu.Menu', 
+        extend: 'Ext.menu.Menu',
         alias: 'widget.vizDrawingMenu',
-        
+
         requires: [
             'metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController',
             'metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuModel'
         ],
-        
+
         controller: "menu-vizDrawingMenu-vizDrawingMenu",
         viewModel: {
             type: "menu-vizDrawingMenu-vizDrawingMenu"
@@ -25,7 +25,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  iconCls:'delete-sideCompounds'
              },
              {
-                text: 'Layout', 
+                text: 'Layout',
                 scale: 'large',
                 menu:{id:'vizIdLayoutMenu',xtype: 'vizLayoutMenu'},
                 id:'vizLayoutMenuID',
@@ -35,7 +35,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                 hidden:true
              },
              {
-                text: 'Align', 
+                text: 'Align',
                 scale: 'large',
                 menu:{id:'vizIdAlignMenu',xtype: 'vizAlignMenu'},
                 id:'vizAlignMenuID',
@@ -60,7 +60,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  iconCls:'duplicate-sideCompounds'
              },
              {
-                text: 'Color', 
+                text: 'Color',
                 scale: 'large',
                 menu:{id:'vizIdColorMenu',xtype: 'vizColorMenu'},
                 id:'vizColorMenuID',
@@ -69,7 +69,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                 iconCls:'color'
              },
              {
-                text: 'Highlight component', 
+                text: 'Highlight component',
                 scale: 'large',
                 menu:{id:'vizIdConvexHullMenu',xtype: 'vizConvexHullMenu'},
                 id:'vizConvexHullMenuID',
@@ -86,7 +86,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                  hidden:true
              },
             {
-                text: 'Hierarchical layout', 
+                text: 'Hierarchical layout',
                // scale: 'large',
                // menu:{id:'hierarchicalLayoutMenu',xtype: 'hierarchicalLayoutMenu'},
               //  id:'hierarchicalLayoutMenuID',
@@ -95,6 +95,12 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenu', {
                 iconCls:'hierarchicalDrawing'
               //  padding:'0 0 0 0',
               //  iconCls:'hierarchicalLayoutMenu'
-             }
+          },
+          {
+              text: 'Unfix all nodes',
+              reference: 'unfixAll',
+              tooltip: 'Unfix all nodes in the network',
+              iconCls: 'unlock_font_awesome'
+          }
         ]
 });

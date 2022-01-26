@@ -71,7 +71,12 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 			click : me.hierarchicalLayout,
 			scope : me
 		});
-		
+
+		view.lookupReference('unfixAll').on({
+			click : me.unfixAll,
+			scope : me
+		});
+
 		view.on({
 			enableMakeClusters : function(){
 				this.lookupReference('makeClusters').setDisabled(false);
@@ -80,7 +85,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 		});
 		view.on({
 			disableMakeClusters : function(){
-				this.lookupReference('makeClusters').setDisabled(true);	
+				this.lookupReference('makeClusters').setDisabled(true);
 			},
 			scope : me
 		});
@@ -92,7 +97,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 	makeClusters : function(){
 		var useClusters = metExploreD3.getGeneralStyle().useClusters();
 		metExploreD3.getGeneralStyle().setUseClusters(!useClusters);
-		
+
 		if(!useClusters){
 			this.getView().lookupReference('makeClusters').setIconCls("unmakeClusters");
 			this.getView().lookupReference('makeClusters').setTooltip('Release force for clusters');
@@ -107,7 +112,7 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 		var session = _metExploreViz.getSessionById('viz');
 		if(metExploreD3.GraphNetwork.isAnimated(session.getId()))
 			session.getForce().restart();
-		
+
 	},
 	removeSideCompounds : function(){
 		metExploreD3.GraphNetwork.removeSideCompounds();
@@ -115,5 +120,15 @@ Ext.define('metExploreViz.view.menu.viz_DrawingMenu.Viz_DrawingMenuController', 
 	hierarchicalLayout : function(){
 		console.log("--- start hierarchical drawing");
 		metExploreD3.GraphFunction.hierarchicalDrawing();
+	},
+	unfixAll : function(){
+		var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+
+		nodes.each(function(node) {
+			node.setLocked(false);
+			metExploreD3.GraphNode.unfixNode(node);
+		});
+		
+		metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
 	}
 });
