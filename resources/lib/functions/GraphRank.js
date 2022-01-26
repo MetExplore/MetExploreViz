@@ -965,6 +965,8 @@ metExploreD3.GraphRank = {
 
                         var oldY = parseFloat(d3.select(this).attr("y"));
                         d3.select(this).attr("y", oldY-0.5);
+
+                        metExploreD3.GraphRank.createTooltip(d3.select(this), "Mark as visit and expand reaction(s) from this node");
                     })
                     .on('mouseleave', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1022,6 +1024,8 @@ metExploreD3.GraphRank = {
 
                         var oldY = parseFloat(d3.select(this).attr("y"));
                         d3.select(this).attr("y", oldY+0.5);
+
+                        metExploreD3.GraphRank.createTooltip(d3.select(this), "Unvisit this node / remove this node");
                     })
                     .on('mouseleave', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1073,6 +1077,8 @@ metExploreD3.GraphRank = {
 
                         var oldY = parseFloat(d3.select(this).attr("y"));
                         d3.select(this).attr("y", oldY+0.5);
+
+                        metExploreD3.GraphRank.createTooltip(d3.select(this), "Mark as visit");
                     })
                     .on('mouseleave', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1129,6 +1135,8 @@ metExploreD3.GraphRank = {
 
                         var oldY = parseFloat(d3.select(this).attr("y"));
                         d3.select(this).attr("y", oldY-0.5);
+
+                        metExploreD3.GraphRank.createTooltip(d3.select(this), "Expand side compound(s)");
                     })
                     .on('mouseleave', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1179,18 +1187,9 @@ metExploreD3.GraphRank = {
                     .attr("class", "collapse")
                     .classed('hide', true)
                     .on('click', function(node, v) {
-                        if (node.sideCompoundsHidden === false){
-                            metExploreD3.GraphRank.hideSideCompounds(node);
-                            node.setLocked(false);
-                            metExploreD3.GraphNode.unfixNode(node);
-                        }
-                        else {
-                            metExploreD3.GraphRank.hideNeighbours(node);
-                            metExploreD3.GraphRank.updateNbHidden();
-                            metExploreD3.GraphRank.visitLink();
-                            node.setLocked(false);
-                            metExploreD3.GraphNode.unfixNode(node);
-                        }
+                        metExploreD3.GraphRank.hideSideCompounds(node);
+                        node.setLocked(false);
+                        metExploreD3.GraphNode.unfixNode(node);
                     })
                     .on('mouseenter', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1198,6 +1197,8 @@ metExploreD3.GraphRank = {
 
                         var oldY = parseFloat(d3.select(this).attr("y"));
                         d3.select(this).attr("y", oldY+0.5);
+
+                        metExploreD3.GraphRank.createTooltip(d3.select(this), "Collapse side compound(s)");
                     })
                     .on('mouseleave', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1220,6 +1221,65 @@ metExploreD3.GraphRank = {
                     .attr("class", "iconCollapse")
                     .attr("y", 2)
                     .attr("x", 2)
+                    .attr("width", "40%")
+                    .attr("height", "40%")
+                    .attr("xlink:href",  "resources/icons/minus.svg");
+
+                var boxRemove = d3.select(this)
+                    .insert("svg", ":first-child")
+                    .attr(
+                        "viewBox",
+                        function (d) {
+                            +" " + minDim*2;
+                        }
+                    )
+                    .attr("width",  5+reactionStyle.getWidth())
+                    .attr("height", 5+reactionStyle.getHeight())
+                    .attr("preserveAspectRatio", "xMinYMin")
+                    .attr("y", 0)
+                    .attr("x", -reactionStyle.getWidth())
+                    .attr("class", "remove")
+                    .classed('hide', true)
+                    .on('click', function(node, v) {
+                        if (node.sideCompoundsHidden === false){
+                            metExploreD3.GraphRank.hideSideCompounds(node);
+                            node.setLocked(false);
+                            metExploreD3.GraphNode.unfixNode(node);
+                        }
+                        metExploreD3.GraphRank.hideNeighbours(node);
+                        metExploreD3.GraphRank.updateNbHidden();
+                        metExploreD3.GraphRank.visitLink();
+                        node.setLocked(false);
+                        metExploreD3.GraphNode.unfixNode(node);
+                    })
+                    .on('mouseenter', function (e, v) {
+                        var oldX = parseFloat(d3.select(this).attr("x"));
+                        d3.select(this).attr("x", oldX-0.5);
+
+                        var oldY = parseFloat(d3.select(this).attr("y"));
+                        d3.select(this).attr("y", oldY+0.5);
+
+                        metExploreD3.GraphRank.createTooltip(d3.select(this), "Remove this node");
+                    })
+                    .on('mouseleave', function (e, v) {
+                        var oldX = parseFloat(d3.select(this).attr("x"));
+                        d3.select(this).attr("x", oldX+0.5);
+
+                        var oldY = parseFloat(d3.select(this).attr("y"));
+                        d3.select(this).attr("y", oldY-0.5);
+                    });
+
+                boxRemove.append("svg:path")
+                    .attr("class", "backgroundRemove")
+                    .attr("d", "M0 0 L" + reactionStyle.getWidth() + " 0 L" +
+                        reactionStyle.getWidth() + " " + reactionStyle.getHeight() +
+                        " L0 " + reactionStyle.getHeight() + " Z")
+                    .attr("fill", "black");
+
+                boxRemove.append("image")
+                    .attr("class", "iconRemove")
+                    .attr("y", 2)
+                    .attr("x", 1)
                     .attr("width", "40%")
                     .attr("height", "40%")
                     .attr("xlink:href",  "resources/icons/minus.svg");
@@ -1293,5 +1353,9 @@ metExploreD3.GraphRank = {
                 }
             }
         });
+    },
+
+    createTooltip: function(btn, text) {
+        btn.append("title").text(text);
     }
 };

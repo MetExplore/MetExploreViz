@@ -243,7 +243,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							text : 'Remove selected nodes',
 							hidden : networkVizSessionStore.getSelectedNodes().length===0,
 							iconCls:"removeNode",
-							handler :function(){ 
+							handler :function(){
 								metExploreD3.GraphNetwork.removeSelectedNode("viz");
 								metExploreD3.fireEvent("girParams","changeOnNetwork");
 							}
@@ -356,7 +356,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                             text : 'All selected nodes',
                             hidden : false,
                             iconCls:"removeNode",
-                            handler :function(){ 
+                            handler :function(){
 								metExploreD3.GraphNetwork.removeSelectedNode("viz");
 								metExploreD3.fireEvent("girParams","changeOnNetwork");
 							}
@@ -408,7 +408,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 					viz.expandMenu = new Ext.menu.Menu({
 						items: [
 							{
-								text: 'Sucessors',
+								text: 'Successors',
 								iconCls: 'expandOut',
 								handler: function() {
 									// metExploreD3.GraphRank.showSucessors(theNode);
