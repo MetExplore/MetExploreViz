@@ -1148,11 +1148,9 @@ metExploreD3.GraphRank = {
 
                 boxExpand.append("svg:path")
                     .attr("class", "backgroundExpand")
-                    .attr("d", "M" + reactionStyle.getWidth() + "," + reactionStyle.getHeight() +
-                        " L0," + reactionStyle.getHeight() +
-                        " L0," + reactionStyle.getRY() * 2 +
-                        " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
-                        " L" + reactionStyle.getWidth() + ",0")
+                    .attr("d", "M0 0 L" + reactionStyle.getWidth() + " 0 L" +
+                        reactionStyle.getWidth() + " " + reactionStyle.getHeight() +
+                        " L0 " + reactionStyle.getHeight() + " Z")
                     .attr("fill", "#00aa00")
                     .attr("opacity", function(node){
                         if (node.asSideCompounds === true){
@@ -1210,11 +1208,9 @@ metExploreD3.GraphRank = {
 
                 boxCollaspe.append("svg:path")
                     .attr("class", "backgroundCollapse")
-                    .attr("d", "M" + reactionStyle.getWidth() + "," + reactionStyle.getHeight() +
-                        " L0," + reactionStyle.getHeight() +
-                        " L0," + reactionStyle.getRY() * 2 +
-                        " A" + reactionStyle.getRX() * 2 + "," + reactionStyle.getRY() * 2 + ",0 0 1 " + reactionStyle.getRX() * 2 + ",0" +
-                        " L" + reactionStyle.getWidth() + ",0")
+                    .attr("d", "M0 0 L" + reactionStyle.getWidth() + " 0 L" +
+                        reactionStyle.getWidth() + " " + reactionStyle.getHeight() +
+                        " L0 " + reactionStyle.getHeight() + " Z")
                     .attr("fill", "#dd0000");
 
                 boxCollaspe.append("image")
