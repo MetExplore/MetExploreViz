@@ -123,6 +123,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 		if (metaboRankPanel.open === false) {
 			sidePanel.setHidden(true);
 			metaboRankPanel.setHidden(false);
+			metaboRankPanel.setCollapsed(false);
 			enterBtn.setText("Exit MetaboRank mode");
 
 			metaboRankPanel.open = true;

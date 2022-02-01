@@ -1067,9 +1067,42 @@ metExploreD3.GraphRank = {
                     .attr("class", "visit")
                     .classed('hide', true)
                     .on('click', function(node, v) {
-                        metExploreD3.GraphRank.visit(node);
-                        node.setLocked(true);
-                        metExploreD3.GraphNode.fixNode(node);
+                        if (node.isVisited() === false) {
+                            metExploreD3.GraphRank.visit(node);
+                            node.setLocked(true);
+                            metExploreD3.GraphNode.fixNode(node);
+
+                            d3.select("#viz").select("#D3viz")
+                                .select("#graphComponent")
+                                .selectAll("g.node")
+                                .filter(function(test){
+                                    return node === test
+                                })
+                                .select(".iconVisit")
+                                .attr("xlink:href", "resources/icons/unvisit.svg")
+                                .attr("width", "30%")
+                                .attr("height", "30%")
+                                .attr("y", 4)
+                                .attr("x", 3);
+                        }
+                        else {
+                            metExploreD3.GraphRank.unvisit(node);
+                            node.setLocked(true);
+                            metExploreD3.GraphNode.unfixNode(node);
+
+                            d3.select("#viz").select("#D3viz")
+                                .select("#graphComponent")
+                                .selectAll("g.node")
+                                .filter(function(test){
+                                    return node === test
+                                })
+                                .select(".iconVisit")
+                                .attr("xlink:href", "resources/icons/check.svg")
+                                .attr("width", "40%")
+                                .attr("height", "40%")
+                                .attr("y", 3)
+                                .attr("x", 2);
+                        }
                     })
                     .on('mouseenter', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1078,7 +1111,7 @@ metExploreD3.GraphRank = {
                         var oldY = parseFloat(d3.select(this).attr("y"));
                         d3.select(this).attr("y", oldY+0.5);
 
-                        metExploreD3.GraphRank.createTooltip(d3.select(this), "Mark as visit");
+                        metExploreD3.GraphRank.createTooltip(d3.select(this), "Mark as visit / unvisit");
                     })
                     .on('mouseleave', function (e, v) {
                         var oldX = parseFloat(d3.select(this).attr("x"));
@@ -1102,7 +1135,15 @@ metExploreD3.GraphRank = {
                     .attr("x", 2)
                     .attr("width", "40%")
                     .attr("height", "40%")
-                    .attr("xlink:href",  "resources/icons/check.svg");
+                    // .attr("xlink:href", "resources/icons/check.svg");
+                    .attr("xlink:href", function(node){
+                        if (node.isVisited() === false) {
+                            return "resources/icons/check.svg"
+                        }
+                        else {
+                            return "resources/icons/unvisit.svg"
+                        }
+                    });
             }
 
             // reaction ring
