@@ -229,6 +229,48 @@ metExploreD3.GraphRank = {
         }
     },
 
+    refreshStart: function(listMi) {
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+
+        var listMiCmpt = [];
+
+        listMi.map(function(mi){
+            var meta = metExploreD3.GraphRank.transformId(mi, "id");
+            var miCmpt = metExploreD3.GraphRank.nodeForAll(metExploreD3.GraphRank.getIdentifier(meta));
+            miCmpt.map(function(identifier){
+                listMiCmpt.push(identifier);
+            });
+        });
+
+        listMiCmpt.forEach(function(node){
+            networkData.getNodeByDbIdentifier(node).show();
+        });
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+
+        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+
+        nodes.each(function(node){
+            if (listMiCmpt.includes(node.dbIdentifier)){
+                metExploreD3.GraphRank.startNode(node);
+                node.markAsStarter();
+            }
+            if (!(listMiCmpt.includes(node.dbIdentifier)) && node.getAsStarter() === true) {
+                node.removeAsStarter();
+                metExploreD3.GraphRank.nodeStyleByRank(node);
+            }
+        });
+
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+
+        listMiCmpt.forEach(function(mi){
+            var node = networkData.getNodeByDbIdentifier(mi);
+            metExploreD3.GraphRank.getNbHidden(node);
+            metExploreD3.GraphRank.createNodeRing(node);
+        });
+        metExploreD3.GraphRank.updateNbHidden();
+    },
+
     // save network function
     /*******************************************
     * Create a numeric map of the network

@@ -127,6 +127,14 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
         },
 
         {
+            xtype: 'button',
+            html: 'refresh starting node(s)',
+            reference: 'refreshStart',
+            margin: '5 5 5 5',
+            hidden: true
+        },
+
+        {
             xtype: 'panel',
             layout: {
                 type: 'hbox'
