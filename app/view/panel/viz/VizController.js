@@ -411,7 +411,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								text: 'Successors',
 								iconCls: 'expandOut',
 								handler: function() {
-									// metExploreD3.GraphRank.showSucessors(theNode);
 									metExploreD3.GraphRank.showNeighbours(theNode, "next");
 									metExploreD3.GraphRank.visit(theNode);
 									theNode.setLocked(true);
@@ -423,7 +422,6 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								text: 'Predecessors',
 								iconCls: 'expandIn',
 								handler: function() {
-									// metExploreD3.GraphRank.showPredecessors(theNode);
 									metExploreD3.GraphRank.showNeighbours(theNode, "previous");
 									metExploreD3.GraphRank.visit(theNode);
 									theNode.setLocked(true);

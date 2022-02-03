@@ -61,7 +61,6 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.updateNbHidden();
         metExploreD3.GraphRank.setSideCompound();
 
-        // metExploreD3.GraphCaption.drawCaptionGirMode();
         metExploreD3.GraphCaption.delCaption();
     },
 
@@ -70,13 +69,14 @@ metExploreD3.GraphRank = {
      * @param {Object} node node object
      */
     startNode: function(node) {
-        var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node").selectAll("rect");
-        allNodes.filter(function(thisNode){
-            return thisNode === node
-        })
-        .style("stroke-width",5)
-        .style("stroke","#00aa00")
-        .style("stroke-opacity",0.4);
+        var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var startNode = allNodes.filter(function(thisNode){
+            return thisNode === node;
+        });
+        startNode.selectAll("rect")
+            .style("stroke-width",5)
+            .style("stroke","#00aa00")
+            .style("stroke-opacity",0.4);
     },
 
     /*******************************************
@@ -362,6 +362,7 @@ metExploreD3.GraphRank = {
 
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
 
+        metExploreD3.GraphRank.updateLabel(addRingNodes);
         addRingNodes.map(function(thisNode){
             metExploreD3.GraphRank.createNodeRing(thisNode);
             if (thisNode.getBiologicalType() === "metabolite"){
@@ -373,6 +374,19 @@ metExploreD3.GraphRank = {
     coorPoint: function(node, startX, startY) {
         node.x = node.x - ((node.x - startX)/2);
         node.y = node.y - ((node.y - startY)/2);
+    },
+
+    updateLabel: function(listNodes) {
+        var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+
+        var oldNodes = allNodes.filter(function(node){
+            if (!(listNodes.includes(node)) && node.isVisited() === false){
+                return node;
+            }
+        });
+
+        oldNodes.select("text")
+            .style("opacity", 0);
     },
 
     /*******************************************
@@ -810,6 +824,7 @@ metExploreD3.GraphRank = {
 
         nodes.each(function(thisNode){
             if (thisNode === node){
+                d3.select(this).select("text").style("opacity", 1);
                 d3.select(this).selectAll("rect").style("fill","black");
                 d3.select(this).select(".iconVisit")
                     .attr("xlink:href", "resources/icons/unvisit.svg")

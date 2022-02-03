@@ -2158,6 +2158,9 @@ metExploreD3.GraphNode = {
                         .classed('hide', false);
                     overNode.selectAll('.nbHidden')
                         .classed('hide', false);
+                    if (metExploreD3.GraphRank.launchGIR === true && overNode.select("text").style("opacity") < 1){
+                        overNode.select("text").style("opacity", 0.9);
+                    }
                 }
             })
             .on("mouseleave", function (d) {
@@ -2182,7 +2185,9 @@ metExploreD3.GraphNode = {
                     leaveNode.selectAll('.nbHidden')
                         .classed('hide', true);
                 }
-
+                if (metExploreD3.GraphRank.launchGIR === true && leaveNode.select("text").style("opacity") < 1){
+                    leaveNode.select("text").style("opacity", 0);
+                }
 
                 if (!metExploreD3.GraphStyleEdition.editMode) {
                     var transform = d3.select(this).attr("transform");
