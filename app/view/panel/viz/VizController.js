@@ -767,7 +767,16 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 								{
 									text: 'Expand',
 									iconCls: 'neighbours',
+									hidden: theNode.getBiologicalType()==="reaction",
 									menu: viz.expandMenu
+								},
+								{
+									text: 'Expand hidden metabolite',
+									iconCls: 'neighbours',
+									hidden: theNode.getBiologicalType()==="metabolite",
+									handler: function(){
+										metExploreD3.GraphRank.showMeta(theNode);
+									}
 								},
 								{
 									text: (theNode.isVisited() ? 'Unvisit' : 'Visit'),
@@ -792,12 +801,14 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 									handler: function() {
 										metExploreD3.GraphRank.hideNeighbours(theNode);
 										metExploreD3.GraphRank.unvisit(theNode);
+										metExploreD3.GraphRank.updateNbHidden();
 									}
 								},
 								{
 									text: (theNode.sideCompoundsHidden ? 'Show side compounds' : 'Hide side compounds'),
 									iconCls: (theNode.sideCompoundsHidden ? 'neighbours' : 'removeNode'),
-									hidden: (theNode.getBiologicalType()==="metabolite" || theNode.asSideCompounds === false),
+									disabled: theNode.asSideCompounds === false,
+									hidden: theNode.getBiologicalType()==="metabolite",
 									handler: function() {
 										if (theNode.sideCompoundsHidden === false){
 											metExploreD3.GraphRank.hideSideCompounds(theNode);

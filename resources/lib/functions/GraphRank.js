@@ -269,6 +269,7 @@ metExploreD3.GraphRank = {
             metExploreD3.GraphRank.createNodeRing(node);
         });
         metExploreD3.GraphRank.updateNbHidden();
+        metExploreD3.GraphRank.visitLink();
     },
 
     // save network function
@@ -411,6 +412,49 @@ metExploreD3.GraphRank = {
                 metExploreD3.GraphRank.nodeStyleByRank(thisNode);
             }
         });
+    },
+
+    showMeta: function(node) {
+        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var rankData = _metExploreViz.getRankById("rankData");
+        var connexion = rankData.getData();
+
+        var identifier = node.dbIdentifier;
+
+        var linkOut = connexion[identifier]["linkOut"];
+        var linkIn = connexion[identifier]["linkIn"];
+
+        var startX = node.x;
+        var startY = node.y;
+
+        var addRingNodes = [];
+
+        linkIn.map(function(link){
+            if (link.source.hidden === true && link.source.getIsSideCompound() === false){
+                link.source.show();
+                metExploreD3.GraphRank.coorPoint(link.source, startX, startY);
+                addRingNodes.push(link.source);
+            }
+        });
+
+        linkOut.map(function(link){
+            if (link.target.hidden === true && link.target.getIsSideCompound() === false){
+                link.target.show();
+                metExploreD3.GraphRank.coorPoint(link.target, startX, startY);
+                addRingNodes.push(link.target);
+            }
+        });
+
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+
+        addRingNodes.map(function(thisNode){
+            metExploreD3.GraphRank.createNodeRing(thisNode);
+            if (thisNode.getBiologicalType() === "metabolite"){
+                metExploreD3.GraphRank.nodeStyleByRank(thisNode);
+            }
+        });
+
+        metExploreD3.GraphRank.visitLink();
     },
 
     coorPoint: function(node, startX, startY) {

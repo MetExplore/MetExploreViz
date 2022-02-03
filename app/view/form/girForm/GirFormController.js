@@ -78,6 +78,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                     view.lookupReference('launchGIR').setText("launch GIR");
                     view.lookupReference('extractNQuit').disable();
                     view.lookupReference('loadRankFile').enable();
+                    view.lookupReference('refreshStart').setHidden(true);
 
                     metExploreD3.GraphRank.launchGIR = false;
                 }
