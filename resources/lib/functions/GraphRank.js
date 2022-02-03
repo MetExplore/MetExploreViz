@@ -207,6 +207,8 @@ metExploreD3.GraphRank = {
                 if (node.isVisited() === true){
                     node.show();
                     node.unvisit();
+                    node.setLocked(false);
+                    metExploreD3.GraphNode.unfixNode(node);
                 }
                 if (node.getAsStarter() === true){
                     node.removeAsStarter();
@@ -277,6 +279,9 @@ metExploreD3.GraphRank = {
         var linkOut = connexion[identifier]["linkOut"];
         var linkIn = connexion[identifier]["linkIn"];
 
+        var startX = node.x;
+        var startY = node.y;
+
         var addRingNodes = [];
 
         if (direction === "all"){
@@ -291,14 +296,16 @@ metExploreD3.GraphRank = {
 
         if (direction === "all" || direction === "previous"){
             linkIn.map(function(link, i){
-                if (reactList.includes(link.source.dbIdentifier)){
+                if (reactList.includes(link.source.dbIdentifier) && link.source.hidden === true){
                     link.source.show();
+                    metExploreD3.GraphRank.coorPoint(link.source, startX, startY);
                     addRingNodes.push(link.source);
                     identifier = link.source.dbIdentifier;
                     connexion[identifier]["linkIn"].map(function(that, i){
                         var isSide = that.source.getIsSideCompound();
-                        if (isSide === false){
+                        if (isSide === false && that.source.hidden === true){
                             that.source.show();
+                            metExploreD3.GraphRank.coorPoint(that.source, startX, startY);
                             addRingNodes.push(that.source);
                         }
                     });
@@ -307,6 +314,7 @@ metExploreD3.GraphRank = {
                             var isSide = that.target.getIsSideCompound();
                             if (isSide === false){
                                 that.target.show();
+                                metExploreD3.GraphRank.coorPoint(that.target, startX, startY);
                                 addRingNodes.push(that.target);
                             }
                         }
@@ -317,14 +325,16 @@ metExploreD3.GraphRank = {
 
         if (direction === "all" || direction === "next"){
             linkOut.map(function(link, i){
-                if (reactList.includes(link.target.dbIdentifier)){
+                if (reactList.includes(link.target.dbIdentifier) && link.target.hidden === true){
                     link.target.show();
+                    metExploreD3.GraphRank.coorPoint(link.target, startX, startY);
                     addRingNodes.push(link.target);
                     identifier = link.target.dbIdentifier;
                     connexion[identifier]["linkOut"].map(function(that, i){
                         var isSide = that.target.getIsSideCompound();
-                        if (isSide === false){
+                        if (isSide === false && that.target.hidden === true){
                             that.target.show();
+                            metExploreD3.GraphRank.coorPoint(that.target, startX, startY);
                             addRingNodes.push(that.target);
                         }
                         if (isSide === true){
@@ -337,6 +347,7 @@ metExploreD3.GraphRank = {
                             var isSide = that.source.getIsSideCompound();
                             if (isSide === false){
                                 that.source.show();
+                                metExploreD3.GraphRank.coorPoint(that.source, startX, startY);
                                 addRingNodes.push(that.source);
                             }
                             if (isSide === true){
@@ -357,6 +368,11 @@ metExploreD3.GraphRank = {
                 metExploreD3.GraphRank.nodeStyleByRank(thisNode);
             }
         });
+    },
+
+    coorPoint: function(node, startX, startY) {
+        node.x = node.x - ((node.x - startX)/2);
+        node.y = node.y - ((node.y - startY)/2);
     },
 
     /*******************************************
@@ -795,6 +811,12 @@ metExploreD3.GraphRank = {
         nodes.each(function(thisNode){
             if (thisNode === node){
                 d3.select(this).selectAll("rect").style("fill","black");
+                d3.select(this).select(".iconVisit")
+                    .attr("xlink:href", "resources/icons/unvisit.svg")
+                    .attr("width", "30%")
+                    .attr("height", "30%")
+                    .attr("y", 4)
+                    .attr("x", 3);
                 node.visit();
             }
         });
@@ -816,6 +838,12 @@ metExploreD3.GraphRank = {
         nodes.each(function(thisNode){
             if (thisNode === node){
                 d3.select(this).select("rect").style("fill",metaboliteStyle.backgroundColor);
+                d3.select(this).select(".iconVisit")
+                    .attr("xlink:href", "resources/icons/check.svg")
+                    .attr("width", "40%")
+                    .attr("height", "40%")
+                    .attr("y", 3)
+                    .attr("x", 2);
                 node.unvisit();
             }
         });
@@ -1087,7 +1115,7 @@ metExploreD3.GraphRank = {
                         }
                         else {
                             metExploreD3.GraphRank.unvisit(node);
-                            node.setLocked(true);
+                            node.setLocked(false);
                             metExploreD3.GraphNode.unfixNode(node);
 
                             d3.select("#viz").select("#D3viz")
@@ -1129,21 +1157,24 @@ metExploreD3.GraphRank = {
                     "L 0 0")
                     .attr("fill", "#0000dd");
 
-                boxVisit.append("image")
-                    .attr("class", "iconVisit")
-                    .attr("y", 3)
-                    .attr("x", 2)
-                    .attr("width", "40%")
-                    .attr("height", "40%")
-                    // .attr("xlink:href", "resources/icons/check.svg");
-                    .attr("xlink:href", function(node){
-                        if (node.isVisited() === false) {
-                            return "resources/icons/check.svg"
-                        }
-                        else {
-                            return "resources/icons/unvisit.svg"
-                        }
-                    });
+                if (node.isVisited() === false){
+                    boxVisit.append("image")
+                        .attr("class", "iconVisit")
+                        .attr("y", 3)
+                        .attr("x", 2)
+                        .attr("width", "40%")
+                        .attr("height", "40%")
+                        .attr("xlink:href", "resources/icons/check.svg");
+                }
+                else {
+                    boxVisit.append("image")
+                        .attr("class", "iconVisit")
+                        .attr("y", 4)
+                        .attr("x", 3)
+                        .attr("width", "30%")
+                        .attr("height", "30%")
+                        .attr("xlink:href", "resources/icons/unvisit.svg");
+                }
             }
 
             // reaction ring
