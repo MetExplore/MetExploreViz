@@ -968,6 +968,8 @@ metExploreD3.GraphRank = {
                 linkOut.map(function(thisLink){
                     if (thisLink.target.isVisited() === true){
                         thisLink.source.visit();
+                        thisLink.source.setLocked(true);
+                        metExploreD3.GraphNode.fixNode(thisLink.source);
                     }
                 });
             }
