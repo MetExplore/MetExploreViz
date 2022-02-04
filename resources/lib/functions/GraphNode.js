@@ -2161,6 +2161,9 @@ metExploreD3.GraphNode = {
                     if (metExploreD3.GraphRank.launchGIR === true && overNode.select("text").style("opacity") < 1){
                         overNode.select("text").style("opacity", 0.9);
                     }
+                    if (metExploreD3.GraphRank.launchGIR === true){
+                        metExploreD3.GraphRank.addScore(overNode);
+                    }
                 }
             })
             .on("mouseleave", function (d) {

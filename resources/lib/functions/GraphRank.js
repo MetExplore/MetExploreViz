@@ -622,7 +622,7 @@ metExploreD3.GraphRank = {
                     reactList.push(link.target.dbIdentifier);
                 }
             });
-            var score = metExploreD3.GraphRank.getScore(reactList);
+            var score = metExploreD3.GraphRank.getMeanScore(reactList);
             return score;
         }
     },
@@ -653,7 +653,7 @@ metExploreD3.GraphRank = {
                     reactList.push(link.source.dbIdentifier);
                 }
             });
-            var score = metExploreD3.GraphRank.getScore(reactList);
+            var score = metExploreD3.GraphRank.getMeanScore(reactList);
             return score;
         }
     },
@@ -684,7 +684,7 @@ metExploreD3.GraphRank = {
                     reactList.push(link.target.dbIdentifier);
                 }
             });
-            var score = metExploreD3.GraphRank.getScore(reactList);
+            var score = metExploreD3.GraphRank.getMeanScore(reactList);
             return score;
         }
     },
@@ -693,7 +693,7 @@ metExploreD3.GraphRank = {
      * Calcul mean score for reaction list
      * @param {Array} reactList list of reaction identifier
      */
-    getScore: function(reactList) {
+    getMeanScore: function(reactList) {
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
         var rankScore = rankData.getScore();
@@ -1528,5 +1528,33 @@ metExploreD3.GraphRank = {
 
     createTooltip: function(btn, text) {
         btn.append("title").text(text);
+    },
+
+    addScore: function(node) {
+        var rankData = _metExploreViz.getRankById("rankData");
+        var rankScore = rankData.getScore();
+
+        var id = node._groups[0][0].__data__.dbIdentifier;
+        var sourceId = metExploreD3.GraphRank.getIdentifier(id);
+        var scores = rankScore[sourceId];
+
+        if (scores === undefined){
+            scores = rankScore[id];
+        }
+
+        if (scores !== undefined){
+            if (scores[0] === undefined){
+                scores[0] = 10000;
+            }
+
+            if (scores[1] === undefined){
+                scores[1] = 10000;
+            }
+
+            var scoreIn = scores[0];
+            var scoreOut = scores[1];
+            var text = "Score IN : " + scoreIn + "\n Score OUT : " + scoreOut;
+            node.append("title").text(text);
+        }
     }
 };
