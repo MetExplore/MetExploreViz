@@ -116,6 +116,9 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 		var me = this;
 		var view = me.getView();
 
+		var session = _metExploreViz.getSessionById("viz");
+		var force = session.getForce();
+
 		var metaboRankPanel = view.lookupReference("metaboRankPanel");
 		var sidePanel = view.lookupReference("comparisonSidePanel");
 		var enterBtn = view.lookupReference("enterMetaboRankMode");
@@ -128,6 +131,10 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 
 			metaboRankPanel.open = true;
 			metExploreD3.GraphRank.metaboRankMode = true;
+
+			metExploreD3.GraphRank.initialAnimationState = metExploreD3.GraphNetwork.isAnimated("viz");
+			console.log(metExploreD3.GraphNetwork.isAnimated("viz"));
+			force.stop();
 		}
 		else {
 			if (metExploreD3.GraphRank.launchGIR === false){
@@ -137,6 +144,16 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 
 				metaboRankPanel.open = false;
 				metExploreD3.GraphRank.metaboRankMode = false;
+
+				var anim = metExploreD3.GraphRank.initialAnimationState;
+				console.log(anim);
+				console.log(metExploreD3.GraphNetwork.isAnimated("viz"));
+				if (anim){
+					force.alpha(1).restart();
+				}
+				if (!anim){
+					force.stop();
+				}
 			}
 			else {
 				metExploreD3.displayWarning("Work in progress",

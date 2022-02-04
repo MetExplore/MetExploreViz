@@ -409,7 +409,6 @@ metExploreD3.GraphLink = {
         }
 
         if(metExploreD3.GraphRank.launchGIR === true) {
-            metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
             metExploreD3.GraphRank.visitLink();
         }
 

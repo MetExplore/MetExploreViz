@@ -18,6 +18,7 @@ metExploreD3.GraphRank = {
      */
     launchGIR: false,
     metaboRankMode: false,
+    initialAnimationState: undefined,
 
     // Start and quit GIR methods
     /*******************************************
@@ -30,6 +31,8 @@ metExploreD3.GraphRank = {
 
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
+
+        var force = session.getForce();
 
         var listMiCmpt = [];
 
@@ -62,6 +65,9 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphRank.setSideCompound();
 
         metExploreD3.GraphCaption.delCaption();
+
+        force.alpha(1).restart();
+        metExploreD3.GraphNetwork.setAnimated("viz", true);
     },
 
     /*******************************************
@@ -85,6 +91,7 @@ metExploreD3.GraphRank = {
     quitGir: function() {
         var mask = metExploreD3.createLoadMask("Reconstruct network","viz");
         var session = _metExploreViz.getSessionById("viz");
+        var force = session.getForce();
         var networkData = session.getD3Data();
         var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var nodes = networkData.getNodes();
@@ -117,6 +124,8 @@ metExploreD3.GraphRank = {
                     metExploreD3.GraphRank.removeGirStyle();
                     metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
                     metExploreD3.hideMask(mask);
+                    metExploreD3.GraphNetwork.setAnimated("viz", metExploreD3.GraphRank.initialAnimationState);
+                    force.stop();
                 },100);
         }
         metExploreD3.GraphCaption.drawCaption();
@@ -186,6 +195,7 @@ metExploreD3.GraphRank = {
      */
     quitAndExtract: function() {
         var session = _metExploreViz.getSessionById("viz");
+        var force = session.getForce();
         var networkData = session.getD3Data();
         var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var nodes = networkData.getNodes();
@@ -219,6 +229,8 @@ metExploreD3.GraphRank = {
             metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
             metExploreD3.GraphCaption.drawCaption();
             networkData.updateNbVisited(-(networkData.getNbVisited()));
+            metExploreD3.GraphNetwork.setAnimated("viz", metExploreD3.GraphRank.initialAnimationState);
+            force.stop();
             return true;
         }
 
