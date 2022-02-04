@@ -133,7 +133,6 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			metExploreD3.GraphRank.metaboRankMode = true;
 
 			metExploreD3.GraphRank.initialAnimationState = metExploreD3.GraphNetwork.isAnimated("viz");
-			console.log(metExploreD3.GraphNetwork.isAnimated("viz"));
 			force.stop();
 		}
 		else {
@@ -146,8 +145,6 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				metExploreD3.GraphRank.metaboRankMode = false;
 
 				var anim = metExploreD3.GraphRank.initialAnimationState;
-				console.log(anim);
-				console.log(metExploreD3.GraphNetwork.isAnimated("viz"));
 				if (anim){
 					force.alpha(1).restart();
 				}
