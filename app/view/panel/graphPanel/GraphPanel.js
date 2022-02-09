@@ -125,13 +125,14 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 padding:'0 0 0 0'
                           },
                           {
-                                text: 'Enter MetaboRank mode',
+                                text: 'Enter GIR mode',
                                 scale: 'large',
-                                tooltip: 'Active / inactive metaboRank mode',
+                                tooltip: 'Active / inactive GIR mode',
                                 id: 'enterMetaboRankMode',
                                 reference: 'enterMetaboRankMode',
+                                cls:"loadButton",
                                 hidden: false,
-                                padding: '0 0 0 0'
+                                padding: '5 5 5 5'
                           },
                           '-',
                           {

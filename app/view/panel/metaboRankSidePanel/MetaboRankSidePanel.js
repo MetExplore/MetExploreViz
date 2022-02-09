@@ -7,7 +7,8 @@ Ext.define('metExploreViz.view.panel.metaboRankSidePanel.MetaboRankSidePanel', {
 	alias: 'widget.metaboRankSidePanel',
 	requires: [
         "metExploreViz.view.panel.metaboRankSidePanel.MetaboRankSidePanelController",
-        "metExploreViz.view.form.girForm.GirForm"
+        "metExploreViz.view.form.girForm.GirForm",
+        "metExploreViz.view.form.girPathwaysForm.GirPathwaysForm"
     ],
  	controller: "panel-metaboRankSidePanel-metaboRankSidePanel",
 
@@ -30,6 +31,11 @@ Ext.define('metExploreViz.view.panel.metaboRankSidePanel.MetaboRankSidePanel', {
             title: 'GIR',
             id: 'girParams',
             xtype: 'girForm'
+        },
+        {
+            title: 'Pathways',
+            id: 'girPathwaysParams',
+            xtype: 'girPathwaysForm'
         }
 	]
 });

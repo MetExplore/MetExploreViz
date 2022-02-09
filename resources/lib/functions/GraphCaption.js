@@ -1455,6 +1455,7 @@ metExploreD3.GraphCaption = {
         if(groups[0]){
             if(groups[0].getColor()){
                 metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
+                metExploreD3.fireEvent("girPathwaysParams", "afterColorCalculating");
             }
             else
             {
@@ -1487,6 +1488,7 @@ metExploreD3.GraphCaption = {
                     pathway.setColor(metExploreD3.GraphUtils.RGB2Color(red,green,blue));
                 }
                 metExploreD3.fireEvent("captionFormPathways", "afterColorCalculating");
+                metExploreD3.fireEvent("girPathwaysParams", "afterColorCalculating");
             }
         }
     }

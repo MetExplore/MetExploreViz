@@ -25,7 +25,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
     items: [
         {
             xtype: 'label',
-            html: 'Parameters :',
+            html: 'Parameters:',
             margin: '15 15 5 15'
         },
 
@@ -128,7 +128,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
 
         {
             xtype: 'button',
-            html: 'refresh starting node(s)',
+            html: 'add / remove starting node(s)',
             reference: 'refreshStart',
             margin: '5 5 5 5',
             hidden: true
@@ -149,7 +149,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                 },
                 {
                     xtype: 'button',
-                    html: 'extract & quit',
+                    html: 'extract subnetwork & quit GIR',
                     width: '50%',
                     margin: '5 5 5 5',
                     disabled: true,

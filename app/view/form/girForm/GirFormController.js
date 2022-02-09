@@ -53,6 +53,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 }
                 else {
                     view.lookupReference('launchGIR').setText("launch GIR");
+                    view.lookupReference('extractNQuit').setText("extract subnetwork & quit GIR");
                     view.lookupReference('extractNQuit').disable();
                     view.lookupReference('loadRankFile').enable();
                     view.lookupReference('refreshStart').setHidden(true);
@@ -72,15 +73,32 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
 
         view.lookupReference('extractNQuit').on({
             click: function() {
-                var extract = metExploreD3.GraphRank.quitAndExtract();
+                if (metExploreD3.GraphRank.launchGIR){
+                    var extract = metExploreD3.GraphRank.quitAndExtract();
 
-                if (extract){
-                    view.lookupReference('launchGIR').setText("launch GIR");
-                    view.lookupReference('extractNQuit').disable();
-                    view.lookupReference('loadRankFile').enable();
-                    view.lookupReference('refreshStart').setHidden(true);
+                    if (extract){
+                        view.lookupReference('launchGIR').setText("launch GIR");
+                        view.lookupReference('extractNQuit').setText("restart GIR from subnetwork");
+                        view.lookupReference('loadRankFile').enable();
+                        view.lookupReference('refreshStart').setHidden(true);
 
-                    metExploreD3.GraphRank.launchGIR = false;
+                        metExploreD3.GraphRank.launchGIR = false;
+                    }
+                }
+                else {
+                    view.lookupReference('launchGIR').setText("quit GIR");
+                    view.lookupReference('extractNQuit').setText("extract subnetwork & quit GIR");
+                    view.lookupReference('loadRankFile').disable();
+                    view.lookupReference('refreshStart').setHidden(false);
+                    var listMi = []
+                    var nbMi = view.lookupReference('miBox').items.items.length;
+                    for (var i = 1; i < nbMi+1; i++){
+                        if (view.lookupReference('selectStart'+i).value !== null){
+                            listMi.push(view.lookupReference('selectStart'+i).value);
+                        }
+                    }
+                    metExploreD3.GraphRank.launchGIR = true;
+                    metExploreD3.GraphRank.restartGir(listMi);
                 }
             }
         });

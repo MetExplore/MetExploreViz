@@ -127,7 +127,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			sidePanel.setHidden(true);
 			metaboRankPanel.setHidden(false);
 			metaboRankPanel.setCollapsed(false);
-			enterBtn.setText("Exit MetaboRank mode");
+			enterBtn.setText("Exit GIR mode");
 
 			metaboRankPanel.open = true;
 			metExploreD3.GraphRank.metaboRankMode = true;
@@ -139,7 +139,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			if (metExploreD3.GraphRank.launchGIR === false){
 				sidePanel.setHidden(false);
 				metaboRankPanel.setHidden(true);
-				enterBtn.setText("Enter MetaboRank mode");
+				enterBtn.setText("Enter GIR mode");
 
 				metaboRankPanel.open = false;
 				metExploreD3.GraphRank.metaboRankMode = false;

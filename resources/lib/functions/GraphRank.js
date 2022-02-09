@@ -68,6 +68,52 @@ metExploreD3.GraphRank = {
 
         force.alpha(1).restart();
         metExploreD3.GraphNetwork.setAnimated("viz", true);
+        metExploreD3.fireEvent("girPathwaysParams", "onStart");
+    },
+
+    restartGir: function(listMi) {
+        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
+
+        var session = _metExploreViz.getSessionById("viz");
+        var networkData = session.getD3Data();
+
+        var force = session.getForce();
+
+        var listMiCmpt = [];
+
+        listMi.map(function(mi){
+            var meta = metExploreD3.GraphRank.transformId(mi, "id");
+            var miCmpt = metExploreD3.GraphRank.nodeForAll(metExploreD3.GraphRank.getIdentifier(meta));
+            miCmpt.map(function(identifier){
+                listMiCmpt.push(identifier);
+            });
+        });
+
+        metExploreD3.GraphRank.refreshStart(listMi);
+
+        nodes.each(function(node){
+            if (listMiCmpt.includes(node.dbIdentifier)){
+                metExploreD3.GraphRank.startNode(node);
+                node.markAsStarter();
+            }
+        });
+
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+
+        nodes.each(function(node){
+            metExploreD3.GraphRank.getNbHidden(node);
+            metExploreD3.GraphRank.createNodeRing(node);
+            metExploreD3.GraphRank.nodeStyleByRank(node);
+        });
+        metExploreD3.GraphRank.updateNbHidden();
+        metExploreD3.GraphRank.setSideCompound();
+
+        metExploreD3.GraphCaption.delCaption();
+
+        force.alpha(1).restart();
+        metExploreD3.GraphNetwork.setAnimated("viz", true);
+        metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
     /*******************************************
@@ -83,6 +129,8 @@ metExploreD3.GraphRank = {
             .style("stroke-width",5)
             .style("stroke","#00aa00")
             .style("stroke-opacity",0.4);
+
+        var components = metExploreD3.getPathwaysSet('viz');
     },
 
     /*******************************************
@@ -130,6 +178,7 @@ metExploreD3.GraphRank = {
         }
         metExploreD3.GraphCaption.drawCaption();
         networkData.updateNbVisited(-(networkData.getNbVisited()));
+        metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
     /*******************************************
@@ -231,6 +280,7 @@ metExploreD3.GraphRank = {
             networkData.updateNbVisited(-(networkData.getNbVisited()));
             metExploreD3.GraphNetwork.setAnimated("viz", metExploreD3.GraphRank.initialAnimationState);
             force.stop();
+            metExploreD3.fireEvent("girPathwaysParams", "onStart");
             return true;
         }
 
@@ -282,6 +332,7 @@ metExploreD3.GraphRank = {
         });
         metExploreD3.GraphRank.updateNbHidden();
         metExploreD3.GraphRank.visitLink();
+        metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
     // save network function
@@ -424,6 +475,7 @@ metExploreD3.GraphRank = {
                 metExploreD3.GraphRank.nodeStyleByRank(thisNode);
             }
         });
+        metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
     showMeta: function(node) {
@@ -467,6 +519,7 @@ metExploreD3.GraphRank = {
         });
 
         metExploreD3.GraphRank.visitLink();
+        metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
     coorPoint: function(node, startX, startY) {
@@ -573,6 +626,7 @@ metExploreD3.GraphRank = {
 
         node.hide();
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+        metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
     /*******************************************
@@ -1565,7 +1619,7 @@ metExploreD3.GraphRank = {
 
             var scoreIn = scores[0];
             var scoreOut = scores[1];
-            var text = "Score IN : " + scoreIn + "\n Score OUT : " + scoreOut;
+            var text = "Score IN: " + scoreIn + "\nScore OUT: " + scoreOut;
             node.append("title").text(text);
         }
     }
