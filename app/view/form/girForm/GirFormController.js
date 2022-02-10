@@ -21,9 +21,11 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
         view.on({
             fileLoad: function() {
                 var name = _metExploreViz.rank.name;
+                var rankData = _metExploreViz.getRankById("rankData");
                 view.lookupReference('selectFile').setValue(name);
 
                 me.parseFile(_metExploreViz.rank);
+                rankData.setThreshold(view.lookupReference('thresholdGIR').value);
             },
             changeOnNetwork: function() {
                 if (_metExploreViz.rank.data !== undefined){
@@ -164,11 +166,23 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
 
                 metExploreD3.GraphRank.refreshStart(listMi);
             }
-        })
+        });
+
+        view.lookupReference('thresholdGIR').on({
+            change: function() {
+                me.changeLegend();
+                var rankData = _metExploreViz.getRankById("rankData");
+                if (rankData) {
+                    rankData.setThreshold(view.lookupReference('thresholdGIR').value);
+                }
+                if (metExploreD3.GraphRank.launchGIR) {
+                    metExploreD3.GraphRank.refreshStyle();
+                }
+            }
+        });
     },
 
     loadData : function(tabTxt, title) {
-		var me=this;
         var mask = metExploreD3.createLoadMask("Loading data","viz");
 
 		var data = tabTxt;
@@ -249,5 +263,57 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
             var metaStore = comboComponent.getStore();
             metaStore.setData(listMi);
         }
+    },
+
+    changeLegend: function() {
+        var me = this,
+            view = me.getView();
+
+        var rule1 = view.lookupReference('rule1');
+        var rule2 = view.lookupReference('rule2');
+        var rule3 = view.lookupReference('rule3');
+        var rule4 = view.lookupReference('rule4');
+
+        var threshold = view.lookupReference('thresholdGIR').value;
+
+        rule1.setHtml(
+            '<svg width="600" height="40">'+
+                '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: red"></circle>'+
+                '<text x="50" y="25"'+
+                      'font-size="15">'+
+                    'MetaboRank out < '+threshold+
+                '</text>'+
+            '</svg>'
+        );
+
+        rule2.setHtml(
+            '<svg width="600" height="40">'+
+                '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: green"></circle>'+
+                '<text x="50" y="25"'+
+                      'font-size="15">'+
+                    'MetaboRank in < '+threshold+
+                '</text>'+
+            '</svg>'
+        );
+
+        rule3.setHtml(
+            '<svg width="600" height="40">'+
+                '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: purple"></circle>'+
+                '<text x="50" y="25"'+
+                      'font-size="15">'+
+                    'MetaboRank Out < '+threshold+' & MetaboRank In < '+threshold+
+                '</text>'+
+            '</svg>'
+        );
+
+        rule4.setHtml(
+            '<svg width="600" height="40">'+
+                '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 2px; stroke: black"></circle>'+
+                '<text x="50" y="25"'+
+                      'font-size="15">'+
+                    'MetaboRank Out > '+threshold+' & MetaboRank In > '+threshold+
+                '</text>'+
+            '</svg>'
+        );
     }
 });

@@ -8,6 +8,7 @@ var Rank = function(name, data, id, rank){
     this.data = data;
     this.name = name;
     this.rank = rank;
+    this.threshold = undefined;
 };
 
 Rank.prototype = {
@@ -19,5 +20,11 @@ Rank.prototype = {
 	},
     getScore: function(){
         return this.rank;
+    },
+    getThreshold: function(){
+        return this.threshold;
+    },
+    setThreshold: function(value){
+        this.threshold = value;
     }
 };

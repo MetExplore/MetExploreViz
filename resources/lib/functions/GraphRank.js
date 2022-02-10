@@ -933,6 +933,7 @@ metExploreD3.GraphRank = {
         var rankScore = rankData.getScore();
         var identifier = metExploreD3.GraphRank.getIdentifier(node.dbIdentifier);
         var nodeScore = rankScore[identifier];
+        var threshold = rankData.getThreshold();
 
         if (nodeScore !== undefined){
             var rankIn = parseInt(nodeScore[0]);
@@ -940,28 +941,66 @@ metExploreD3.GraphRank = {
 
             nodes.each(function(thisNode){
                 if (thisNode === node && thisNode.getAsStarter() !== true) {
-                    if (rankIn < 25 && rankOut < 25) {
+                    if (rankIn < threshold && rankOut < threshold) {
                         d3.select(this).selectAll("rect")
                             .style("stroke-width",3)
                             .style("stroke","purple");
                     }
-                    if (rankIn > 25 && rankOut < 25) {
+                    if (rankIn > threshold && rankOut < threshold) {
                         d3.select(this).selectAll("rect")
                             .style("stroke-width",3)
                             .style("stroke","red");
                     }
-                    if (rankIn < 25 && rankOut > 25) {
+                    if (rankIn < threshold && rankOut > threshold) {
                         d3.select(this).selectAll("rect")
                             .style("stroke-width",3)
                             .style("stroke","green");
                     }
-                    if (rankIn > 25 && rankOut > 25) {
+                    if (rankIn > threshold && rankOut > threshold) {
                         d3.select(this).selectAll("rect")
                             .style("stroke","black");
                     }
                 }
             });
         }
+    },
+
+    refreshStyle: function() {
+        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
+
+        var rankData = _metExploreViz.getRankById("rankData");
+        var rankScore = rankData.getScore();
+        var threshold = rankData.getThreshold();
+
+        nodes.each(function(thisNode){
+            var identifier = metExploreD3.GraphRank.getIdentifier(thisNode.dbIdentifier);
+            var nodeScore = rankScore[identifier];
+            if (nodeScore !== undefined && thisNode.getAsStarter() !== true) {
+                var rankIn = parseInt(nodeScore[0]);
+                var rankOut = parseInt(nodeScore[1]);
+
+                if (rankIn < threshold && rankOut < threshold) {
+                    d3.select(this).selectAll("rect")
+                        .style("stroke-width",3)
+                        .style("stroke","purple");
+                }
+                if (rankIn > threshold && rankOut < threshold) {
+                    d3.select(this).selectAll("rect")
+                        .style("stroke-width",3)
+                        .style("stroke","red");
+                }
+                if (rankIn < threshold && rankOut > threshold) {
+                    d3.select(this).selectAll("rect")
+                        .style("stroke-width",3)
+                        .style("stroke","green");
+                }
+                if (rankIn > threshold && rankOut > threshold) {
+                    d3.select(this).selectAll("rect")
+                        .style("stroke-width", 1)
+                        .style("stroke","black");
+                }
+            }
+        });
     },
 
     // visit and unvisit functions

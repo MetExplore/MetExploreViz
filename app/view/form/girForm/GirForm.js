@@ -37,21 +37,6 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                 align:'stretch'
             },
             items: [
-                // {
-                //     store: {
-                //         fields: ['file']
-                //     },
-                //     xtype: 'combobox',
-                //     displayField: 'file',
-                //     valueField: 'file',
-                //     queryMode: 'local',
-                //     editable: false,
-                //     emptyText: '-- Select file --',
-                //     margin: '5 5 5 5',
-                //     width: '75%',
-                //     anyMatch: true,
-                //     reference: 'selectFile'
-                // },
                 {
                     xtype: 'textfield',
                     emptyText: '-- Import metaborank score file --',
@@ -127,6 +112,28 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
         },
 
         {
+            xtype: 'panel',
+            layout: {
+                type: 'hbox'
+            },
+            items: [
+                {
+                    xtype: 'label',
+                    html: 'Threshold: ',
+                    margin: '12 5 5 5'
+                },
+                {
+                    xtype: 'numberfield',
+                    value: 25,
+                    minValue: 1,
+                    maxValue: 10000,
+                    margin: '5 5 5 5',
+                    reference: 'thresholdGIR'
+                }
+            ]
+        },
+
+        {
             xtype: 'button',
             html: 'add / remove starting node(s)',
             reference: 'refreshStart',
@@ -172,7 +179,8 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                               'font-size="15">'+
                             'MetaboRank out < 25'+
                         '</text>'+
-                    '</svg>'
+                    '</svg>',
+            reference: 'rule1'
         },
 
         {
@@ -183,7 +191,8 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                               'font-size="15">'+
                             'MetaboRank in < 25'+
                         '</text>'+
-                    '</svg>'
+                    '</svg>',
+            reference: 'rule2'
         },
 
         {
@@ -194,7 +203,8 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                               'font-size="15">'+
                             'MetaboRank Out < 25 & MetaboRank In < 25'+
                         '</text>'+
-                    '</svg>'
+                    '</svg>',
+            reference: 'rule3'
         },
 
         {
@@ -217,7 +227,8 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                               'font-size="15">'+
                             'MetaboRank Out > 25 & MetaboRank In > 25'+
                         '</text>'+
-                    '</svg>'
+                    '</svg>',
+            reference: 'rule4'
         },
 
         {
