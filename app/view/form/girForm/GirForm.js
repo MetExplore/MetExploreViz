@@ -210,18 +210,6 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
         {
             xtype: 'label',
             html: '<svg width="600" height="40">'+
-                        '<circle cx="30" cy="20" r="17px" style="fill: #00aa00; opacity: 0.5"></circle>'+
-                        '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 5px; stroke: #00aa00"></circle>'+
-                        '<text x="50" y="25"'+
-                              'font-size="15">'+
-                            'Starting node'+
-                        '</text>'+
-                    '</svg>'
-        },
-
-        {
-            xtype: 'label',
-            html: '<svg width="600" height="40">'+
                         '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 2px; stroke: black"></circle>'+
                         '<text x="50" y="25"'+
                               'font-size="15">'+
@@ -229,6 +217,18 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                         '</text>'+
                     '</svg>',
             reference: 'rule4'
+        },
+
+        {
+            xtype: 'label',
+            html: '<svg width="600" height="40">'+
+                        '<circle cx="30" cy="20" r="17px" style="fill: #00aa00; opacity: 0.5"></circle>'+
+                        '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 5px; stroke: #00aa00"></circle>'+
+                        '<text x="50" y="25"'+
+                            'font-size="15">'+
+                            'Starting node'+
+                        '</text>'+
+                    '</svg>'
         },
 
         {

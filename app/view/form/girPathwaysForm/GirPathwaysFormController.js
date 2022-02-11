@@ -84,7 +84,7 @@ Ext.define('metExploreViz.view.form.girPathwaysForm.GirPathwaysFormController', 
 
             // Select / unselect all button
             var selectAllButton = Ext.create('Ext.button.Button', {
-                tooltip: 'selectAllButton',
+                tooltip: 'select / unselect all pathways on the list',
                 text: 'Select/Unselect all',
                 margin: '10 10 10 10',
                 id: 'selectAllButton'
