@@ -625,8 +625,54 @@ metExploreD3.GraphRank = {
         });
 
         node.hide();
+
+        // update network and pathways and check isolated network to remove
+        metExploreD3.GraphRank.checkRemoveNodes();
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
         metExploreD3.fireEvent("girPathwaysParams", "onStart");
+    },
+
+    checkRemoveNodes: function() {
+        var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var rankData = _metExploreViz.getRankById("rankData");
+        var connexion = rankData.getData();
+
+        nodes.each(function(node){
+            var bioType = node.getBiologicalType();
+
+            if (bioType === "reaction"){
+                var removeNodes = [];
+                removeNodes.push(node);
+                var identifier = node.dbIdentifier;
+                var check = 0;
+                var linkIn = connexion[identifier]["linkIn"];
+                var linkOut = connexion[identifier]["linkOut"];
+
+                for (var i = 0; i < linkIn.length; i++){
+                    if ((linkIn[i].source.getAsStarter() && linkIn[i].source.isHidden() === false) || linkIn[i].source.isVisited()){
+                        check++;
+                    }
+                    else {
+                        removeNodes.push(linkIn[i].source);
+                    }
+                }
+
+                for (var j = 0; j < linkOut.length; j++){
+                    if ((linkOut[j].target.getAsStarter() && linkOut[j].target.isHidden() === false) || linkOut[j].target.isVisited()){
+                        check++;
+                    }
+                    else {
+                        removeNodes.push(linkOut[j].target);
+                    }
+                }
+
+                if (check === 0){
+                    removeNodes.forEach(function(node){
+                        node.hide();
+                    })
+                }
+            }
+        });
     },
 
     /*******************************************
@@ -960,6 +1006,12 @@ metExploreD3.GraphRank = {
                         d3.select(this).selectAll("rect")
                             .style("stroke","black");
                     }
+                }
+                if (thisNode === node && thisNode.getAsStarter() === true) {
+                    d3.select(this).selectAll("rect")
+                        .style("stroke-width",5)
+                        .style("stroke","#00aa00")
+                        .style("stroke-opacity",0.4);
                 }
             });
         }
