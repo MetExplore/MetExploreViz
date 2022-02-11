@@ -1166,9 +1166,13 @@ metExploreD3.GraphRank = {
         links.each(function(link){
             if (link.target.isVisited() === false && link.target.getBiologicalType() === "metabolite"){
                 link.source.unvisit();
+                link.source.setLocked(false);
+                metExploreD3.GraphNode.fixNode(link.source);
             }
             if (link.source.isVisited() === false && link.source.getBiologicalType() === "metabolite"){
                 link.target.unvisit();
+                link.target.setLocked(false);
+                metExploreD3.GraphNode.fixNode(link.target);
             }
             if (link.source.isVisited() !== true && link.target.isVisited() === true){
                 d3.select(this).style("stroke-width", 1);
