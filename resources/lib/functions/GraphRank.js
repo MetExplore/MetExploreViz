@@ -596,82 +596,148 @@ metExploreD3.GraphRank = {
         var nbLinkOut = 0;
 
         linkIn.map(function(link, i){
-            links.each(function(thisLink){
-                if ((thisLink.source === link.source || thisLink.target === link.source) && link.source.isHidden() === false){
-                    nbLinkIn++;
+            if (link.target.isHidden() === false){
+                links.each(function(thisLink){
+                    if ((thisLink.source === link.source || thisLink.target === link.source) && link.source.isHidden() === false){
+                        nbLinkIn++;
+                    }
+                });
+                if (nbLinkIn < 3 && bioType === "metabolite"){
+                    metExploreD3.GraphRank.hideNeighbours(link.source);
                 }
-            });
-            if (nbLinkIn < 3 && bioType === "metabolite"){
-                metExploreD3.GraphRank.hideNeighbours(link.source);
+                if (nbLinkIn < 2 && bioType === "reaction"){
+                    link.source.hide();
+                }
+                nbLinkIn = 0;
             }
-            if (nbLinkIn < 2 && bioType === "reaction"){
-                link.source.hide();
-            }
-            nbLinkIn = 0;
         });
         linkOut.map(function(link, i){
-            links.each(function(thisLink){
-                if ((thisLink.source === link.target || thisLink.target === link.target) && link.target.isHidden() === false){
-                    nbLinkOut++;
+            if (link.source.isHidden() === false){
+                links.each(function(thisLink){
+                    if ((thisLink.source === link.target || thisLink.target === link.target) && link.target.isHidden() === false){
+                        nbLinkOut++;
+                    }
+                });
+                if (nbLinkOut < 3 && bioType === "metabolite"){
+                    metExploreD3.GraphRank.hideNeighbours(link.target);
                 }
-            });
-            if (nbLinkOut < 3 && bioType === "metabolite"){
-                metExploreD3.GraphRank.hideNeighbours(link.target);
+                if (nbLinkOut < 2 && bioType === "reaction"){
+                    link.target.hide();
+                }
+                nbLinkOut = 0;
             }
-            if (nbLinkOut < 2 && bioType === "reaction"){
-                link.target.hide();
-            }
-            nbLinkOut = 0;
         });
 
         node.hide();
 
         // update network and pathways and check isolated network to remove
-        metExploreD3.GraphRank.checkRemoveNodes();
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+        metExploreD3.GraphRank.checkNetwork();
         metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
-    checkRemoveNodes: function() {
+    checkNetwork: function(){
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
+        var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
         var rankData = _metExploreViz.getRankById("rankData");
         var connexion = rankData.getData();
 
-        nodes.each(function(node){
-            var bioType = node.getBiologicalType();
+        var removeNodes = [];
+        var allNodes = [];
+        var allLinks = [];
 
-            if (bioType === "reaction"){
-                var removeNodes = [];
-                removeNodes.push(node);
+        var checkStatus = false;
+        var neighbours = [];
+        var nextNeighbours = [];
+
+        nodes.each(function(node){
+            allNodes.push(node);
+        });
+
+        links.each(function(link){
+            allLinks.push(link);
+        });
+
+        while(allNodes.length !== 0){
+            if (neighbours.length === 0){
+                neighbours.push(allNodes[0]);
+            }
+
+            neighbours.forEach(function(node){
                 var identifier = node.dbIdentifier;
-                var check = 0;
                 var linkIn = connexion[identifier]["linkIn"];
                 var linkOut = connexion[identifier]["linkOut"];
 
-                for (var i = 0; i < linkIn.length; i++){
-                    if ((linkIn[i].source.getAsStarter() && linkIn[i].source.isHidden() === false) || linkIn[i].source.isVisited()){
-                        check++;
-                    }
-                    else {
-                        removeNodes.push(linkIn[i].source);
-                    }
+                allNodes = metExploreD3.GraphRank.removeElement(allNodes, node);
+                removeNodes.push(node);
+
+                if (node.isVisited() || node.getAsStarter()){
+                    checkStatus = true;
                 }
 
-                for (var j = 0; j < linkOut.length; j++){
-                    if ((linkOut[j].target.getAsStarter() && linkOut[j].target.isHidden() === false) || linkOut[j].target.isVisited()){
-                        check++;
+                linkIn.forEach(function(link){
+                    if (allNodes.includes(link.source) && allLinks.includes(link)){
+                        nextNeighbours.push(link.source);
+                        removeNodes.push(link.source);
+                        allNodes = metExploreD3.GraphRank.removeElement(allNodes, link.source);
+                        if (link.source.isVisited() || link.source.getAsStarter()){
+                            checkStatus = true;
+                        }
                     }
-                    else {
-                        removeNodes.push(linkOut[j].target);
-                    }
-                }
+                });
 
-                if (check === 0){
-                    removeNodes.forEach(function(node){
-                        node.hide();
-                    })
+                linkOut.forEach(function(link){
+                    if (allNodes.includes(link.target) && allLinks.includes(link)){
+                        nextNeighbours.push(link.target);
+                        removeNodes.push(link.target);
+                        allNodes = metExploreD3.GraphRank.removeElement(allNodes, link.target);
+                        if (link.target.isVisited() || link.target.getAsStarter()){
+                            checkStatus = true;
+                        }
+                    }
+                });
+            });
+
+            if (nextNeighbours.length === 0){
+                neighbours = [];
+                if (checkStatus === true){
+                    removeNodes = [];
+                    checkStatus = false;
+                }
+                if (checkStatus === false){
+                    nodes.each(function(node){
+                        if (removeNodes.includes(node)){
+                            node.hide();
+                        }
+                    });
+                    removeNodes = [];
                 }
             }
+
+            if (nextNeighbours.length !== 0){
+                neighbours = [];
+                nextNeighbours.forEach(function(node){
+                    neighbours.push(node);
+                });
+                nextNeighbours = []
+            }
+
+        }
+        if (nextNeighbours.length === 0){
+            if (checkStatus === false){
+                nodes.each(function(node){
+                    if (removeNodes.includes(node)){
+                        node.hide();
+                    }
+                });
+            }
+        }
+        metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
+    },
+
+    removeElement: function(arr, value){
+        return arr.filter(function(ele){
+            return ele!=value;
         });
     },
 
