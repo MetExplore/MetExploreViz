@@ -776,6 +776,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 									hidden: theNode.getBiologicalType()==="metabolite",
 									handler: function(){
 										metExploreD3.GraphRank.showMeta(theNode);
+										metExploreD3.GraphRank.updateNbHidden();
 									}
 								},
 								{

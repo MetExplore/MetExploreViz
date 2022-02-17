@@ -71,6 +71,10 @@ metExploreD3.GraphRank = {
         metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
+    /*******************************************
+     * launch GIR from subnetwork previously extract
+     * @param {Array} listMi Array of starting node(s)
+     */
     restartGir: function(listMi) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
@@ -291,6 +295,10 @@ metExploreD3.GraphRank = {
         }
     },
 
+    /*******************************************
+     * Add or remove starting node on used
+     * @param {Array} listMi Array of starting node(s)
+     */
     refreshStart: function(listMi) {
         var session = _metExploreViz.getSessionById("viz");
         var networkData = session.getD3Data();
@@ -478,6 +486,10 @@ metExploreD3.GraphRank = {
         metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
+    /*******************************************
+     * Show hidden metabolite from a reaction node
+     * @param {Object} node node object
+     */
     showMeta: function(node) {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var rankData = _metExploreViz.getRankById("rankData");
@@ -522,11 +534,21 @@ metExploreD3.GraphRank = {
         metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
+    /*******************************************
+     * Calcul new coordinate for expand nodes
+     * @param {Object} node node object
+     * @param {Int} startX x
+     * @param {Int} startY y
+     */
     coorPoint: function(node, startX, startY) {
         node.x = node.x - ((node.x - startX)/2);
         node.y = node.y - ((node.y - startY)/2);
     },
 
+    /*******************************************
+     * Remove label on unexplore branch
+     * @param {Array} listNodes node list
+     */
     updateLabel: function(listNodes) {
         var allNodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
 
@@ -636,6 +658,9 @@ metExploreD3.GraphRank = {
         metExploreD3.fireEvent("girPathwaysParams", "onStart");
     },
 
+    /*******************************************
+     * Check all the network and remove isolated nodes
+     */
     checkNetwork: function(){
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node");
         var links = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("path.link");
@@ -735,6 +760,11 @@ metExploreD3.GraphRank = {
         metExploreD3.GraphNetwork.updateNetwork("viz", _metExploreViz.getSessionById("viz"));
     },
 
+    /*******************************************
+     * Remove specific element from a array
+     * @param {Array} arr Array
+     * @param {Object} value Element to remove
+     */
     removeElement: function(arr, value){
         return arr.filter(function(ele){
             return ele!=value;
@@ -1083,6 +1113,9 @@ metExploreD3.GraphRank = {
         }
     },
 
+    /*******************************************
+     * Refresh style on threshold change
+     */
     refreshStyle: function() {
         var nodes = d3.select("#viz").select("#D3viz").select("#graphComponent").selectAll("g.node")
 
@@ -1753,10 +1786,19 @@ metExploreD3.GraphRank = {
         });
     },
 
+    /*******************************************
+     * Create tooltip for specific button
+     * @param {Object} btn button object
+     * @param {String} text text to apply
+     */
     createTooltip: function(btn, text) {
         btn.append("title").text(text);
     },
 
+    /*******************************************
+     * Create tooltip that contains node score (IN / OUT)
+     * @param {Object} node node object
+     */
     addScore: function(node) {
         var rankData = _metExploreViz.getRankById("rankData");
         var rankScore = rankData.getScore();
