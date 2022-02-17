@@ -28,7 +28,7 @@ Ext.define('metExploreViz.view.panel.metaboRankSidePanel.MetaboRankSidePanel', {
 	},
 	items: [
         {
-            title: 'GIR',
+            title: 'Parameters',
             id: 'girParams',
             xtype: 'girForm'
         },

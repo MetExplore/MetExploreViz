@@ -125,9 +125,9 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 padding:'0 0 0 0'
                           },
                           {
-                                text: 'Enter GIR mode',
+                                text: 'Enter Network Explorer mode',
                                 scale: 'large',
-                                tooltip: 'Active / inactive GIR mode',
+                                tooltip: 'Active / inactive Network Explorer mode',
                                 id: 'enterMetaboRankMode',
                                 reference: 'enterMetaboRankMode',
                                 cls:"loadButton",
@@ -272,7 +272,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                     xtype : 'editModePanel'
                 },
                 {
-                    title: 'MetaboRank Manager',
+                    title: 'Network Explorer Manager',
                     id: 'metaboRankPanel',
                     reference: 'metaboRankPanel',
                     xtype: 'metaboRankSidePanel'

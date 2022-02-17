@@ -127,7 +127,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			sidePanel.setHidden(true);
 			metaboRankPanel.setHidden(false);
 			metaboRankPanel.setCollapsed(false);
-			enterBtn.setText("Exit GIR mode");
+			enterBtn.setText("Exit Network Explorer mode");
 
 			metaboRankPanel.open = true;
 			metExploreD3.GraphRank.metaboRankMode = true;
@@ -139,7 +139,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			if (metExploreD3.GraphRank.launchGIR === false){
 				sidePanel.setHidden(false);
 				metaboRankPanel.setHidden(true);
-				enterBtn.setText("Enter GIR mode");
+				enterBtn.setText("Enter Network Explorer mode");
 
 				metaboRankPanel.open = false;
 				metExploreD3.GraphRank.metaboRankMode = false;
@@ -154,7 +154,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			}
 			else {
 				metExploreD3.displayWarning("Work in progress",
-	                'GIR is still in use'
+	                'Network Explorer is still in use'
 	            );
 			}
 		}

@@ -23,11 +23,11 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
     id: "girID",
 
     items: [
-        {
-            xtype: 'label',
-            html: 'Parameters:',
-            margin: '15 15 5 15'
-        },
+        // {
+        //     xtype: 'label',
+        //     html: 'Parameters:',
+        //     margin: '15 15 5 15'
+        // },
 
         {
             border: false,
@@ -36,6 +36,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                 type:'hbox',
                 align:'stretch'
             },
+            margin: '20 5 5 5',
             items: [
                 {
                     xtype: 'textfield',
