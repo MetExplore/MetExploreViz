@@ -202,7 +202,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                         '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: purple"></circle>'+
                         '<text x="50" y="25"'+
                               'font-size="15">'+
-                            'Rank Out < 25 & Rank In < 25'+
+                            'Rank out < 25 & Rank in < 25'+
                         '</text>'+
                     '</svg>',
             reference: 'rule3'
@@ -214,7 +214,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                         '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 2px; stroke: black"></circle>'+
                         '<text x="50" y="25"'+
                               'font-size="15">'+
-                            'Rank Out > 25 & Rank In > 25'+
+                            'Rank out > 25 & Rank in > 25'+
                         '</text>'+
                     '</svg>',
             reference: 'rule4'

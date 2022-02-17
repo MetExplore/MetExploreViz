@@ -309,7 +309,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: purple"></circle>'+
                 '<text x="50" y="25"'+
                       'font-size="15">'+
-                    'Rank Out < '+threshold+' & Rank In < '+threshold+
+                    'Rank out < '+threshold+' & Rank in < '+threshold+
                 '</text>'+
             '</svg>'
         );
@@ -319,7 +319,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 2px; stroke: black"></circle>'+
                 '<text x="50" y="25"'+
                       'font-size="15">'+
-                    'Rank Out > '+threshold+' & Rank In > '+threshold+
+                    'Rank out > '+threshold+' & Rank in > '+threshold+
                 '</text>'+
             '</svg>'
         );
