@@ -546,7 +546,7 @@ metExploreD3.GraphRank = {
     },
 
     /*******************************************
-     * Remove label on unexplore branch
+     * Remove label on not explored branch
      * @param {Array} listNodes node list
      */
     updateLabel: function(listNodes) {

@@ -273,7 +273,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                 },
                 {
                     title: 'Network Explorer Manager',
-                    id: 'metaboRankPanel',
+                    id: 'gir',
                     reference: 'metaboRankPanel',
                     xtype: 'metaboRankSidePanel'
                 }

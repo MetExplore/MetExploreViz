@@ -39,7 +39,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
         view.lookupReference('launchGIR').on({
             click: function() {
                 if (metExploreD3.GraphRank.launchGIR === false) {
-                    view.lookupReference('launchGIR').setText("quit GIR");
+                    view.lookupReference('launchGIR').setText("quit Network Explorer");
                     view.lookupReference('extractNQuit').enable();
                     view.lookupReference('loadRankFile').disable();
                     view.lookupReference('refreshStart').setHidden(false);
@@ -54,8 +54,8 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                     metExploreD3.GraphRank.startGir(listMi);
                 }
                 else {
-                    view.lookupReference('launchGIR').setText("launch GIR");
-                    view.lookupReference('extractNQuit').setText("extract subnetwork & quit GIR");
+                    view.lookupReference('launchGIR').setText("launch Network Explorer");
+                    view.lookupReference('extractNQuit').setText("extract subnetwork & quit");
                     view.lookupReference('extractNQuit').disable();
                     view.lookupReference('loadRankFile').enable();
                     view.lookupReference('refreshStart').setHidden(true);
@@ -79,8 +79,8 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                     var extract = metExploreD3.GraphRank.quitAndExtract();
 
                     if (extract){
-                        view.lookupReference('launchGIR').setText("launch GIR");
-                        view.lookupReference('extractNQuit').setText("restart GIR from subnetwork");
+                        view.lookupReference('launchGIR').setText("launch Network Explorer");
+                        view.lookupReference('extractNQuit').setText("restart from subnetwork");
                         view.lookupReference('loadRankFile').enable();
                         view.lookupReference('refreshStart').setHidden(true);
 
@@ -88,8 +88,8 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                     }
                 }
                 else {
-                    view.lookupReference('launchGIR').setText("quit GIR");
-                    view.lookupReference('extractNQuit').setText("extract subnetwork & quit GIR");
+                    view.lookupReference('launchGIR').setText("quit Network Explorer");
+                    view.lookupReference('extractNQuit').setText("extract subnetwork & quit");
                     view.lookupReference('loadRankFile').disable();
                     view.lookupReference('refreshStart').setHidden(false);
                     var listMi = []
@@ -217,9 +217,17 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
 
                     var rankScore = {};
                     lines.map(function(line, i){
-                        rankScore[line[0]] = [line[1],line[2]];
+                        if (line[2] === undefined){
+                            rankScore[line[0]] = [line[1], "10000"];
+                        }
+                        if (line[1] === undefined && line[2] === undefined){
+                            rankScore[line[0]] = ["10000", "10000"];
+                        }
+                        if (line[1] !== undefined && line[2] !== undefined) {
+                            rankScore[line[0]] = [line[1],line[2]];
+                        }
                     });
-
+                    console.log(rankScore);
                     var data = metExploreD3.GraphRank.saveNetwork();
                     var rank = new Rank(title, data, "rankData", rankScore);
 
@@ -281,7 +289,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: red"></circle>'+
                 '<text x="50" y="25"'+
                       'font-size="15">'+
-                    'MetaboRank out < '+threshold+
+                    'Rank out < '+threshold+
                 '</text>'+
             '</svg>'
         );
@@ -291,7 +299,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: green"></circle>'+
                 '<text x="50" y="25"'+
                       'font-size="15">'+
-                    'MetaboRank in < '+threshold+
+                    'Rank in < '+threshold+
                 '</text>'+
             '</svg>'
         );
@@ -301,7 +309,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: purple"></circle>'+
                 '<text x="50" y="25"'+
                       'font-size="15">'+
-                    'MetaboRank Out < '+threshold+' & MetaboRank In < '+threshold+
+                    'Rank Out < '+threshold+' & Rank In < '+threshold+
                 '</text>'+
             '</svg>'
         );
@@ -311,7 +319,7 @@ Ext.define('metExploreViz.view.form.girForm.GirFormController', {
                 '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 2px; stroke: black"></circle>'+
                 '<text x="50" y="25"'+
                       'font-size="15">'+
-                    'MetaboRank Out > '+threshold+' & MetaboRank In > '+threshold+
+                    'Rank Out > '+threshold+' & Rank In > '+threshold+
                 '</text>'+
             '</svg>'
         );

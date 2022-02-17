@@ -36,11 +36,11 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                 type:'hbox',
                 align:'stretch'
             },
-            margin: '20 5 5 5',
+            margin: '20 0 0 0',
             items: [
                 {
                     xtype: 'textfield',
-                    emptyText: '-- Import metaborank score file --',
+                    emptyText: '-- Import rank score file --',
                     margin: '5 5 5 5',
                     width: '75%',
                     reference: 'selectFile',
@@ -150,14 +150,14 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
             items: [
                 {
                     xtype: 'button',
-                    html: 'launch GIR',
+                    html: 'launch Network Explorer',
                     width: '50%',
                     margin: '5 5 5 5',
                     reference: 'launchGIR'
                 },
                 {
                     xtype: 'button',
-                    html: 'extract subnetwork & quit GIR',
+                    html: 'extract subnetwork & quit',
                     width: '50%',
                     margin: '5 5 5 5',
                     disabled: true,
@@ -178,7 +178,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                         '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: red"></circle>'+
                         '<text x="50" y="25"'+
                               'font-size="15">'+
-                            'MetaboRank out < 25'+
+                            'Rank out < 25'+
                         '</text>'+
                     '</svg>',
             reference: 'rule1'
@@ -190,7 +190,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                         '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: green"></circle>'+
                         '<text x="50" y="25"'+
                               'font-size="15">'+
-                            'MetaboRank in < 25'+
+                            'Rank in < 25'+
                         '</text>'+
                     '</svg>',
             reference: 'rule2'
@@ -202,7 +202,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                         '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 4px; stroke: purple"></circle>'+
                         '<text x="50" y="25"'+
                               'font-size="15">'+
-                            'MetaboRank Out < 25 & MetaboRank In < 25'+
+                            'Rank Out < 25 & Rank In < 25'+
                         '</text>'+
                     '</svg>',
             reference: 'rule3'
@@ -214,7 +214,7 @@ Ext.define('metExploreViz.view.form.girForm.GirForm', {
                         '<circle cx="30" cy="20" r="10px" style="fill: white; stroke-width: 2px; stroke: black"></circle>'+
                         '<text x="50" y="25"'+
                               'font-size="15">'+
-                            'MetaboRank Out > 25 & MetaboRank In > 25'+
+                            'Rank Out > 25 & Rank In > 25'+
                         '</text>'+
                     '</svg>',
             reference: 'rule4'
