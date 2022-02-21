@@ -89,8 +89,10 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
             checkbox.setValue(true);
             checkbox.resumeEvent('change');
             me.highlightComponents(item.text);
-            Ext.getCmp('comparisonSidePanel').expand();
-            Ext.getCmp('captionForm'+item.text).expand();
+			if (metExploreD3.GraphRank.metaboRankMode === false){
+				Ext.getCmp('comparisonSidePanel').expand();
+	            Ext.getCmp('captionForm'+item.text).expand();
+			}
             item.parentMenu.items.items
                 .filter(function(anItem){
                     return anItem!=item && anItem.text!=="PathwaysLink";
@@ -102,7 +104,7 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
                     checkboxf.setValue(false);
                     checkboxf.resumeEvent('change');
                 }
-            );       
+            );
         }
         else
         {
@@ -128,8 +130,10 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
             checkbox.setValue(true);
             checkbox.resumeEvent('change');
             me.highlightPathwaysOnLink();
-            Ext.getCmp('comparisonSidePanel').expand();
-            Ext.getCmp('captionFormPathways').expand();
+			if (metExploreD3.GraphRank.metaboRankMode === false) {
+				Ext.getCmp('comparisonSidePanel').expand();
+	            Ext.getCmp('captionFormPathways').expand();
+			}
         }
         else
         {
@@ -192,7 +196,7 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 		viewModel   = me.getViewModel(),
 		view      	= me.getView();
 		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
-		
+
 		s_GeneralStyle.setDisplayConvexhulls(false);
 
         var activePanel = _MyThisGraphNode.activePanel;

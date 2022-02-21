@@ -87,7 +87,7 @@ metExploreD3.GraphNetwork = {
                     if(session.getD3Data().getNodes().length>1000){
                         if(session.isAnimated()){
 
-                            if(alpha>0.06){
+                            if(alpha>0.06 && metExploreD3.GraphRank.launchGIR === false){
                                 d3.select("#"+panel).selectAll("path.link").remove();
                             }
                             else
@@ -266,7 +266,7 @@ metExploreD3.GraphNetwork = {
 
                 // if visualisation is actived we add item to menu
                 if(session.isActive()){
-                    if(sessionLinked.getD3Data().getNodes().length>1000){
+                    if(sessionLinked.getD3Data().getNodes().length>1000 && metExploreD3.GraphRank.launchGIR === false){
                         d3.select("#"+panelLinked).selectAll("path.link").remove();
                         if(metExploreD3.GraphNetwork.taskZoom)
                             metExploreD3.stopTask(metExploreD3.GraphNetwork.taskZoom);
@@ -1355,8 +1355,9 @@ metExploreD3.GraphNetwork = {
 
                     // Sort compartiments store
                     metExploreD3.sortCompartmentInBiosource();
-
-                    metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+                    if (metExploreD3.GraphRank.launchGIR === false){
+                        metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+                    }
 
                     metExploreD3.GraphCaption.majCaptionPathwayOnLink();
 

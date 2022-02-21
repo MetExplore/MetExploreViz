@@ -1315,7 +1315,9 @@ metExploreD3.GraphNode = {
                 return color;
             });
 
-        metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+        if (metExploreD3.GraphRank.metaboRankMode === false){
+            metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+        }
     },
 
     /*******************************************
@@ -1548,6 +1550,9 @@ metExploreD3.GraphNode = {
             obj.value = sideCompound;
             metExploreD3.fireEventParentWebSite("sideCompoundFromFile", obj);
             var node = _metExploreViz.getSessionById("viz").getD3Data().getNodeByDbIdentifier(sideCompound);
+            if (node === undefined) {
+                node = _metExploreViz.getSessionById("viz").getD3Data().getNodeByName(sideCompound);
+            }
 
             if (node != null) {
                 if (metExploreD3.getMetabolitesSet() != undefined) {
@@ -1748,17 +1753,33 @@ metExploreD3.GraphNode = {
         }
         session.groupPath = function (d) {
 
+            var nodeNotHidden = [];
+            d.values.map(function(i){
+                if (i.isHidden() === false){
+                    nodeNotHidden.push([i.x, i.y]);
+                }
+            });
 
+            // var scale = metExploreD3.getScaleById(parent);
+            // if (d.values != undefined) {
+            //     if (d.values.length > 0) {
+            //         if (d.values.length > 2) {
+            //
+            //             return "M" +
+            //                 d3.polygonHull(d.values.map(function (i) {
+            //
+            //                         return [i.x, i.y];
+            //                 }))
+            //                     .join("L")
+            //                 + "Z";
+            //         }
             var scale = metExploreD3.getScaleById(parent);
-            if (d.values != undefined) {
-                if (d.values.length > 0) {
-                    if (d.values.length > 2) {
+            if (nodeNotHidden != undefined) {
+                if (nodeNotHidden.length > 0) {
+                    if (nodeNotHidden.length > 2) {
 
                         return "M" +
-                            d3.polygonHull(d.values.map(function (i) {
-
-                                    return [i.x, i.y];
-                            }))
+                            d3.polygonHull(nodeNotHidden)
                                 .join("L")
                             + "Z";
                     }
@@ -2111,12 +2132,12 @@ metExploreD3.GraphNode = {
                 d.fixed = true;
                 metExploreD3.GraphNode.fixNode(d);
                 if (parent == "viz") {
-                    d3.select("#" + parent)
+                    var overNode = d3.select("#" + parent)
                         .selectAll('g.node')
                         .filter(function (node) {
                             return node == d
-                        })
-                        .select('.locker')
+                        });
+                    overNode.select('.locker')
                         .classed('hide', false)
                         .select('.iconlocker')
                         .attr(
@@ -2127,19 +2148,49 @@ metExploreD3.GraphNode = {
                                 else
                                     return "resources/icons/unlock_font_awesome.svg";
                             });
+                    overNode.select('.expand')
+                        .classed('hide', false);
+                    overNode.select('.collapse')
+                        .classed('hide', false);
+                    overNode.select('.visit')
+                        .classed('hide', false);
+                    overNode.select('.remove')
+                        .classed('hide', false);
+                    overNode.selectAll('.nbHidden')
+                        .classed('hide', false);
+                    if (metExploreD3.GraphRank.launchGIR === true && overNode.select("text").style("opacity") < 1){
+                        overNode.select("text").style("opacity", 0.9);
+                    }
+                    if (metExploreD3.GraphRank.launchGIR === true){
+                        metExploreD3.GraphRank.addScore(overNode);
+                    }
                 }
             })
             .on("mouseleave", function (d) {
                 var tooltip =  d3.select("#"+parent).select('#tooltipPathways');
                 tooltip.style("visibility", "hidden");
 
-                metExploreD3.GraphNode.node
+                var leaveNode = metExploreD3.GraphNode.node
                     .filter(function (node) {
                         return node === d;
-                    })
-                    .select('.locker')
+                    });
+                leaveNode.select('.locker')
                     .classed('hide', true);
-
+                leaveNode.select('.expand')
+                    .classed('hide', true);
+                leaveNode.select('.collapse')
+                    .classed('hide', true);
+                leaveNode.select('.remove')
+                    .classed('hide', true);
+                leaveNode.select('.visit')
+                    .classed('hide', true);
+                if (d.isVisited() === false || d.nbHidden === 0){
+                    leaveNode.selectAll('.nbHidden')
+                        .classed('hide', true);
+                }
+                if (metExploreD3.GraphRank.launchGIR === true && leaveNode.select("text").style("opacity") < 1){
+                    leaveNode.select("text").style("opacity", 0);
+                }
 
                 if (!metExploreD3.GraphStyleEdition.editMode) {
                     var transform = d3.select(this).attr("transform");

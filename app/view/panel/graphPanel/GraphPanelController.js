@@ -12,7 +12,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 
 		Ext.QuickTips.init();
 		// Ext.tip.QuickTipManager.init();
-		
+
 		view.on({
 			setLoadButtonHidden : me.changeoption,
 			afterrefresh : function(){
@@ -34,53 +34,53 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				if(searchNode!=undefined)
 				{
 					searchNode.setDisabled(false);
-				}	
+				}
 
 				if(buttonCopyNetwork!=undefined)
 				{
 					buttonCopyNetwork.setDisabled(false);
 					buttonCopyNetwork.setTooltip('The graph will be copied in an other frame');
-				}	
+				}
 
 				if(buttonSaveNetwork!=undefined)
 				{
 					buttonSaveNetwork.setDisabled(false);
 					buttonSaveNetwork.setTooltip('The graph will be saved in json file');
-				}	
+				}
 
                 if(vizMiningMenu!=undefined)
 				{
-	                vizMiningMenu.setDisabled(false); 
+	                vizMiningMenu.setDisabled(false);
 	                vizMiningMenu.setTooltip('Sub-network extraction/visualisation');
                 }
 
                 if(vizExportMenuID!=undefined)
 				{
-	                vizExportMenuID.setDisabled(false); 
+	                vizExportMenuID.setDisabled(false);
 					vizExportMenuID.setTooltip('Export network as an image');
                 }
 
                 if(vizImportMenuID!=undefined)
 				{
-	                vizImportMenuID.setDisabled(false); 
+	                vizImportMenuID.setDisabled(false);
 					vizImportMenuID.setTooltip('Import data on nodes');
                 }
 
                 if(vizSaveMenuID!=undefined)
 				{
-	                vizSaveMenuID.setDisabled(false); 
+	                vizSaveMenuID.setDisabled(false);
 					vizSaveMenuID.setTooltip('Save drawing');
                 }
 
                 if(vizDrawingMenu!=undefined)
 				{
-	                vizDrawingMenu.setDisabled(false); 
+	                vizDrawingMenu.setDisabled(false);
 	                vizDrawingMenu.setTooltip('Change network drawing');
 	            }
 
                 if(vizLoadMenu!=undefined)
 				{
-	                vizLoadMenu.setDisabled(false); 
+	                vizLoadMenu.setDisabled(false);
 	                vizLoadMenu.setTooltip('Load a network in the visualisation');
 	            }
 			},
@@ -92,7 +92,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			afterrefresh : me.drawCaption,
 			scope:me
 		});
-		
+
 		view.lookupReference('vizLoadMenuID').on({
 			mouseover : function(){this.lookupReference('vizLoadMenuID').setIconCls("importToRsx");},
 			mouseout : function(){this.lookupReference('vizLoadMenuID').setIconCls("importToRsxwhite");},
@@ -105,6 +105,59 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			scope : me
 		});
 
+		view.lookupReference('enterMetaboRankMode').on({
+			click: me.metaboRankMode,
+			scope: me
+		});
+
+	},
+
+	metaboRankMode : function(){
+		var me = this;
+		var view = me.getView();
+
+		var session = _metExploreViz.getSessionById("viz");
+		var force = session.getForce();
+
+		var metaboRankPanel = view.lookupReference("metaboRankPanel");
+		var sidePanel = view.lookupReference("comparisonSidePanel");
+		var enterBtn = view.lookupReference("enterMetaboRankMode");
+
+		if (metaboRankPanel.open === false) {
+			sidePanel.setHidden(true);
+			metaboRankPanel.setHidden(false);
+			metaboRankPanel.setCollapsed(false);
+			enterBtn.setText("Exit Network Explorer mode");
+
+			metaboRankPanel.open = true;
+			metExploreD3.GraphRank.metaboRankMode = true;
+
+			metExploreD3.GraphRank.initialAnimationState = metExploreD3.GraphNetwork.isAnimated("viz");
+			force.stop();
+		}
+		else {
+			if (metExploreD3.GraphRank.launchGIR === false){
+				sidePanel.setHidden(false);
+				metaboRankPanel.setHidden(true);
+				enterBtn.setText("Enter Network Explorer mode");
+
+				metaboRankPanel.open = false;
+				metExploreD3.GraphRank.metaboRankMode = false;
+
+				var anim = metExploreD3.GraphRank.initialAnimationState;
+				if (anim){
+					force.alpha(1).restart();
+				}
+				if (!anim){
+					force.stop();
+				}
+			}
+			else {
+				metExploreD3.displayWarning("Work in progress",
+	                'Network Explorer is still in use'
+	            );
+			}
+		}
 	},
 
 	changeoption : function(){
@@ -158,7 +211,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 
 
 	/*******************************************
-    * Export a json which describe a metabolic network. 
+    * Export a json which describe a metabolic network.
     */
 	exportJSON : function() {
 		var storeNetworkData = Ext.getStore('S_NetworkData');
@@ -183,7 +236,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				}
 			});
 		})
-			
+
 		for(var i=0 ; i<storeReactionMap.getCount() ; i++){
 			stringJSON+=Ext.JSON.encode(storeReactionMap.getRange()[i].data);
 			if(i!=storeReactionMap.getCount()-1)
@@ -212,7 +265,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 					// 				}
 					// 			}
 					// 		});
-					// 	});		
+					// 	});
 					// }
 					storeMetaboliteMap.add({
 					    id: node.getId(),
@@ -241,7 +294,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				// 				}
 				// 			}
 				// 		});
-				// 	});		
+				// 	});
 				// }
 				storeMetaboliteMap.add({
 				    id: node.getId(),
@@ -253,12 +306,12 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				});
 			}
 		})
-			
+
 		for(var i=0; i<storeMetaboliteMap.getCount() ; i++){
 			stringJSON+=Ext.JSON.encode(storeMetaboliteMap.getRange()[i].data);
 			if(i!=storeMetaboliteMap.getCount()-1)
 				stringJSON+=',\n';
-		}	
+		}
 
 		stringJSON+="],\n\n\"link\":[";
 		var storeLinkMap  = Ext.create('Ext.data.Store',{
@@ -272,13 +325,13 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 			    interaction: link.interaction
 			});
 		});
-			
+
 		for(var i=0; i<storeLinkMap.getCount() ; i++){
 			stringJSON+=Ext.JSON.encode(storeLinkMap.getRange()[i].data);
 			if(i!=storeLinkMap.getCount()-1)
 				stringJSON+=',\n';
-		}	
-	
+		}
+
 		stringJSON+="],\n\n\"compartment\":[";
 		var storeCompartment  = Ext.create('Ext.data.Store',{
 		    fields : ['name','color']
@@ -290,19 +343,19 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 				color: compartmentInBioSource.get('color')
 			});
 		});
-			
+
 		for(var i=0; i<storeCompartment.getCount() ; i++){
 			stringJSON+=Ext.JSON.encode(storeCompartment.getRange()[i].data);
 			if(i!=storeCompartment.getCount()-1)
 				stringJSON+=',\n';
-		}	
+		}
 		stringJSON+=']}\n';
-			
+
 		return stringJSON;
 	},
 
 	/*******************************************
-    * Export a json file which describe a metabolic network. 
+    * Export a json file which describe a metabolic network.
     */
 	exportJsonFile : function() {
 		var stringJSON = this.exportJSON();
@@ -314,7 +367,7 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 	},
 
 	/*******************************************
-    * Export a XGMML file which describe a metabolic network. 
+    * Export a XGMML file which describe a metabolic network.
     */
 	exportXGMML: function(){
 
@@ -369,9 +422,9 @@ Ext.define('metExploreViz.view.panel.graphPanel.GraphPanelController', {
 					Ext.getStore("S_Analyses").reload();
 
 				}
-			}, 
-			failure: function(response, opts) { 
-				Ext.MessageBox.alert('Server-side failure with status code ' + response.status); 
+			},
+			failure: function(response, opts) {
+				Ext.MessageBox.alert('Server-side failure with status code ' + response.status);
 			}
 		});
 	}

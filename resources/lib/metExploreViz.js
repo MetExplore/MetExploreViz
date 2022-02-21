@@ -14,6 +14,7 @@ var metExploreD3 = {
     GraphColorScaleEditor:"",
     GraphNumberScaleEditor:"",
     GraphFlux:"",
+    GraphRank:"",
     Features:"",
     user:"",
     testWSMappingGraphToken : function(token, inchis, pathways, func) {
@@ -979,6 +980,7 @@ var metExploreViz = function(panel, webSite){
     this.comparedPanels = [];
     this.mappings = [];
     this.flux = [];
+    this.rank = [];
     this.components = [];
     this.bioSourceControl = false;
     this.newBioSource = false;
@@ -1336,6 +1338,28 @@ metExploreViz.prototype = {
         });
         return theComparedPanel;
     },
+
+    // Rank
+    addRank : function(rankData){
+        this.rank = rankData;
+    },
+    getRankById : function(id){
+        var therank = null;
+        if (this.rank.id === id){
+            therank = this.rank;
+        }
+        // this.rank.forEach(function(rankData){
+        //     if(rankData.getId()==id)
+        //         therank = rankData;
+        // });
+        return therank;
+    },
+    removeRankById: function(id) {
+        if (this.rank.id === id){
+            this.rank = [];
+        }
+    },
+
     // Flux
     addFlux : function(fluxData){
         if(fluxData.getId()==undefined){

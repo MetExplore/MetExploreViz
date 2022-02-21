@@ -130,7 +130,7 @@ x-form-checkbox-default {
 }
 
 /* */
-.x-grid-scroller {overflow-y: scroll;} 
+.x-grid-scroller {overflow-y: scroll;}
         /* style rows on mouseover */
         .x-grid-row-over .x-grid-cell-inner {
             font-weight: bold;
@@ -169,9 +169,9 @@ x-form-checkbox-default {
             position:relative;
             top:-1px;
         }
-.col-match { 
-     
-    color: #090; 
+.col-match {
+
+    color: #090;
     background-color: #FFFF99;
 }
 p {
@@ -599,6 +599,18 @@ p {
   background-position: 0% 0%;
   background-repeat: no-repeat;
 }
+.expandOut{
+    background-image: url(../icons/expandOut.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
+.expandIn{
+    background-image: url(../icons/expandIn.png);
+    background-size: 100% 100%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+}
 .removeMetabolites {
     background-image: url(../icons/removeMetabolites.svg);
     background-size: 100% 100%;
@@ -616,6 +628,15 @@ p {
     background-size: 100% 100%;
   background-position: 0% 0%;
   background-repeat: no-repeat;
+}
+.plus {
+    background-image: url(../icons/plus.svg);
+    background-repeat: no-repeat;
+}
+.minus {
+    background-size: 100% 100%;
+    background-image: url(../icons/minus.svg);
+    background-repeat: no-repeat;
 }
 .pause {
     background-image: url(../icons/pause.svg);

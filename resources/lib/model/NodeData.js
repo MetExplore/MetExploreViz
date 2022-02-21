@@ -4,24 +4,24 @@
  */
 var NodeData = function(
         name,
-        compart, 
-        dbIdentifier, 
-        ec, 
-        id, 
-        reactionReversibility, 
-        isSideCompound, 
-        biologicalType, 
-        isSelected, 
-        labelVisible, 
-        svg, 
-        svgWidth, 
-        svgHeight, 
-        mappings, 
-        isDuplicated, 
-        identifier, 
-        pathW, 
-        lock, 
-        alias, 
+        compart,
+        dbIdentifier,
+        ec,
+        id,
+        reactionReversibility,
+        isSideCompound,
+        biologicalType,
+        isSelected,
+        labelVisible,
+        svg,
+        svgWidth,
+        svgHeight,
+        mappings,
+        isDuplicated,
+        identifier,
+        pathW,
+        lock,
+        alias,
         label,
         labelFont,
         hidden
@@ -29,8 +29,8 @@ var NodeData = function(
         this.name=name;
         this.dbIdentifier = dbIdentifier ;
         this.ec = ec;
-        this.id = id;  
-        this.identifier = identifier;   
+        this.id = id;
+        this.identifier = identifier;
         this.alias = alias;
 
         this.reactionReversibility = reactionReversibility;
@@ -50,7 +50,7 @@ var NodeData = function(
             this.pathways = pathW;
 
         this.compartment = compart;
-        
+
         if(mappings==undefined)
             mappings=[];
         this.mappingDatas = mappings;
@@ -63,10 +63,35 @@ var NodeData = function(
         this.hidden = hidden;
         if(hidden==undefined)
             this.hidden=false;
+        this.visited = false;
+        this.nbHidden = 0;
+        this.asSideCompounds = false;
+        this.starter = false;
 };
 
 
 NodeData.prototype = {
+    visit: function(){
+        this.visited=true;
+    },
+    unvisit: function(){
+        this.visited=false;
+    },
+    isVisited: function(){
+        return this.visited;
+    },
+    setNbHidden: function(x){
+        this.nbHidden = x;
+    },
+    markAsStarter: function(){
+        this.starter = true;
+    },
+    removeAsStarter: function(){
+        this.starter = false;
+    },
+    getAsStarter: function(){
+        return this.starter;
+    },
     equals : function(x){
     	var equal=true;
       if(this.id!=x.id)
@@ -228,7 +253,7 @@ NodeData.prototype = {
     {
       return this.ec;
     },
-    
+
     resetMapping : function(){
         this.mappingDatas=[];
     },
@@ -257,7 +282,7 @@ NodeData.prototype = {
     },
     getMappingDataByNameAndCond : function(name, cond){
         var themappingData = null;
-        this.mappingDatas.forEach(function(aMappingData){            
+        this.mappingDatas.forEach(function(aMappingData){
             if(aMappingData.getMappingName()==name && aMappingData.getConditionName()==cond)
                 themappingData = aMappingData;
         });
@@ -273,7 +298,7 @@ NodeData.prototype = {
     },
     setMappingDataByNameAndCond : function(name, cond, val){
         var themappingData = null;
-        this.mappingDatas.forEach(function(aMappingData){            
+        this.mappingDatas.forEach(function(aMappingData){
             if(aMappingData.getMappingName()==name && aMappingData.getConditionName()==cond)
                 themappingData = aMappingData;
         });
