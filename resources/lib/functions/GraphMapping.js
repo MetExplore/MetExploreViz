@@ -1162,7 +1162,7 @@ metExploreD3.GraphMapping = {
         if(mappingJSON.flux !== {}){
             var mappingFlux = mappingJSON.flux;
             var targetLabel = "Identifier";
-            
+
             if (mappingJSON.targetLabel === "reactionName"){
                 var targetLabel = "Name";
             }
@@ -1455,6 +1455,7 @@ metExploreD3.GraphMapping = {
      */
 	mapImageToNode : function(fileList, arg){
 		var listNames = [];
+        var data = [];
 		for (var i = 0; i < fileList.length; i++){
 
 			var typeFile = fileList[i].type;
@@ -1477,47 +1478,32 @@ metExploreD3.GraphMapping = {
 			if (!node.select(".imageNode").empty()){
 				node.select(".imageNode").remove();
 			}
+            var dataImage = {url: urlImage, node: node};
+            data.push(dataImage);
+        }
 
-			if (typeFile === "image/png" || typeFile === "image/jpeg"){
-
-				var image = new Image();
-				image.onload = function () {
-					var canvas = document.createElement('canvas');
-					canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-					canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
-
-					canvas.getContext('2d').drawImage(this, 0, 0);
-
-					metExploreD3.GraphMapping.onLoadImg(this, this.node);
-				};
-				image.node = node;
-				image.src = urlImage;
-			}
-
-			if (typeFile === "image/svg+xml"){
-
-				var XMLrequest = new XMLHttpRequest(); // new XML request
-				XMLrequest.open("GET", urlImage, false); // URL of the SVG file on server
-				XMLrequest.send(null); // get the SVG file
-				var res = XMLrequest.responseXML;
-
-				var mySVG = res.getElementsByTagName("svg")[0];
-
-				var svg = new XMLSerializer().serializeToString(mySVG);
-				var base64 = window.btoa(svg);
-
-				var urlSvg = 'data:image/svg+xml;base64,' + base64
-
-				var image = new Image();
-
-				image.onload = function () {
-					metExploreD3.GraphMapping.onLoadImg(this, this.node);
-				};
-				image.node = node;
-				image.src = urlSvg;
-			}
-		}
+        for (var i = 0; i < data.length; i++){
+            metExploreD3.GraphMapping.createImage(data[i]);
+        }
 	},
+
+    /*****************************************************
+     * Create image object
+     * @param {Object} data Image object: url and node to map
+     */
+    createImage: function(data){
+        var urlImage = data["url"];
+        var node = data["node"];
+
+        metExploreD3.GraphUtils.getDataUri(urlImage, function(dataUri){
+            var img = new Image();
+            img.src = dataUri;
+            img.node = node;
+            img.onload = function(){
+                metExploreD3.GraphMapping.onLoadImg(this, this.node);
+            }
+        });
+    },
 
 	/*****************************************************
      * Initiate params for image on load
