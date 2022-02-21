@@ -131,7 +131,7 @@ Ext.define("metExploreViz.view.panel.graphPanel.GraphPanel",{
                                 id: 'enterMetaboRankMode',
                                 reference: 'enterMetaboRankMode',
                                 cls:"loadButton",
-                                hidden: false,
+                                hidden: true,
                                 padding: '5 5 5 5'
                           },
                           '-',
