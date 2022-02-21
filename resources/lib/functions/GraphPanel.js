@@ -274,6 +274,7 @@ metExploreD3.GraphPanel = {
 						fn: function(btn){
 							if(btn=="ok")
 							{
+                                metExploreD3.GraphRank.resetGIR();
 								metExploreD3.GraphPanel.refreshJSON(json);
 								if(func!=undefined && typeof func==='function') func();
 								Ext.getCmp('cycleDetection').setVisible(false);
@@ -675,7 +676,7 @@ metExploreD3.GraphPanel = {
                             metExploreD3.GraphNetwork.play();
                             var vizComp = Ext.getCmp('viz');
                             vizComp.lookupReference('animation').setIconCls('play');
-                            
+
 		                	var selected = [];
 				            oldCoodinates.forEach(function(coor){
 				            	var node = networkData.getNodeById(coor.id);

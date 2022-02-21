@@ -1,9 +1,9 @@
 /**
  * @author MC
  * (a)description
- */         
+ */
 Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanel', {
-    extend: 'Ext.panel.Panel', 
+    extend: 'Ext.panel.Panel',
     alias: 'widget.networkPanel',
     layout: 'border',
     requires: [
@@ -15,11 +15,11 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanel', {
     controller: "panel-networkPanel-networkPanel",
     id:"NetworkPanel",
     layout: 'border',
-        
+
     height:'100%',
-    width:'100%', 
-    border: true, 
-    items: [{   
+    width:'100%',
+    border: true,
+    items: [{
         closable: false,
         id:'graphPanel',
         xtype : 'graphPanel',
@@ -27,7 +27,7 @@ Ext.define('metExploreViz.view.panel.networkPanel.NetworkPanel', {
       },
         {
             hidden:true,
-            id:'buttonLoadNetworkFromJSON',   
+            id:'buttonLoadNetworkFromJSON',
             xtype:'buttonImportToNetwork'/*,text: 'Refresh/Build network'*/
         }
     ]

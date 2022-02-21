@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20" id="svg2">
+<g id="layer1">
+<path d="M -5,95 L 25.950102,95" style="opacity:0.5;fill:#000000;fill-opacity:1 " id="p1" />
+<path d="M -5.4181532,95 L 25,95" style="opacity:0.5;fill:#000000;fill-opacity:1" id="p2" />
+<text x="6.9755859" y="14.5" style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#FFFFFF;fill-opacity:1;stroke:#FFFFFF;stroke-width:.7;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;font-family:Arial" id="t" xml:space="preserve">
+<tspan x="6.9755859" y="14.5" style="font-size:14px;text-align:start;text-anchor:start" id="ts">+</tspan></text>
+</g>
+</svg>
