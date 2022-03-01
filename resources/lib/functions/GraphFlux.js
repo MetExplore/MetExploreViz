@@ -107,8 +107,8 @@ metExploreD3.GraphFlux = {
                 var max = maxPos + shift;
                 var scaleRange = [
                     {id:"begin",value:maxNeg,styleValue:5},
-                    {id:1,value:minNeg,styleValue:5},
-                    {id:2,value:maxNeg,styleValue:1},
+                    {id:1,value:maxNeg,styleValue:5},
+                    {id:2,value:minNeg,styleValue:1},
                     {id:3,value:min,styleValue:1},
                     {id:4,value:maxPos,styleValue:3},
                     {id:5,value:max,styleValue:5},
@@ -120,10 +120,10 @@ metExploreD3.GraphFlux = {
                 var min = maxNeg + shift;
                 var max = maxNeg - shift;
                 var scaleRange = [
-                    {id:"begin",value:min,styleValue:5},
-                    {id:1,value:min,styleValue:5},
+                    {id:"begin",value:max,styleValue:5},
+                    {id:1,value:max,styleValue:5},
                     {id:2,value:maxNeg,styleValue:3},
-                    {id:2,value:max,styleValue:1},
+                    {id:2,value:min,styleValue:1},
                     {id:3,value:minPos,styleValue:1},
                     {id:4,value:maxPos,styleValue:5},
                     {id:"end",value:maxPos,styleValue:5}
@@ -172,21 +172,21 @@ metExploreD3.GraphFlux = {
 
         if (maxPos === undefined && maxNeg !== undefined){
             var scaleRange = [
-                {id:"begin",value:minNeg,styleValue:5},
-                {id:1,value:minNeg,styleValue:5},
-                {id:2,value:maxNeg,styleValue:1},
-                {id:"end",value:maxNeg,styleValue:1}
+                {id:"begin",value:maxNeg,styleValue:5},
+                {id:1,value:maxNeg,styleValue:5},
+                {id:2,value:minNeg,styleValue:1},
+                {id:"end",value:minNeg,styleValue:1}
             ];
             if (maxNeg === minNeg){
                 var shift = maxNeg / 2;
                 var min = maxNeg + shift;
                 var max = maxNeg - shift;
                 var scaleRange = [
-                    {id:"begin",value:min,styleValue:5},
-                    {id:1,value:min,styleValue:5},
+                    {id:"begin",value:max,styleValue:5},
+                    {id:1,value:max,styleValue:5},
                     {id:2,value:maxNeg,styleValue:3},
-                    {id:3,value:max,styleValue:1},
-                    {id:"end",value:max,styleValue:1}
+                    {id:3,value:min,styleValue:1},
+                    {id:"end",value:min,styleValue:1}
                 ];
             }
         }
