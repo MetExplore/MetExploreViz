@@ -22,7 +22,7 @@ metExploreD3.GraphFlux = {
      * @param {Array} scaleRange1 scale range for the first condition
      * @param {Array} scaleRange2 scale range for the second condition
      */
-    displayChoice: function(fluxData, targetLabel, nbCol, color, scaleSelector, scaleRange1, scaleRange2){
+    displayChoice: function(fluxData, targetLabel, nbCol, color, scaleSelector, scaleRange1){
         var session = _metExploreViz.getSessionById('viz');
         var networkData = session.getD3Data();
 
@@ -30,7 +30,7 @@ metExploreD3.GraphFlux = {
             this.oneCompute(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1);
         }
         if (nbCol === "two"){
-            this.twoCompute(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1, scaleRange2);
+            this.twoCompute(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1);
         }
     },
 
@@ -69,99 +69,122 @@ metExploreD3.GraphFlux = {
         var distribPos = metExploreD3.GraphFlux.fluxDistribution(valuesPos);
         var distribNeg = metExploreD3.GraphFlux.fluxDistribution(valuesNeg);
 
-        if (distribPos["max"] !== undefined && distribNeg["max"] !== undefined){
+        if (distribNeg["max"] !== undefined && distribNeg["min"] !== undefined){
+            var minNeg = distribNeg["min"];
+            var maxNeg = distribNeg["max"];
+        }
+        if (distribPos["max"] !== undefined && distribPos["min"] !== undefined){
+            var minPos = distribPos["min"];
+            var maxPos = distribPos["max"];
+        }
+
+        if (maxPos > maxNeg*(-1)){
+            maxNeg = maxPos*(-1);
+        }
+        if (maxPos < maxNeg*(-1)) {
+            maxPos = maxNeg*(-1);
+        }
+
+        if (minPos < minNeg*(-1)){
+            minNeg = minPos*(-1);
+        }
+        if (minPos > minNeg*(-1)) {
+            minPos = minNeg*(-1);
+        }
+
+        if (maxPos !== undefined && maxNeg !== undefined){
             var scaleRange = [
-                {id:"begin",value:distribNeg["max"],styleValue:5},
-                {id:1,value:distribNeg["min"],styleValue:5},
-                {id:2,value:distribNeg["max"],styleValue:1},
-                {id:3,value:distribPos["min"],styleValue:1},
-                {id:4,value:distribPos["max"],styleValue:5},
-                {id:"end",value:distribPos["max"],styleValue:5}
+                {id:"begin",value:maxNeg,styleValue:5},
+                {id:1,value:maxNeg,styleValue:5},
+                {id:2,value:minNeg,styleValue:1},
+                {id:3,value:minPos,styleValue:1},
+                {id:4,value:maxPos,styleValue:5},
+                {id:"end",value:maxPos,styleValue:5}
             ];
-            if (distribPos["max"] === distribPos["min"] && distribNeg["max"] !== distribNeg["min"]){
-                var shift = distribPos["max"] / 2;
-                var min = distribPos["max"] - shift;
-                var max = distribPos["max"] + shift;
+            if (maxPos === minPos && maxNeg !== minNeg){
+                var shift = maxPos / 2;
+                var min = maxPos - shift;
+                var max = maxPos + shift;
                 var scaleRange = [
-                    {id:"begin",value:distribNeg["max"],styleValue:5},
-                    {id:1,value:distribNeg["min"],styleValue:5},
-                    {id:2,value:distribNeg["max"],styleValue:1},
+                    {id:"begin",value:maxNeg,styleValue:5},
+                    {id:1,value:minNeg,styleValue:5},
+                    {id:2,value:maxNeg,styleValue:1},
                     {id:3,value:min,styleValue:1},
-                    {id:4,value:distribPos["max"],styleValue:3},
+                    {id:4,value:maxPos,styleValue:3},
                     {id:5,value:max,styleValue:5},
                     {id:"end",value:max,styleValue:5}
                 ];
             }
-            if (distribPos["max"] !== distribPos["min"] && distribNeg["max"] === distribNeg["min"]){
-                var shift = distribNeg["max"] / 2;
-                var min = distribNeg["max"] + shift;
-                var max = distribNeg["max"] - shift;
+            if (maxPos !== minPos && maxNeg === minNeg){
+                var shift = maxNeg / 2;
+                var min = maxNeg + shift;
+                var max = maxNeg - shift;
                 var scaleRange = [
                     {id:"begin",value:min,styleValue:5},
                     {id:1,value:min,styleValue:5},
-                    {id:2,value:distribNeg["max"],styleValue:3},
+                    {id:2,value:maxNeg,styleValue:3},
                     {id:2,value:max,styleValue:1},
-                    {id:3,value:distribPos["min"],styleValue:1},
-                    {id:4,value:distribPos["max"],styleValue:5},
-                    {id:"end",value:distribPos["max"],styleValue:5}
+                    {id:3,value:minPos,styleValue:1},
+                    {id:4,value:maxPos,styleValue:5},
+                    {id:"end",value:maxPos,styleValue:5}
                 ];
             }
-            if (distribPos["max"] === distribPos["min"] && distribNeg["max"] === distribNeg["min"]){
-                var shiftPos = distribPos["max"] / 2;
-                var minPos = distribPos["max"] - shiftPos;
-                var maxPos = distribPos["max"] + shiftPos;
-                var shiftNeg = distribNeg["max"] / 2;
-                var minNeg = distribNeg["max"] + shiftNeg;
-                var maxNeg = distribNeg["max"] - shiftNeg;
+            if (maxPos === minPos && maxNeg === minNeg){
+                var shiftPos = maxPos / 2;
+                var minPos = maxPos - shiftPos;
+                var maxPos = maxPos + shiftPos;
+                var shiftNeg = maxNeg / 2;
+                var minNeg = maxNeg + shiftNeg;
+                var maxNeg = maxNeg - shiftNeg;
                 var scaleRange = [
                     {id:"begin",value:minNeg,styleValue:5},
                     {id:1,value:minNeg,styleValue:5},
-                    {id:2,value:distribNeg["max"],styleValue:3},
+                    {id:2,value:maxNeg,styleValue:3},
                     {id:3,value:maxNeg,styleValue:1},
                     {id:4,value:minPos,styleValue:1},
-                    {id:5,value:distribPos["max"],styleValue:3},
+                    {id:5,value:maxPos,styleValue:3},
                     {id:6,value:maxPos,styleValue:5},
                     {id:"end",value:maxPos,styleValue:5}
                 ];
             }
         }
 
-        if (distribPos["max"] !== undefined && distribNeg["max"] === undefined){
+        if (maxPos !== undefined && maxNeg === undefined){
             var scaleRange = [
-                {id:"begin",value:distribPos["min"],styleValue:1},
-                {id:1,value:distribPos["min"],styleValue:1},
-                {id:2,value:distribPos["max"],styleValue:5},
-                {id:"end",value:distribPos["max"],styleValue:5}
+                {id:"begin",value:minPos,styleValue:1},
+                {id:1,value:minPos,styleValue:1},
+                {id:2,value:maxPos,styleValue:5},
+                {id:"end",value:maxPos,styleValue:5}
             ];
-            if (distribPos["max"] === distribPos["min"]){
-                var shift = distribPos["max"] / 2;
-                var min = distribPos["max"] - shift;
-                var max = distribPos["max"] + shift;
+            if (maxPos === minPos){
+                var shift = maxPos / 2;
+                var min = maxPos - shift;
+                var max = maxPos + shift;
                 var scaleRange = [
                     {id:"begin",value:min,styleValue:1},
                     {id:1,value:min,styleValue:1},
-                    {id:2,value:distribPos["max"],styleValue:3},
+                    {id:2,value:maxPos,styleValue:3},
                     {id:3,value:max,styleValue:5},
                     {id:"end",value:max,styleValue:5}
                 ];
             }
         }
 
-        if (distribPos["max"] === undefined && distribNeg["max"] !== undefined){
+        if (maxPos === undefined && maxNeg !== undefined){
             var scaleRange = [
-                {id:"begin",value:distribNeg["min"],styleValue:5},
-                {id:1,value:distribNeg["min"],styleValue:5},
-                {id:2,value:distribNeg["max"],styleValue:1},
-                {id:"end",value:distribNeg["max"],styleValue:1}
+                {id:"begin",value:minNeg,styleValue:5},
+                {id:1,value:minNeg,styleValue:5},
+                {id:2,value:maxNeg,styleValue:1},
+                {id:"end",value:maxNeg,styleValue:1}
             ];
-            if (distribNeg["max"] === distribNeg["min"]){
-                var shift = distribNeg["max"] / 2;
-                var min = distribNeg["max"] + shift;
-                var max = distribNeg["max"] - shift;
+            if (maxNeg === minNeg){
+                var shift = maxNeg / 2;
+                var min = maxNeg + shift;
+                var max = maxNeg - shift;
                 var scaleRange = [
                     {id:"begin",value:min,styleValue:5},
                     {id:1,value:min,styleValue:5},
-                    {id:2,value:distribNeg["max"],styleValue:3},
+                    {id:2,value:maxNeg,styleValue:3},
                     {id:3,value:max,styleValue:1},
                     {id:"end",value:max,styleValue:1}
                 ];
@@ -257,7 +280,7 @@ metExploreD3.GraphFlux = {
      * @param {Array} scaleRange1 scale range for the first condition
      * @param {Array} scaleRange2 scale range for the second condition
      */
-    twoCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1, scaleRange2){
+    twoCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1){
         var valuePos = {first:{}, second:{}};
         var valueNeg = {first:{}, second:{}};
         var valDistri = [];
@@ -337,12 +360,12 @@ metExploreD3.GraphFlux = {
                 }
 
                 if (Object.keys(valuePos["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valuePos["second"][nodes.id], scaleSelector, scaleRange2);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valuePos["second"][nodes.id], scaleSelector, scaleRange1);
                     nodes.fluxDirection2 = edgeWidth;
                     nodes.color2 = color[1];
                 }
                 if (Object.keys(valueNeg["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valueNeg["second"][nodes.id], scaleSelector, scaleRange2);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valueNeg["second"][nodes.id], scaleSelector, scaleRange1);
                     nodes.fluxDirection2 = edgeWidth*(-1);
                     nodes.color2 = color[1];
                 }
@@ -361,7 +384,7 @@ metExploreD3.GraphFlux = {
      */
     computeWidth: function(fluxDistri, fluxValue, scaleSelector, scaleRange){
         if (scaleSelector === "Manual"){
-            return metExploreD3.GraphFlux.computeManualWidth(scaleRange, fluxValue);;
+            return metExploreD3.GraphFlux.computeManualWidth(scaleRange, fluxValue);
         }
 
         var min = fluxDistri["min"];

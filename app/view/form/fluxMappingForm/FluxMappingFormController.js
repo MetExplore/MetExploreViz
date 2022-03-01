@@ -71,9 +71,10 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     view.lookupReference("firstConditionLabel").setHidden(false);
                     view.lookupReference("secondConditionBox").setHidden(false);
                     if (view.lookupReference('scaleSelector').getValue() === "Manual"){
-                        view.lookupReference('scaleEditorLabel1').setHidden(false);
-                        view.lookupReference('scaleEditorLabel2').setHidden(false);
-                        view.lookupReference('scaleEditor2').setHidden(false);
+                        var condSelect = view.lookupReference('selectConditionFlux').getValue();
+                        var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
+                        var selectedFile = view.lookupReference('selectFile').getValue();
+                        me.drawScaleEditor(selectedFile, condSelect, condSelect2, "two");
                     }
                 }
                 if (view.lookupReference('selectColNumber').getValue() === "one"){
@@ -81,9 +82,9 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     view.lookupReference("firstConditionLabel").setHidden(true);
                     view.lookupReference("secondConditionBox").setHidden(true);
                     if (view.lookupReference('scaleSelector').getValue() === "Manual"){
-                        view.lookupReference('scaleEditorLabel2').setHidden(true);
-                        view.lookupReference('scaleEditorLabel1').setHidden(true);
-                        view.lookupReference('scaleEditor2').setHidden(true);
+                        var condSelect = view.lookupReference('selectConditionFlux').getValue();
+                        var selectedFile = view.lookupReference('selectFile').getValue();
+                        me.drawScaleEditor(selectedFile, condSelect, "null", "one");
                     }
                 }
                 if (view.lookupReference('selectFile').getValue() !== null){
@@ -245,15 +246,8 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     if (nbCol === "two"){
                         var condSelect = view.lookupReference('selectConditionFlux').getValue();
                         var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
-                        if (condSelect !== null){
-                            view.lookupReference('scaleEditor').setHidden(false);
-                            view.lookupReference('scaleEditorLabel1').setHidden(false);
-                        }
-                        if (condSelect2 !== null){
-                            view.lookupReference('scaleEditor2').setHidden(false);
-                            view.lookupReference('scaleEditorLabel2').setHidden(false);
-                        }
                         if (condSelect !== null && condSelect2 !== null){
+                            view.lookupReference('scaleEditor').setHidden(false);
                             var selectedFile = view.lookupReference('selectFile').getValue();
                             me.drawScaleEditor(selectedFile, condSelect, condSelect2, nbCol);
                         }
@@ -261,9 +255,6 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                 }
                 if (this.getValue() !== "Manual"){
                     view.lookupReference('scaleEditor').setHidden(true);
-                    view.lookupReference('scaleEditor2').setHidden(true);
-                    view.lookupReference('scaleEditorLabel1').setHidden(true);
-                    view.lookupReference('scaleEditorLabel2').setHidden(true);
                 }
             }
         });
@@ -290,9 +281,6 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         view.lookupReference('selectConditionFlux2').on({
             change: function(){
                 if (view.lookupReference('scaleSelector').getValue() === "Manual"){
-                    view.lookupReference('scaleEditor2').setHidden(false);
-                    view.lookupReference('scaleEditorLabel2').setHidden(false);
-                    view.lookupReference('scaleEditorLabel1').setHidden(false);
 
                     var condSelect = view.lookupReference('selectConditionFlux').getValue();
                     var condSelect2 = view.lookupReference('selectConditionFlux2').getValue();
@@ -390,18 +378,25 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         var scaleSave = view[selectedFile];
 
         if (scaleSave !== undefined){
-            var scaleRange1 = scaleSave[condSelect];
-            var scaleRange2 = scaleSave[condSelect2];
+            if (nbCol === "one"){
+                var scaleRange1 = scaleSave[condSelect];
+            }
+            if (nbCol === "two"){
+                var scaleRange1 = scaleSave[condSelect+condSelect2];
+                if (scaleRange1 === undefined){
+                    var scaleRange1 = scaleSave[condSelect2+condSelect];
+                }
+            }
         }
 
-        metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol, color, scaleSelector, scaleRange1, scaleRange2);
+        metExploreD3.GraphFlux.displayChoice(conData, targetLabel, nbCol, color, scaleSelector, scaleRange1);
 
         if (nbCol === "one"){
             metExploreD3.GraphFlux.graphDistribOne(conData, color, switchGraph, scaleSelector, scaleRange1);
         }
-        if (nbCol === "two"){
-            metExploreD3.GraphFlux.graphDistribTwo(conData, color, switchGraph, scaleSelector, scaleRange1, scaleRange2);
-        }
+        // if (nbCol === "two"){
+        //     metExploreD3.GraphFlux.graphDistribTwo(conData, color, switchGraph, scaleSelector, scaleRange1, scaleRange2);
+        // }
     },
 
     /**
@@ -491,28 +486,21 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
 
         if (nbCol === "two"){
             var fluxData1 = [];
-            var fluxData2 = [];
             for (var i = 0; i < fluxData.length; i++){
                 var tmp = [fluxData[i][0], fluxData[i][1]];
                 fluxData1.push(tmp);
                 var tmp = [fluxData[i][0], fluxData[i][2]];
-                fluxData2.push(tmp);
+                fluxData1.push(tmp);
             }
             var scaleRange1 = metExploreD3.GraphFlux.getScale(fluxData1, targetLabel);
-            var scaleRange2 = metExploreD3.GraphFlux.getScale(fluxData2, targetLabel);
-
-            if (dataSave[selectedCond] !== undefined){
-                scaleRange1 = dataSave[selectedCond];
+            if (dataSave[selectedCond+selectedCond2] !== undefined){
+                scaleRange1 = dataSave[selectedCond+selectedCond2];
             }
-            if (dataSave[selectedCond] === undefined) {
-                dataSave[selectedCond] = scaleRange1;
+            if (dataSave[selectedCond2+selectedCond] !== undefined){
+                scaleRange1 = dataSave[selectedCond2+selectedCond];
             }
-
-            if (dataSave[selectedCond2] !== undefined){
-                scaleRange2 = dataSave[selectedCond2];
-            }
-            if (dataSave[selectedCond2] === undefined) {
-                dataSave[selectedCond2] = scaleRange2;
+            if (dataSave[selectedCond+selectedCond2] === undefined && dataSave[selectedCond2+selectedCond] === undefined) {
+                dataSave[selectedCond+selectedCond2] = scaleRange1;
             }
 
             view[selectedFile] = dataSave;
@@ -526,21 +514,6 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         			var win = Ext.create("metExploreViz.view.form.fluxScaleEditor.FluxScaleEditor", {
                         scaleRange: scaleRange1,
                         cond: "first"
-                    });
-
-        			win.show();
-        		});
-            }
-
-            if (scaleRange2 !== undefined){
-                var svg2 = d3.select(view.lookupReference('scaleEditor2').el.dom).select("#scaleEditor2");
-
-        		metExploreD3.GraphNumberScaleEditor.createNumberScaleCaption(svg2, width, height, margin, scaleRange2);
-
-        		svg2.on("click", function(){
-        			var win = Ext.create("metExploreViz.view.form.fluxScaleEditor.FluxScaleEditor", {
-                        scaleRange: scaleRange2,
-                        cond: "second"
                     });
 
         			win.show();
