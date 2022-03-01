@@ -639,22 +639,37 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         var me = this;
         var view = me.getView();
 
-        if (cond === "first"){
-            var selectedCond = view.lookupReference('selectConditionFlux').getValue();
-        }
-        if (cond === "second"){
-            var selectedCond = view.lookupReference('selectConditionFlux2').getValue();
-        }
-
-        var selectedCond2 = "null";
-        var selectedFile = view.lookupReference('selectFile').getValue();
         var nbCol = view.lookupReference('selectColNumber').getValue();
+        var selectedFile = view.lookupReference('selectFile').getValue();
 
-        var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2);
-        var fluxData = data[0];
-        var targetLabel = data[1];
+        if (nbCol === "one"){
+            var selectedCond = view.lookupReference('selectConditionFlux').getValue();
+            var selectedCond2 = "null";
 
-        var scaleRange = metExploreD3.GraphFlux.getScale(fluxData, targetLabel);
+            var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2);
+            var fluxData = data[0];
+            var targetLabel = data[1];
+
+            var scaleRange = metExploreD3.GraphFlux.getScale(fluxData, targetLabel);
+        }
+        if (nbCol === "two"){
+            var selectedCond = view.lookupReference('selectConditionFlux').getValue();
+            var selectedCond2 = view.lookupReference('selectConditionFlux2').getValue();
+
+            var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2);
+            var fluxData = data[0];
+            var targetLabel = data[1];
+
+            var fluxData1 = [];
+            for (var i = 0; i < fluxData.length; i++){
+                var tmp = [fluxData[i][0], fluxData[i][1]];
+                fluxData1.push(tmp);
+                var tmp = [fluxData[i][0], fluxData[i][2]];
+                fluxData1.push(tmp);
+            }
+
+            var scaleRange = metExploreD3.GraphFlux.getScale(fluxData1, targetLabel);
+        }
 
         svgView.scaleRange = scaleRange;
     }
