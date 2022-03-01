@@ -500,12 +500,64 @@ metExploreD3.GraphFlux = {
                 return node.id==link.getSource();
             });
 
+            // Check if some links are part of a cycle and return the midsection of the arc instead of the centroid if this is the case
+            var centroidSourceX = 0;
+            var centroidSourceY = 0;
+            var centroidTargetX = 0;
+            var centroidTargetY = 0;
+            var isCycleReaction = false;
+            var enteringArcLink; // The entering link that is part of a cycle
+            var exitingArcLink; // The exiting link that is part of a cycle
+            enteringLinks.each(function (link) {
+                if (link.partOfCycle === true){
+                    isCycleReaction = true;
+                    enteringArcLink = link;
+                    // var path = metExploreD3.GraphLink.computePathCycleArc(link.getTarget(), d3.select(this), link.getSource());
+                    if (node.fluxDirection1 > 0 || node.fluxDirection1 === undefined){
+                        var path = metExploreD3.GraphLink.computePathCycleArc(link.getSource(), d3.select(this), link.getTarget());
+                    }
+                    if (node.fluxDirection1 < 0){
+                        var path = metExploreD3.GraphFlux.computePathCycleArcEnd(link.getTarget(), d3.select(this), link.getSource(), 0);
+                    }
+                    if (node.fluxDirection1 === 0){
+                        var path = metExploreD3.GraphLink.computePathCycleArc(link.getTarget(), d3.select(this), link.getSource());
+                    }
+                    d3.select(this).attr("d", path);
+                    var enteringMidPoint = this.getPointAtLength(this.getTotalLength()/2);
+                    centroidSourceX = enteringMidPoint.x;
+                    centroidSourceY = enteringMidPoint.y;
+                }
+            });
+            exitingLinks.each(function (link) {
+                if (link.partOfCycle === true){
+                    isCycleReaction = true;
+                    exitingArcLink = link;
+                    if (node.fluxDirection1 > 0 || node.fluxDirection1 === undefined){
+                        var path = metExploreD3.GraphFlux.computePathCycleArcEnd(link.getSource(), d3.select(this), link.getTarget(), 0);
+                    }
+                    if (node.fluxDirection1 < 0){
+                        var path = metExploreD3.GraphLink.computePathCycleArc(link.getSource(), d3.select(this), link.getTarget());
+                    }
+                    if (node.fluxDirection1 === 0){
+                        var path = metExploreD3.GraphLink.computePathCycleArc(link.getTarget(), d3.select(this), link.getSource());
+                    }
+                    d3.select(this).attr("d", path);
+                    var exitingMidPoint = this.getPointAtLength(this.getTotalLength()/2);
+                    centroidTargetX = exitingMidPoint.x;
+                    centroidTargetY = exitingMidPoint.y;
+                }
+            });
+
+
+
             // For each node, compute the centroid of the source nodes of the arcs entering that node and the centroid of the target nodes of the arc exiting that node;
-            var resultComputeCentroid = metExploreD3.GraphLink.computeCentroid(node, enteringLinks, exitingLinks);
-            centroidSourceX = resultComputeCentroid[0];
-            centroidSourceY = resultComputeCentroid[1];
-            centroidTargetX = resultComputeCentroid[2];
-            centroidTargetY = resultComputeCentroid[3];
+            if (isCycleReaction === false) {
+                var resultComputeCentroid = metExploreD3.GraphLink.computeCentroid(node, enteringLinks, exitingLinks);
+                centroidSourceX = resultComputeCentroid[0];
+                centroidSourceY = resultComputeCentroid[1];
+                centroidTargetX = resultComputeCentroid[2];
+                centroidTargetY = resultComputeCentroid[3];
+            }
 
 
             // For each node, compare the difference between the x-coordinates of the 2 centroids and the difference between their y-coordinates
@@ -540,7 +592,13 @@ metExploreD3.GraphFlux = {
                 enteringLinks
                     .each(function (link) {
                         var path;
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = d3.select(this).attr("d");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphLink.computePathArcSibling(node, centroidSourceX, centroidSourceY, link.getSource(), enteringArcLink);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphLink.computePathHorizontal(node, enteringX, enteringY, link.getSource());
                             axe="horizontal";
                         }
@@ -564,7 +622,13 @@ metExploreD3.GraphFlux = {
                 exitingLinks
                     .each(function (link) {
                         var path;
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = d3.select(this).attr("d");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphLink.computePathArcSibling(node, centroidTargetX, centroidTargetY, link.getTarget(), exitingArcLink);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphLink.computePathHorizontal(node, exitingX, exitingY, link.getTarget());
                             axe="horizontal";
                         }
@@ -589,7 +653,13 @@ metExploreD3.GraphFlux = {
                 enteringLinks
                     .each(function (link) {
                         var path;
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = d3.select(this).attr("d");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphLink.computePathArcSibling(node, centroidSourceX, centroidSourceY, link.getSource(), enteringArcLink);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphLink.computePathHorizontal(node, enteringX, enteringY, link.getSource());
                             axe="horizontal";
                         }
@@ -614,7 +684,13 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getTarget();
                         var fluxValue = node.fluxDirection1*(-1);
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = d3.select(this).attr("d");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computePathArcSiblingEnd(node, centroidTargetX, centroidTargetY, link.getTarget(), exitingArcLink);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, fluxValue, 0);
                             axe="horizontal";
                         }
@@ -640,7 +716,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource()
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = d3.select(this).attr("d");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computePathArcSiblingEnd(node, centroidSourceX, centroidSourceY, link.getSource(), enteringArcLink);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection1, 0);
                             axe="horizontal";
                         }
@@ -664,7 +746,13 @@ metExploreD3.GraphFlux = {
                 exitingLinks
                     .each(function (link) {
                         var path;
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = d3.select(this).attr("d");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphLink.computePathArcSibling(node, centroidTargetX, centroidTargetY, link.getTarget(), exitingArcLink);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphLink.computePathHorizontal(node, exitingX, exitingY, link.getTarget());
                             axe="horizontal";
                         }
@@ -690,7 +778,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = d3.select(this).attr("d");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphLink.computePathArcSibling(node, centroidSourceX, centroidSourceY, link.getSource(), enteringArcLink);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, 0);
                             axe="horizontal";
                         }
@@ -714,7 +808,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = d3.select(this).attr("d");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computePathArcSiblingEnd(node, centroidTargetX, centroidTargetY, link.getTarget(), exitingArcLink);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, 0, 0);
                             axe="horizontal";
                         }
@@ -762,12 +862,102 @@ metExploreD3.GraphFlux = {
                 return node.id==link.getSource();
             });
 
+            // Check if some links are part of a cycle and return the midsection of the arc instead of the centroid if this is the case
+            var centroidSourceX1 = 0;
+            var centroidSourceY1 = 0;
+            var centroidTargetX1 = 0;
+            var centroidTargetY1 = 0;
+
+            var centroidSourceX2 = 0;
+            var centroidSourceY2 = 0;
+            var centroidTargetX2 = 0;
+            var centroidTargetY2 = 0;
+
+            var enteringPath1;
+            var exitingPath1;
+            var enteringPath2;
+            var exitingPath2;
+
+            var isCycleReaction = false;
+            var enteringArcLink; // The entering link that is part of a cycle
+            var exitingArcLink; // The exiting link that is part of a cycle
+            enteringLinks.each(function (link) {
+                if (link.partOfCycle === true){
+                    isCycleReaction = true;
+                    enteringArcLink = link;
+                    if (node.fluxDirection1 > 0 || node.fluxDirection1 === undefined){
+                        enteringPath1 = metExploreD3.GraphFlux.computeTwoPathCycleArc(link.getSource(), d3.select(this), link.getTarget(), 5);
+                    }
+                    if (node.fluxDirection1 < 0){
+                        enteringPath1 = metExploreD3.GraphFlux.computePathCycleArcEnd(link.getTarget(), d3.select(this), link.getSource(), 5);
+                    }
+                    if (node.fluxDirection1 === 0){
+                        enteringPath1 = metExploreD3.GraphFlux.computeTwoPathCycleArc(link.getSource(), d3.select(this), link.getTarget(), 5);
+                    }
+                    d3.select(this).attr("d", enteringPath1);
+                    var enteringMidPoint1 = this.getPointAtLength(this.getTotalLength()/2);
+                    centroidSourceX1 = enteringMidPoint1.x;
+                    centroidSourceY1 = enteringMidPoint1.y;
+
+                    if (node.fluxDirection2 > 0 || node.fluxDirection2 === undefined){
+                        enteringPath2 = metExploreD3.GraphFlux.computeTwoPathCycleArc(link.getSource(), d3.select(this), link.getTarget(), -5);
+                    }
+                    if (node.fluxDirection2 < 0){
+                        enteringPath2 = metExploreD3.GraphFlux.computePathCycleArcEnd(link.getTarget(), d3.select(this), link.getSource(), -5);
+                    }
+                    if (node.fluxDirection2 === 0){
+                        enteringPath2 = metExploreD3.GraphFlux.computeTwoPathCycleArc(link.getSource(), d3.select(this), link.getTarget(), -5);
+                    }
+                    d3.select(this).attr("d", enteringPath2);
+                    var enteringMidPoint2 = this.getPointAtLength(this.getTotalLength()/2);
+                    centroidSourceX2 = enteringMidPoint2.x;
+                    centroidSourceY2 = enteringMidPoint2.y;
+                }
+            });
+            exitingLinks.each(function (link) {
+                if (link.partOfCycle === true){
+                    isCycleReaction = true;
+                    exitingArcLink = link;
+                    if (node.fluxDirection1 > 0 || node.fluxDirection1 === undefined){
+                        exitingPath1 = metExploreD3.GraphFlux.computePathCycleArcEnd(link.getSource(), d3.select(this), link.getTarget(), 5);
+                    }
+                    if (node.fluxDirection1 < 0){
+                        exitingPath1 = metExploreD3.GraphFlux.computeTwoPathCycleArc(link.getSource(), d3.select(this), link.getTarget(), 5);
+                    }
+                    if (node.fluxDirection1 === 0){
+                        exitingPath1 = metExploreD3.GraphFlux.computeTwoPathCycleArc(link.getSource(), d3.select(this), link.getTarget(), 5);
+                    }
+                    d3.select(this).attr("d", exitingPath1);
+                    var exitingMidPoint = this.getPointAtLength(this.getTotalLength()/2);
+                    centroidTargetX1 = exitingMidPoint.x;
+                    centroidTargetY1 = exitingMidPoint.y;
+
+                    if (node.fluxDirection2 > 0 || node.fluxDirection2 === undefined){
+                        exitingPath2 = metExploreD3.GraphFlux.computePathCycleArcEnd(link.getSource(), d3.select(this), link.getTarget(), -5);
+                    }
+                    if (node.fluxDirection2 < 0){
+                        exitingPath2 = metExploreD3.GraphFlux.computeTwoPathCycleArc(link.getSource(), d3.select(this), link.getTarget(), -5);
+                    }
+                    if (node.fluxDirection2 === 0){
+                        exitingPath2 = metExploreD3.GraphFlux.computeTwoPathCycleArc(link.getSource(), d3.select(this), link.getTarget(), -5);
+                    }
+                    d3.select(this).attr("d", exitingPath2);
+                    exitingMidPoint = this.getPointAtLength(this.getTotalLength()/2);
+                    centroidTargetX2 = exitingMidPoint.x;
+                    centroidTargetY2 = exitingMidPoint.y;
+                }
+            });
+
+
+
             // For each node, compute the centroid of the source nodes of the arcs entering that node and the centroid of the target nodes of the arc exiting that node;
-            var resultComputeCentroid = metExploreD3.GraphLink.computeCentroid(node, enteringLinks, exitingLinks);
-            centroidSourceX = resultComputeCentroid[0];
-            centroidSourceY = resultComputeCentroid[1];
-            centroidTargetX = resultComputeCentroid[2];
-            centroidTargetY = resultComputeCentroid[3];
+            if (isCycleReaction === false) {
+                var resultComputeCentroid = metExploreD3.GraphLink.computeCentroid(node, enteringLinks, exitingLinks);
+                centroidSourceX = resultComputeCentroid[0];
+                centroidSourceY = resultComputeCentroid[1];
+                centroidTargetX = resultComputeCentroid[2];
+                centroidTargetY = resultComputeCentroid[3];
+            }
 
 
             // For each node, compare the difference between the x-coordinates of the 2 centroids and the difference between their y-coordinates
@@ -803,7 +993,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = enteringPath1;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidSourceX1, centroidSourceY1, link.getSource(), enteringArcLink, -5);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
@@ -828,7 +1024,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = exitingPath1;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidTargetX1, centroidTargetY1, link.getTarget(), enteringArcLink, -5);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
@@ -856,7 +1058,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = enteringPath2;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidSourceX2, centroidSourceY2, link.getSource(), enteringArcLink, 5);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
@@ -883,7 +1091,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = exitingPath2;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidTargetX2, centroidTargetY2, link.getTarget(), enteringArcLink, 5);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, exitingX, exitingY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
@@ -910,7 +1124,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = enteringPath1;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidSourceX1, centroidSourceY1, link.getSource(), enteringArcLink, -5);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
@@ -935,7 +1155,13 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getTarget();
                         var fluxValue = node.fluxDirection1*(-1);
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = exitingPath1;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSiblingEnd(node, centroidTargetX1, centroidTargetY1, link.getTarget(), enteringArcLink, -5);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, fluxValue, -5);
                             axe="horizontal";
                         }
@@ -963,7 +1189,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = enteringPath2;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidSourceX2, centroidSourceY2, link.getSource(), enteringArcLink, 5);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
@@ -991,7 +1223,13 @@ metExploreD3.GraphFlux = {
                         var path;
                         var fluxValue = node.fluxDirection2*(-1);
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = exitingPath2;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSiblingEnd(node, centroidTargetX2, centroidTargetY2, link.getTarget(), enteringArcLink, 5);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y+5, exitingX, exitingY+5, endNode.x, endNode.y+5, fluxValue, 5);
                             axe="horizontal";
                         }
@@ -1019,7 +1257,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = enteringPath1;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSiblingEnd(node, centroidSourceX1, centroidSourceY1, link.getSource(), enteringArcLink, -5);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, node.fluxDirection1, -5);
                             axe="horizontal";
                         }
@@ -1044,7 +1288,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = exitingPath1;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidTargetX1, centroidTargetY1, link.getTarget(), enteringArcLink, -5);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
@@ -1071,7 +1321,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = enteringPath2;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSiblingEnd(node, centroidSourceX2, centroidSourceY2, link.getSource(), enteringArcLink, 5);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, node.fluxDirection2, 5);
                             axe="horizontal";
                         }
@@ -1099,7 +1355,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = exitingPath2;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidTargetX2, centroidTargetY2, link.getTarget(), enteringArcLink, 5);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, exitingX, exitingY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
@@ -1127,7 +1389,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = enteringPath1;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSibling(node, centroidSourceX1, centroidSourceY1, link.getSource(), enteringArcLink, 0);
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, 0);
                             axe="horizontal";
                         }
@@ -1150,7 +1418,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = exitingPath1;
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathArcSiblingEnd(node, centroidTargetX1, centroidTargetY1, link.getTarget(), enteringArcLink, 0);
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, 0, 0);
                             axe="horizontal";
                         }
@@ -1171,6 +1445,889 @@ metExploreD3.GraphFlux = {
             }
         });
         metExploreD3.GraphCaption.drawCaptionTwoFluxMode();
+    },
+
+    /*******************************************
+     * Compute path of an edge that is not itself part of a cycle but merge with one that is part of a cycle.
+     * @param {Object} startNode The node at the start of the path.
+     * @param {Number} firstPointX The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode The node at the end of the path.
+     * @param {LinkData} arcLink : The link that is part of cycle.
+     */
+    computePathArcSiblingEnd: function (startNode, firstPointX, firstPointY, endNode, arcLink) {
+        var path = "";
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        // Determine if the arc should be drawn clockwise or counter-clockwise
+        var radius = arcLink.cycleRadius;
+        var sweepFlag = "";
+        if (arcLink.getSource() === startNode) {
+            sweepFlag = (arcLink.arcDirection === "clockwise") ? 1 : 0;
+        }
+        else {
+            sweepFlag = (arcLink.arcDirection === "clockwise") ? 0 : 1;
+        }
+
+        var differenceStartEndX = startNode.x - endNode.x;
+        var differenceStartEndY = startNode.y - endNode.y;
+
+        if (Math.abs(differenceStartEndX) < Math.abs(differenceStartEndY)){ // alignement metabolite/reaction vertical
+            if (endNode.x < startNode.x){ // target à gauche de source
+                    var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y;
+
+                    path = "M" + startNode.x + "," + startNode.y +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + (lastPointX + 5) + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX + 5) + "," + lastPointY;
+                }
+
+            if (endNode.x > startNode.x){ // target à droite de source
+                var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                var lastPointY = endNode.y;
+
+                path = "M" + startNode.x + "," + startNode.y +
+                    "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + firstPointX + "," + firstPointY +
+                    "Q" + firstPointX + "," + lastPointY + "," + (lastPointX - 5) + "," + lastPointY +
+                    "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                    "L" + lastPointX + "," + lastPointY +
+                    "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                    "L" + (lastPointX - 5) + "," + lastPointY;
+            }
+        }
+        else { // alignement metabolite/reaction horizontal
+            if (endNode.x < startNode.x){ // target à gauche de source
+                var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                var lastPointY = endNode.y;
+
+                path = "M" + startNode.x + "," + startNode.y +
+                    "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + firstPointX + "," + firstPointY +
+                    "Q" + (lastPointX + 5) + "," + firstPointY + "," + (lastPointX + 5) + "," + lastPointY +
+                    "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                    "L" + lastPointX + "," + lastPointY +
+                    "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                    "L" + (lastPointX + 5) + "," + lastPointY;
+            }
+            if (endNode.x > startNode.x){ // target à droite de source
+                var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                var lastPointY = endNode.y;
+
+                path = "M" + startNode.x + "," + startNode.y +
+                    "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + firstPointX + "," + firstPointY +
+                    "Q" + (lastPointX - 5) + "," + firstPointY + "," + (lastPointX - 5) + "," + lastPointY +
+                    "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                    "L" + lastPointX + "," + lastPointY +
+                    "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                    "L" + (lastPointX - 5) + "," + lastPointY;
+            }
+        }
+        return path;
+    },
+
+    /*******************************************
+     * Compute path of an edge that is not itself part of a cycle but merge with one that is part of a cycle.
+     * @param {Object} startNode The node at the start of the path.
+     * @param {Number} firstPointX The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode The node at the end of the path.
+     * @param {LinkData} arcLink : The link that is part of cycle.
+     */
+    computeTwoPathArcSiblingEnd: function (startNode, firstPointX, firstPointY, endNode, arcLink, shiftValue) {
+        var path = "";
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        // Determine if the arc should be drawn clockwise or counter-clockwise
+        var radius = arcLink.cycleRadius;
+        var sweepFlag = "";
+        if (arcLink.getSource() === startNode) {
+            sweepFlag = (arcLink.arcDirection === "clockwise") ? 1 : 0;
+        }
+        else {
+            sweepFlag = (arcLink.arcDirection === "clockwise") ? 0 : 1;
+        }
+
+        var differenceStartEndX = startNode.x - endNode.x;
+        var differenceStartEndY = startNode.y - endNode.y;
+
+        if (Math.abs(differenceStartEndX) < Math.abs(differenceStartEndY)){ // alignement metabolite/reaction vertical
+            if (endNode.x < startNode.x){ // target à gauche de source
+                if (sweepFlag === 1){
+                    var startX = startNode.x - shiftValue;
+                    var startY = startNode.y + shiftValue;
+
+                    var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y + shiftValue;
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 0 + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + (lastPointX + 5) + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX + 5) + "," + lastPointY;
+                }
+                else {
+                    var startX = startNode.x + shiftValue;
+                    var startY = startNode.y - shiftValue;
+
+                    var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y + shiftValue;
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 1 + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + (lastPointX + 5) + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX + 5) + "," + lastPointY;
+                }
+            }
+
+            if (endNode.x > startNode.x){ // target à droite de source
+                if (sweepFlag === 1){
+                    var startX = startNode.x - shiftValue;
+                    var startY = startNode.y - shiftValue;
+
+                    var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y + shiftValue;
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 0 + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + (lastPointX - 5) + "," + lastPointY +
+                        "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX - 5) + "," + lastPointY;
+                }
+                else {
+                    var startX = startNode.x + shiftValue;
+                    var startY = startNode.y + shiftValue;
+
+                    var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y - shiftValue;
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 1 + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + (lastPointX - 5) + "," + lastPointY +
+                        "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX - 5) + "," + lastPointY;
+                }
+            }
+        }
+        else { // alignement metabolite/reaction horizontal
+            if (endNode.x < startNode.x){ // target à gauche de source
+                if (sweepFlag === 1){
+                    if (startNode.x < firstPointX){
+                        var startX = startNode.x - shiftValue;
+                        var startY = startNode.y + shiftValue;
+                        var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y + shiftValue;
+                    }
+                    else {
+                        var startX = startNode.x - shiftValue;
+                        var startY = startNode.y - shiftValue;
+                        var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y - shiftValue;
+                    }
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 0 + "," + firstPointX + "," + firstPointY +
+                        "Q" + (lastPointX + 5) + "," + firstPointY + "," + (lastPointX + 5) + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX + 5) + "," + lastPointY;
+                }
+                else {
+                    if (startNode.x < firstPointX){
+                        var startX = startNode.x - shiftValue;
+                        var startY = startNode.y + shiftValue;
+
+                        var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y - shiftValue;
+                    }
+                    else {
+                        var startX = startNode.x - shiftValue;
+                        var startY = startNode.y - shiftValue;
+
+                        var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y + shiftValue;
+                    }
+
+
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 1 + "," + firstPointX + "," + firstPointY +
+                        "Q" + (lastPointX + 5) + "," + firstPointY + "," + (lastPointX + 5) + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX + 5) + "," + lastPointY;
+                }
+            }
+            if (endNode.x > startNode.x){ // target à droite de source
+                if (sweepFlag === 1){
+                    if (startNode.x < firstPointX){
+                        var startX = startNode.x + shiftValue;
+                        var startY = startNode.y - shiftValue;
+                        var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y - shiftValue;
+                    }
+                    else {
+                        var startX = startNode.x + shiftValue;
+                        var startY = startNode.y + shiftValue;
+                        var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y + shiftValue;
+                    }
+
+
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 0 + "," + firstPointX + "," + firstPointY +
+                        "Q" + (lastPointX - 5) + "," + firstPointY + "," + (lastPointX - 5) + "," + lastPointY +
+                        "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX - 5) + "," + lastPointY;
+                }
+                else {
+                    if (startNode.x < firstPointX){
+                        var startX = startNode.x + shiftValue;
+                        var startY = startNode.y - shiftValue;
+                        var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y - shiftValue;
+                    }
+                    else {
+                        var startX = startNode.x + shiftValue;
+                        var startY = startNode.y + shiftValue;
+                        var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y + shiftValue;
+                    }
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 1 + "," + firstPointX + "," + firstPointY +
+                        "Q" + (lastPointX - 5) + "," + firstPointY + "," + (lastPointX - 5) + "," + lastPointY +
+                        "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                        "L" + lastPointX + "," + lastPointY +
+                        "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                        "L" + (lastPointX - 5) + "," + lastPointY;
+                }
+            }
+        }
+        return path;
+    },
+
+    /*******************************************
+     * Compute path of an edge that is not itself part of a cycle but merge with one that is part of a cycle.
+     * @param {Object} startNode The node at the start of the path.
+     * @param {Number} firstPointX The x coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Number} firstPointY The y coordinate of the point where the edge will merge with other edges which are also substrate or product of the reaction.
+     * @param {Object} endNode The node at the end of the path.
+     * @param {LinkData} arcLink : The link that is part of cycle.
+     */
+    computeTwoPathArcSibling: function (startNode, firstPointX, firstPointY, endNode, arcLink, shiftValue) {
+        var path = "";
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        // Determine if the arc should be drawn clockwise or counter-clockwise
+        var radius = arcLink.cycleRadius;
+        var sweepFlag = "";
+        if (arcLink.getSource() === startNode) {
+            sweepFlag = (arcLink.arcDirection === "clockwise") ? 1 : 0;
+        }
+        else {
+            sweepFlag = (arcLink.arcDirection === "clockwise") ? 0 : 1;
+        }
+
+        var differenceStartEndX = startNode.x - endNode.x;
+        var differenceStartEndY = startNode.y - endNode.y;
+
+        if (Math.abs(differenceStartEndX) < Math.abs(differenceStartEndY)){ // alignement metabolite/reaction vertical
+            if (endNode.x < startNode.x){ // target à gauche de source
+                if (sweepFlag === 1){
+                    var startX = startNode.x - shiftValue;
+                    var startY = startNode.y + shiftValue;
+
+                    var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y + shiftValue;
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 0 + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + lastPointX + "," + lastPointY;
+                }
+                else {
+                    var startX = startNode.x + shiftValue;
+                    var startY = startNode.y - shiftValue;
+
+                    var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y + shiftValue;
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 1 + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + lastPointX + "," + lastPointY;
+                }
+            }
+
+            if (endNode.x > startNode.x){ // target à droite de source
+                if (sweepFlag === 1){
+                    var startX = startNode.x - shiftValue;
+                    var startY = startNode.y - shiftValue;
+
+                    var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y + shiftValue;
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 0 + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + lastPointX + "," + lastPointY;
+                }
+                else {
+                    var startX = startNode.x + shiftValue;
+                    var startY = startNode.y + shiftValue;
+
+                    var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                    var lastPointY = endNode.y - shiftValue;
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 1 + "," + firstPointX + "," + firstPointY +
+                        "Q" + firstPointX + "," + lastPointY + "," + lastPointX + "," + lastPointY;
+                }
+            }
+        }
+        else { // alignement metabolite/reaction horizontal
+            if (endNode.x < startNode.x){ // target à gauche de source
+                if (sweepFlag === 1){
+                    if (startNode.x < firstPointX){
+                        var startX = startNode.x - shiftValue;
+                        var startY = startNode.y + shiftValue;
+                        var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y + shiftValue;
+                    }
+                    else {
+                        var startX = startNode.x - shiftValue;
+                        var startY = startNode.y - shiftValue;
+                        var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y - shiftValue;
+                    }
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 0 + "," + firstPointX + "," + firstPointY +
+                        "Q" + lastPointX + "," + firstPointY + "," + lastPointX + "," + lastPointY;
+                }
+                else {
+                    if (startNode.x < firstPointX){
+                        var startX = startNode.x - shiftValue;
+                        var startY = startNode.y + shiftValue;
+
+                        var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y - shiftValue;
+                    }
+                    else {
+                        var startX = startNode.x - shiftValue;
+                        var startY = startNode.y - shiftValue;
+
+                        var lastPointX = endNode.x + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y + shiftValue;
+                    }
+
+
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 1 + "," + firstPointX + "," + firstPointY +
+                        "Q" + lastPointX + "," + firstPointY + "," + lastPointX + "," + lastPointY;
+                }
+            }
+            if (endNode.x > startNode.x){ // target à droite de source
+                if (sweepFlag === 1){
+                    if (startNode.x < firstPointX){
+                        var startX = startNode.x + shiftValue;
+                        var startY = startNode.y - shiftValue;
+                        var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y - shiftValue;
+                    }
+                    else {
+                        var startX = startNode.x + shiftValue;
+                        var startY = startNode.y + shiftValue;
+                        var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y + shiftValue;
+                    }
+
+
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 0 + "," + firstPointX + "," + firstPointY +
+                        "Q" + lastPointX + "," + firstPointY + "," + lastPointX + "," + lastPointY;
+                }
+                else {
+                    if (startNode.x < firstPointX){
+                        var startX = startNode.x + shiftValue;
+                        var startY = startNode.y - shiftValue;
+                        var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y - shiftValue;
+                    }
+                    else {
+                        var startX = startNode.x + shiftValue;
+                        var startY = startNode.y + shiftValue;
+                        var lastPointX = endNode.x - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endNode.y + shiftValue;
+                    }
+
+                    path = "M" + startX + "," + startY +
+                        "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + 1 + "," + firstPointX + "," + firstPointY +
+                        "Q" + lastPointX + "," + firstPointY + "," + lastPointX + "," + lastPointY;
+                }
+            }
+        }
+        return path;
+    },
+
+    /*******************************************
+     * Compute path of an edge belonging to a cycle.
+     * @param {Object} startNode The node at the start of the path.
+     * @param {LinkData} link The link between the two nodes.
+     * @param {Object} endNode The node at the end of the path.
+     */
+    computePathCycleArcEnd : function (startNode, link, endNode, shiftValue) {
+        var path = "";
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+
+        var startX = startNode.x;
+        var startY = startNode.y;
+
+        var endX = endNode.x;
+        var endY = endNode.y;
+
+        var differenceStartEndX = startNode.x - endNode.x;
+        var differenceStartEndY = startNode.y - endNode.y;
+
+        link.each(function (d) {
+            var radius = d.cycleRadius;
+            if (d.getSource() === startNode) {
+                var sweepFlag = (d.arcDirection === "clockwise") ? 1 : 0;
+            }
+            else {
+                var sweepFlag = (d.arcDirection === "clockwise") ? 0 : 1;
+            }
+
+            if (Math.abs(differenceStartEndX) < Math.abs(differenceStartEndY)){ // alignement metabolite/reaction vertical
+                if (startX < endX && startY < endY){
+                    if (sweepFlag === 1){
+                        startX = startX - shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX - shiftValue;
+                        var lastPointY = endY - (metaboliteStyle.getHeight() / 2);
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + (lastPointY - 5) +
+                            "L" + (lastPointX + 2) + "," + (lastPointY - 5) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 2) + "," + (lastPointY - 5) +
+                            "L" + lastPointX + "," + (lastPointY - 5);
+                    }
+
+                    else {
+                        startX = startX + shiftValue;
+
+                        var lastPointX = endX + shiftValue;
+                        var lastPointY = endY - (metaboliteStyle.getHeight() / 2);
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + (lastPointY - 5) +
+                            "L" + (lastPointX + 2) + "," + (lastPointY - 5) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 2) + "," + (lastPointY - 5) +
+                            "L" + lastPointX + "," + (lastPointY - 5);
+                    }
+                }
+
+                if (startX > endX && startY < endY){
+                    if (sweepFlag === 1){
+                        startX = startX - shiftValue;
+                        startY = startY - shiftValue;
+
+                        var lastPointX = endX - shiftValue;
+                        var lastPointY = endY - (metaboliteStyle.getHeight() / 2);
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + (lastPointY - 5) +
+                            "L" + (lastPointX + 2) + "," + (lastPointY - 5) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 2) + "," + (lastPointY - 5) +
+                            "L" + lastPointX + "," + (lastPointY - 5);
+                    }
+                    else{
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX + shiftValue;
+                        var lastPointY = endY - (metaboliteStyle.getHeight() / 2);
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + (lastPointY - 5) +
+                            "L" + (lastPointX + 2) + "," + (lastPointY - 5) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 2) + "," + (lastPointY - 5) +
+                            "L" + lastPointX + "," + (lastPointY - 5);
+                    }
+                }
+
+                if (startX < endX && startY > endY){
+                    if (sweepFlag === 1){
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX + shiftValue;
+                        var lastPointY = endY + (metaboliteStyle.getHeight() / 2);
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + (lastPointY + 5) +
+                            "L" + (lastPointX + 2) + "," + (lastPointY + 5) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 2) + "," + (lastPointY + 5) +
+                            "L" + lastPointX + "," + (lastPointY + 5);
+                    }
+                    else {
+                        startX = startX - shiftValue;
+                        startY = startY - shiftValue;
+
+                        var lastPointX = endX - shiftValue;
+                        var lastPointY = endY + (metaboliteStyle.getHeight() / 2);
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + (lastPointY + 5) +
+                            "L" + (lastPointX + 2) + "," + (lastPointY + 5) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 2) + "," + (lastPointY + 5) +
+                            "L" + lastPointX + "," + (lastPointY + 5);
+                    }
+                }
+
+                if (startX > endX && startY > endY){
+                    if (sweepFlag === 1){
+                        startX = startX + shiftValue;
+                        startY = startY - shiftValue;
+
+                        var lastPointX = endX + shiftValue;
+                        var lastPointY = endY + (metaboliteStyle.getHeight() / 2);
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + (lastPointY + 5) +
+                            "L" + (lastPointX + 2) + "," + (lastPointY + 5) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 2) + "," + (lastPointY + 5) +
+                            "L" + lastPointX + "," + (lastPointY + 5);
+                    }
+                    else {
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX + shiftValue;
+                        var lastPointY = endY + (metaboliteStyle.getHeight() / 2);
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + (lastPointY + 5) +
+                            "L" + (lastPointX + 2) + "," + (lastPointY + 5) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 2) + "," + (lastPointY + 5) +
+                            "L" + lastPointX + "," + (lastPointY + 5);
+                    }
+                }
+            }
+
+            else { // alignement metabolite/reaction horizontal
+                if (startX < endX && startY < endY){
+                    if (sweepFlag === 1){
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endY;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + (lastPointX - 5) + "," + lastPointY +
+                            "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                            "L" + (lastPointX - 5) + "," + lastPointY;
+                    }
+                    else {
+                        startX = startX + shiftValue;
+                        startY = startY - shiftValue;
+
+                        var lastPointX = endX - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endY - shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + (lastPointX - 5) + "," + lastPointY +
+                            "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                            "L" + (lastPointX - 5) + "," + lastPointY;
+                    }
+                }
+
+                if (startX < endX && startY > endY){
+                    if (sweepFlag === 1){
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endY + shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + (lastPointX - 5) + "," + lastPointY +
+                            "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                            "L" + (lastPointX - 5) + "," + lastPointY;
+                    }
+                    else {
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX - (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endY + shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + (lastPointX - 5) + "," + lastPointY +
+                            "L" + (lastPointX - 5) + "," + (lastPointY - 2) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX - 5) + "," + (lastPointY + 2) +
+                            "L" + (lastPointX - 5) + "," + lastPointY;
+                    }
+                }
+
+                if (startX > endX && startY < endY){
+                    if (sweepFlag === 1){
+                        startX = startX - shiftValue;
+                        startY = startY - shiftValue;
+
+                        var lastPointX = endX + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endY - shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + (lastPointX + 5) + "," + lastPointY +
+                            "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                            "L" + (lastPointX + 5) + "," + lastPointY;
+                    }
+                    else {
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endY + shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + (lastPointX + 5) + "," + lastPointY +
+                            "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                            "L" + (lastPointX + 5) + "," + lastPointY;
+                    }
+                }
+
+                if (startX > endX && startY > endY){
+                    if (sweepFlag === 1){
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endY + shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + (lastPointX + 5) + "," + lastPointY +
+                            "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                            "L" + (lastPointX + 5) + "," + lastPointY;
+                    }
+                    else {
+                        startX = startX - shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX + (metaboliteStyle.getWidth() / 2);
+                        var lastPointY = endY + shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + (lastPointX + 5) + "," + lastPointY +
+                            "L" + (lastPointX + 5) + "," + (lastPointY - 2) +
+                            "L" + lastPointX + "," + lastPointY +
+                            "L" + (lastPointX + 5) + "," + (lastPointY + 2) +
+                            "L" + (lastPointX + 5) + "," + lastPointY;
+                    }
+                }
+            }
+
+        });
+        return path;
+    },
+
+    /*******************************************
+     * Compute path of an edge belonging to a cycle.
+     * @param {Object} startNode The node at the start of the path.
+     * @param {LinkData} link The link between the two nodes.
+     * @param {Object} endNode The node at the end of the path.
+     */
+    computeTwoPathCycleArc : function (startNode, link, endNode, shiftValue) {
+        var path = "";
+
+        var startX = startNode.x;
+        var startY = startNode.y;
+
+        var endX = endNode.x;
+        var endY = endNode.y;
+
+        var differenceStartEndX = startNode.x - endNode.x;
+        var differenceStartEndY = startNode.y - endNode.y;
+
+        link.each(function (d) {
+            var radius = d.cycleRadius;
+            if (d.getSource() === startNode) {
+                var sweepFlag = (d.arcDirection === "clockwise") ? 1 : 0;
+            }
+            else {
+                var sweepFlag = (d.arcDirection === "clockwise") ? 0 : 1;
+            }
+
+            if (Math.abs(differenceStartEndX) < Math.abs(differenceStartEndY)){ // alignement metabolite/reaction vertical
+                if (startX < endX && startY < endY){
+                    if (sweepFlag === 1){
+                        startX = startX - shiftValue;
+
+                        var lastPointX = endX - shiftValue;
+                        var lastPointY = endY - shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                    }
+                    else {
+                        startX = startX + shiftValue;
+
+                        var lastPointX = endX + shiftValue;
+                        var lastPointY = endY - shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                    }
+                } // ok
+
+                if (startX > endX && startY < endY){
+                    if (sweepFlag === 1){
+                        startX = startX - shiftValue;
+                        startY = startY - shiftValue;
+
+                        var lastPointX = endX - shiftValue;
+                        var lastPointY = endY - shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                    }
+                    else {
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX + shiftValue;
+                        var lastPointY = endY + shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                    }
+                } // ok
+
+                // if (startX < endX && startY > endY){
+                //     startX = startX - shiftValue;
+                //     startY = startY - shiftValue;
+                //
+                //     var lastPointX = endX + shiftValue;
+                //     var lastPointY = endY + shiftValue;
+                //     path = "M" + startX + "," + startY +
+                //         "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                // }
+                //
+                // if (startX > endX && startY > endY){
+                //     startX = startX - shiftValue;
+                //     startY = startY - shiftValue;
+                //
+                //     var lastPointX = endX + shiftValue;
+                //     var lastPointY = endY + shiftValue;
+                //     path = "M" + startX + "," + startY +
+                //         "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                // }
+            }
+
+            else { // alignement metabolite/reaction horizontal
+                if (startX < endX && startY < endY){
+                    if (sweepFlag === 1){
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX - shiftValue;
+                        var lastPointY = endY + shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                    }
+                    else {
+                        startX = startX + shiftValue;
+                        startY = startY - shiftValue;
+
+                        var lastPointX = endX - shiftValue;
+                        var lastPointY = endY - shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                    }
+                } // ok
+
+                // if (startX < endX && startY > endY){
+                //     if (sweepFlag === 1){
+                //         startX = startX + shiftValue;
+                //         startY = startY + shiftValue;
+                //
+                //         var lastPointX = endX + shiftValue;
+                //         var lastPointY = endY + shiftValue;
+                //         path = "M" + startX + "," + startY +
+                //             "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                //     }
+                //     else {
+                //         startX = startX + shiftValue;
+                //         startY = startY + shiftValue;
+                //
+                //         var lastPointX = endX + shiftValue;
+                //         var lastPointY = endY + shiftValue;
+                //         path = "M" + startX + "," + startY +
+                //             "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                //     }
+                // }
+
+                if (startX > endX && startY < endY){
+                    if (sweepFlag === 1){
+                        startX = startX - shiftValue;
+                        startY = startY - shiftValue;
+
+                        var lastPointX = endX - shiftValue;
+                        var lastPointY = endY - shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                    }
+                    else {
+                        startX = startX + shiftValue;
+                        startY = startY + shiftValue;
+
+                        var lastPointX = endX + shiftValue;
+                        var lastPointY = endY + shiftValue;
+                        path = "M" + startX + "," + startY +
+                            "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                    }
+                } // ok
+
+                // if (startX > endX && startY > endY){
+                //     if (sweepFlag === 1){
+                //         startX = startX + shiftValue;
+                //         startY = startY + shiftValue;
+                //
+                //         var lastPointX = endX + shiftValue;
+                //         var lastPointY = endY - shiftValue;
+                //         path = "M" + startX + "," + startY +
+                //             "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                //     }
+                //     else{
+                //         startX = startX + shiftValue;
+                //         startY = startY + shiftValue;
+                //
+                //         var lastPointX = endX + shiftValue;
+                //         var lastPointY = endY + shiftValue;
+                //         path = "M" + startX + "," + startY +
+                //             "A" + radius + "," + radius + "," + 0 + "," + 0 + "," + sweepFlag + "," + lastPointX + "," + lastPointY;
+                //     }
+                // }
+            }
+
+        });
+        return path;
     },
 
     /**
