@@ -2789,7 +2789,7 @@ metExploreD3.GraphFlux = {
         if (switchGraph === false){
             fluxData.forEach(function(value) {
                 var val = value[1]*1;
-                data.push(val);
+                data.push({cond:val});
                 if (min > val){
                     min = val;
                 }
@@ -2815,7 +2815,7 @@ metExploreD3.GraphFlux = {
                 var nodeId = networkData.getNodeByDbIdentifier(value[0]);
                 if (nodeName !== undefined || nodeId !== undefined){
                     var val = value[1]*1;
-                    data.push(val);
+                    data.push({cond:val});
                     if (min > val){
                         min = val;
                     }
@@ -2847,33 +2847,38 @@ metExploreD3.GraphFlux = {
                         .attr("transform", "translate("+ margin.left + "," + margin.right +")");
 
         var x = d3.scaleLinear()
-                    .domain([min-50, max+50])
+                    .domain([min, max])
                     .range([0, width]);
 
         svg.append("g")
             .attr("transform", "translate(0,"+ height + ")")
             .call(d3.axisBottom(x));
 
+        var histogram = d3.histogram()
+            .value(function(d){ return d.cond; })
+            .domain(x.domain())
+            .thresholds(x.ticks(50));
+
+        var bins = histogram(data);
+
         var y = d3.scaleLinear()
-                    .range([height, 0])
-                    .domain([0,0.05]);
+                .range([height, 0]);
+        y.domain([0, d3.max(bins, function(d) { return d.length; })]);
 
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        var kde = metExploreD3.GraphFlux.kernelDensityEstimator(metExploreD3.GraphFlux.kernelEpanechnikov(7), x.ticks(40));
-        var density = kde( data.map(function(d){  return d; }) );
+        svg.selectAll("rect")
+            .data(bins)
+            .enter()
+            .append("rect")
+                .attr("x", 1)
+                .attr("opacity", 0.6)
+                .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .attr("height", function(d) { return height - y(d.length); })
+                .style("fill", color);
 
-        svg.append("path")
-            .attr("class", "distribPath")
-            .datum(density)
-            .attr("opacity", "0.8")
-            .attr("fill", color)
-            .attr("stroke-linejoin", "round")
-            .attr("d", d3.line()
-                .curve(d3.curveBasis)
-                  .x(function(d) { return x(d[0]); })
-                  .y(function(d) { return y(d[1]); }));
 
         svg.append("text")
             .attr("x", (width / 2))
@@ -2935,9 +2940,8 @@ metExploreD3.GraphFlux = {
      * @param {Array} scaleRange1 scale range for the first condition
      * @param {Array} scaleRange2 scale range for the second condition
      */
-    graphDistribTwo: function(fluxData, color, switchGraph, scaleSelector, scaleRange1, scaleRange2){
-        var data1 = [];
-        var data2 = [];
+    graphDistribTwo: function(fluxData, color, switchGraph, scaleSelector, scaleRange1){
+        var data = [];
         var valNeg = [];
         var valPos = [];
         var valDistrib = [];
@@ -2949,8 +2953,8 @@ metExploreD3.GraphFlux = {
             fluxData.forEach(function(value) {
                 var val1 = value[1]*1;
                 var val2 = value[2]*1;
-                data1.push(val1);
-                data2.push(val2);
+                data.push({cond:1, value:val1});
+                data.push({cond:2, value:val2});
                 if (min > val1){
                     min = val1;
                 }
@@ -2990,8 +2994,8 @@ metExploreD3.GraphFlux = {
                 if (nodeName !== undefined || nodeId !== undefined){
                     var val1 = value[1]*1;
                     var val2 = value[2]*1;
-                    data1.push(val1);
-                    data2.push(val2);
+                    data.push({cond:1, value:val1});
+                    data.push({cond:2, value:val2});
                     if (min > val1){
                         min = val1;
                     }
@@ -3039,67 +3043,61 @@ metExploreD3.GraphFlux = {
                     .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
 
-        // add the x Axis
         var x = d3.scaleLinear()
-            .domain([min-50,max+50])
-            .range([0, width]);
+                    .domain([min, max])
+                    .range([0, width]);
+
         svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
+            .attr("transform", "translate(0,"+ height + ")")
             .call(d3.axisBottom(x));
 
-        // add the y Axis
+        var histogram = d3.histogram()
+            .value(function(d){ return d.value; })
+            .domain(x.domain())
+            .thresholds(x.ticks(50));
+
+        var bins1 = histogram(data.filter(function(d){return d.cond===1}));
+        var bins2 = histogram(data.filter(function(d){return d.cond===2}));
+        var bins = histogram(data);
+
         var y = d3.scaleLinear()
-            .range([height, 0])
-            .domain([0, 0.12]);
+                .range([height, 0]);
+        y.domain([0, d3.max(bins, function(d) { return d.length; })]);
+
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // Compute kernel density estimation
-        var kde = metExploreD3.GraphFlux.kernelDensityEstimator(metExploreD3.GraphFlux.kernelEpanechnikov(7), x.ticks(60))
-        var density1 =  kde( data1
-            .map(function(d){  return d; }) );
-        var density2 =  kde( data2
-            .map(function(d){  return d; }) );
+        svg.selectAll("rect")
+            .data(bins1)
+            .enter()
+            .append("rect")
+                .attr("x", 1)
+                .attr("opacity", 0.6)
+                .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .attr("height", function(d) { return height - y(d.length); })
+                .style("fill", color[0]);
 
-            // Plot the area
-            svg.append("path")
-                .attr("class", "mypath")
-                .datum(density1)
-                .attr("fill", color[0])
-                .attr("opacity", ".6")
-                .attr("stroke", "#000")
-                .attr("stroke-width", 1)
-                .attr("stroke-linejoin", "round")
-                .attr("d",  d3.line()
-                .curve(d3.curveBasis)
-                .x(function(d) { return x(d[0]); })
-                .y(function(d) { return y(d[1]); })
-                );
-
-            // Plot the area
-            svg.append("path")
-                .attr("class", "mypath")
-                .datum(density2)
-                .attr("fill", color[1])
-                .attr("opacity", ".6")
-                .attr("stroke", "#000")
-                .attr("stroke-width", 1)
-                .attr("stroke-linejoin", "round")
-                .attr("d",  d3.line()
-                .curve(d3.curveBasis)
-                .x(function(d) { return x(d[0]); })
-                .y(function(d) { return y(d[1]); })
-                );
+        svg.selectAll("rect2")
+            .data(bins2)
+            .enter()
+            .append("rect")
+                .attr("x", 1)
+                .attr("opacity", 0.6)
+                .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .attr("height", function(d) { return height - y(d.length); })
+                .style("fill", color[1]);
 
         // Handmade legend
-        svg.append("circle").attr("cx",250).attr("cy",30).attr("r", 6).style("fill", color[0]);
-        svg.append("circle").attr("cx",250).attr("cy",60).attr("r", 6).style("fill", color[1]);
-        svg.append("text").attr("x", 270).attr("y", 30).text("First Condition").style("font-size", "15px").attr("alignment-baseline","middle");
-        svg.append("text").attr("x", 270).attr("y", 60).text("Second Condition").style("font-size", "15px").attr("alignment-baseline","middle");
+        svg.append("circle").attr("cx",(width / 2)).attr("cy",(height+40)).attr("r", 6).style("fill", color[0]);
+        svg.append("circle").attr("cx",(width / 2)).attr("cy",(height+70)).attr("r", 6).style("fill", color[1]);
+        svg.append("text").attr("x", ((width / 2)+20)).attr("y", (height+40)).text("First Condition").style("font-size", "15px").attr("alignment-baseline","middle");
+        svg.append("text").attr("x", ((width / 2)+20)).attr("y", (height+70)).text("Second Condition").style("font-size", "15px").attr("alignment-baseline","middle");
 
         svg.append("text")
-            .attr("x", (width / 2))
-            .attr("y", (height+50))
+            .attr("x", 70)
+            .attr("y", (height+40))
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
             .style("text-decoration", "underline")
@@ -3145,38 +3143,7 @@ metExploreD3.GraphFlux = {
                     .attr("y2", interLine.y2)
                     .attr("stroke", color[0]);
             }
-            for (var i = 2; i < scaleRange2.length - 2; i++){
-                var stroke = scaleRange2[i];
-                var interLine = {x1: stroke.value, x2: stroke.value, y1: 0, y2: 340};
-
-                svg.append("line")
-                    .attr("x1", function(){ return x(interLine.x1) })
-                    .attr("x2", function(){ return x(interLine.x2) })
-                    .attr("y1", interLine.y1)
-                    .attr("y2", interLine.y2)
-                    .attr("stroke", color[1]);
-            }
         }
-    },
-
-    /**
-     * Function to compute density estimator
-     */
-    kernelDensityEstimator: function(kernel, X){
-        return function(V) {
-            return X.map(function(x) {
-                return [x, d3.mean(V, function(v) { return kernel(x - v); })];
-            });
-        };
-    },
-
-    /**
-     * Function to compute kernel
-     */
-    kernelEpanechnikov: function(k){
-        return function(v) {
-            return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
-        };
     },
 
     /**

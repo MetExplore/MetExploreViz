@@ -373,7 +373,6 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         var conData = data[0];
         var targetLabel = data[1];
         var scaleRange1 = [];
-        var scaleRange2 = [];
 
         var scaleSave = view[selectedFile];
 
@@ -394,9 +393,9 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         if (nbCol === "one"){
             metExploreD3.GraphFlux.graphDistribOne(conData, color, switchGraph, scaleSelector, scaleRange1);
         }
-        // if (nbCol === "two"){
-        //     metExploreD3.GraphFlux.graphDistribTwo(conData, color, switchGraph, scaleSelector, scaleRange1, scaleRange2);
-        // }
+        if (nbCol === "two"){
+            metExploreD3.GraphFlux.graphDistribTwo(conData, color, switchGraph, scaleSelector, scaleRange1);
+        }
     },
 
     /**
