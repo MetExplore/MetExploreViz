@@ -52,15 +52,10 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                     view.lookupReference('scaleEditorLabel1').setHidden(true);
                     view.lookupReference('scaleEditorLabel2').setHidden(true);
                 }
-                if (nbCol === "one"){
-                    view.lookupReference('selectConditionFlux').setValue("-- Select Condition --");
-                    me.colParse(1, selectFile);
-                }
-                if (nbCol === "two"){
-                    view.lookupReference('selectConditionFlux').setValue("-- Select Condition --");
-                    view.lookupReference('selectConditionFlux2').setValue("-- Select Condition --");
-                    me.colParse(2, selectFile);
-                }
+                view.lookupReference('selectConditionFlux').setValue("-- Select Condition --");
+                view.lookupReference('selectConditionFlux2').setValue("-- Select Condition --");
+                view.lookupReference('selectSdCondDisplayed').setValue("-- Select SD condition --");
+                me.colParse(2, selectFile);
             }
         });
 
@@ -127,6 +122,15 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                             var label = view.lookupReference('selectLabelDisplayed').getValue();
                             metExploreD3.GraphFlux.addValueOnEdge(size, label);
                         }
+                        if (view.lookupReference('addSdNetwork').getValue() === true){
+                            metExploreD3.GraphFlux.removeValueOnEdge();
+                            var selectedFile = view.lookupReference('selectFile').getValue();
+                            var size = view.lookupReference('fontSize').getValue();
+                            var label = view.lookupReference('selectLabelDisplayed').getValue();
+                            var condSelect = view.lookupReference('selectSdCondDisplayed').getValue();
+                            var sdData = me.getFluxData(selectedFile, "one", condSelect, "null", "sd")
+                            metExploreD3.GraphFlux.addSdOnEdge(size, label, sdData);
+                        }
                         view.lookupReference('runNewParams').enable();
                         view.lookupReference('runFluxVizu').setText("Remove display");
                     }
@@ -182,12 +186,24 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                         var label = view.lookupReference('selectLabelDisplayed').getValue();
                         metExploreD3.GraphFlux.addValueOnEdge(size, label);
                     }
+                    if (view.lookupReference('addSdNetwork').getValue() === true){
+                        metExploreD3.GraphFlux.removeValueOnEdge();
+                        var selectedFile = view.lookupReference('selectFile').getValue();
+                        var size = view.lookupReference('fontSize').getValue();
+                        var label = view.lookupReference('selectLabelDisplayed').getValue();
+                        var condSelect = view.lookupReference('selectSdCondDisplayed').getValue();
+                        var sdData = me.getFluxData(selectedFile, "one", condSelect, "null", "sd")
+                        metExploreD3.GraphFlux.addSdOnEdge(size, label, sdData);
+                    }
                 }
             }
         });
 
         view.lookupReference('addValueNetwork').on({
             change: function(){
+                if (view.lookupReference('addValueNetwork').getValue() === true && view.lookupReference('addSdNetwork').getValue() === true){
+                    view.lookupReference('addSdNetwork').setValue(false);
+                }
                 if (metExploreD3.GraphStyleEdition.fluxPath1 === true || metExploreD3.GraphStyleEdition.fluxPath2 === true){
                     if (view.lookupReference('addValueNetwork').getValue() === true){
                         var size = view.lookupReference('fontSize').getValue();
@@ -209,6 +225,42 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
             }
         });
 
+        view.lookupReference('addSdNetwork').on({
+            change: function(){
+                if (view.lookupReference('addValueNetwork').getValue() === true && view.lookupReference('addSdNetwork').getValue() === true){
+                    view.lookupReference('addValueNetwork').setValue(false);
+                }
+                if (view.lookupReference('addSdNetwork').getValue() === true){
+                    view.lookupReference('selectSdCond').setHidden(false);
+                    view.lookupReference('fontSize').setHidden(false);
+                    view.lookupReference('selectLabel').setHidden(false);
+                }
+                if (view.lookupReference('addSdNetwork').getValue() === false){
+                    view.lookupReference('selectSdCond').setHidden(true);
+                    view.lookupReference('fontSize').setHidden(true);
+                    view.lookupReference('selectLabel').setHidden(true);
+                }
+
+                if (metExploreD3.GraphStyleEdition.fluxPath1 === true || metExploreD3.GraphStyleEdition.fluxPath2 === true){
+                    if (view.lookupReference('addValueNetwork').getValue() === false){
+                        metExploreD3.GraphFlux.removeValueOnEdge();
+                    }
+                    if (view.lookupReference('addSdNetwork').getValue() === false){
+                        metExploreD3.GraphFlux.removeValueOnEdge();
+                    }
+                    if (view.lookupReference('addSdNetwork').getValue() === true){
+                        var selectedFile = view.lookupReference('selectFile').getValue();
+                        var size = view.lookupReference('fontSize').getValue();
+                        var label = view.lookupReference('selectLabelDisplayed').getValue();
+                        var condSelect = view.lookupReference('selectSdCondDisplayed').getValue();
+                        var sdData = me.getFluxData(selectedFile, "one", condSelect, "null", "sd")
+                        metExploreD3.GraphFlux.addSdOnEdge(size, label, sdData);
+                    }
+                }
+
+            }
+        });
+
         view.lookupReference('fontSize').on({
             keypress: function(field, event){
                 if (event.getKey() === event.ENTER){
@@ -226,6 +278,31 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
                         var size = view.lookupReference('fontSize').getValue();
                         var label = view.lookupReference('selectLabelDisplayed').getValue();
                         metExploreD3.GraphFlux.addValueOnEdge(size, label);
+                    }
+                    if (view.lookupReference('addSdNetwork').getValue() === true){
+                        metExploreD3.GraphFlux.removeValueOnEdge();
+                        var selectedFile = view.lookupReference('selectFile').getValue();
+                        var size = view.lookupReference('fontSize').getValue();
+                        var label = view.lookupReference('selectLabelDisplayed').getValue();
+                        var condSelect = view.lookupReference('selectSdCondDisplayed').getValue();
+                        var sdData = me.getFluxData(selectedFile, "one", condSelect, "null", "sd")
+                        metExploreD3.GraphFlux.addSdOnEdge(size, label, sdData);
+                    }
+                }
+            }
+        });
+
+        view.lookupReference('selectSdCondDisplayed').on({
+            change: function(){
+                if (metExploreD3.GraphStyleEdition.fluxPath1 === true || metExploreD3.GraphStyleEdition.fluxPath2 === true){
+                    if (view.lookupReference('addSdNetwork').getValue() === true){
+                        metExploreD3.GraphFlux.removeValueOnEdge();
+                        var selectedFile = view.lookupReference('selectFile').getValue();
+                        var size = view.lookupReference('fontSize').getValue();
+                        var label = view.lookupReference('selectLabelDisplayed').getValue();
+                        var condSelect = view.lookupReference('selectSdCondDisplayed').getValue();
+                        var sdData = me.getFluxData(selectedFile, "one", condSelect, "null", "sd")
+                        metExploreD3.GraphFlux.addSdOnEdge(size, label, sdData);
                     }
                 }
             }
@@ -312,8 +389,18 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
             }
         });
         var fluxCondition = fluxList[fileIndex].conditions;
+        var sdConditions = fluxList[fileIndex].sdConditions;
 
         var listCond = [];
+        var sdCond = [];
+
+        if (sdConditions !== []){
+            for (var j = 0; j < sdConditions.length; j++){
+                var cond = sdConditions[j];
+                var tmp = {cond:cond};
+                sdCond.push(tmp);
+            }
+        }
 
         for (var i = 0; i < fluxCondition.length; i++){
             var cond = fluxCondition[i];
@@ -335,6 +422,12 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
 
             condStore.setData(listCond);
             condStore2.setData(listCond);
+        }
+        if (sdCond !== []){
+            var comboComponent = this.getView().lookupReference('selectSdCondDisplayed');
+            var condStore = comboComponent.getStore();
+
+            condStore.setData(sdCond);
         }
     },
 
@@ -369,7 +462,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         var me = this;
         var view = me.getView();
 
-        var data = this.getFluxData(selectedFile, nbCol, condSelect, condSelect2);
+        var data = this.getFluxData(selectedFile, nbCol, condSelect, condSelect2, "flux");
         var conData = data[0];
         var targetLabel = data[1];
         var scaleRange1 = [];
@@ -404,9 +497,10 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
      * @param {String} nbCol number of condition to display
      * @param {String} condSelect first condition name
      * @param {String} condSelect2 second condition name
+     * @param {String} type sd or flux
      * @returns {Array}
      */
-    getFluxData: function(selectedFile, nbCol, condSelect, condSelect2){
+    getFluxData: function(selectedFile, nbCol, condSelect, condSelect2, type){
         var fluxList = _metExploreViz.flux;
         var fileIndex = [];
         fluxList.forEach(function(list, i){
@@ -416,13 +510,19 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
         });
 
         var targetLabel = _metExploreViz.flux[fileIndex].targetLabel;
-        var fluxData = _metExploreViz.flux[fileIndex].data;
-        var fluxCond = _metExploreViz.flux[fileIndex].conditions;
+        if (type === "flux"){
+            var fluxData = _metExploreViz.flux[fileIndex].data;
+            var fluxCond = _metExploreViz.flux[fileIndex].conditions;
+        }
+        if (type === "sd"){
+            var fluxData = _metExploreViz.flux[fileIndex].sdData;
+            var fluxCond = _metExploreViz.flux[fileIndex].sdConditions;
+        }
         var conData = [];
 
         if (nbCol === "one"){
             for (var i = 0; i < fluxCond.length; i++){
-                if (fluxCond[i] === condSelect){
+                if (fluxCond[i].includes(condSelect)){
                     var indexCond = i+1;
                 }
             }
@@ -440,10 +540,10 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
             var indexCond2;
 
             for (var i = 0; i < fluxCond.length; i++){
-                if (condSplit[0] === fluxCond[i]){
+                if (fluxCond[i].includes(condSplit[0])){
                     indexCond1 = i+1;
                 }
-                if (condSplit[1] === fluxCond[i]){
+                if (fluxCond[i].includes(condSplit[1])){
                     indexCond2 = i+1;
                 }
             }
@@ -474,7 +574,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
 		var width = 190;
 		var height = 50;
 
-        var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2);
+        var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2, "flux");
         var fluxData = data[0];
         var targetLabel = data[1];
 
@@ -645,7 +745,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
             var selectedCond = view.lookupReference('selectConditionFlux').getValue();
             var selectedCond2 = "null";
 
-            var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2);
+            var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2, "flux");
             var fluxData = data[0];
             var targetLabel = data[1];
 
@@ -655,7 +755,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingFormController', 
             var selectedCond = view.lookupReference('selectConditionFlux').getValue();
             var selectedCond2 = view.lookupReference('selectConditionFlux2').getValue();
 
-            var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2);
+            var data = this.getFluxData(selectedFile, nbCol, selectedCond, selectedCond2, "flux");
             var fluxData = data[0];
             var targetLabel = data[1];
 

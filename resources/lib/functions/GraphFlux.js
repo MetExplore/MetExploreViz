@@ -3540,6 +3540,67 @@ metExploreD3.GraphFlux = {
         });
     },
 
+    addSdOnEdge: function(size, label, sdData){
+        var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(node){
+                return node.getBiologicalType()=="reaction";
+            });
+
+        var targetLabel = sdData[1];
+        var data = sdData[0];
+        var sd = {};
+
+        for (var i = 0; i < data.length; i++){
+            sd[data[i][0]] = data[i][1];
+        }
+
+        var labelDrag = d3.drag()
+            .on("drag", metExploreD3.GraphFlux.dragMove);
+
+        reactions.each(function(react){
+            if (targetLabel === "Name"){
+                var sdReact = sd[react.name];
+            }
+            if (targetLabel === "reactionId"){
+                var sdReact = sd[react.id];
+            }
+            if (targetLabel === "Identifier"){
+                var sdReact = sd[react.dbIdentifier];
+            }
+            if (label === "Reaction Name"){
+                var textLabel = react.name+" : "+sdReact;
+            }
+            if (label === "Reaction Identifier"){
+                var textLabel = react.dbIdentifier+" : "+sdReact;
+            }
+            if (label === "None"){
+                var textLabel = sdReact;
+            }
+
+            if (react.axe === "horizontal"){
+                var posX = react.x-20;
+                var posY = react.y+15;
+            }
+            if (react.axe === "vertical"){
+                var posX = react.x+15;
+                var posY = react.y;
+            }
+
+            if (sdReact !== undefined){
+                var target = d3.select("#viz").select("#D3viz").select("#graphComponent");
+                target.append("text")
+                    .attr("x", posX)
+                    .attr("y", posY)
+                    .attr("fill", "black")
+                    .attr("font-size", size)
+                    .classed("valueLabel", true)
+                    .text(textLabel)
+                    .call(labelDrag);
+            }
+        });
+    },
+
     /**
      * Remove label and flux value on network
      */

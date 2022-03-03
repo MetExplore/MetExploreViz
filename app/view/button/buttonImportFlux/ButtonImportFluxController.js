@@ -36,7 +36,23 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
 	    var firstLine = lines.splice(0, 1);
 	    firstLine = firstLine[0].split('\t');
 
-	    var targetName = firstLine.splice(0, 1);
+        var conditions = [];
+        var sdConditions = [];
+        var conditionsIndex = [];
+        var sdIndex = [0];
+        for (var i = 0; i < firstLine.length; i++){
+            if (firstLine[i].includes("sd_")){
+                sdConditions.push(firstLine[i]);
+                sdIndex.push(i);
+            }
+            else {
+                conditions.push(firstLine[i]);
+                conditionsIndex.push(i);
+            }
+        }
+
+	    var targetName = conditions.splice(0, 1);
+
 	    var array = [];
 
         for (var i = 0; i < _metExploreViz.flux.length; i++){
@@ -46,17 +62,36 @@ Ext.define('metExploreViz.view.button.buttonImportFlux.ButtonImportFluxControlle
             }
         }
 
+        var fluxData = [];
+        var sdData = [];
+
 		if(targetName[0]=="Identifier" || targetName[0]=="reactionId" || targetName[0]=="Name") {
-		    var flux = new Flux(title, firstLine, targetName[0], array);
+		    var flux = new Flux(title, conditions, targetName[0], array);
             for (var i = lines.length - 1; i >= 0; i--) {
-    	    	lines[i] = lines[i].split('\t').map(function (val) {
-    				return val.replace(",", ".");
-    			});
+                lines[i] = lines[i].split('\t').map(function (val) {
+        				return val.replace(",", ".");
+        		});
                 if (lines[i].length === 1){
-                    lines.pop(i);
+                    continue;
                 }
+                var tmpFlux = [];
+                var tmpSd = [];
+                for (var j = 0; j < sdIndex.length; j++){
+                    if (lines[i] !== undefined){
+                        tmpSd.push(lines[i][sdIndex[j]]);
+                    }
+                }
+                for (var k = 0; k < conditionsIndex.length; k++){
+                    if (lines[i] !== undefined){
+                        tmpFlux.push(lines[i][conditionsIndex[k]]);
+                    }
+                }
+                sdData.push(tmpSd);
+                fluxData.push(tmpFlux);
     	    }
-            flux.data = lines;
+            flux.data = fluxData;
+            flux.sdData = sdData;
+            flux.sdConditions = sdConditions;
 
             _metExploreViz.addFlux(flux);
             metExploreD3.fireEvent("fluxMapping","fileParse");
