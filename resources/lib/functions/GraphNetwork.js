@@ -3079,7 +3079,7 @@ metExploreD3.GraphNetwork = {
                 metExploreD3.GraphNetwork.updateNetwork(panelLinked, sessionLinked);
             });
 
-        metExploreD3.GraphNetwork.tick(panel);
+        metExploreD3.GraphNetwork.tick(activePanel);
         metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
         //metExploreD3.GraphNetwork.initCentroids("viz");
     },
