@@ -7,6 +7,8 @@ var Flux = function(title, conditions, targetLabel, id){
 
     this.name = title;
     this.conditions = conditions;
+    this.sdConditions = [];
+    this.sdData = [];
     this.targetLabel = targetLabel;
     this.data = [];
     this.id = id;
@@ -51,5 +53,13 @@ Flux.prototype = {
 
 	getData : function(){
 		return this.data;
-	}
+	},
+
+    getSdData : function(){
+        return this.sdData;
+    },
+
+    getSdConditions : function(){
+        return this.sdConditions;
+    }
 };

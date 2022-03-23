@@ -34,6 +34,7 @@ Ext.define('metExploreViz.view.form.girPathwaysForm.GirPathwaysFormController', 
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
         if(view !== undefined) {
+            view.removeAll(true);
             var idColors = [];
             var listComponentCaptionForm = [];
 

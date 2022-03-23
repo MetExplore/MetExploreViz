@@ -260,47 +260,6 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
                         'text-align': 'center'
                     },
                     html: "<svg id='scaleEditor' height='110' width='250px'> </svg>"
-                },
-                {
-                    xtype: "panel",
-                    reference: "scaleEditor2",
-                    height: 110,
-                    hidden:true,
-                    width: '50%',
-                    style: {
-                        'text-align': 'center'
-                    },
-                    html: "<svg id='scaleEditor2' height='110' width='250px'> </svg>"
-                }
-            ]
-        },
-
-        {
-            xtype: 'panel',
-            layout: {
-                type: 'hbox',
-                align: 'stretch'
-            },
-            items: [
-                {
-                    xtype: 'label',
-                    html: 'First condition',
-                    reference: 'scaleEditorLabel1',
-                    hidden: true,
-                    style: {
-                        'text-align': 'center'
-                    },
-                    width: '50%'
-                },
-                {
-                    xtype: 'label',
-                    html: 'Second condition',
-                    reference: 'scaleEditorLabel2',
-                    hidden: true,
-                    style: {
-                        'text-align': 'center'
-                    },
-                    width: '50%'
                 }
             ]
         },
@@ -310,7 +269,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
             boxLabel: 'Distribution graph : only displayed data' +
             '<a target="_blank" href="http://metexplore.toulouse.inra.fr/metexploreViz/doc/documentation.php#fluxDistribGraph"><sup>?</sup></a>',
             reference: 'displayGraphDistrib',
-            margin: '5 5 5 5'
+            margin: '0 0 0 5'
         },
 
         {
@@ -318,6 +277,42 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
             boxLabel: 'Add flux values on network',
             margin: '0 0 0 5',
             reference: 'addValueNetwork'
+        },
+
+        {
+            xtype: 'checkboxfield',
+            boxLabel: 'Add sd values on network',
+            margin: '0 0 0 5',
+            reference: 'addSdNetwork'
+        },
+
+        {
+            border: false,
+            xtype: 'panel',
+            autoScroll: true,
+            hidden: true,
+            reference: 'selectSdCond',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+                    },
+            items: [
+                {
+                    store: {
+                        fields: ['cond']
+                    },
+                    xtype: 'combobox',
+                    fieldLabel: 'SD condition ',
+                    displayField: 'cond',
+                    valueField: 'cond',
+                    queryMode: 'local',
+                    editable: false,
+                    emptyText: '-- Select SD condition --',
+                    margin: '5 5 5 5',
+                    width: '100%',
+                    anyMatch: true,
+                    reference: 'selectSdCondDisplayed'
+                }]
         },
 
         {

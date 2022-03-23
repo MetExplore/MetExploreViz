@@ -22,7 +22,7 @@ metExploreD3.GraphFlux = {
      * @param {Array} scaleRange1 scale range for the first condition
      * @param {Array} scaleRange2 scale range for the second condition
      */
-    displayChoice: function(fluxData, targetLabel, nbCol, color, scaleSelector, scaleRange1, scaleRange2){
+    displayChoice: function(fluxData, targetLabel, nbCol, color, scaleSelector, scaleRange1){
         var session = _metExploreViz.getSessionById('viz');
         var networkData = session.getD3Data();
 
@@ -30,7 +30,7 @@ metExploreD3.GraphFlux = {
             this.oneCompute(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1);
         }
         if (nbCol === "two"){
-            this.twoCompute(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1, scaleRange2);
+            this.twoCompute(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1);
         }
     },
 
@@ -69,101 +69,124 @@ metExploreD3.GraphFlux = {
         var distribPos = metExploreD3.GraphFlux.fluxDistribution(valuesPos);
         var distribNeg = metExploreD3.GraphFlux.fluxDistribution(valuesNeg);
 
-        if (distribPos["max"] !== undefined && distribNeg["max"] !== undefined){
+        if (distribNeg["max"] !== undefined && distribNeg["min"] !== undefined){
+            var minNeg = distribNeg["min"];
+            var maxNeg = distribNeg["max"];
+        }
+        if (distribPos["max"] !== undefined && distribPos["min"] !== undefined){
+            var minPos = distribPos["min"];
+            var maxPos = distribPos["max"];
+        }
+
+        if (maxPos > maxNeg*(-1)){
+            maxNeg = maxPos*(-1);
+        }
+        if (maxPos < maxNeg*(-1)) {
+            maxPos = maxNeg*(-1);
+        }
+
+        if (minPos < minNeg*(-1)){
+            minNeg = minPos*(-1);
+        }
+        if (minPos > minNeg*(-1)) {
+            minPos = minNeg*(-1);
+        }
+
+        if (maxPos !== undefined && maxNeg !== undefined){
             var scaleRange = [
-                {id:"begin",value:distribNeg["max"],styleValue:5},
-                {id:1,value:distribNeg["min"],styleValue:5},
-                {id:2,value:distribNeg["max"],styleValue:1},
-                {id:3,value:distribPos["min"],styleValue:1},
-                {id:4,value:distribPos["max"],styleValue:5},
-                {id:"end",value:distribPos["max"],styleValue:5}
+                {id:"begin",value:maxNeg,styleValue:5},
+                {id:1,value:maxNeg,styleValue:5},
+                {id:2,value:minNeg,styleValue:1},
+                {id:3,value:minPos,styleValue:1},
+                {id:4,value:maxPos,styleValue:5},
+                {id:"end",value:maxPos,styleValue:5}
             ];
-            if (distribPos["max"] === distribPos["min"] && distribNeg["max"] !== distribNeg["min"]){
-                var shift = distribPos["max"] / 2;
-                var min = distribPos["max"] - shift;
-                var max = distribPos["max"] + shift;
+            if (maxPos === minPos && maxNeg !== minNeg){
+                var shift = maxPos / 2;
+                var min = maxPos - shift;
+                var max = maxPos + shift;
                 var scaleRange = [
-                    {id:"begin",value:distribNeg["max"],styleValue:5},
-                    {id:1,value:distribNeg["min"],styleValue:5},
-                    {id:2,value:distribNeg["max"],styleValue:1},
+                    {id:"begin",value:maxNeg,styleValue:5},
+                    {id:1,value:maxNeg,styleValue:5},
+                    {id:2,value:minNeg,styleValue:1},
                     {id:3,value:min,styleValue:1},
-                    {id:4,value:distribPos["max"],styleValue:3},
+                    {id:4,value:maxPos,styleValue:3},
                     {id:5,value:max,styleValue:5},
                     {id:"end",value:max,styleValue:5}
                 ];
             }
-            if (distribPos["max"] !== distribPos["min"] && distribNeg["max"] === distribNeg["min"]){
-                var shift = distribNeg["max"] / 2;
-                var min = distribNeg["max"] + shift;
-                var max = distribNeg["max"] - shift;
+            if (maxPos !== minPos && maxNeg === minNeg){
+                var shift = maxNeg / 2;
+                var min = maxNeg + shift;
+                var max = maxNeg - shift;
                 var scaleRange = [
-                    {id:"begin",value:min,styleValue:5},
-                    {id:1,value:min,styleValue:5},
-                    {id:2,value:distribNeg["max"],styleValue:3},
-                    {id:2,value:max,styleValue:1},
-                    {id:3,value:distribPos["min"],styleValue:1},
-                    {id:4,value:distribPos["max"],styleValue:5},
-                    {id:"end",value:distribPos["max"],styleValue:5}
+                    {id:"begin",value:max,styleValue:5},
+                    {id:1,value:max,styleValue:5},
+                    {id:2,value:maxNeg,styleValue:3},
+                    {id:2,value:min,styleValue:1},
+                    {id:3,value:minPos,styleValue:1},
+                    {id:4,value:maxPos,styleValue:5},
+                    {id:"end",value:maxPos,styleValue:5}
                 ];
             }
-            if (distribPos["max"] === distribPos["min"] && distribNeg["max"] === distribNeg["min"]){
-                var shiftPos = distribPos["max"] / 2;
-                var minPos = distribPos["max"] - shiftPos;
-                var maxPos = distribPos["max"] + shiftPos;
-                var shiftNeg = distribNeg["max"] / 2;
-                var minNeg = distribNeg["max"] + shiftNeg;
-                var maxNeg = distribNeg["max"] - shiftNeg;
+            if (maxPos === minPos && maxNeg === minNeg){
+                var shiftPos = maxPos / 2;
+                var minPos = maxPos - shiftPos;
+                var maxPos = maxPos + shiftPos;
+                var shiftNeg = maxNeg / 2;
+                var minNeg = maxNeg + shiftNeg;
+                var maxNeg = maxNeg - shiftNeg;
                 var scaleRange = [
                     {id:"begin",value:minNeg,styleValue:5},
                     {id:1,value:minNeg,styleValue:5},
-                    {id:2,value:distribNeg["max"],styleValue:3},
+                    {id:2,value:maxNeg,styleValue:3},
                     {id:3,value:maxNeg,styleValue:1},
                     {id:4,value:minPos,styleValue:1},
-                    {id:5,value:distribPos["max"],styleValue:3},
+                    {id:5,value:maxPos,styleValue:3},
                     {id:6,value:maxPos,styleValue:5},
                     {id:"end",value:maxPos,styleValue:5}
                 ];
             }
         }
 
-        if (distribPos["max"] !== undefined && distribNeg["max"] === undefined){
+        if (maxPos !== undefined && maxNeg === undefined){
             var scaleRange = [
-                {id:"begin",value:distribPos["min"],styleValue:1},
-                {id:1,value:distribPos["min"],styleValue:1},
-                {id:2,value:distribPos["max"],styleValue:5},
-                {id:"end",value:distribPos["max"],styleValue:5}
+                {id:"begin",value:minPos,styleValue:1},
+                {id:1,value:minPos,styleValue:1},
+                {id:2,value:maxPos,styleValue:5},
+                {id:"end",value:maxPos,styleValue:5}
             ];
-            if (distribPos["max"] === distribPos["min"]){
-                var shift = distribPos["max"] / 2;
-                var min = distribPos["max"] - shift;
-                var max = distribPos["max"] + shift;
+            if (maxPos === minPos){
+                var shift = maxPos / 2;
+                var min = maxPos - shift;
+                var max = maxPos + shift;
                 var scaleRange = [
                     {id:"begin",value:min,styleValue:1},
                     {id:1,value:min,styleValue:1},
-                    {id:2,value:distribPos["max"],styleValue:3},
+                    {id:2,value:maxPos,styleValue:3},
                     {id:3,value:max,styleValue:5},
                     {id:"end",value:max,styleValue:5}
                 ];
             }
         }
 
-        if (distribPos["max"] === undefined && distribNeg["max"] !== undefined){
+        if (maxPos === undefined && maxNeg !== undefined){
             var scaleRange = [
-                {id:"begin",value:distribNeg["min"],styleValue:5},
-                {id:1,value:distribNeg["min"],styleValue:5},
-                {id:2,value:distribNeg["max"],styleValue:1},
-                {id:"end",value:distribNeg["max"],styleValue:1}
+                {id:"begin",value:maxNeg,styleValue:5},
+                {id:1,value:maxNeg,styleValue:5},
+                {id:2,value:minNeg,styleValue:1},
+                {id:"end",value:minNeg,styleValue:1}
             ];
-            if (distribNeg["max"] === distribNeg["min"]){
-                var shift = distribNeg["max"] / 2;
-                var min = distribNeg["max"] + shift;
-                var max = distribNeg["max"] - shift;
+            if (maxNeg === minNeg){
+                var shift = maxNeg / 2;
+                var min = maxNeg + shift;
+                var max = maxNeg - shift;
                 var scaleRange = [
-                    {id:"begin",value:min,styleValue:5},
-                    {id:1,value:min,styleValue:5},
-                    {id:2,value:distribNeg["max"],styleValue:3},
-                    {id:3,value:max,styleValue:1},
-                    {id:"end",value:max,styleValue:1}
+                    {id:"begin",value:max,styleValue:5},
+                    {id:1,value:max,styleValue:5},
+                    {id:2,value:maxNeg,styleValue:3},
+                    {id:3,value:min,styleValue:1},
+                    {id:"end",value:min,styleValue:1}
                 ];
             }
         }
@@ -257,7 +280,7 @@ metExploreD3.GraphFlux = {
      * @param {Array} scaleRange1 scale range for the first condition
      * @param {Array} scaleRange2 scale range for the second condition
      */
-    twoCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1, scaleRange2){
+    twoCompute: function(fluxData, networkData, targetLabel, color, scaleSelector, scaleRange1){
         var valuePos = {first:{}, second:{}};
         var valueNeg = {first:{}, second:{}};
         var valDistri = [];
@@ -337,12 +360,12 @@ metExploreD3.GraphFlux = {
                 }
 
                 if (Object.keys(valuePos["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valuePos["second"][nodes.id], scaleSelector, scaleRange2);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valuePos["second"][nodes.id], scaleSelector, scaleRange1);
                     nodes.fluxDirection2 = edgeWidth;
                     nodes.color2 = color[1];
                 }
                 if (Object.keys(valueNeg["second"]).includes(nodes.id)){
-                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valueNeg["second"][nodes.id], scaleSelector, scaleRange2);
+                    var edgeWidth = metExploreD3.GraphFlux.computeWidth(distrib, valueNeg["second"][nodes.id], scaleSelector, scaleRange1);
                     nodes.fluxDirection2 = edgeWidth*(-1);
                     nodes.color2 = color[1];
                 }
@@ -361,7 +384,7 @@ metExploreD3.GraphFlux = {
      */
     computeWidth: function(fluxDistri, fluxValue, scaleSelector, scaleRange){
         if (scaleSelector === "Manual"){
-            return metExploreD3.GraphFlux.computeManualWidth(scaleRange, fluxValue);;
+            return metExploreD3.GraphFlux.computeManualWidth(scaleRange, fluxValue);
         }
 
         var min = fluxDistri["min"];
@@ -500,7 +523,26 @@ metExploreD3.GraphFlux = {
                 return node.id==link.getSource();
             });
 
-            // For each node, compute the centroid of the source nodes of the arcs entering that node and the centroid of the target nodes of the arc exiting that node;
+            // Check if some links are part of a cycle and return the midsection of the arc instead of the centroid if this is the case
+            var centroidSourceX = 0;
+            var centroidSourceY = 0;
+            var centroidTargetX = 0;
+            var centroidTargetY = 0;
+            var isCycleReaction = false;
+
+            enteringLinks.each(function (link) {
+                if (link.partOfCycle === true){
+                    isCycleReaction = true;
+                }
+            });
+            exitingLinks.each(function (link) {
+                if (link.partOfCycle === true){
+                    isCycleReaction = true;
+                }
+            });
+
+
+
             var resultComputeCentroid = metExploreD3.GraphLink.computeCentroid(node, enteringLinks, exitingLinks);
             centroidSourceX = resultComputeCentroid[0];
             centroidSourceY = resultComputeCentroid[1];
@@ -540,7 +582,13 @@ metExploreD3.GraphFlux = {
                 enteringLinks
                     .each(function (link) {
                         var path;
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphLink.computePathHorizontal(node, enteringX, enteringY, link.getSource());
                             axe="horizontal";
                         }
@@ -564,7 +612,13 @@ metExploreD3.GraphFlux = {
                 exitingLinks
                     .each(function (link) {
                         var path;
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphLink.computePathHorizontal(node, exitingX, exitingY, link.getTarget());
                             axe="horizontal";
                         }
@@ -589,7 +643,13 @@ metExploreD3.GraphFlux = {
                 enteringLinks
                     .each(function (link) {
                         var path;
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphLink.computePathHorizontal(node, enteringX, enteringY, link.getSource());
                             axe="horizontal";
                         }
@@ -614,7 +674,13 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getTarget();
                         var fluxValue = node.fluxDirection1*(-1);
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, fluxValue, 0);
                             axe="horizontal";
                         }
@@ -640,7 +706,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource()
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getTarget(), link.getSource(), link, 0, "switch");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getTarget(), link.getSource(), link, 0, "switch");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, node.fluxDirection1, 0);
                             axe="horizontal";
                         }
@@ -664,7 +736,13 @@ metExploreD3.GraphFlux = {
                 exitingLinks
                     .each(function (link) {
                         var path;
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphLink.computePathHorizontal(node, exitingX, exitingY, link.getTarget());
                             axe="horizontal";
                         }
@@ -690,7 +768,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, 0);
                             axe="horizontal";
                         }
@@ -714,7 +798,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, 0, 0);
                             axe="horizontal";
                         }
@@ -762,23 +852,34 @@ metExploreD3.GraphFlux = {
                 return node.id==link.getSource();
             });
 
-            // For each node, compute the centroid of the source nodes of the arcs entering that node and the centroid of the target nodes of the arc exiting that node;
-            var resultComputeCentroid = metExploreD3.GraphLink.computeCentroid(node, enteringLinks, exitingLinks);
-            centroidSourceX = resultComputeCentroid[0];
-            centroidSourceY = resultComputeCentroid[1];
-            centroidTargetX = resultComputeCentroid[2];
-            centroidTargetY = resultComputeCentroid[3];
+            // Check if some links are part of a cycle and return the midsection of the arc instead of the centroid if this is the case
+            var isCycleReaction = false;
+            enteringLinks.each(function (link) {
+                if (link.partOfCycle === true){
+                    isCycleReaction = true;
+                }
+            });
+            exitingLinks.each(function (link) {
+                if (link.partOfCycle === true){
+                    isCycleReaction = true;
+                }
+            });
 
+            var resultComputeCentroid = metExploreD3.GraphLink.computeCentroid(node, enteringLinks, exitingLinks);
+            centroidSourceX1 = resultComputeCentroid[0];
+            centroidSourceY1 = resultComputeCentroid[1];
+            centroidTargetX1 = resultComputeCentroid[2];
+            centroidTargetY1 = resultComputeCentroid[3];
 
             // For each node, compare the difference between the x-coordinates of the 2 centroids and the difference between their y-coordinates
             // to determine if the axis of the reaction should be horizontal or vertical
             // From those test, attribute the coordinate for the entry and exit points of that node
-            var distanceSource = Math.sqrt(Math.pow(centroidSourceX - node.x, 2) + Math.pow(centroidSourceY - node.y, 2));
-            var distanceTarget = Math.sqrt(Math.pow(centroidTargetX - node.x, 2) + Math.pow(centroidTargetY - node.y, 2));
+            var distanceSource = Math.sqrt(Math.pow(centroidSourceX1 - node.x, 2) + Math.pow(centroidSourceY1 - node.y, 2));
+            var distanceTarget = Math.sqrt(Math.pow(centroidTargetX1 - node.x, 2) + Math.pow(centroidTargetY1 - node.y, 2));
             var enteringX = node.x;
             var enteringY = node.y;
-            if (Math.abs(centroidSourceX - centroidTargetX) > Math.abs(centroidSourceY - centroidTargetY)){
-                if (centroidSourceX < centroidTargetX){
+            if (Math.abs(centroidSourceX1 - centroidTargetX1) > Math.abs(centroidSourceY1 - centroidTargetY1)){
+                if (centroidSourceX1 < centroidTargetX1){
                     enteringX -= reactionStyle.getWidth() / 2 + 10;
                 }
                 else {
@@ -786,7 +887,7 @@ metExploreD3.GraphFlux = {
                 }
             }
             else {
-                if (centroidSourceY < centroidTargetY){
+                if (centroidSourceY1 < centroidTargetY1){
                     enteringY -= reactionStyle.getHeight() / 2 + 10;
                 }
                 else {
@@ -803,7 +904,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
@@ -828,7 +935,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
@@ -856,7 +969,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
@@ -883,7 +1002,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, exitingX, exitingY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
@@ -910,7 +1035,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
@@ -935,7 +1066,13 @@ metExploreD3.GraphFlux = {
                         var path;
                         var endNode = link.getTarget();
                         var fluxValue = node.fluxDirection1*(-1);
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, fluxValue, -5);
                             axe="horizontal";
                         }
@@ -963,7 +1100,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
@@ -991,7 +1134,13 @@ metExploreD3.GraphFlux = {
                         var path;
                         var fluxValue = node.fluxDirection2*(-1);
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y+5, exitingX, exitingY+5, endNode.x, endNode.y+5, fluxValue, 5);
                             axe="horizontal";
                         }
@@ -1019,7 +1168,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getTarget(), link.getSource(), link, -5, "switch");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getTarget(), link.getSource(), link, -5, "switch");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y-5, enteringX, enteringY-5, endNode.x, endNode.y-5, node.fluxDirection1, -5);
                             axe="horizontal";
                         }
@@ -1044,7 +1199,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, -5, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y-5, exitingX, exitingY-5, endNode.x, endNode.y-5, -5);
                             axe="horizontal";
                         }
@@ -1071,7 +1232,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getTarget(), link.getSource(), link, 5, "switch");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPathEnd(link.getTarget(), link.getSource(), link, 5, "switch");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y+5, enteringX, enteringY+5, endNode.x, endNode.y+5, node.fluxDirection2, 5);
                             axe="horizontal";
                         }
@@ -1099,7 +1266,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 5, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y+5, exitingX, exitingY+5, endNode.x, endNode.y+5, 5);
                             axe="horizontal";
                         }
@@ -1127,7 +1300,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getSource();
-                        if (enteringY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (enteringY == node.y){
                             path = metExploreD3.GraphFlux.twoPathHorizontal(node.x, node.y, enteringX, enteringY, endNode.x, endNode.y, 0);
                             axe="horizontal";
                         }
@@ -1150,7 +1329,13 @@ metExploreD3.GraphFlux = {
                     .each(function (link) {
                         var path;
                         var endNode = link.getTarget();
-                        if (exitingY == node.y){
+                        if (link.partOfCycle === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (isCycleReaction === true){
+                            path = metExploreD3.GraphFlux.computeTwoPath(link.getSource(), link.getTarget(), link, 0, "not");
+                        }
+                        else if (exitingY == node.y){
                             path = metExploreD3.GraphFlux.computePathHorizontalEnd(node.x, node.y, exitingX, exitingY, endNode.x, endNode.y, 0, 0);
                             axe="horizontal";
                         }
@@ -1171,6 +1356,223 @@ metExploreD3.GraphFlux = {
             }
         });
         metExploreD3.GraphCaption.drawCaptionTwoFluxMode();
+    },
+
+    computeShiftedCoor: function(source, target, shiftValue, link, dir){
+        var radius = link.cycleRadius;
+
+        var sweepFlag = (link.arcDirection === "clockwise") ? 1 : 0;
+
+        var yTarget = target.y;
+        var xTarget = target.x;
+
+        var xSource = source.x;
+        var ySource = source.y;
+
+        if (Math.abs(ySource - yTarget) < Math.pow(10, -10)){
+            if (sweepFlag === 1 && dir === "switch") {
+                sweepFlag = 0;
+            }
+            else if (sweepFlag === 0 && dir === "switch") {
+                sweepFlag = 1;
+            }
+            if (xSource < xTarget){
+                if (sweepFlag === 1){
+                    ySource += shiftValue;
+                    yTarget += shiftValue;
+
+                    xSource += shiftValue;
+                    xTarget += shiftValue;
+                }
+                if (sweepFlag === 0){
+                    ySource -= shiftValue;
+                    yTarget -= shiftValue;
+
+                    xSource += shiftValue;
+                    xTarget -= shiftValue;
+                }
+            }
+            if (xSource > xTarget){
+                if (sweepFlag === 1){
+                    ySource -= shiftValue;
+                    yTarget -= shiftValue;
+
+                    xSource -= shiftValue;
+                    xTarget += shiftValue;
+                }
+                if (sweepFlag === 0){
+                    ySource += shiftValue;
+                    yTarget += shiftValue;
+
+                    xSource -= shiftValue;
+                    xTarget += shiftValue;
+                }
+            }
+
+            return [xSource, ySource, xTarget, yTarget];
+        }
+
+        if (Math.abs(xSource - xTarget) < Math.pow(10, -10)){
+            if (sweepFlag === 1){
+                ySource += shiftValue;
+                yTarget += shiftValue;
+            }
+            if (sweepFlag === 0){
+                ySource -= shiftValue;
+                yTarget -= shiftValue;
+            }
+
+            return [xSource, ySource, xTarget, yTarget];
+        }
+
+        if (xSource < xTarget && ySource < yTarget){
+            if (sweepFlag === 1){
+                xSource += shiftValue;
+                yTarget -= shiftValue;
+
+                ySource -= shiftValue;
+                xTarget += shiftValue;
+            }
+            if (sweepFlag === 0){
+                xSource -= shiftValue;
+                yTarget += shiftValue;
+
+                ySource += shiftValue;
+                xTarget -= shiftValue;
+            }
+
+            return [xSource, ySource, xTarget, yTarget];
+        }
+
+        if (xSource > xTarget && ySource < yTarget){ // ok
+            if (sweepFlag === 1){
+                xSource += shiftValue;
+                yTarget += shiftValue;
+
+                ySource += shiftValue;
+                xTarget += shiftValue;
+            }
+            if (sweepFlag === 0){
+                xSource -= shiftValue;
+                yTarget -= shiftValue;
+
+                ySource -= shiftValue;
+                xTarget -= shiftValue;
+            }
+
+            return [xSource, ySource, xTarget, yTarget];
+        }
+
+        if (xSource < xTarget && ySource > yTarget){ // ok
+            if (sweepFlag === 1){
+                ySource += shiftValue;
+                xTarget += shiftValue;
+
+                xSource += shiftValue;
+                yTarget += shiftValue;
+            }
+            if (sweepFlag === 0){
+                ySource -= shiftValue;
+                xTarget -= shiftValue;
+
+                xSource -= shiftValue;
+                yTarget -= shiftValue;
+            }
+
+            return [xSource, ySource, xTarget, yTarget];
+        }
+
+        if (xSource > xTarget && ySource > yTarget){ // ok
+            if (sweepFlag === 1){
+                ySource -= shiftValue;
+                xTarget += shiftValue;
+
+                xSource += shiftValue;
+                yTarget -= shiftValue;
+            }
+            if (sweepFlag === 0){
+                ySource += shiftValue;
+                xTarget -= shiftValue;
+
+                xSource -= shiftValue;
+                yTarget += shiftValue;
+            }
+
+            return [xSource, ySource, xTarget, yTarget];
+        }
+    },
+
+    /**
+     * Default drawing of links : path with arrow head
+     * @param {LinkData} link The link to draw
+     * @param {String} panel
+     * @returns {String}
+     */
+    computeTwoPath: function (source, target, link, shiftValue, dir) {
+        var coor = metExploreD3.GraphFlux.computeShiftedCoor(source, target, shiftValue, link, dir);
+
+        var xSource = coor[0];
+        var ySource = coor[1];
+        var xTarget = coor[2];
+        var yTarget = coor[3];
+
+        return "M" + xSource + "," + ySource +
+            "L" + xTarget + "," + yTarget;
+    },
+
+    /**
+     * Default drawing of links : path with arrow head
+     * @param {LinkData} link The link to draw
+     * @param {String} panel
+     * @returns {String}
+     */
+    computeTwoPathEnd: function (source, target, link, shiftValue, dir) {
+        var path;
+
+        var coor = metExploreD3.GraphFlux.computeShiftedCoor(source, target, shiftValue, link, dir);
+
+        var xSource = coor[0];
+        var ySource = coor[1];
+        var xTarget = coor[2];
+        var yTarget = coor[3];
+
+        var d = Math.sqrt(Math.pow(xTarget - xSource, 2) + Math.pow(yTarget - ySource, 2));
+
+        var dX = (xTarget - xSource);
+        var dY = (yTarget - ySource);
+
+        if (source.getBiologicalType() == "metabolite") {
+            var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+            var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
+            var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
+        }
+        else {
+            var rTW = (Math.abs(d) * target.getSvgWidth() / 2) / Math.abs(dX);
+            var rTH = (Math.abs(d) * target.getSvgHeight() / 2) / Math.abs(dY);
+            var largeurNoeudT = (rTW < rTH) ? rT = rTW : rt = rTH;
+        }
+
+        var xTarget = xSource + dX * ((d - largeurNoeudT) / d);
+        var yTarget = ySource + dY * ((d - largeurNoeudT) / d);
+
+        var heightArrow = 4;
+        var xBaseArrowT = xSource + dX * ((d - largeurNoeudT - heightArrow) / d);
+        var yBaseArrowT = ySource + dY * ((d - largeurNoeudT - heightArrow) / d);
+
+        var xWBaseArrowT1 = xBaseArrowT + dY * (2 / d);
+        var yWBaseArrowT1 = yBaseArrowT - dX * (2 / d);
+        var xWBaseArrowT2 = xBaseArrowT - dY * (2 / d);
+        var yWBaseArrowT2 = yBaseArrowT + dX * (2 / d);
+
+
+        path = "M" + xSource + "," + ySource +
+            "L" + xBaseArrowT + "," + yBaseArrowT +
+            "L" + xWBaseArrowT1 + "," + yWBaseArrowT1 +
+            "L" + xTarget + "," + yTarget +
+            "L" + xWBaseArrowT2 + "," + yWBaseArrowT2 +
+            "L" + xBaseArrowT + "," + yBaseArrowT;
+
+        return path;
     },
 
     /**
@@ -1609,7 +2011,7 @@ metExploreD3.GraphFlux = {
         if (switchGraph === false){
             fluxData.forEach(function(value) {
                 var val = value[1]*1;
-                data.push(val);
+                data.push({cond:val});
                 if (min > val){
                     min = val;
                 }
@@ -1635,7 +2037,7 @@ metExploreD3.GraphFlux = {
                 var nodeId = networkData.getNodeByDbIdentifier(value[0]);
                 if (nodeName !== undefined || nodeId !== undefined){
                     var val = value[1]*1;
-                    data.push(val);
+                    data.push({cond:val});
                     if (min > val){
                         min = val;
                     }
@@ -1667,33 +2069,38 @@ metExploreD3.GraphFlux = {
                         .attr("transform", "translate("+ margin.left + "," + margin.right +")");
 
         var x = d3.scaleLinear()
-                    .domain([min-50, max+50])
+                    .domain([min, max])
                     .range([0, width]);
 
         svg.append("g")
             .attr("transform", "translate(0,"+ height + ")")
             .call(d3.axisBottom(x));
 
+        var histogram = d3.histogram()
+            .value(function(d){ return d.cond; })
+            .domain(x.domain())
+            .thresholds(x.ticks(50));
+
+        var bins = histogram(data);
+
         var y = d3.scaleLinear()
-                    .range([height, 0])
-                    .domain([0,0.05]);
+                .range([height, 0]);
+        y.domain([0, d3.max(bins, function(d) { return d.length; })]);
 
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        var kde = metExploreD3.GraphFlux.kernelDensityEstimator(metExploreD3.GraphFlux.kernelEpanechnikov(7), x.ticks(40));
-        var density = kde( data.map(function(d){  return d; }) );
+        svg.selectAll("rect")
+            .data(bins)
+            .enter()
+            .append("rect")
+                .attr("x", 1)
+                .attr("opacity", 0.6)
+                .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .attr("height", function(d) { return height - y(d.length); })
+                .style("fill", color);
 
-        svg.append("path")
-            .attr("class", "distribPath")
-            .datum(density)
-            .attr("opacity", "0.8")
-            .attr("fill", color)
-            .attr("stroke-linejoin", "round")
-            .attr("d", d3.line()
-                .curve(d3.curveBasis)
-                  .x(function(d) { return x(d[0]); })
-                  .y(function(d) { return y(d[1]); }));
 
         svg.append("text")
             .attr("x", (width / 2))
@@ -1755,9 +2162,8 @@ metExploreD3.GraphFlux = {
      * @param {Array} scaleRange1 scale range for the first condition
      * @param {Array} scaleRange2 scale range for the second condition
      */
-    graphDistribTwo: function(fluxData, color, switchGraph, scaleSelector, scaleRange1, scaleRange2){
-        var data1 = [];
-        var data2 = [];
+    graphDistribTwo: function(fluxData, color, switchGraph, scaleSelector, scaleRange1){
+        var data = [];
         var valNeg = [];
         var valPos = [];
         var valDistrib = [];
@@ -1769,8 +2175,8 @@ metExploreD3.GraphFlux = {
             fluxData.forEach(function(value) {
                 var val1 = value[1]*1;
                 var val2 = value[2]*1;
-                data1.push(val1);
-                data2.push(val2);
+                data.push({cond:1, value:val1});
+                data.push({cond:2, value:val2});
                 if (min > val1){
                     min = val1;
                 }
@@ -1810,8 +2216,8 @@ metExploreD3.GraphFlux = {
                 if (nodeName !== undefined || nodeId !== undefined){
                     var val1 = value[1]*1;
                     var val2 = value[2]*1;
-                    data1.push(val1);
-                    data2.push(val2);
+                    data.push({cond:1, value:val1});
+                    data.push({cond:2, value:val2});
                     if (min > val1){
                         min = val1;
                     }
@@ -1859,67 +2265,61 @@ metExploreD3.GraphFlux = {
                     .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
 
-        // add the x Axis
         var x = d3.scaleLinear()
-            .domain([min-50,max+50])
-            .range([0, width]);
+                    .domain([min, max])
+                    .range([0, width]);
+
         svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
+            .attr("transform", "translate(0,"+ height + ")")
             .call(d3.axisBottom(x));
 
-        // add the y Axis
+        var histogram = d3.histogram()
+            .value(function(d){ return d.value; })
+            .domain(x.domain())
+            .thresholds(x.ticks(50));
+
+        var bins1 = histogram(data.filter(function(d){return d.cond===1}));
+        var bins2 = histogram(data.filter(function(d){return d.cond===2}));
+        var bins = histogram(data);
+
         var y = d3.scaleLinear()
-            .range([height, 0])
-            .domain([0, 0.12]);
+                .range([height, 0]);
+        y.domain([0, d3.max(bins, function(d) { return d.length; })]);
+
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // Compute kernel density estimation
-        var kde = metExploreD3.GraphFlux.kernelDensityEstimator(metExploreD3.GraphFlux.kernelEpanechnikov(7), x.ticks(60))
-        var density1 =  kde( data1
-            .map(function(d){  return d; }) );
-        var density2 =  kde( data2
-            .map(function(d){  return d; }) );
+        svg.selectAll("rect")
+            .data(bins1)
+            .enter()
+            .append("rect")
+                .attr("x", 1)
+                .attr("opacity", 0.6)
+                .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .attr("height", function(d) { return height - y(d.length); })
+                .style("fill", color[0]);
 
-            // Plot the area
-            svg.append("path")
-                .attr("class", "mypath")
-                .datum(density1)
-                .attr("fill", color[0])
-                .attr("opacity", ".6")
-                .attr("stroke", "#000")
-                .attr("stroke-width", 1)
-                .attr("stroke-linejoin", "round")
-                .attr("d",  d3.line()
-                .curve(d3.curveBasis)
-                .x(function(d) { return x(d[0]); })
-                .y(function(d) { return y(d[1]); })
-                );
-
-            // Plot the area
-            svg.append("path")
-                .attr("class", "mypath")
-                .datum(density2)
-                .attr("fill", color[1])
-                .attr("opacity", ".6")
-                .attr("stroke", "#000")
-                .attr("stroke-width", 1)
-                .attr("stroke-linejoin", "round")
-                .attr("d",  d3.line()
-                .curve(d3.curveBasis)
-                .x(function(d) { return x(d[0]); })
-                .y(function(d) { return y(d[1]); })
-                );
+        svg.selectAll("rect2")
+            .data(bins2)
+            .enter()
+            .append("rect")
+                .attr("x", 1)
+                .attr("opacity", 0.6)
+                .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .attr("height", function(d) { return height - y(d.length); })
+                .style("fill", color[1]);
 
         // Handmade legend
-        svg.append("circle").attr("cx",250).attr("cy",30).attr("r", 6).style("fill", color[0]);
-        svg.append("circle").attr("cx",250).attr("cy",60).attr("r", 6).style("fill", color[1]);
-        svg.append("text").attr("x", 270).attr("y", 30).text("First Condition").style("font-size", "15px").attr("alignment-baseline","middle");
-        svg.append("text").attr("x", 270).attr("y", 60).text("Second Condition").style("font-size", "15px").attr("alignment-baseline","middle");
+        svg.append("circle").attr("cx",(width / 2)).attr("cy",(height+40)).attr("r", 6).style("fill", color[0]);
+        svg.append("circle").attr("cx",(width / 2)).attr("cy",(height+70)).attr("r", 6).style("fill", color[1]);
+        svg.append("text").attr("x", ((width / 2)+20)).attr("y", (height+40)).text("First Condition").style("font-size", "15px").attr("alignment-baseline","middle");
+        svg.append("text").attr("x", ((width / 2)+20)).attr("y", (height+70)).text("Second Condition").style("font-size", "15px").attr("alignment-baseline","middle");
 
         svg.append("text")
-            .attr("x", (width / 2))
-            .attr("y", (height+50))
+            .attr("x", 70)
+            .attr("y", (height+40))
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
             .style("text-decoration", "underline")
@@ -1965,38 +2365,7 @@ metExploreD3.GraphFlux = {
                     .attr("y2", interLine.y2)
                     .attr("stroke", color[0]);
             }
-            for (var i = 2; i < scaleRange2.length - 2; i++){
-                var stroke = scaleRange2[i];
-                var interLine = {x1: stroke.value, x2: stroke.value, y1: 0, y2: 340};
-
-                svg.append("line")
-                    .attr("x1", function(){ return x(interLine.x1) })
-                    .attr("x2", function(){ return x(interLine.x2) })
-                    .attr("y1", interLine.y1)
-                    .attr("y2", interLine.y2)
-                    .attr("stroke", color[1]);
-            }
         }
-    },
-
-    /**
-     * Function to compute density estimator
-     */
-    kernelDensityEstimator: function(kernel, X){
-        return function(V) {
-            return X.map(function(x) {
-                return [x, d3.mean(V, function(v) { return kernel(x - v); })];
-            });
-        };
-    },
-
-    /**
-     * Function to compute kernel
-     */
-    kernelEpanechnikov: function(k){
-        return function(v) {
-            return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
-        };
     },
 
     /**
@@ -2389,6 +2758,67 @@ metExploreD3.GraphFlux = {
                         .attr("font-size", size)
                         .classed("valueLabel", true)
                         .text(textLabel+react.valueCond2);
+            }
+        });
+    },
+
+    addSdOnEdge: function(size, label, sdData){
+        var reactions = d3.select("#viz").select("#D3viz").select("#graphComponent")
+            .selectAll("g.node")
+            .filter(function(node){
+                return node.getBiologicalType()=="reaction";
+            });
+
+        var targetLabel = sdData[1];
+        var data = sdData[0];
+        var sd = {};
+
+        for (var i = 0; i < data.length; i++){
+            sd[data[i][0]] = data[i][1];
+        }
+
+        var labelDrag = d3.drag()
+            .on("drag", metExploreD3.GraphFlux.dragMove);
+
+        reactions.each(function(react){
+            if (targetLabel === "Name"){
+                var sdReact = sd[react.name];
+            }
+            if (targetLabel === "reactionId"){
+                var sdReact = sd[react.id];
+            }
+            if (targetLabel === "Identifier"){
+                var sdReact = sd[react.dbIdentifier];
+            }
+            if (label === "Reaction Name"){
+                var textLabel = react.name+" : "+sdReact;
+            }
+            if (label === "Reaction Identifier"){
+                var textLabel = react.dbIdentifier+" : "+sdReact;
+            }
+            if (label === "None"){
+                var textLabel = sdReact;
+            }
+
+            if (react.axe === "horizontal"){
+                var posX = react.x-20;
+                var posY = react.y+15;
+            }
+            if (react.axe === "vertical"){
+                var posX = react.x+15;
+                var posY = react.y;
+            }
+
+            if (sdReact !== undefined){
+                var target = d3.select("#viz").select("#D3viz").select("#graphComponent");
+                target.append("text")
+                    .attr("x", posX)
+                    .attr("y", posY)
+                    .attr("fill", react.color1)
+                    .attr("font-size", size)
+                    .classed("valueLabel", true)
+                    .text(textLabel)
+                    .call(labelDrag);
             }
         });
     },

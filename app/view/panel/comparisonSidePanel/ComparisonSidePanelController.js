@@ -13,6 +13,7 @@ Ext.define('metExploreViz.view.panel.comparisonSidePanel.ComparisonSidePanelCont
 		view.on({
 			newMapping : me.drawCaption,
 			newFlux: function(){
+				var metaboRankPanel = Ext.getCmp('gir');
 				if (metaboRankPanel.open === false){
 					view.setCollapsed(false);
 				}
