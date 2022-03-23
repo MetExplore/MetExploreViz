@@ -299,12 +299,7 @@ Ext.define('metExploreViz.view.form.fluxMappingForm.FluxMappingForm', {
             items: [
                 {
                     store: {
-                        fields: ['cond'],
-                        data: [
-                            {"cond":"test1"},
-                            {"cond":"test2"},
-                            {"cond":"test3"}
-                        ]
+                        fields: ['cond']
                     },
                     xtype: 'combobox',
                     fieldLabel: 'SD condition ',

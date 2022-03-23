@@ -41,6 +41,7 @@ Ext.define('metExploreViz.view.form.selectMapping.SelectMappingController', {
 
 		if(_metExploreViz.getMappingsLength()!==0 ){
 			var component = Ext.getCmp('comparisonSidePanel');
+            var metaboRankPanel = Ext.getCmp('gir');
 	        if(component){
 	        	if(component.isHidden() && metaboRankPanel.open === false)
 	           		component.setHidden(false);
