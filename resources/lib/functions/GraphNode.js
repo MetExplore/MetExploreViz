@@ -1545,9 +1545,14 @@ metExploreD3.GraphNode = {
      */
     loadSideCompounds: function (sideCompounds, func) {
         var array = [];
+        var nbMapped = 0;
+        var nbTotal = 0;
+        var coverage = 0;
+
         sideCompounds.forEach(function (sideCompound) {
             var obj = {};
             obj.value = sideCompound;
+            nbTotal++;
             metExploreD3.fireEventParentWebSite("sideCompoundFromFile", obj);
             var node = _metExploreViz.getSessionById("viz").getD3Data().getNodeByDbIdentifier(sideCompound);
             if (node === undefined) {
@@ -1562,13 +1567,23 @@ metExploreD3.GraphNode = {
                 }
                 node.setIsSideCompound(true);
                 array.push(node);
+                nbMapped++;
             }
         });
         if (func != undefined) {
             func()
         }
-        ;
-        return array.length > 0;
+        coverage = Math.round(nbMapped / nbTotal * 100);
+        var msg = "Side compounds are imported! <br> <br>" +
+            "nb mapped: "+nbMapped+"<br>"+
+            "nb total: "+nbTotal+"<br>"+
+            "coverage: "+coverage+" %";
+        if (array.length > 0){
+            metExploreD3.displayMessage("MetExploreViz", msg);
+        }
+        else {
+            metExploreD3.displayMessage("MetExploreViz Warning", "Side compounds not found!");
+        }
     },
 
     /*******************************************
