@@ -1450,7 +1450,7 @@ metExploreD3.GraphNode = {
     },
 
     /*******************************************
-     * Listen double click to unselct or unfix nodes
+     * Listen double click to unselect or unfix nodes
      */
     unselectIfDBClick: function () {
         var session = _metExploreViz.getSessionById(_MyThisGraphNode.activePanel);
