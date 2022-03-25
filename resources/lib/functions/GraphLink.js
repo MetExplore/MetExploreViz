@@ -345,6 +345,9 @@ metExploreD3.GraphLink = {
             .style("opacity", linkStyle.getOpacity())
             .style("stroke-dasharray", null);
 
+        if(_metExploreViz.getMappingsLength()>0){
+            metExploreD3.GraphLink.majMapping(Ext.ComponentQuery.query('aStyleForm'));
+        }
 
         if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
             metExploreD3.GraphCaption.majCaptionPathwayOnLink();
