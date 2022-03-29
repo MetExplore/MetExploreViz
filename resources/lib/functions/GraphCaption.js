@@ -1264,10 +1264,10 @@ metExploreD3.GraphCaption = {
     },
 
     /*****************************************************
-     * Maj caption of link to display pathways
+     * Maj caption of link to display pathways or compartments
      */
-    majCaptionPathwayOnLink : function(){
 
+    majCaptionComponentOnLink : function(item){
         var activePanel = _MyThisGraphNode.activePanel;
         if(!activePanel) activePanel='viz';
 
@@ -1277,32 +1277,50 @@ metExploreD3.GraphCaption = {
                 var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
                 var isDisplayedPathwaysOnLinks = s_GeneralStyle.isDisplayedPathwaysOnLinks();
-                d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll("path.link.pathway").remove();
+                var isDisplayedCompartmentsOnLinks = s_GeneralStyle.isDisplayedCompartmentsOnLinks();
+                d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll("path.link.highlighted").remove();
                 d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
                     .each(function(link){
                         var me = this;
                         var cols = [];
                         var component;
-                        if(link.getSource().getBiologicalType()==="reaction")
-                            component=link.getSource();
+                        if (item === "PathwaysLink"){
+                            if(link.getSource().getBiologicalType()==="reaction")
+                                component=link.getSource();
 
-                        if(link.getTarget().getBiologicalType()==="reaction")
-                            component=link.getTarget();
+                            if(link.getTarget().getBiologicalType()==="reaction")
+                                component=link.getTarget();
 
-                        if(link.getSource().getBiologicalType()==="pathway")
-                            component=link.getSource();
+                            if(link.getSource().getBiologicalType()==="pathway")
+                                component=link.getSource();
 
-                        if(link.getTarget().getBiologicalType()==="pathway")
-                            component=link.getTarget();
+                            if(link.getTarget().getBiologicalType()==="pathway")
+                                component=link.getTarget();
+                        }
+
+                        if (item === "CompartmentsLink"){
+                            if(link.getSource().getBiologicalType()==="metabolite")
+                                component=link.getSource();
+
+                            if(link.getTarget().getBiologicalType()==="metabolite")
+                                component=link.getTarget();
+
+                            if(link.getSource().getBiologicalType()==="compartment")
+                                component=link.getSource();
+
+                            if(link.getTarget().getBiologicalType()==="compartment")
+                                component=link.getTarget();
+                        }
 
                         if(component){
-                            if(component.getPathways().length>0)
+                            // pathways
+                            if(item === "PathwaysLink" && component.getPathways().length>0)
                             {
                                 var color="#000000";
                                 component.getPathways().forEach(function(path){
                                     var pathw = _metExploreViz.getSessionById(panelLinked).getD3Data().getPathwayByName(path);
                                     if(pathw!==null) {
-                                        if( !pathw.hidden() && isDisplayedPathwaysOnLinks ){
+                                        if( !pathw.hidden() && (isDisplayedPathwaysOnLinks || isDisplayedCompartmentsOnLinks) ){
                                             var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
                                             col["o"]=0.15;
                                             cols.push(pathw);
@@ -1322,7 +1340,48 @@ metExploreD3.GraphCaption = {
                                         var size = 8;
                                         d3.select(newelemt).datum(link)
                                             .classed("reaction", false)
-                                            .classed("pathway", true)
+                                            .classed("highlighted", true)
+                                            .attr('id', pathw.getName().replace(/[.*+?^${} ()|[\]\-\\]/g, ""))
+                                            .style("stroke-width","3px")
+                                            .style("stroke-dasharray", size+","+size*(cols.length-1))
+                                            .style("stroke-dashoffset", size*i)
+                                            .style("stroke", pathw.getColor());
+
+                                    })
+                                    //me.parentNode.removeChild(me);
+                                }
+                                //if( metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b)!="#000000") d3.select(this).style("stroke-width","3px")
+                                // return metExploreD3.GraphUtils.RGB2Color(color.r, color.g, color.b);
+                            }
+
+                            // compartments
+                            if(item === "CompartmentsLink" && component.getCompartment().length>0)
+                            {
+                                var color="#000000";
+                                var cmpt = component.getCompartment();
+
+                                var comp = _metExploreViz.getSessionById(panelLinked).getD3Data().getCompartmentByName(cmpt);
+                                if(comp!==null) {
+                                    if( !comp.hidden() && (isDisplayedPathwaysOnLinks || isDisplayedCompartmentsOnLinks) ){
+                                        var col = metExploreD3.GraphUtils.hexToRGB(comp.getColor());
+                                        col["o"]=0.15;
+                                        cols.push(comp);
+
+                                        if (color === "#000000") {
+                                            color = col;
+                                        }
+                                    }
+                                }
+
+                                if(cols.length>0){
+                                    var percent = 100 / cols.length;
+                                    cols.forEach(function(pathw, i){
+                                        var newelemt = me.cloneNode(true);
+                                        me.parentNode.appendChild(newelemt);
+                                        var size = 8;
+                                        d3.select(newelemt).datum(link)
+                                            .classed("reaction", false)
+                                            .classed("highlighted", true)
                                             .attr('id', pathw.getName().replace(/[.*+?^${} ()|[\]\-\\]/g, ""))
                                             .style("stroke-width","3px")
                                             .style("stroke-dasharray", size+","+size*(cols.length-1))
@@ -1343,7 +1402,7 @@ metExploreD3.GraphCaption = {
                     .each(function(linkGroup){
 
                         var size = 8;
-                        var visibleLinks = d3.select(this).selectAll("path.link.pathway");
+                        var visibleLinks = d3.select(this).selectAll("path.link.highlighted");
 
                         visibleLinks
                             .style("stroke-dasharray", size+","+size*(visibleLinks.size()-1))

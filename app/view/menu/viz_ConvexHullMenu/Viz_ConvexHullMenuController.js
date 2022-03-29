@@ -76,6 +76,11 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 			click : me.pathwaysOnLinkDrawing,
 			scope : me
 		});
+
+		view.lookupReference('highlightCompartmentsLink').on({
+			click : me.pathwaysOnLinkDrawing,
+			scope : me
+		});
 	},
 	checkHandler: function (item, checked){
         var checkboxC=Ext.getCmp('highlightCheckboxCompartments');
@@ -95,7 +100,7 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 			}
             item.parentMenu.items.items
                 .filter(function(anItem){
-                    return anItem!=item && anItem.text!=="PathwaysLink";
+                    return anItem!=item && anItem.text!=="PathwaysLink" && anItem.text!=="CompartmentsLink";
                 })
                 .forEach(function(anItem){
                     anItem.setChecked(false);
@@ -122,25 +127,41 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 	pathwaysOnLinkDrawing : function (item, checked){
 
         var checkboxLinkP=Ext.getCmp('highlightCheckboxPathwaysLink');
+		var checkboxLinkC=Ext.getCmp('highlightCheckboxCompartmentsLink');
 
         var me 		= this;
         if(item.checked){
-            var checkbox = Ext.getCmp('highlightCheckboxPathwaysLink');
+            var checkbox = Ext.getCmp('highlightCheckbox'+item.text);
             checkbox.suspendEvent('change');
             checkbox.setValue(true);
             checkbox.resumeEvent('change');
-            me.highlightPathwaysOnLink();
+            me.highlightPathwaysOnLink(item.text);
 			if (metExploreD3.GraphRank.metaboRankMode === false) {
 				Ext.getCmp('comparisonSidePanel').expand();
 	            Ext.getCmp('captionFormPathways').expand();
 			}
+			item.parentMenu.items.items
+                .filter(function(anItem){
+                    return anItem!=item && anItem.text!=="Pathways" && anItem.text!=="Compartments";
+                })
+                .forEach(function(anItem){
+                    anItem.setChecked(false);
+                    var checkboxf = Ext.getCmp('highlightCheckbox'+anItem.text);
+                    checkboxf.suspendEvent('change');
+                    checkboxf.setValue(false);
+                    checkboxf.resumeEvent('change');
+                }
+            );
         }
         else
         {
             me.hidePathwaysOnLink();
             checkboxLinkP.suspendEvent('change');
+			checkboxLinkC.suspendEvent('change');
             checkboxLinkP.setValue(false);
+			checkboxLinkC.setValue(false);
             checkboxLinkP.resumeEvent('change');
+			checkboxLinkC.resumeEvent('change');
 		}
 
 
@@ -174,7 +195,8 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
         metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
     },
-    highlightPathwaysOnLink : function(){
+
+	highlightPathwaysOnLink : function(component){
 
     	var me 		= this,
 		viewModel   = me.getViewModel(),
@@ -182,12 +204,25 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
 
 		var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
-		s_GeneralStyle.setDisplayPathwaysOnLinks(true);
+		if (component === "PathwaysLink"){
+			s_GeneralStyle.setDisplayPathwaysOnLinks(true);
+			s_GeneralStyle.setDisplayCompartmentsOnLinks(false);
 
-		metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
+			metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
 
-		s_GeneralStyle.setDisplayCaption("Pathways");
-        metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+			s_GeneralStyle.setDisplayCaption("Pathways");
+	        metExploreD3.GraphCaption.majCaptionComponentOnLink(component);
+		}
+
+		if (component === "CompartmentsLink"){
+			s_GeneralStyle.setDisplayPathwaysOnLinks(false);
+			s_GeneralStyle.setDisplayCompartmentsOnLinks(true);
+
+			metExploreD3.GraphNetwork.tick(_MyThisGraphNode.activePanel);
+
+			s_GeneralStyle.setDisplayCaption("Pathways");
+	        metExploreD3.GraphCaption.majCaptionComponentOnLink(component);
+		}
 	},
 
     hideComponents : function(){
@@ -225,6 +260,6 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuControl
         var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
         s_GeneralStyle.setDisplayPathwaysOnLinks(false);
-        metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+        metExploreD3.GraphCaption.majCaptionComponentOnLink();
 	}
 });

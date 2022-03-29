@@ -1359,7 +1359,7 @@ metExploreD3.GraphNetwork = {
                         metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
                     }
 
-                    metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+                    metExploreD3.GraphCaption.majCaptionComponentOnLink();
 
                     metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 
