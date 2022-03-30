@@ -1276,8 +1276,13 @@ metExploreD3.GraphCaption = {
             function(panelLinked, sessionLinked) {
                 var s_GeneralStyle = _metExploreViz.getGeneralStyle();
 
-                var isDisplayedPathwaysOnLinks = s_GeneralStyle.isDisplayedPathwaysOnLinks();
-                var isDisplayedCompartmentsOnLinks = s_GeneralStyle.isDisplayedCompartmentsOnLinks();
+                if (item === "PathwaysLink"){
+                    var isDisplayedOnLinks = s_GeneralStyle.isDisplayedPathwaysOnLinks();
+                }
+                if (item === "CompartmentsLink"){
+                    var isDisplayedOnLinks = s_GeneralStyle.isDisplayedCompartmentsOnLinks();
+                }
+
                 d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll("path.link.highlighted").remove();
                 d3.select("#"+panelLinked).select("#D3viz").select("#graphComponent").selectAll("path.link.reaction")
                     .each(function(link){
@@ -1320,7 +1325,7 @@ metExploreD3.GraphCaption = {
                                 component.getPathways().forEach(function(path){
                                     var pathw = _metExploreViz.getSessionById(panelLinked).getD3Data().getPathwayByName(path);
                                     if(pathw!==null) {
-                                        if( !pathw.hidden() && (isDisplayedPathwaysOnLinks || isDisplayedCompartmentsOnLinks) ){
+                                        if( !pathw.hidden() && isDisplayedOnLinks ){
                                             var col = metExploreD3.GraphUtils.hexToRGB(pathw.getColor());
                                             col["o"]=0.15;
                                             cols.push(pathw);
@@ -1362,7 +1367,7 @@ metExploreD3.GraphCaption = {
 
                                 var comp = _metExploreViz.getSessionById(panelLinked).getD3Data().getCompartmentByName(cmpt);
                                 if(comp!==null) {
-                                    if( !comp.hidden() && (isDisplayedPathwaysOnLinks || isDisplayedCompartmentsOnLinks) ){
+                                    if( !comp.hidden() && isDisplayedOnLinks ){
                                         var col = metExploreD3.GraphUtils.hexToRGB(comp.getColor());
                                         col["o"]=0.15;
                                         cols.push(comp);

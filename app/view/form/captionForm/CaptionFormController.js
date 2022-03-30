@@ -106,12 +106,11 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
 
                                                             comp.setHidden(!newValue);
                                                             metExploreD3.GraphLink.majConvexhullsVisibility(panelLinked, view.getTitle());
-                                                            if (view.getTitle() == "Pathways"){
+                                                            if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
                                                                 metExploreD3.GraphCaption.majCaptionComponentOnLink("PathwaysLink");
-                                                            }
-                                                            if (view.getTitle() == "Compartments"){
+
+                                                            if(metExploreD3.getGeneralStyle().isDisplayedCompartmentsOnLinks())
                                                                 metExploreD3.GraphCaption.majCaptionComponentOnLink("CompartmentsLink");
-                                                            }
                                                         });
                                                 }
                                             }
@@ -563,7 +562,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                 captionForm.add(newConditionPanel);
                 // Create checkbox to display convex hull around each components
                 var selectAllButton = Ext.create('Ext.button.Button', {
-                    tooltip: 'selectAllButton',
+                    tooltip: 'Select or unselect all fields',
                     text: 'Select/Unselect all',
                     margin: '10 10 10 10',
                     id: 'selectAllButton' + view.getTitle()
