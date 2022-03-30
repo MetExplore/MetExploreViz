@@ -345,9 +345,15 @@ metExploreD3.GraphLink = {
             .style("opacity", linkStyle.getOpacity())
             .style("stroke-dasharray", null);
 
+        if(_metExploreViz.getMappingsLength()>0){
+            metExploreD3.GraphLink.majMapping(Ext.ComponentQuery.query('aStyleForm'));
+        }
 
         if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
-            metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+            metExploreD3.GraphCaption.majCaptionComponentOnLink("PathwaysLink");
+
+        if(metExploreD3.getGeneralStyle().isDisplayedCompartmentsOnLinks())
+            metExploreD3.GraphCaption.majCaptionComponentOnLink("CompartmentsLink");
 
     },
 
@@ -420,7 +426,10 @@ metExploreD3.GraphLink = {
         }
 
         if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
-            metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+            metExploreD3.GraphCaption.majCaptionComponentOnLink("PathwaysLink");
+
+        if(metExploreD3.getGeneralStyle().isDisplayedCompartmentsOnLinks())
+            metExploreD3.GraphCaption.majCaptionComponentOnLink("CompartmentsLink");
 
     },
 
@@ -766,6 +775,9 @@ metExploreD3.GraphLink = {
             .classed("hide", function (conv) {
                 if (type == "Pathways"){
                     var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
+                    if (com === null){
+                        return false;
+                    }
                     if(com.isCollapsed()) return true;
                 }
                 else

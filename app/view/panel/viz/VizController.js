@@ -201,7 +201,7 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
 							}
                         },{
                             text : 'Collapse all pathways',
-                            iconCls:"removeNode",
+                            iconCls :"removeNode",
                             hidden : networkVizSessionStore.getD3Data().getNodes().filter(function(node){return node.getBiologicalType()==="pathway" && node.isHidden()}).length===0,
                             handler :function(){
                                 var sessionStore = _metExploreViz.getSessionById("viz");
@@ -209,9 +209,15 @@ Ext.define('metExploreViz.view.panel.viz.VizController', {
                                 sessionStore.removeAllSelectedPathways();
                             }
                         },{
+							text : 'Unselect all nodes',
+							iconCls : "removeNode",
+							handler : function(){
+								metExploreD3.GraphNode.unselectAll("#viz");
+							}
+						},{
                             text : 'Select all nodes of selected pathway(s)',
                             hidden : networkVizSessionStore.getSelectedPathways().length===0,
-                            iconCls:"removeNode",
+                            iconCls :"removeNode",
                             handler :function(){
                                 var sessionStore = _metExploreViz.getSessionById("viz");
                                 sessionStore.getSelectedPathways().forEach(function (path, i) {

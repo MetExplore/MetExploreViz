@@ -106,9 +106,11 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
 
                                                             comp.setHidden(!newValue);
                                                             metExploreD3.GraphLink.majConvexhullsVisibility(panelLinked, view.getTitle());
-                                                            if (view.getTitle() == "Pathways"){
-                                                                metExploreD3.GraphCaption.majCaptionPathwayOnLink();
-                                                            }
+                                                            if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
+                                                                metExploreD3.GraphCaption.majCaptionComponentOnLink("PathwaysLink");
+
+                                                            if(metExploreD3.getGeneralStyle().isDisplayedCompartmentsOnLinks())
+                                                                metExploreD3.GraphCaption.majCaptionComponentOnLink("CompartmentsLink");
                                                         });
                                                 }
                                             }
@@ -519,31 +521,40 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
 
                 captionForm.add(line);
 
-                // Create checkbox to display convex hull around each components
-                var highlightLinkCheckbox = Ext.create('Ext.form.field.Checkbox', {
-                    tooltip: 'Display convex hull around each ' + view.getTitle(),
-                    boxLabel: 'Highlight '+view.getTitle().toLowerCase() +' on links' ,
-                    margin: '0 0 20 10',
-                    id: 'highlightCheckbox' + view.getTitle() + "Link",
-                    checked: s_GeneralStyle.isDisplayedPathwaysOnLinks()
-                });
-
-                highlightLinkCheckbox.on({
-                    change : function (that, newV, oldVV, e) {
-
-                        switch (view.getTitle()) {
-                            case "Pathways":
-                                Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink').setChecked(newV);
-                                Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink')
-                                    .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink'));
-                                break;
-                            default:
-                        }
-                    },
-                    scope:highlightLinkCheckbox
-                });
-                newConditionPanel.add(highlightLinkCheckbox);
             }
+
+            // Create checkbox to display convex hull around each components
+            var highlightLinkCheckbox = Ext.create('Ext.form.field.Checkbox', {
+                tooltip: 'Display convex hull around each ' + view.getTitle(),
+                boxLabel: 'Highlight '+view.getTitle().toLowerCase() +' on links' ,
+                margin: '0 0 20 10',
+                id: 'highlightCheckbox' + view.getTitle() + "Link",
+                checked: s_GeneralStyle.isDisplayedPathwaysOnLinks()
+            });
+
+            highlightLinkCheckbox.on({
+                change : function (that, newV, oldVV, e) {
+
+                    switch (view.getTitle()) {
+                        case "Pathways":
+                            Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink').setChecked(newV);
+                            Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink')
+                                .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink'));
+                            break;
+
+                        case "Compartments":
+                            Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartmentsLink').setChecked(newV);
+                            Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartmentsLink')
+                                .fireEvent("click", Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightCompartmentsLink'));
+
+                            break;
+
+                        default:
+                    }
+                },
+                scope:highlightLinkCheckbox
+            });
+            newConditionPanel.add(highlightLinkCheckbox);
 
 
             // Add component caption to captionForm panel
@@ -551,7 +562,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                 captionForm.add(newConditionPanel);
                 // Create checkbox to display convex hull around each components
                 var selectAllButton = Ext.create('Ext.button.Button', {
-                    tooltip: 'selectAllButton',
+                    tooltip: 'Select or unselect all fields',
                     text: 'Select/Unselect all',
                     margin: '10 10 10 10',
                     id: 'selectAllButton' + view.getTitle()

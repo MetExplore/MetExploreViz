@@ -4,9 +4,9 @@
  */
 
 Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenu', {
-        extend: 'Ext.menu.Menu', 
+        extend: 'Ext.menu.Menu',
         alias: 'widget.vizConvexHullMenu',
-        
+
         requires: [
             'metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuController',
             'metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenuModel'
@@ -24,6 +24,10 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenu', {
                 checked: false,
                 reference:'highlightCompartments'
             }, {
+                text: 'CompartmentsLink',
+                checked: false,
+                reference: 'highlightCompartmentsLink'
+            }, {
                 text: 'Pathways',
                 checked: false,
                 reference:'highlightPathways'
@@ -34,4 +38,3 @@ Ext.define('metExploreViz.view.menu.viz_ConvexHullMenu.Viz_ConvexHullMenu', {
             }
         ]
 });
-

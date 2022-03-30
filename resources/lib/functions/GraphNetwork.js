@@ -1359,7 +1359,13 @@ metExploreD3.GraphNetwork = {
                         metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
                     }
 
-                    metExploreD3.GraphCaption.majCaptionPathwayOnLink();
+                    if(generalStyle.isDisplayedPathwaysOnLinks()){
+                        metExploreD3.GraphCaption.majCaptionComponentOnLink("PathwaysLink");
+                    }
+
+                    if(generalStyle.isDisplayedCompartmentsOnLinks()){
+                        metExploreD3.GraphCaption.majCaptionComponentOnLink("CompartmentsLink");
+                    }
 
                     metExploreD3.fireEvent("vizIdDrawing", "enableMakeClusters");
 

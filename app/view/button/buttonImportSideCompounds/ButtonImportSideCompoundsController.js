@@ -7,7 +7,7 @@ Ext.define('metExploreViz.view.button.buttonImportSideCompounds.ButtonImportSide
     extend: 'Ext.app.ViewController',
 
     alias: 'controller.buttonImportSideCompounds',
-   
+
     init: function() {
 		var me=this,
 		viewModel = me.getViewModel(),
@@ -28,15 +28,9 @@ Ext.define('metExploreViz.view.button.buttonImportSideCompounds.ButtonImportSide
 	 * Parse file and map data
      * @param tabTxt : file content
      */
-	loadData : function(tabTxt) {
+    loadData : function(tabTxt) {
 		tabTxt = tabTxt.replace(/\r/g, "");
 	    var sideCompounds = tabTxt.split('\n');
-	    var find = metExploreD3.GraphNode.loadSideCompounds(sideCompounds);
-
-      	if(find)
-	    	metExploreD3.displayMessage("MetExploreViz", "Side compounds are imported!");
-	    else	    
-	    	metExploreD3.displayMessage("MetExploreViz Warning", "Side compounds not found!");
-	
+	    metExploreD3.GraphNode.loadSideCompounds(sideCompounds);
 	}
 });

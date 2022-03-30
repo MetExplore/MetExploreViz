@@ -1,7 +1,7 @@
 
 /**
  * @author MC
- * (a)description 
+ * (a)description
  */
  /**
  * General style
@@ -15,6 +15,7 @@ var GeneralStyle = function(siteName, minContinuous, maxContinuous, max, dispLab
     this.displayLinksForOpt = dispLink;
     this.displayConvexhulls = dispConvexhull;
     this.displayPathwaysOnLinks = dispPathwaysOnLinks;
+    this.displayCompartmentsOnLinks = false;
     this.displayCaption = dispCaption;
     this.eventForNodeInfo=eventForNodeInfo;
     this.loadButtonHidden=false;
@@ -57,7 +58,7 @@ GeneralStyle.prototype = {
     },
 
     getWebsiteName:function(){return this.websiteName;},
-   
+
 //If there are less than this number of reactions in the store, then different graph components are displayed.
     getReactionThreshold:function(){return this.maxReactionThreshold;},
     setReactionThreshold:function(maxReaction){this.maxReactionThreshold = maxReaction;},
@@ -77,9 +78,12 @@ GeneralStyle.prototype = {
     isDisplayedPathwaysOnLinks:function(){return this.displayPathwaysOnLinks;},
     setDisplayPathwaysOnLinks:function(dispPathwaysOnLinks){this.displayPathwaysOnLinks = dispPathwaysOnLinks;},
 
+    isDisplayedCompartmentsOnLinks:function(){return this.displayCompartmentsOnLinks;},
+    setDisplayCompartmentsOnLinks:function(dispCompartmentsOnLinks){this.displayCompartmentsOnLinks = dispCompartmentsOnLinks;},
+
     isDisplayedCaption:function(){return this.displayCaption;},
     setDisplayCaption:function(dispCaption){this.displayCaption = dispCaption;},
- 
+
     useClusters:function(){return this.clustered;},
     setUseClusters:function(bool){this.clustered = bool;}
 };
