@@ -1428,6 +1428,9 @@ metExploreD3.GraphCaption = {
         var generalStyle = _metExploreViz.getGeneralStyle();
         var isDisplay = generalStyle.isDisplayedConvexhulls();
 
+        var isDisplayedPathwaysOnLinks = generalStyle.isDisplayedPathwaysOnLinks();
+        var isDisplayedCompartmentsOnLinks = generalStyle.isDisplayedCompartmentsOnLinks();
+
         if(selectedComponent === isDisplay){
              d3.select("#"+panel).select("#D3viz").selectAll("path.convexhull")
                     .style("fill",
@@ -1461,13 +1464,22 @@ metExploreD3.GraphCaption = {
         switch(selectedComponent) {
             case "Compartments":
                 metExploreD3.GraphNode.colorStoreByCompartment(metExploreD3.GraphNode.node);
+                if (isDisplayedCompartmentsOnLinks){
+                    d3.select("#" + panel).select("#D3viz").selectAll("path.link.highlighted")
+                        .style("stroke", function () {
+                            var comp = _metExploreViz.getSessionById(panel).getD3Data().getCompartmentByName(this.getAttribute("id"));
+                            return comp.color;
+                        });
+                }
                 break;
             case "Pathways":
-                d3.select("#" + panel).select("#D3viz").selectAll("path.link.pathway")
-                    .style("stroke", function () {
-                        var comp = _metExploreViz.getSessionById(panel).getD3Data().getPathwayById(this.getAttribute("id"));
-                        return comp.color;
-                    });
+                if (isDisplayedPathwaysOnLinks){
+                    d3.select("#" + panel).select("#D3viz").selectAll("path.link.highlighted")
+                        .style("stroke", function () {
+                            var comp = _metExploreViz.getSessionById(panel).getD3Data().getPathwayById(this.getAttribute("id"));
+                            return comp.color;
+                        });
+                }
                 break;
             default:
             // generalStyle.setDisplayCaption(false);
