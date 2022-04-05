@@ -472,7 +472,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 
 
 			function setValueWithPrompt(){
-				me.numberPrompt(numberButtonBypass.el.dom, function(text){
+				me.numberPromptBypass(numberButtonBypass.el.dom, function(text){
 					var val = text;
 					if(view.styleType==="int")
 						val = parseInt(text);
@@ -619,6 +619,8 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			var colorButtonBypass = header.lookupReference('colorButtonBypass');
 			var colorButtonBypassEl = colorButtonBypass.el.dom.querySelector("#html5colorpicker");
 
+			var test = colorButtonBypass.el.dom.querySelector("#colorPromptBypass");
+
 			colorButtonEl.setAttribute("value", view.default);
 			colorButtonBypassEl.setAttribute("value", view.default);
 
@@ -642,45 +644,89 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				scope : me
 			});
 
-			colorButtonBypassEl
-				.addEventListener("change", function (evt, newVal) {
+			test.addEventListener('click', function() {
+				var color = colorButtonBypassEl.getAttribute("value");
+				var color2 = colorButtonEl.getAttribute("value");
 
-					var color = evt.target.value;
-					colorButtonBypassEl.setAttribute("value", color);
-
-					var bypass = true;
-					metExploreD3.GraphStyleEdition.setCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType, color, bypass);
-				});
+				me.colorPrompt(color, color2, colorButtonBypassEl);
+			});
 
 			bypassButton.on({
 				click: function(target){
-					target.hide();
+					var color = colorButtonBypassEl.getAttribute("value");
+					var color2 = colorButtonEl.getAttribute("value");
 
+					target.hide();
+					me.colorPrompt(color, color2, colorButtonBypassEl);
 					colorButtonBypass.show();
-					colorButtonBypassEl.click()
 				},
 				scope : me
 			});
 		}
 	},
 
-
-
-	textPrompt : function(target, func){
+	colorPrompt : function(color, color2, elBypass){
 		var me = this;
 		var view = me.getView();
 
-		Ext.Msg.prompt(view.title, 'Enter text :',
-			function(btn, text){
-				if (btn == 'ok'){
+		Ext.Msg.show({
+			title: view.title,
+			msg: '<input ' +
+                'type="color" ' +
+                'id="colorPrompt" ' +
+                'value="'+color+'" ' +
+                'style="width:100%; height:30px;">',
+            buttons: Ext.Msg.YESCANCELNO,
+			buttonText: {
+				yes: "Ok",
+				cancel: 'Cancel',
+				no: 'Remove'
+			},
+			fn: function(btn, text){
+				if (btn == 'yes'){
+					var color = document.getElementById("colorPrompt").value
+					elBypass.setAttribute("value", color);
+					metExploreD3.GraphStyleEdition.setCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType, color, true);
+				}
+				if (btn == "no"){
+					elBypass.setAttribute("value", color2)
+					metExploreD3.GraphStyleEdition.removeCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType);
+				}
+			}
+		});
+	},
+
+	textPrompt : function(target, func){
+
+		var me = this;
+		var view = me.getView();
+
+		Ext.Msg.show({
+			title: view.title,
+			msg: 'Enter a text :',
+            buttons: Ext.Msg.YESCANCELNO,
+			prompt: {
+				xtype: 'textareafield'
+			},
+			buttonText: {
+				yes: "Ok",
+				cancel: 'Cancel',
+				no: 'Remove'
+			},
+			fn: function(btn, text){
+				if (btn == 'yes'){
 					if(text!="") {
 						me.replaceText(target, text);
 						func(text);
 					}
 				}
-			}, this, false);
+				if (btn == "no"){
+					me.removeText(target);
+					metExploreD3.GraphStyleEdition.removeCollectionLabelBypass(view.target, view.attrType, view.attrName, view.biologicalType);
+				}
+			}
+		});
 	},
-
 
 	numberPrompt : function(target, func){
 		var me = this;
@@ -744,6 +790,84 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			}, this, false);
 	},
 
+	numberPromptBypass : function(target, func){
+		var me = this;
+		var view = me.getView();
+
+		Ext.Msg.show({
+			title: view.title,
+			msg: 'Enter a number('+ view.styleType +')  '+ view.min +'<= x <= '+ view.max +' :',
+            buttons: Ext.Msg.YESCANCELNO,
+			prompt: {
+				xtype: 'textareafield'
+			},
+			buttonText: {
+				yes: "Ok",
+				cancel: 'Cancel',
+				no: 'Remove'
+			},
+			fn: function(btn, text){
+				if (btn == 'yes'){
+					if(text!="") {
+						var min, max, number;
+						if(view.styleType==="float"){
+							min = parseFloat(view.min);
+							max = parseFloat(view.max);
+							number = parseFloat(text);
+						}
+
+						if(view.styleType==="int"){
+							min = parseInt(view.min);
+							max = parseInt(view.max);
+							number = parseInt(text);
+						}
+
+						if(isNaN(number)){
+							Ext.Msg.show({
+								title:'Warning',
+								msg: "Please enter a number between "+view.min+" and "+view.max,
+								icon: Ext.Msg.WARNING,
+								fn:function(){ me.numberPromptBypass(target, func); }
+							});
+
+						}
+						else
+						{
+							if(min <= number && number <= max){
+								me.replaceText(target, number);
+								func(number);
+							}
+							else
+							{
+								Ext.Msg.show({
+									title:'Warning',
+									msg: "Please enter a number between "+view.min+" and "+view.max,
+									icon: Ext.Msg.WARNING,
+									fn:function(){ me.numberPromptBypass(target, func); }
+								});
+							}
+						}
+
+					}
+					else
+					{
+						Ext.Msg.show({
+							title:'Warning',
+							msg: "Please enter a number between "+view.min+" and "+view.max,
+							icon: Ext.Msg.WARNING,
+							fn:function(){ me.numberPromptBypass(target, func); }
+						});
+						me.numberPromptBypass(target, func);
+					}
+				}
+				if (btn == "no"){
+					me.removeText(target);
+					metExploreD3.GraphStyleEdition.removeCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType);
+				}
+			}
+		});
+	},
+
 	resizeText : function(target){
 		d3.select(target).select("#textNumberButton").style("font-size", function(){
 			var initialValue = parseFloat(d3.select(this).style("font-size").replace("px", ""));
@@ -759,6 +883,10 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		d3.select(target).select("#textNumberButton")
 			.text(text);
 		me.resizeText(target);
+	},
+
+	removeText : function(target){
+		d3.select(target).select("#textNumberButton").text("");
 	},
 
 	// ValueMapping
@@ -815,4 +943,3 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			valueMappings.push(newVal);
 	}
 });
-
