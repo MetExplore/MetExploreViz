@@ -619,7 +619,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			var colorButtonBypass = header.lookupReference('colorButtonBypass');
 			var colorButtonBypassEl = colorButtonBypass.el.dom.querySelector("#html5colorpicker");
 
-			var test = colorButtonBypass.el.dom.querySelector("#colorPromptBypass");
+			var colorPromptBypass = colorButtonBypass.el.dom.querySelector("#colorPromptBypass");
 
 			colorButtonEl.setAttribute("value", view.default);
 			colorButtonBypassEl.setAttribute("value", view.default);
@@ -644,7 +644,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 				scope : me
 			});
 
-			test.addEventListener('click', function() {
+			colorPromptBypass.addEventListener('click', function() {
 				var color = colorButtonBypassEl.getAttribute("value");
 				var color2 = colorButtonEl.getAttribute("value");
 

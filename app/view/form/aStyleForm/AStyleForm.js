@@ -101,8 +101,8 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
                 'type="color" ' +
                 'id="html5colorpicker" ' +
                 'value="#1698ff" ' +
-                'disabled=true ' +
-                'style="width:30px; height:30px;"></div>'
+                'disabled ' +
+                'style="width:30px; height:30px; pointer-events:none;"></div>'
         },{
             xtype: 'button',
             reference: "numberButtonBypass",
