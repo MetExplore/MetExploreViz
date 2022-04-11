@@ -109,7 +109,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 					case 'Discrete':
 						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueDiscreteMappings);
 						break;
-					case 'As selection':
+					case 'Identified in mapping':
 						metExploreD3.GraphUtils.saveStyles(viewAStyleForm.valueAsSelectionMappings);
 						break;
 					case 'Alias':
@@ -193,7 +193,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 						}
 					}
 
-					if (dataType==="As selection"){
+					if (dataType==="Identified in mapping"){
 						me.removeCaption();
 
 						var newArray = metExploreD3.GraphUtils.decodeJSON(json).map(function (val) {
@@ -209,7 +209,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 							var dataType = selectConditionType.getValue();
 							var selectedCondition = selectCondition.getValue();
-							if(dataType==="As selection" && selectedCondition!==null){
+							if(dataType==="Identified in mapping" && selectedCondition!==null){
 								viewAStyleForm.getController().updateDiscreteMapping();
 							}
 						}
@@ -621,7 +621,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 				captionScales.show();
 			}
 
-			if(dataType==="Discrete" || dataType==="As selection"){
+			if(dataType==="Discrete" || dataType==="Identified in mapping"){
 				header.lookupReference('mappingButton').fireEvent("setIcon", "discrete");
 				var captions = view.lookupReference('discreteCaptions');
 				captions.show();
@@ -679,7 +679,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
             metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, parentAStyleForm);
         }
 
-        if(dataType==="As selection"){
+        if(dataType==="Identified in mapping"){
             session.setMappingDataType(dataType);
             metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, parentAStyleForm);
         }
@@ -769,7 +769,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 							border:false,
 							margin: '5 10 5 10',
 							width: "40%",
-							reference:"colorButtonMapping",
+							reference:"colorButtonMapping"+i,
 							html: '<input ' +
 								'type="color" ' +
 								'id="html5colorpicker" ' +
@@ -814,7 +814,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 												var  mappingName = selectedCondition.split(" / ")[0];
 												var  conditionName = selectedCondition.split(" / ")[1];
-												if(dataType==="As selection")
+												if(dataType==="Identified in mapping")
 													metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color.getValue())
 												else
 													metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
@@ -857,7 +857,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 													var  mappingName = selectedCondition.split(" / ")[0];
 													var  conditionName = selectedCondition.split(" / ")[1];
-													if(dataType==="As selection")
+													if(dataType==="Identified in mapping")
 														metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color.getValue())
 													else
 														metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());
@@ -890,7 +890,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 					    items:
 					    [
 						    {
-								reference:"chooseColorReaction",
+								reference:"chooseColorReaction"+newId,
 						        itemId:'chooseColorReaction'+newId,
 						        xtype:'panel',
 						        border:false,
@@ -916,7 +916,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 
 											var mappingName = selectedCondition.split(" / ")[0];
 											var conditionName = selectedCondition.split(" / ")[1];
-											if(dataType==="As selection")
+											if(dataType==="Identified in mapping")
 												metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color.getValue())
 											else
 												metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, color.getName(), color.getValue());

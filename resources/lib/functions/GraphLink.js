@@ -1353,7 +1353,7 @@ metExploreD3.GraphLink = {
         //                 metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
         //             }
         //
-        //             if(dataType==="As selection"){
+        //             if(dataType==="Identified in mapping"){
         //                 metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, view);
         //             }
         //             if(dataType==="Continuous") {
@@ -1382,8 +1382,8 @@ metExploreD3.GraphLink = {
                             metExploreD3.GraphStyleEdition.setCollectionStyleDiscreteMapping(view.target, view.attrType, view.attrName, view.biologicalType, conditionName, mappingName, valMapping.getName(), valMapping.getValue())
                         });
                     }
-                    if(dataType==="As selection"){
-                        var value = view.getController().getValueMappingsSet("As selection")[0].getValue();
+                    if(dataType==="Identified in mapping"){
+                        var value = view.getController().getValueMappingsSet("Identified in mapping")[0].getValue();
                         metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(view.target, view.attrType, view.attrName, view.biologicalType, conditionName, mappingName, "Identified", value);
                     }
                     if(dataType==="Continuous"){

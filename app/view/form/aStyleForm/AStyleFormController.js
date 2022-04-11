@@ -244,7 +244,7 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 			metExploreD3.GraphMapping.graphMappingDiscreteData(conditionName, view);
 		}
 
-		if(dataType==="As selection"){
+		if(dataType==="Identified in mapping"){
 			session.setMappingDataType(dataType);
 			metExploreD3.GraphMapping.graphMappingAsSelectionData(conditionName, view);
 		}
@@ -894,10 +894,10 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 		var view = this.getView();
 
 		type = type.toLowerCase();
-		type = type.replace(" ", "");
+		type = type.replaceAll(" ", "");
 
 		switch (type) {
-			case 'asselection':
+			case 'identifiedinmapping':
 				if(!view.valueAsSelectionMappings) view.valueAsSelectionMappings = [];
 				return view.valueAsSelectionMappings;
 				break;
