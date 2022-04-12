@@ -3,7 +3,7 @@
  * @description AStyleForm : Display Settings
  */
 Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
-    extend: 'Ext.panel.Panel',  
+    extend: 'Ext.panel.Panel',
     alias: 'widget.aStyleForm',
     requires: [
         "metExploreViz.view.form.aStyleForm.AStyleFormController"
@@ -97,11 +97,12 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleForm', {
             cls: "aStyleFormColor",
             height:"30px",
             width:"30px",
-            html: '<input ' +
+            html: '<div id="colorPromptBypass"><input ' +
                 'type="color" ' +
                 'id="html5colorpicker" ' +
                 'value="#1698ff" ' +
-                'style="width:30px; height:30px;">'
+                'disabled ' +
+                'style="width:30px; height:30px; pointer-events:none;"></div>'
         },{
             xtype: 'button',
             reference: "numberButtonBypass",

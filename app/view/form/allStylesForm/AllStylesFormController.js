@@ -148,7 +148,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
 
                                 var dataType = selectConditionType.getValue();
                                 var selectedCondition = selectCondition.getValue();
-                                if(dataType==="As selection" && selectedCondition!==null){
+                                if(dataType==="Identified in mapping" && selectedCondition!==null){
                                     theStyleForm.getController().updateDiscreteMapping();
                                 }
                             }
@@ -225,7 +225,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                             }
 
                             if (scale.valueAsSelectionMappings){
-                               if(dataType==="As selection" && selectedCondition!==null){
+                               if(dataType==="Identified in mapping" && selectedCondition!==null){
                                     selectConditionForm.getController().map(true, true, theStyleForm);
                                 }
                             }
@@ -273,7 +273,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                 theStyleForm.expand();
 
                 theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
-                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("As selection");
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("Identified in mapping");
             }
 
             theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title==="Height";});
@@ -282,7 +282,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                 theStyleForm.expand();
 
                 theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
-                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("As selection");
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("Identified in mapping");
             }
             theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title==="Rx";});
             if(theStyleForm){
@@ -290,7 +290,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                 theStyleForm.expand();
 
                 theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
-                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("As selection");
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("Identified in mapping");
             }
             theStyleForm = form.query("aStyleForm").find(function (aStyleForm) { return aStyleForm.title==="Ry";});
             if(theStyleForm){
@@ -298,7 +298,7 @@ Ext.define('metExploreViz.view.form.allStylesForm.AllStylesFormController', {
                 theStyleForm.expand();
 
                 theStyleForm.lookupReference('selectConditionForm').lookupReference('selectCondition').setValue(mappingName+" / "+conditionName);
-                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("As selection");
+                theStyleForm.lookupReference('selectConditionForm').lookupReference('selectConditionType').setValue("Identified in mapping");
             }
         }
     }

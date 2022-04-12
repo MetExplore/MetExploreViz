@@ -695,7 +695,7 @@ metExploreD3.GraphMapping = {
 	},
 
 	/***********************************************
-	* Mapping to As Selection data
+	* Mapping to Identified in mapping data
 	* This function will look at metabolites that have data
 	* mapped and will assign all them  the same value
 	 * @param {String} condition Condition choosed by the user
@@ -732,27 +732,27 @@ metExploreD3.GraphMapping = {
 
 							if(aStyleFormParent.styleType==="float"  || aStyleFormParent.styleType==="int" ) {
 
-								if(aStyleFormParent.getController().getValueMappingsSet("As selection").length===0) {
+								if(aStyleFormParent.getController().getValueMappingsSet("Identified in mapping").length===0) {
 									var medium = (aStyleFormParent.min + aStyleFormParent.max) / 2;
-									aStyleFormParent.getController().addValueMapping("As selection", "Identified", medium);
+									aStyleFormParent.getController().addValueMapping("Identified in mapping", "Identified", medium);
 								}
 								else
 								{
-									var medium = aStyleFormParent.getController().getValueMappingsSet("As selection")[0].getValue();
+									var medium = aStyleFormParent.getController().getValueMappingsSet("Identified in mapping")[0].getValue();
 								}
 
 								metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", medium)
 
 							}
 							if(aStyleFormParent.styleType==="color" ) {
-								if(aStyleFormParent.getController().getValueMappingsSet("As selection").length===0){
+								if(aStyleFormParent.getController().getValueMappingsSet("Identified in mapping").length===0){
 									var color = aStyleFormParent.max;
 
-									aStyleFormParent.getController().addValueMapping("As selection", "Identified", color);
+									aStyleFormParent.getController().addValueMapping("Identified in mapping", "Identified", color);
 								}
 								else
 								{
-									var color = aStyleFormParent.getController().getValueMappingsSet("As selection")[0].getValue();
+									var color = aStyleFormParent.getController().getValueMappingsSet("Identified in mapping")[0].getValue();
 								}
 
 								metExploreD3.GraphStyleEdition.setCollectionStyleAsSelectionMapping(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, conditionName, mappingName, "Identified", color)

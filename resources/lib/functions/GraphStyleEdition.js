@@ -1071,5 +1071,195 @@ metExploreD3.GraphStyleEdition = {
             }
         }
         return "none";
+    },
+
+    /*******************************************
+     * Remove bypass style
+     * @param {String} targetSet d3 selection to map
+     * @param {String} attrType Accessor to style {"attr", "style", "attrEditor"}
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     */
+    removeCollectionStyleBypass: function(targetSet, attrType, attrName, biologicalType){
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+        var metaboliteStyle = metExploreD3.getMetaboliteStyle();
+        var reactionStyle = metExploreD3.getReactionStyle();
+        var specialStyle = ["opacity", "fill", "stroke"];
+
+        var value;
+
+        if (biologicalType === "metabolite"){
+            if (targetSet.includes("text.metabolite") && attrName === "opacity"){
+                value = metaboliteStyle.labelOpacity;
+            }
+            if (targetSet.includes("text.metabolite") && attrName === "fill"){
+                value = metaboliteStyle.fontColor;
+            }
+            if (!(targetSet.includes("text.metabolite")) && attrName === "opacity"){
+                value = metaboliteStyle.opacity;
+            }
+            if (!(targetSet.includes("text.metabolite")) && attrName === "fill"){
+                value = metaboliteStyle.backgroundColor;
+            }
+            if (attrName === "stroke"){
+                value = metaboliteStyle.strokeColor;
+            }
+            if (attrName.includes("-")){
+                var tmp = attrName.split("-");
+                var first = tmp[0];
+                var second = tmp[1][0].toUpperCase();
+                var third = tmp[1].substring(1);
+
+                var nameAttr = first+second+third;
+                value = metaboliteStyle[nameAttr];
+            }
+
+            if (!(specialStyle.includes(attrName)) && !(attrName.includes("-"))){
+                value = metaboliteStyle[attrName];
+            }
+        }
+
+        if (biologicalType === "reaction"){
+            if (targetSet.includes("text.reaction") && attrName === "opacity"){
+                value = reactionStyle.labelOpacity;
+            }
+            if (!(targetSet.includes("text.reaction")) && attrName === "opacity"){
+                value = reactionStyle.opacity;
+            }
+            if (targetSet.includes("text.reaction") && attrName === "fill"){
+                value = reactionStyle.fontColor;
+            }
+            if (!(targetSet.includes("text.reaction")) && attrName === "fill"){
+                value = reactionStyle.backgroundColor;
+            }
+            if (attrName === "stroke"){
+                value = reactionStyle.strokeColor;
+            }
+            if (attrName.includes("-")){
+                var tmp = attrName.split("-");
+                var first = tmp[0];
+                var second = tmp[1][0].toUpperCase();
+                var third = tmp[1].substring(1);
+
+                var nameAttr = first+second+third;
+                value = reactionStyle[nameAttr];
+            }
+
+            if (!(specialStyle.includes(attrName)) && !(attrName.includes("-"))){
+                value = reactionStyle[attrName];
+            }
+        }
+
+        if(activeSession) {
+            targetSet.forEach(function removeStyles(target) {
+
+                var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
+                    return activeSession.getD3Data().getNodeById(nodeId);
+                });
+
+                var selectedNodesId = mapNodes.filter(function (node) {
+
+                    if (biologicalType === "link") return node.getBiologicalType() === "reaction";
+                    else return node.getBiologicalType() === biologicalType;
+                }).map(function (node) {
+                    return node.getId();
+                });
+                if(selectedNodesId.length>0){
+                    var selection;
+                    if (biologicalType === "link"){
+                        selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                            .filter(function (d) {
+                                    var reaction = d.getReaction();
+                                    if(reaction)
+                                        return selectedNodesId.includes(reaction.getId());
+                                    return false;
+                            });
+                    }
+                    else
+                    {
+                        selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                            .filter(function (d) {
+                                return d.getBiologicalType() === biologicalType;
+                            })
+                            .filter(function (d) {
+                                return selectedNodesId.includes(d.getId());
+                            });
+                    }
+
+                    var targetSelection = selection.selectAll(target);
+                    targetSelection[attrType](attrName, value);
+                    targetSelection.classed("bypassed"+attrType+attrName+biologicalType, false);
+                }
+            });
+        }
+    },
+
+    /*******************************************
+     * Remove bypass style on label
+     * @param {String} targetSet d3 selection to map
+     * @param {String} attrType Accessor to style {"attr", "style", "attrEditor"}
+     * @param {String} attrName Name of style to update
+     * @param {"link"/"metabolite"/"reaction"} biologicalType
+     */
+    removeCollectionLabelBypass : function (targetSet, attrType, attrName, biologicalType) {
+        var activeSession = _metExploreViz.getSessionById(metExploreD3.GraphNode.activePanel);
+
+        var styleToUse;
+        var value;
+
+        if(biologicalType==="metabolite"){
+            styleToUse = metExploreD3.getMetaboliteStyle();
+            value = styleToUse.label;
+        }
+
+        if(biologicalType==="reaction"){
+            styleToUse = metExploreD3.getReactionStyle();
+            value = styleToUse.label;
+        }
+
+        if(activeSession) {
+            targetSet.forEach(function setStyles(target) {
+
+                var mapNodes = activeSession.getSelectedNodes().map(function (nodeId) {
+                    return activeSession.getD3Data().getNodeById(nodeId);
+                });
+
+                var selectedNodesId = mapNodes.filter(function (node) {
+
+                    if (biologicalType === "link") return node.getBiologicalType() === "reaction";
+                    else return node.getBiologicalType() === biologicalType;
+                }).map(function (node) {
+                    return node.getId();
+                });
+                if(selectedNodesId.length>0){
+                    var selection;
+                    if (biologicalType === "link"){
+                        selection = d3.select("#viz").select("#D3viz").selectAll(".linkGroup")
+                            .filter(function (d) {
+                                    var reaction = d.getReaction();
+                                    if(reaction)
+                                        return selectedNodesId.includes(reaction.getId());
+                                    return false;
+                            });
+                    }
+                    else
+                    {
+                        selection = d3.select("#viz").select("#D3viz").selectAll("g.node")
+                            .filter(function (d) {
+                                return d.getBiologicalType() === biologicalType;
+                            })
+                            .filter(function (d) {
+                                return selectedNodesId.includes(d.getId());
+                            });
+                    }
+
+                    var targetSelection = selection.selectAll(target);
+                    targetSelection
+                        .setLabelNodeText(styleToUse, value);
+
+                    targetSelection.classed("bypassed"+attrType+attrName+biologicalType, false);
+                }
+            });
+        }
     }
 };

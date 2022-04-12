@@ -13,7 +13,7 @@ Ext.define('metExploreViz.view.form.SelectConditionType', {
         data : [
             {"name":"Continuous"},
             {"name":"Discrete"},
-            {"name":"As selection"}
+            {"name":"Identified in mapping"}
             //,{"name":"Alias"}
         ]
     },
@@ -29,7 +29,7 @@ Ext.define('metExploreViz.view.form.SelectConditionType', {
         //     var comboCond = Ext.getCmp('selectCondition');
         //     comboCond.clearValue();
         // }
-    }, 
+    },
     displayField: 'name',
     valueField: 'name',
     queryMode: 'local',
