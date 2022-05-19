@@ -1769,6 +1769,9 @@ metExploreD3.GraphNode = {
         session.groupPath = function (d) {
 
             var nodeNotHidden = [];
+            if (d.values === undefined){
+                d.values = [];
+            }
             d.values.map(function(i){
                 if (i.isHidden() === false){
                     nodeNotHidden.push([i.x, i.y]);
