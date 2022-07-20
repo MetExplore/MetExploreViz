@@ -110,7 +110,7 @@ metExploreD3.GraphNode = {
     /*******************************************
      * Permit to select all nodes of a pathway
      * @param {String} pathway A pathway name
-     * @param {String} panel A node
+     * @param {String} panel Viz panel
      */
     selectNodesOfPathway: function (pathway, panel) {
         d3.select("#"+panel).select("#D3viz")

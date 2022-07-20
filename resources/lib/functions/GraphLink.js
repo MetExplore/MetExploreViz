@@ -787,6 +787,29 @@ metExploreD3.GraphLink = {
                 return false;
             });
     },
+    // majConvexhullsVisibility : function(panelLinked, type){
+    //     d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
+    //         .classed("hide", function (conv) {
+    //             if (type === "Pathways"){
+    //                 var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
+    //                 if (com === null || com.isCollapsed()){
+    //                     return true;
+    //                 }
+    //                 if (!(com.hidden())){
+    //                     return false;
+    //                 }
+    //             }
+    //             else {
+    //                 var com = metExploreD3.getCompartmentByName(conv.key);
+    //                 if (com === null || com.isCollapsed()){
+    //                     return true;
+    //                 }
+    //                 if (!(com.hidden())){
+    //                     return false;
+    //                 }
+    //             }
+    //         });
+    // },
 
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction.
