@@ -212,6 +212,105 @@ var metExploreD3 = {
         _metExploreViz.addSession(networkVizSession);
     },
 
+    // Get Component out of metexploreviz file
+    findCmpt: function(name){
+        return Ext.getCmp(name);
+    },
+
+    // Get metexploreviz session object
+    getSessionById: function(panel){
+        var session = _metExploreViz.getSessionById(panel);
+        return session;
+    },
+
+    // Get all styles objects
+    getStyles: function(){
+        var scales = [];
+            var cmpt = metExploreViz.findCmpt("allStylesForm");
+            cmpt.query("allStylesByTypeForm").forEach(function (allStylesByTypeForm) {
+
+                var partOfAllScales = allStylesByTypeForm.query("aStyleForm")
+                    .map(function (aStyleForm) {
+                        return {
+                            biologicalType:aStyleForm.biologicalType,
+                            linkedStyles:aStyleForm.linkedStyles,
+                            title:aStyleForm.title,
+                            default : aStyleForm.default,
+                            scaleRange : aStyleForm.scaleRange,
+                            valueDiscreteMappings : aStyleForm.valueDiscreteMappings,
+                            valueAsSelectionMappings : aStyleForm.valueAsSelectionMappings,
+                            valueAliasMappings : aStyleForm.valueAliasMappings
+                        };
+                    });
+
+                scales = scales.concat(partOfAllScales);
+            });
+
+        return scales;
+    },
+
+    // Get node by id
+    getNodeById: function(nodeID, panel){
+        var networkData = _metExploreViz.getSessionById(panel).getD3Data();
+        var node = networkData.getNodeById(nodeID);
+        return node;
+    },
+
+    // Get node by name
+    getNodeByName: function(nodeName, panel){
+        var networkData = _metExploreViz.getSessionById(panel).getD3Data();
+        var node = networkData.getNodeByName(nodeName);
+        return node;
+    },
+
+    // Get all nodes
+    getAllNodes: function(panel){
+        var networkData = _metExploreViz.getSessionById(panel).getD3Data();
+        return networkData.getNodes();
+    },
+
+    // Create new metabolite style with API
+    createMetaboliteStyle: function(backgroundColor, height, width, rx, ry, opacity,
+        strokeColor, strokeWidth, fontColor, fontSize, fontWeight, labelOpacity, displayNodeName, useAlias){
+
+        var style = new MetaboliteStyle(backgroundColor, height, width, rx, ry, opacity, strokeColor, strokeWidth, fontColor, fontSize, fontWeight,
+            labelOpacity, displayNodeName, useAlias);
+
+        return style;
+    },
+
+    // Create new reaction style with API
+    createReactionStyle: function(backgroundColor, height, width, rx, ry, opacity, strokeColor,
+        strokeWidth, fontColor, fontSize, fontWeight, labelOpacity, displayNodeName, useAlias){
+
+        var style = new ReactionStyle(backgroundColor, height, width, rx, ry, opacity,
+            strokeColor, strokeWidth, fontColor, fontSize, fontWeight, labelOpacity, displayNodeName, useAlias);
+
+        return style;
+    },
+
+    // Create new link style with API
+    createLinkStyle: function(size, lineWidth, markerWidth, markerHeight, markerInColor,
+        markerOutColor, markerStrokeColor, markerStrokeWidth, strokeColor, opacity){
+
+        var style = new LinkStyle(size, lineWidth, markerWidth, markerHeight, markerInColor,
+            markerOutColor, markerStrokeColor, markerStrokeWidth, strokeColor, opacity);
+
+        return style;
+    },
+
+    // Create new general style with API
+    createGeneralStyle: function(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink,
+        dispConvexhull, dispPathwaysOnLinks, clust, dispCaption, eventForNodeInfo, loadButtonHidden,
+        windowsAlertDisable){
+
+        var style = new GeneralStyle(siteName, minContinuous, maxContinuous, max, dispLabel, dispLink,
+            dispConvexhull, dispPathwaysOnLinks, clust, dispCaption, eventForNodeInfo, loadButtonHidden,
+            windowsAlertDisable);
+
+        return style;
+    },
+
     // Interface with stores
     // Getters & Setters
     getGlobals : function(){
