@@ -1576,7 +1576,7 @@ metExploreD3.GraphNode = {
         coverage = Math.round(nbMapped / nbTotal * 100);
         var msg = "Side compounds are imported! <br> <br>" +
             "nb mapped: "+nbMapped+"<br>"+
-            "nb total: "+nbTotal+"<br>"+
+            "nb in file: "+nbTotal+"<br>"+
             "coverage: "+coverage+" %";
         if (array.length > 0){
             metExploreD3.displayMessage("MetExploreViz", msg);
