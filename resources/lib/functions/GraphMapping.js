@@ -166,6 +166,11 @@ metExploreD3.GraphMapping = {
 	        setTimeout(
 			function() {
 				try {
+                    // stats var
+                    var nbMapped = 0;
+                    var nbTotal = 0;
+                    var coverage = 0;
+                    // map data process
 					var session = _metExploreViz.getSessionById('viz');
 					var force = session.getForce();
 					force.stop();
@@ -178,71 +183,162 @@ metExploreD3.GraphMapping = {
 					var links = undefined;
 					switch (mapping.getTargetLabel()) {
 						case "reactionDBIdentifier":
-							for (var i = conditions.length - 1; i >= 0; i--) {
-								lines.forEach(function (line) {
-									var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
-									mapping.addMap(map);
-									node = networkData.getNodeByDbIdentifier(line[0]);
-									if (node != undefined) {
-										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
-										node.addMappingData(mapNode);
+                            // mapping without condition
+                            if (conditions[0] === undefined){
+                                lines.forEach(function (line) {
+                                    if (line[0].length !== 0){
+                                        nbTotal++;
+                                        var map = new MappingData(line[0], mapping.getName(), undefined, undefined);
+                                        mapping.addMap(map);
+                                        node = networkData.getNodeByDbIdentifier(line[0]);
+                                        if (node != undefined) {
+                                            nbMapped++;
+                                            var mapNode = new MappingData(node, mapping.getName(), undefined, undefined);
+                                            node.addMappingData(mapNode);
 
-										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
-										links.forEach(function (link) {
-											link.addMappingData(mapNode);
-										})
-									}
-								});
-							}
-							;
+                                            links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+                                            links.forEach(function (link) {
+                                                link.addMappingData(mapNode);
+                                            })
+                                        }
+                                    }
+                                });
+                            }
+                            // mapping with condition(s)
+                            else {
+                                for (var i = conditions.length - 1; i >= 0; i--) {
+    								lines.forEach(function (line) {
+                                        if (line[0].length !== 0){
+                                            nbTotal++;
+        									var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
+        									mapping.addMap(map);
+        									node = networkData.getNodeByDbIdentifier(line[0]);
+        									if (node != undefined) {
+                                                nbMapped++;
+        										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
+        										node.addMappingData(mapNode);
+
+        										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+        										links.forEach(function (link) {
+        											link.addMappingData(mapNode);
+        										})
+        									}
+                                        }
+    								});
+    							};
+                            }
 							break;
 						case "reactionId":
-							for (var i = conditions.length - 1; i >= 0; i--) {
-								lines.forEach(function (line) {
-									var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
-									mapping.addMap(map);
-									node = networkData.getNodeById(line[0]);
-									if (node != undefined) {
-										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
-										node.addMappingData(mapNode);
+                            if (conditions[0] === undefined){
+                                lines.forEach(function (line) {
+                                    if (line[0].length !== 0){
+                                        nbTotal++;
+                                        var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
+                                        mapping.addMap(map);
+                                        node = networkData.getNodeById(line[0]);
+                                        if (node != undefined) {
+                                            nbMapped++;
+                                            var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
+                                            node.addMappingData(mapNode);
 
-										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
-										links.forEach(function (link) {
-											link.addMappingData(mapNode);
-										})
-									}
-								});
-							}
-							;
+                                            links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+                                            links.forEach(function (link) {
+                                                link.addMappingData(mapNode);
+                                            })
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                for (var i = conditions.length - 1; i >= 0; i--) {
+    								lines.forEach(function (line) {
+                                        if (line[0].length !== 0){
+                                            nbTotal++;
+        									var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
+        									mapping.addMap(map);
+        									node = networkData.getNodeById(line[0]);
+        									if (node != undefined) {
+                                                nbMapped++;
+        										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
+        										node.addMappingData(mapNode);
+
+        										links = networkData.getLinkByDBIdReaction(node.getDbIdentifier());
+        										links.forEach(function (link) {
+        											link.addMappingData(mapNode);
+        										})
+        									}
+                                        }
+    								});
+    							};
+                            }
 							break;
 						case "metaboliteId":
-							for (var i = conditions.length - 1; i >= 0; i--) {
-								lines.forEach(function (line) {
-									var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
-									mapping.addMap(map);
-									node = networkData.getNodeById(line[0]);
-									if (node != undefined) {
-										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
-										node.addMappingData(mapNode);
-									}
-								});
-							}
-							;
+                            if (conditions[0] === undefined){
+                                lines.forEach(function (line) {
+                                    if (line[0].length !== 0){
+                                        nbTotal++;
+                                        var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
+                                        mapping.addMap(map);
+                                        node = networkData.getNodeById(line[0]);
+                                        if (node != undefined) {
+                                            nbMapped++;
+                                            var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
+                                            node.addMappingData(mapNode);
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                for (var i = conditions.length - 1; i >= 0; i--) {
+    								lines.forEach(function (line) {
+                                        if (line[0].length !== 0){
+                                            nbTotal++;
+        									var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
+        									mapping.addMap(map);
+        									node = networkData.getNodeById(line[0]);
+        									if (node != undefined) {
+                                                nbMapped++;
+        										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
+        										node.addMappingData(mapNode);
+        									}
+                                        }
+    								});
+    							};
+                            }
 							break;
 						case "metaboliteDBIdentifier":
-
-							for (var i = conditions.length - 1; i >= 0; i--) {
-								lines.forEach(function (line) {
-									var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
-									mapping.addMap(map);
-									node = networkData.getNodeByDbIdentifier(line[0]);
-									if (node != undefined) {
-										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
-										node.addMappingData(mapNode);
-									}
-								});
-							}
-							;
+                            if (conditions[0] === undefined) {
+                                lines.forEach(function (line) {
+                                    if (line[0].length !== 0){
+                                        nbTotal++;
+                                        var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
+                                        mapping.addMap(map);
+                                        node = networkData.getNodeByDbIdentifier(line[0]);
+                                        if (node != undefined) {
+                                            nbMapped++;
+                                            var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
+                                            node.addMappingData(mapNode);
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                for (var i = conditions.length - 1; i >= 0; i--) {
+    								lines.forEach(function (line) {
+                                        if (line[0].length !== 0){
+                                            nbTotal++;
+        									var map = new MappingData(line[0], mapping.getName(), conditions[i], line[i + 1]);
+        									mapping.addMap(map);
+        									node = networkData.getNodeByDbIdentifier(line[0]);
+        									if (node != undefined) {
+                                                nbMapped++;
+        										var mapNode = new MappingData(node, mapping.getName(), conditions[i], line[i + 1]);
+        										node.addMappingData(mapNode);
+        									}
+                                        }
+    								});
+    							};
+                            }
 							break;
 						case "inchi":
 							// Blah
@@ -250,6 +346,17 @@ metExploreD3.GraphMapping = {
 						default:
 							metExploreD3.displayMessage("Warning", 'The type of node "' + mapping.getTargetLabel() + '" isn\'t know.')
 					}
+                    if (conditions[0] !== undefined){
+                        var nbCond = conditions.length;
+                        nbMapped = nbMapped / nbCond;
+                        nbTotal = nbTotal / nbCond;
+                    }
+                    coverage = Math.round(nbMapped / nbTotal * 100);
+                    var msg = "Mapping data are imported! <br> <br>" +
+                        "nb mapped: "+nbMapped+"<br>"+
+                        "nb in file: "+nbTotal+"<br>"+
+                        "coverage: "+coverage+" %";
+                    metExploreD3.displayMessage("MetExploreViz", msg);
 
 					metExploreD3.hideMask(myMask);
 

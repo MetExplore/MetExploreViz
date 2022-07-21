@@ -59,6 +59,31 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 		view.lookupReference('selectCondition').on({
 			change : function(that, newVal, old){
                 var conditionType = view.lookupReference('selectConditionType').getValue();
+
+                // check if mapping have conditions and manage panel according to the result
+                var mapping = view.lookupReference('selectCondition').getValue();
+                if (mapping){
+                    var mappingName = mapping.split(" / ")[0];
+                    var mappingData = _metExploreViz.getMappingByName(mappingName);
+                    var conditions = mappingData.getConditions();
+                    var conditionStore = view.lookupReference('selectConditionType').getStore();
+                    if (conditions[0] === undefined && conditionStore.data.items.length !== 1) {
+                        var comboData = [{name:"Identified in mapping"}];
+                        conditionStore.setData(comboData);
+                        if (conditionType === "Continuous" || conditionType === "Discrete"){
+                            view.lookupReference('selectConditionType').setValue(null);
+                            me.closeMapping();
+                        }
+                    }
+                    if (conditions[0] !== undefined && conditionStore.data.items.length !== 3){
+                        var comboData = [
+                            {name:"Continuous"},
+                            {name:"Discrete"},
+                            {name:"Identified in mapping"}
+                        ]
+                        conditionStore.setData(comboData);
+                    }
+                }
                 var session = _metExploreViz.getSessionById('viz');
                 var nbNodes = session.getD3Data().getNodes().length;
 
