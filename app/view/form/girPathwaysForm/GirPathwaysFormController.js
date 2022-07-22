@@ -130,7 +130,7 @@ Ext.define('metExploreViz.view.form.girPathwaysForm.GirPathwaysFormController', 
                     layout: {
                         width: '100%'
                     },
-                    reference: ref,
+                    // reference: ref,
                     margin: '5 5 5 5',
                     items: [
                         {
