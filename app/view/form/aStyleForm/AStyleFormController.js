@@ -461,8 +461,13 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 							val = parseInt(text);
 						if(view.styleType==="float")
 							val = parseFloat(text);
-
-						metExploreD3.GraphStyleEdition.setCollectionStyle(view.target, view.attrType, view.attrName, view.biologicalType, val);
+						if (view.attrName === "font-size"){
+							var value = val+"px";
+						}
+						if (view.attrName !== "font-size"){
+							var value = val;
+						}
+						metExploreD3.GraphStyleEdition.setCollectionStyle(view.target, view.attrType, view.attrName, view.biologicalType, value);
 						styleToUse[view.access] = val;
 						view.default = val;
 					});
@@ -478,9 +483,14 @@ Ext.define('metExploreViz.view.form.aStyleForm.AStyleFormController', {
 						val = parseInt(text);
 					if(view.styleType==="float")
 						val = parseFloat(text);
-
+					if (view.attrName === "font-size"){
+						var value = val+"px";
+					}
+					if (view.attrName !== "font-size"){
+						var value = val;
+					}
 					var bypass = true;
-					metExploreD3.GraphStyleEdition.setCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType, val, bypass);
+					metExploreD3.GraphStyleEdition.setCollectionStyleBypass(view.target, view.attrType, view.attrName, view.biologicalType, value, bypass);
 				});
 			}
 			numberButtonBypass.on({

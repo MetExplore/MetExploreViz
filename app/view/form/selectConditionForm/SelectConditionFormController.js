@@ -594,7 +594,13 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 			metExploreD3.GraphStyleEdition.setCollectionLabel(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, styleToUse[aStyleFormParent.access], bypass);
 		}
 		else
-			metExploreD3.GraphStyleEdition.setCollectionStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
+            if (aStyleFormParent.attrName === "font-size"){
+                var val = aStyleFormParent.default + "px";
+                metExploreD3.GraphStyleEdition.setCollectionStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, val);
+            }
+            else {
+                metExploreD3.GraphStyleEdition.setCollectionStyle(aStyleFormParent.target, aStyleFormParent.attrType, aStyleFormParent.attrName, aStyleFormParent.biologicalType, aStyleFormParent.default);
+            }
 
 		var captions = view.lookupReference('discreteCaptions');
 
