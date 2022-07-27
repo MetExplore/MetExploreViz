@@ -2824,10 +2824,8 @@ metExploreD3.GraphNetwork = {
                                 nodeToRemove.push(node);
                             });
 
-
-                        metExploreD3.GraphNetwork.removeIsolatedNode(nodeToRemove, panelLinked);
-
                         nodeToRemove.forEach(function(node){
+                            metExploreD3.GraphNetwork.removeIsolatedNode([node], panelLinked);
                             networkData.removeNode(node);
                         });
 
@@ -3074,6 +3072,7 @@ metExploreD3.GraphNetwork = {
             })
             .each(function(node){
                 nodeToRemove.push(node);
+                metExploreD3.GraphNetwork.removeIsolatedNode([node], "viz");
                 networkData.removeNode(node);
             });
 
