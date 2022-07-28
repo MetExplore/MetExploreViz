@@ -690,14 +690,14 @@ var metExploreD3 = {
 
     /******************************************
     * Display the mask with the loading GIF
-    * @param {} mask : The mask to show
+    * @param {} mask The mask to show
     */
     showMask : function(mask){
         mask.show();
     },
     /******************************************
     * Hide the mask
-    * @param {} mask : The mask to hide
+    * @param {} mask The mask to hide
     */
     hideMask : function(mask){
         mask.hide();
@@ -705,8 +705,8 @@ var metExploreD3 = {
     },
     /******************************************
     * Create a mask with the loading GIF
-    * @param {} label : The mask label
-    * @param {} component : The panel where is displayed the mask
+    * @param {} label The mask label
+    * @param {} component The panel where is displayed the mask
     */
     createLoadMask : function(label, component){
         if(component!='viz' && component!='graphPanel' && component!='maskInit')
@@ -730,22 +730,22 @@ var metExploreD3 = {
 
     /******************************************
     * Create a task
-    * @param {} func : The task function
+    * @param {} func The task function
     */
     createDelayedTask : function(func){
         return new Ext.util.DelayedTask(func);
     },
     /******************************************
     * Fix a delay to task
-    * @param {} task : The task to delay
-    * @param {} time : The delay
+    * @param {} task The task to delay
+    * @param {} time The delay
     */
     fixDelay : function(task, time){
        task.delay(time);
     },
     /******************************************
     * Stop task
-    * @param {} task : The task to stop
+    * @param {} task The task to stop
     */
     stopTask : function(task){
        task.cancel();
@@ -753,9 +753,9 @@ var metExploreD3 = {
 
     /******************************************
     * Fire event with argument
-    * @param {} cmp : View which received the event
-    * @param {} task : Name of the event
-    * @param {} arg : Argument for the event
+    * @param {} cmp View which received the event
+    * @param {} task Name of the event
+    * @param {} arg Argument for the event
     */
     fireEvent2Arg : function(cmp, name, arg1, arg2){
         var component = Ext.getCmp(cmp);
@@ -766,9 +766,9 @@ var metExploreD3 = {
 
     /******************************************
     * Fire event with argument
-    * @param cmp : string ,View which received the event
-    * @param task : string ,Name of the event
-    * @param arg : string ,Argument for the event
+    * @param cmp : string View which received the event
+    * @param task : string Name of the event
+    * @param arg : string Argument for the event
     */
     fireEventArg : function(cmp, name, arg){
         var component = Ext.getCmp(cmp);
@@ -779,8 +779,8 @@ var metExploreD3 = {
 
     /******************************************
     * Fire Event
-    * @param {} cmp : View which received the event
-    * @param {} task : Name of the event
+    * @param {} cmp View which received the event
+    * @param {} task Name of the event
     */
     fireEvent : function(cmp, name){
         var component = Ext.getCmp(cmp);
@@ -791,8 +791,8 @@ var metExploreD3 = {
 
      /******************************************
     * Fire Event
-    * @param {} cmp : View which received the event
-    * @param {} task : Name of the event
+    * @param {} cmp View which received the event
+    * @param {} task Name of the event
     */
     hideInitialMask : function(data){
         var component = Ext.getCmp("buttonImportToNetworkFromWebsite");
@@ -804,8 +804,8 @@ var metExploreD3 = {
 
     /******************************************
     * Fire Event
-    * @param {} cmp : View which received the event
-    * @param {} task : Name of the event
+    * @param {} cmp View which received the event
+    * @param {} task Name of the event
     */
     hideInitialLoadButtons : function(data){
         var component = Ext.getCmp("buttonImportToNetworkFromWebsite");
@@ -816,8 +816,8 @@ var metExploreD3 = {
 
     /******************************************
     * Fire Event
-    * @param {} cmp : View which received the event
-    * @param {} task : Name of the event
+    * @param {} cmp View which received the event
+    * @param {} task Name of the event
     */
     cartFilled : function(data){
         var component = Ext.getCmp("buttonImportToNetworkFromWebsite");
@@ -833,8 +833,8 @@ var metExploreD3 = {
 
     /******************************************
     * Fire Event
-    * @param {} cmp : View which received the event
-    * @param {} task : Name of the event
+    * @param {} cmp View which received the event
+    * @param {} task Name of the event
     */
     fireEventParentWebSite : function(myEvent, arg){
         var theEvent = new Event(myEvent, arg);
@@ -844,8 +844,8 @@ var metExploreD3 = {
 
     /******************************************
     * Display message
-    * @param {} type : Message type
-    * @param {} msg : Message to display
+    * @param {} type Message type
+    * @param {} msg Message to display
     */
     displayMessage : function(type, msg){
        Ext.Msg.alert(type, msg);
@@ -853,8 +853,8 @@ var metExploreD3 = {
 
     /******************************************
     * Display message
-    * @param {} type : Message type
-    * @param {} msg : Message to display
+    * @param {} type Message type
+    * @param {} msg Message to display
     */
     displayWarning : function(msgTitle, msg){
         Ext.Msg.show({
@@ -867,8 +867,8 @@ var metExploreD3 = {
 
     /******************************************
     * Display message question Ok
-    * @param {} type : Message type
-    * @param {} msg : Message to display
+    * @param {} type Message type
+    * @param {} msg Message to display
     */
     displayMessageOK : function(msgTitle, msg, fct){
 
@@ -883,8 +883,8 @@ var metExploreD3 = {
 
     /******************************************
     * Display message question Yes No
-    * @param {} type : Message type
-    * @param {} msg : Message to display
+    * @param {} type Message type
+    * @param {} msg Message to display
     */
     displayMessageYesNo : function(msgTitle, msg, fct){
 
@@ -893,16 +893,16 @@ var metExploreD3 = {
 
     /******************************************
     * Display Promt
-    * @param {} type : Message type
-    * @param {} msg : Message to display
+    * @param {} type Message type
+    * @param {} msg Message to display
     */
     displayPrompt : function(msgTitle, msg, fct){
         Ext.MessageBox.prompt(msgTitle, msg, fct);
     },
     /******************************************
     * Defer function
-    * @param {} func : The function to defer
-    * @param {} time : The delay
+    * @param {} func The function to defer
+    * @param {} time The delay
     */
     deferFunction : function(func, time){
         return new Ext.defer(func, time);

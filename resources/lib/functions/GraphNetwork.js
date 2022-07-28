@@ -117,7 +117,21 @@ metExploreD3.GraphNetwork = {
      * @param {Function} func Callback function
      */
     rescale : function(panel, func){
-        var mask = metExploreD3.createLoadMask("Rescaling graph", panel);
+        var loadMaskActive = false;
+        var mask;
+
+        Ext.ComponentMgr.each(function(i, value){
+            if ((value instanceof Ext.LoadMask) && value.isVisible()){
+                loadMaskActive = true;
+            }
+        });
+
+        if (loadMaskActive === false){
+            mask = metExploreD3.createLoadMask("Rescaling graph", panel);
+        }
+        else {
+            mask = undefined;
+        }
 
         if(mask!= undefined) {
             metExploreD3.showMask(mask);
