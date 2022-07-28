@@ -2356,7 +2356,6 @@ metExploreD3.GraphNetwork = {
             });
 
             metExploreD3.GraphNetwork.addLinkInDrawing(reaction.getId()+"-"+newID,reaction,newNode,"out",reaction.getReactionReversibility(),panel);
-
         });
 
     },
