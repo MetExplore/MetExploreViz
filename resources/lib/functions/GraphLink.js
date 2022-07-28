@@ -770,46 +770,31 @@ metExploreD3.GraphLink = {
      * @param {String} panelLinked The panel where the action is launched
      * @param {String} type Biological type Pathway or Compartment
      */
-    majConvexhullsVisibility : function(panelLinked, type){
-        d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
-            .classed("hide", function (conv) {
-                if (type == "Pathways"){
-                    var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
-                    if (com === null){
-                        return false;
-                    }
-                    if(com.isCollapsed()) return true;
-                }
-                else
+    majConvexhullsVisibility : function(panelLinked, type, path, cmpt){
+        if (cmpt === true){
+            d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
+                .classed("hide", function (conv) {
                     var com = metExploreD3.getCompartmentByName(conv.key);
-                if(com)
-                    return com.hidden();
-                return false;
-            });
+                    if(com){
+                        return com.hidden();
+                    }
+
+                    return true;
+                });
+        }
+
+        if (path === true){
+            d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
+                .classed("hide", function (conv) {
+                    var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
+                    if(com){
+                        return com.hidden();
+                    }
+
+                    return true;
+                });
+        }
     },
-    // majConvexhullsVisibility : function(panelLinked, type){
-    //     d3.select("#" + panelLinked).select("#D3viz").selectAll("path.convexhull")
-    //         .classed("hide", function (conv) {
-    //             if (type === "Pathways"){
-    //                 var com = metExploreD3.getPathwayByName(conv.key, panelLinked);
-    //                 if (com === null || com.isCollapsed()){
-    //                     return true;
-    //                 }
-    //                 if (!(com.hidden())){
-    //                     return false;
-    //                 }
-    //             }
-    //             else {
-    //                 var com = metExploreD3.getCompartmentByName(conv.key);
-    //                 if (com === null || com.isCollapsed()){
-    //                     return true;
-    //                 }
-    //                 if (!(com.hidden())){
-    //                     return false;
-    //                 }
-    //             }
-    //         });
-    // },
 
     /*******************************************
      * Draw links using Bezier curves and bundle together all links entering a reaction and all links exiting a reaction.

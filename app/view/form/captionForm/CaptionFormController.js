@@ -91,7 +91,11 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                             margin: '0 0 0 10',
                                             checked: !component.hidden(),
                                             listeners: {
+                                                // list of cmpt listeners
                                                 change: function (that, newValue, oldValue) {
+                                                    // check if pathways or compartments is displayed
+                                                    var convexhullPathwaysChecked = Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways').checked;
+                                                    var convexhullCompartmentsChecked = Ext.getCmp("vizIdConvexHullMenu").lookupReference("highlightCompartments").checked;
 
                                                     var activePanel = _MyThisGraphNode.activePanel;
                                                     if(!activePanel) activePanel='viz';
@@ -105,7 +109,7 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                                                 var comp = metExploreD3.getCompartmentByName(component.getName());
 
                                                             comp.setHidden(!newValue);
-                                                            metExploreD3.GraphLink.majConvexhullsVisibility(panelLinked, view.getTitle());
+                                                            metExploreD3.GraphLink.majConvexhullsVisibility(panelLinked, view.getTitle(), convexhullPathwaysChecked, convexhullCompartmentsChecked);
                                                             if(metExploreD3.getGeneralStyle().isDisplayedPathwaysOnLinks())
                                                                 metExploreD3.GraphCaption.majCaptionComponentOnLink("PathwaysLink");
 
@@ -128,8 +132,8 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
                                             itemId: 'hidden' + newId,
                                             value: component.getColor(),
                                             listeners: {
+                                                // color picker listeners
                                                 change: function (that) {
-
                                                     var activePanel = _MyThisGraphNode.activePanel;
                                                     if(!activePanel) activePanel='viz';
 
@@ -199,8 +203,8 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             });
 
             highlightCheckbox.on({
+                // convexhulls listerners (pathways + compartments)
                 change : function (that, newV, oldVV, e) {
-
                     switch (view.getTitle()) {
                         case "Pathways":
                             Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathways').setChecked(newV);
@@ -533,8 +537,8 @@ Ext.define('metExploreViz.view.form.captionForm.CaptionFormController', {
             });
 
             highlightLinkCheckbox.on({
+                // onLinks listeners (pathways + compartments)
                 change : function (that, newV, oldVV, e) {
-
                     switch (view.getTitle()) {
                         case "Pathways":
                             Ext.getCmp("vizIdConvexHullMenu").lookupReference('highlightPathwaysLink').setChecked(newV);

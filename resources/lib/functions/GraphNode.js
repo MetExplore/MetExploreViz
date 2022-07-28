@@ -2423,36 +2423,36 @@ metExploreD3.GraphNode = {
                             });
                 }
 
-                if (d.getBiologicalType() == "reaction") {
-                    d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link.reaction")
-                        .filter(function (link) {
-                            return d.getId() == link.getSource().getId();
-                        })
-                        .style("stroke", "green");
-
-                    d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link.reaction")
-                        .filter(function (link) {
-                            return d.getId() == link.getTarget().getId();
-                        })
-                        .style("stroke", "red");
-                }
-                else {
-                    d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link.reaction")
-                        .filter(function (link) {
-                            return d.getId() == link.getSource().getId();
-                        })
-                        .style("stroke", "red");
-
-                    d3.select("#" + parent).select("#D3viz").select("#graphComponent")
-                        .selectAll("path.link.reaction")
-                        .filter(function (link) {
-                            return d.getId() == link.getTarget().getId();
-                        })
-                        .style("stroke", "green");
-                }
+                // if (d.getBiologicalType() == "reaction") {
+                //     d3.select("#" + parent).select("#D3viz").select("#graphComponent")
+                //         .selectAll("path.link.reaction")
+                //         .filter(function (link) {
+                //             return d.getId() == link.getSource().getId();
+                //         })
+                //         .style("stroke", "green");
+                //
+                //     d3.select("#" + parent).select("#D3viz").select("#graphComponent")
+                //         .selectAll("path.link.reaction")
+                //         .filter(function (link) {
+                //             return d.getId() == link.getTarget().getId();
+                //         })
+                //         .style("stroke", "red");
+                // }
+                // else {
+                //     d3.select("#" + parent).select("#D3viz").select("#graphComponent")
+                //         .selectAll("path.link.reaction")
+                //         .filter(function (link) {
+                //             return d.getId() == link.getSource().getId();
+                //         })
+                //         .style("stroke", "red");
+                //
+                //     d3.select("#" + parent).select("#D3viz").select("#graphComponent")
+                //         .selectAll("path.link.reaction")
+                //         .filter(function (link) {
+                //             return d.getId() == link.getTarget().getId();
+                //         })
+                //         .style("stroke", "green");
+                // }
             })
             .on("mouseleave", function (d) {
                 metExploreD3.GraphNode.node

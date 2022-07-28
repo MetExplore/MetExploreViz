@@ -117,7 +117,21 @@ metExploreD3.GraphNetwork = {
      * @param {Function} func Callback function
      */
     rescale : function(panel, func){
-        var mask = metExploreD3.createLoadMask("Rescaling graph", panel);
+        var loadMaskActive = false;
+        var mask;
+
+        Ext.ComponentMgr.each(function(i, value){
+            if ((value instanceof Ext.LoadMask) && value.isVisible()){
+                loadMaskActive = true;
+            }
+        });
+
+        if (loadMaskActive === false){
+            mask = metExploreD3.createLoadMask("Rescaling graph", panel);
+        }
+        else {
+            mask = undefined;
+        }
 
         if(mask!= undefined) {
             metExploreD3.showMask(mask);
@@ -2342,7 +2356,6 @@ metExploreD3.GraphNetwork = {
             });
 
             metExploreD3.GraphNetwork.addLinkInDrawing(reaction.getId()+"-"+newID,reaction,newNode,"out",reaction.getReactionReversibility(),panel);
-
         });
 
     },
@@ -2824,10 +2837,8 @@ metExploreD3.GraphNetwork = {
                                 nodeToRemove.push(node);
                             });
 
-
-                        metExploreD3.GraphNetwork.removeIsolatedNode(nodeToRemove, panelLinked);
-
                         nodeToRemove.forEach(function(node){
+                            metExploreD3.GraphNetwork.removeIsolatedNode([node], panelLinked);
                             networkData.removeNode(node);
                         });
 
@@ -3074,6 +3085,7 @@ metExploreD3.GraphNetwork = {
             })
             .each(function(node){
                 nodeToRemove.push(node);
+                metExploreD3.GraphNetwork.removeIsolatedNode([node], "viz");
                 networkData.removeNode(node);
             });
 

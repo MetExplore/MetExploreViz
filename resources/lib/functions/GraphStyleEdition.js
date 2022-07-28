@@ -595,11 +595,6 @@ metExploreD3.GraphStyleEdition = {
      * @param {String} value Value to assign
      */
     setCollectionLabel : function (targetSet, attrType, attrName, biologicalType, value) {
-        console.log(targetSet);
-        console.log(attrType);
-        console.log(attrName);
-        console.log(biologicalType);
-        console.log(value);
 
         var styleToUse;
 
@@ -879,6 +874,9 @@ metExploreD3.GraphStyleEdition = {
                         return false;
                     });
 
+                if (attrName === "font-size"){
+                    valueStyle+="px";
+                }
 
                 var targetSelection = selection.selectAll(target);
                 targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
@@ -925,6 +923,10 @@ metExploreD3.GraphStyleEdition = {
                         }
                         return false;
                     });
+
+                if (attrName === "font-size"){
+                    valueStyle+="px";
+                }
 
                 var targetSelection = selection.selectAll(target);
                 targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
@@ -978,7 +980,12 @@ metExploreD3.GraphStyleEdition = {
                 targetSelection.classed("mapped"+attrType+attrName+biologicalType, true);
                 function test(d){
                     var map = d.getMappingDataByNameAndCond(mappingName, conditionName);
-                    return linearScale(map.getMapValue());
+                    if (attrName !== "font-size"){
+                        return linearScale(map.getMapValue());
+                    }
+                    if (attrName === "font-size"){
+                        return linearScale(map.getMapValue())+"px";
+                    }
                 }
                 targetSelection = selection.selectAll(target+":not(.fluxstylelink)");
                 targetSelection[attrType](attrName, test);
@@ -1112,6 +1119,9 @@ metExploreD3.GraphStyleEdition = {
 
                 var nameAttr = first+second+third;
                 value = metaboliteStyle[nameAttr];
+                if (attrName === "font-size"){
+                    value = value+"px";
+                }
             }
 
             if (!(specialStyle.includes(attrName)) && !(attrName.includes("-"))){
@@ -1143,6 +1153,9 @@ metExploreD3.GraphStyleEdition = {
 
                 var nameAttr = first+second+third;
                 value = reactionStyle[nameAttr];
+                if (attrName === "font-size"){
+                    value = value+"px";
+                }
             }
 
             if (!(specialStyle.includes(attrName)) && !(attrName.includes("-"))){
