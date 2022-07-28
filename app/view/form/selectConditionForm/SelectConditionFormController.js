@@ -855,7 +855,7 @@ Ext.define('metExploreViz.view.form.selectConditionForm.SelectConditionFormContr
 											{
 												Ext.Msg.show({
 													title:'Warning',
-													msg: "Please enter a number between "+view.min+" and "+view.max,
+													msg: "Please enter a number between "+aStyleFormParent.min+" and "+aStyleFormParent.max,
 													icon: Ext.Msg.WARNING
 												});
 											}
