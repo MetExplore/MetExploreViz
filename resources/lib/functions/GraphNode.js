@@ -893,6 +893,7 @@ metExploreD3.GraphNode = {
             metExploreD3.displayMessage("Warning", 'The node "' + selectedVal + '" doesn\'t exist.')
         }
         else {
+            metExploreD3.hideMask(mask);
             metExploreD3.GraphNetwork.rescale("viz", function(){
                 var scaleViz = metExploreD3.getScaleById("viz");
                 var zoom = scaleViz.getZoom();
