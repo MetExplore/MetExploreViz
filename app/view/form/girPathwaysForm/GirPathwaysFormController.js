@@ -118,7 +118,7 @@ Ext.define('metExploreViz.view.form.girPathwaysForm.GirPathwaysFormController', 
                 // pathways iteration start
                 var colorName = cmpt.getName();
 
-                var ref = colorName.replaceAll(me.regexPanel, "");
+                var ref = "NetEx"+colorName.replaceAll(me.regexPanel, "");
 
                 var parser = new DOMParser;
                 var dom = parser.parseFromString(colorName, 'text/html');
@@ -130,7 +130,7 @@ Ext.define('metExploreViz.view.form.girPathwaysForm.GirPathwaysFormController', 
                     layout: {
                         width: '100%'
                     },
-                    // reference: ref,
+                    reference: ref,
                     margin: '5 5 5 5',
                     items: [
                         {
@@ -235,7 +235,7 @@ Ext.define('metExploreViz.view.form.girPathwaysForm.GirPathwaysFormController', 
         });
 
         components.forEach(function(cmpt){
-            var ref = cmpt.getName().replaceAll(me.regexPanel, "");
+            var ref = "NetEx"+cmpt.getName().replaceAll(me.regexPanel, "");
             var panel = view.lookupReference(ref);
 
             if (visiblePathways.includes(cmpt.getName())) {
